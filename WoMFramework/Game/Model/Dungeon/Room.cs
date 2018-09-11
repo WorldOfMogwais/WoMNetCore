@@ -31,8 +31,8 @@ namespace WoMFramework.Game.Model
         protected readonly bool Blocked;    // needs door breaching
 
         // Ideas
-        private int layer = 1;              // don't know what to do with this
-        private int Illuminance;            // affects initiative?
+        private int _layer = 1;              // don't know what to do with this
+        private int _illuminance;            // affects initiative?
         // random encounters with special environments (e.g. a barrel full of blackpowder)
         // ornaments, furnitures
 

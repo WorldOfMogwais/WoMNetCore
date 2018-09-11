@@ -10,23 +10,23 @@ namespace WoMFramework.Game.Model
     public sealed class ArmorBuilder
     {
         // description
-        private int armorCheckPenalty = 0;
-        private double arcaneSpellFailureChance = 0;
-        private int cost = 1;
-        private int weight = 1;
-        private string description = string.Empty;
+        private int _armorCheckPenalty = 0;
+        private double _arcaneSpellFailureChance = 0;
+        private int _cost = 1;
+        private int _weight = 1;
+        private string _description = string.Empty;
 
-        public string name;
-        public ArmorType armorType;
-        public int armorBonus;
-        public int maxDexterityBonus;
+        public string Name;
+        public ArmorType ArmorType;
+        public int ArmorBonus;
+        public int MaxDexterityBonus;
 
         private ArmorBuilder(string name, ArmorType armorType, int armorBonus, int maxDexterityBonus)
         {
-            this.name = name;
-            this.armorType = armorType;
-            this.armorBonus = armorBonus;
-            this.maxDexterityBonus = maxDexterityBonus;
+            this.Name = name;
+            this.ArmorType = armorType;
+            this.ArmorBonus = armorBonus;
+            this.MaxDexterityBonus = maxDexterityBonus;
         }
         public static ArmorBuilder Create(string name, ArmorType armorType, int armorBonus, int maxDexterityBonus)
         {
@@ -34,32 +34,32 @@ namespace WoMFramework.Game.Model
         }
         public ArmorBuilder SetArmorCheckPenalty(int armorCheckPenalty)
         {
-            this.armorCheckPenalty = armorCheckPenalty;
+            this._armorCheckPenalty = armorCheckPenalty;
             return this;
         }
         public ArmorBuilder SetArcaneSpellFailureChance(double arcaneSpellFailureChance)
         {
-            this.arcaneSpellFailureChance = arcaneSpellFailureChance;
+            this._arcaneSpellFailureChance = arcaneSpellFailureChance;
             return this;
         }
         public ArmorBuilder SetCost(int cost)
         {
-            this.cost = cost;
+            this._cost = cost;
             return this;
         }
         public ArmorBuilder SetWeight(int weight)
         {
-            this.weight = weight;
+            this._weight = weight;
             return this;
         }
         public ArmorBuilder SetDescription(string description)
         {
-            this.description = description;
+            this._description = description;
             return this;
         }
         public Armor Build()
         {
-            return new Armor(name, armorType, armorBonus, maxDexterityBonus, armorCheckPenalty, arcaneSpellFailureChance, cost, weight, description);
+            return new Armor(Name, ArmorType, ArmorBonus, MaxDexterityBonus, _armorCheckPenalty, _arcaneSpellFailureChance, _cost, _weight, _description);
         }
     }
 

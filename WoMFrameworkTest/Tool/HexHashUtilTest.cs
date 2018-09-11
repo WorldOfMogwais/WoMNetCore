@@ -8,7 +8,7 @@ namespace WoMFramework.Tool.Tests
     public class HexHashUtilTest
     {
         [Fact]
-        public void HashSHA256Test()
+        public void HashSha256Test()
         {
             Shift shift = new Shift(0D,
                 1530914381,
@@ -21,7 +21,7 @@ namespace WoMFramework.Tool.Tests
                 0.0001m);
 
             var bytes = HexHashUtil.StringToByteArray(shift.AdHex);
-            var hashedBytes = HexHashUtil.HashSHA256(bytes);
+            var hashedBytes = HexHashUtil.HashSha256(bytes);
             var hash = HexHashUtil.ByteArrayToString(hashedBytes);
             Assert.Equal("bcd35d9f6de167fada34bfeb0c59d2b1a55974b9460c54f42dfff2e86cf8c58b", hash);
         }

@@ -25,19 +25,19 @@ namespace WoMFramework.Game.Model
 
         public override void NextStep(Mogwai mogwai, Shift shift)
         {
-            if (AdventureState == AdventureState.CREATION)
+            if (AdventureState == AdventureState.Creation)
             {
                 Entrance.Initialise(mogwai);
-                AdventureState = AdventureState.RUNNING;
+                AdventureState = AdventureState.Running;
             }
 
             if (!Enter())
             {
-                AdventureState = AdventureState.FAILED;
+                AdventureState = AdventureState.Failed;
                 return;
             }
 
-            AdventureState = AdventureState.COMPLETED;
+            AdventureState = AdventureState.Completed;
         }
 
         public bool Enter()

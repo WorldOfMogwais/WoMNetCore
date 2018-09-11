@@ -11,8 +11,8 @@ namespace WoMFramework.Game.Model.Tests
         [Fact]
         public void GenderTest()
         {
-            Attribute GenderAttr = AttributBuilder.Create("Gender")
-                .Salted(false).Position(2).Size(1).Creation(2).MaxRange(2).Build();
+            Attribute genderAttr = AttributBuilder.Create("Gender")
+                .Salted(false).SetPosition(2).SetSize(1).SetCreation(2).SetMaxRange(2).Build();
 
             Dictionary<int, int> dict = new Dictionary<int, int>();
             foreach (char b1 in Base58Encoding.Digits.ToCharArray())
@@ -33,9 +33,9 @@ namespace WoMFramework.Game.Model.Tests
                             1.00m,
                             0.0001m));
 
-                    GenderAttr.CreateValue(hexValue);
+                    genderAttr.CreateValue(hexValue);
 
-                    int value = GenderAttr.GetValue();
+                    int value = genderAttr.GetValue();
                     int orgValue = HexHashUtil.GetHexVal(pubMogAddressHex[1]);
                     if (dict.TryGetValue(value, out int count))
                     {

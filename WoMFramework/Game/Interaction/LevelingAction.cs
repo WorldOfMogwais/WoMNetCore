@@ -17,7 +17,7 @@ namespace WoMFramework.Game.Interaction
 
         public int ClassLevel { get; }
 
-        public LevelingAction(LevelingType levelingType, ClassType classType, int currentLevel, int classLevel) : base(InteractionType.LEVELING)
+        public LevelingAction(LevelingType levelingType, ClassType classType, int currentLevel, int classLevel) : base(InteractionType.Leveling)
         {
             LevelingType = levelingType;
             ClassType = classType;
@@ -40,7 +40,7 @@ namespace WoMFramework.Game.Interaction
             return false;
         }
 
-        private LevelingAction(int paramAdd1, int paramAdd2) : base(InteractionType.LEVELING)
+        private LevelingAction(int paramAdd1, int paramAdd2) : base(InteractionType.Leveling)
         {
             string param1 = paramAdd1.ToString("0000");
             LevelingType = (LevelingType)int.Parse(param1.Substring(0, 2));

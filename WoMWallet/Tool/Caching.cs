@@ -12,7 +12,7 @@ namespace WoMWallet.Tool
 {
     class Caching
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static bool TryReadFile<T>(string path, out T obj)
         {
@@ -31,7 +31,7 @@ namespace WoMWallet.Tool
             }
             catch (Exception e)
             {
-                _log.Error($"TryReadFile<{obj.GetType()}>: {e}");
+                Log.Error($"TryReadFile<{obj.GetType()}>: {e}");
                 return false;
             }
         }

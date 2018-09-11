@@ -6,14 +6,14 @@ namespace WoMFramework.Game.Model
 {
     public enum Direction
     {
-        RIGHT, DOWN, LEFT, UP
+        Right, Down, Left, Up
     }
     /// <summary>
     /// Simple 2D Cartesian coordinate
     /// </summary>
     public struct Coordinate : IEquatable<Coordinate>
     {
-        private static readonly Coordinate[] _directions =
+        private static readonly Coordinate[] Directions =
         {
             new Coordinate(1, 0), new Coordinate(0, -1), new Coordinate(-1, 0), new Coordinate(0, 1)
         };
@@ -63,12 +63,12 @@ namespace WoMFramework.Game.Model
             if (direction < 0 || direction > 3)
                 throw new ArgumentOutOfRangeException();
 
-            return _directions[direction];
+            return Directions[direction];
         }
 
         public static Coordinate Direction(Direction direction)
         {
-            return _directions[(int)direction];
+            return Directions[(int)direction];
         }
 
         public override string ToString()

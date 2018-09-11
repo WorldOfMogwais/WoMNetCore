@@ -10,7 +10,7 @@ namespace WoMFramework.Game.Model
 {
     public class Experience
     {
-        private string[] expPats;
+        private string[] _expPats;
 
         /// <summary>
         /// 
@@ -18,7 +18,7 @@ namespace WoMFramework.Game.Model
         /// <param name="shift"></param>
         public Experience(Shift shift)
         {
-            expPats = GetExpPatterns(shift.TxHex);
+            _expPats = GetExpPatterns(shift.TxHex);
         }
         
         /// <summary>
@@ -59,7 +59,7 @@ namespace WoMFramework.Game.Model
 
             for (int i = 0; i <= lazyExpLevel; i++)
             {
-                string exPat = expPats[i % 18];
+                string exPat = _expPats[i % 18];
                 int indExp = shift.BkHex.IndexOf(exPat);
                 if (indExp != -1)
                 {
@@ -75,7 +75,7 @@ namespace WoMFramework.Game.Model
         internal void Print()
         {
             Console.WriteLine("- Experience:");
-            Console.WriteLine(string.Join(";", expPats));
+            Console.WriteLine(string.Join(";", _expPats));
         }
     }
 }

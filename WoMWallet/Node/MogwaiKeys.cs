@@ -13,26 +13,26 @@ namespace WoMWallet.Node
 {
     public enum MogwaiKeysState
     {
-        NONE, WAIT, READY, CREATE, BOUND
+        None, Wait, Ready, Create, Bound
     }
 
     public class MogwaiKeys
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly ExtKey extkey;
+        private readonly ExtKey _extkey;
 
-        private readonly Network network;
+        private readonly Network _network;
 
-        private readonly PubKey pubKey;
+        private readonly PubKey _pubKey;
 
-        private readonly PubKey mirrorPubKey;
+        private readonly PubKey _mirrorPubKey;
 
-        public string Address => pubKey.GetAddress(network).ToString();
+        public string Address => _pubKey.GetAddress(_network).ToString();
 
-        public string MirrorAddress => mirrorPubKey?.GetAddress(network).ToString();
+        public string MirrorAddress => _mirrorPubKey?.GetAddress(_network).ToString();
 
-        public bool HasMirrorAddress => mirrorPubKey != null;
+        public bool HasMirrorAddress => _mirrorPubKey != null;
 
         public Mogwai Mogwai { get; set; }
 
@@ -40,32 +40,32 @@ namespace WoMWallet.Node
 
         public Dictionary<double, Shift> Shifts { get; set; }
 
-        private MogwaiKeysState oldMogwaiKeysState = MogwaiKeysState.NONE;
-        private MogwaiKeysState mogwaiKeysState = MogwaiKeysState.NONE;
+        private MogwaiKeysState _oldMogwaiKeysState = MogwaiKeysState.None;
+        private MogwaiKeysState _mogwaiKeysState = MogwaiKeysState.None;
         public MogwaiKeysState MogwaiKeysState
         {
-            get { return mogwaiKeysState; }
+            get { return _mogwaiKeysState; }
             set
             {
-                oldMogwaiKeysState = mogwaiKeysState;
-                mogwaiKeysState = value;
+                _oldMogwaiKeysState = _mogwaiKeysState;
+                _mogwaiKeysState = value;
             }
         }
 
         public MogwaiKeys(ExtKey extkey, Network network)
         {
-            this.extkey = extkey;
-            this.network = network;
-            this.pubKey = extkey.PrivateKey.PubKey;
+            this._extkey = extkey;
+            this._network = network;
+            this._pubKey = extkey.PrivateKey.PubKey;
             if (TryMirrorPubKey(extkey.PrivateKey.PubKey, out PubKey mirrorPubKey))
             {
-                this.mirrorPubKey = mirrorPubKey;
+                this._mirrorPubKey = mirrorPubKey;
             }
         }
 
         public string GetEncryptedSecretWif()
         {
-            return extkey.PrivateKey.GetEncryptedBitcoinSecret(extkey.ToString(network), network).ToWif();
+            return _extkey.PrivateKey.GetEncryptedBitcoinSecret(_extkey.ToString(_network), _network).ToWif();
         }
 
         private bool TryMirrorPubKey(PubKey pubKey, out PubKey mirrorPubKey)
@@ -113,15 +113,15 @@ namespace WoMWallet.Node
 
                 if (Mogwai != null)
                 {
-                    MogwaiKeysState = MogwaiKeysState.BOUND;
+                    MogwaiKeysState = MogwaiKeysState.Bound;
                 }
-                else if(Balance > 1.0001m && MogwaiKeysState != MogwaiKeysState.CREATE)
+                else if(Balance > 1.0001m && MogwaiKeysState != MogwaiKeysState.Create)
                 {
-                    MogwaiKeysState = MogwaiKeysState.READY;
+                    MogwaiKeysState = MogwaiKeysState.Ready;
                 }
-                else if(Balance < 1.0001m && MogwaiKeysState != MogwaiKeysState.WAIT)
+                else if(Balance < 1.0001m && MogwaiKeysState != MogwaiKeysState.Wait)
                 {
-                    MogwaiKeysState = MogwaiKeysState.NONE;
+                    MogwaiKeysState = MogwaiKeysState.None;
                 }
             });
         }
@@ -139,7 +139,7 @@ namespace WoMWallet.Node
         public Transaction CreateTransaction(List<UnspentTx> unspentTxList, decimal unspentAmount, string[] toAddresses, decimal amount, decimal txFee)
         {
             // creating a new transaction
-            Transaction tx = Transaction.Create(network);
+            Transaction tx = Transaction.Create(_network);
 
             // adding all unspent txs to input
             unspentTxList.ForEach(p =>
@@ -147,7 +147,7 @@ namespace WoMWallet.Node
                 tx.AddInput(new TxIn
                 {
                     PrevOut = new OutPoint(new uint256(p.Txid), p.Vout),
-                    ScriptSig = pubKey.GetAddress(network).ScriptPubKey
+                    ScriptSig = _pubKey.GetAddress(_network).ScriptPubKey
                     //ScriptSig = new Script(p.ScriptPubKey) // could be wrong then take ... prev row
                 });
             });
@@ -157,7 +157,7 @@ namespace WoMWallet.Node
                 // adding output
                 tx.AddOutput(new TxOut
                 {
-                    ScriptPubKey = BitcoinAddress.Create(address, network).ScriptPubKey,
+                    ScriptPubKey = BitcoinAddress.Create(address, _network).ScriptPubKey,
                     Value = Money.Coins(amount)
                 });
             }
@@ -167,19 +167,19 @@ namespace WoMWallet.Node
             {
                 tx.AddOutput(new TxOut
                 {
-                    ScriptPubKey = pubKey.GetAddress(network).ScriptPubKey,
+                    ScriptPubKey = _pubKey.GetAddress(_network).ScriptPubKey,
                     Value = Money.Coins(unspentAmount - (amount * toAddresses.Length) - txFee)
                 });
             }
 
             //tx.ToString(RawFormat.);
 
-            _log.Info($"rawTx: {tx.ToHex()}");
+            Log.Info($"rawTx: {tx.ToHex()}");
 
             // sign transaction
-            tx.Sign(extkey.PrivateKey, false);
+            tx.Sign(_extkey.PrivateKey, false);
 
-            _log.Info($"sigTx: {tx.ToHex()}");
+            Log.Info($"sigTx: {tx.ToHex()}");
 
             return tx;
         }

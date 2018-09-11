@@ -8,17 +8,17 @@ namespace WoMFramework.Game
 {
     public partial class Dice
     {
-        private int i1 = 0;
+        private int _i1 = 0;
 
-        private int i2 = 0;
+        private int _i2 = 0;
 
-        private int i3 = 0;
+        private int _i3 = 0;
 
-        private string seed1;
+        private string _seed1;
 
-        private string seed2;
+        private string _seed2;
 
-        private string seed3;
+        private string _seed3;
 
         /// <summary>
         /// 
@@ -28,9 +28,9 @@ namespace WoMFramework.Game
         {
             string height = shift.Height.ToString();
             height = height.PadLeft(height.Length + height.Length % 2, '0');
-            seed1 = HexHashUtil.HashSHA256(shift.AdHex + height);
-            seed2 = HexHashUtil.HashSHA256(shift.AdHex + shift.BkHex).Substring(1);
-            seed3 = HexHashUtil.HashSHA256(height + shift.BkHex).Substring(3);
+            _seed1 = HexHashUtil.HashSha256(shift.AdHex + height);
+            _seed2 = HexHashUtil.HashSha256(shift.AdHex + shift.BkHex).Substring(1);
+            _seed3 = HexHashUtil.HashSha256(height + shift.BkHex).Substring(3);
         }
 
         public Dice(Shift shift, int modifier)
@@ -41,9 +41,9 @@ namespace WoMFramework.Game
             string modifierStr = modifier.ToString();
             modifierStr = modifierStr.PadLeft(modifierStr.Length + modifierStr.Length % 2, 'a');
 
-            seed1 = HexHashUtil.HashSHA256(HexHashUtil.HashSHA256(modifierStr) + height);
-            seed2 = HexHashUtil.HashSHA256(modifierStr + height).Substring(1);
-            seed3 = HexHashUtil.HashSHA256(height + modifierStr + shift.BkHex).Substring(3);
+            _seed1 = HexHashUtil.HashSha256(HexHashUtil.HashSha256(modifierStr) + height);
+            _seed2 = HexHashUtil.HashSha256(modifierStr + height).Substring(1);
+            _seed3 = HexHashUtil.HashSha256(height + modifierStr + shift.BkHex).Substring(3);
         }
 
         public int Roll(int diceSides, int modifier)
@@ -95,13 +95,13 @@ namespace WoMFramework.Game
 
         private int GetNext()
         {
-            int s1val = HexHashUtil.GetHexVal(seed1[i1]);
-            int s2val = HexHashUtil.GetHexVal(seed2[i2]);
-            int s3val = HexHashUtil.GetHexVal(seed3[i3]);
-            int value = s1val + s2val + s3val;
-            i1 = (i1 + 1) % seed1.Length;
-            i2 = i1 == 0 ? (i2 + 1) % seed2.Length : i2;
-            i3 = i2 == 0 ? (i3 + 1) % seed3.Length : i3;
+            int s1Val = HexHashUtil.GetHexVal(_seed1[_i1]);
+            int s2Val = HexHashUtil.GetHexVal(_seed2[_i2]);
+            int s3Val = HexHashUtil.GetHexVal(_seed3[_i3]);
+            int value = s1Val + s2Val + s3Val;
+            _i1 = (_i1 + 1) % _seed1.Length;
+            _i2 = _i1 == 0 ? (_i2 + 1) % _seed2.Length : _i2;
+            _i3 = _i2 == 0 ? (_i3 + 1) % _seed3.Length : _i3;
             return value;
         }
 

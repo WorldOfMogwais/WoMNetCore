@@ -2,6 +2,6 @@
 {
     public enum ArmorType
     {
-        LIGHT, MEDIUM, HEAVY
+        Light, Medium, Heavy
     }
 }

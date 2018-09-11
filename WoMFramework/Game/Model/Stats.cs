@@ -5,13 +5,13 @@ namespace WoMFramework.Game.Model
     public class Stats
     {
         public Attribute LuckAttr = AttributBuilder.Create("Luck")
-            .Salted(true).Position(42).Size(2).Creation(32).MinRange(1).MaxRange(256)
-            .Description("A measure of a character's luck. Luck might influence anything, but mostly random items, encounters and outstanding successes/failures (such as critical hits).").Build();
+            .Salted(true).SetPosition(42).SetSize(2).SetCreation(32).SetMinRange(1).SetMaxRange(256)
+            .SetDescription("A measure of a character's luck. Luck might influence anything, but mostly random items, encounters and outstanding successes/failures (such as critical hits).").Build();
         public int Luck => LuckAttr.GetValue();
 
         public Attribute AllignmentAttr = AttributBuilder.Create("Allignment")
-            .Salted(true).Position(44).Size(1).Creation(16).MaxRange(16)
-            .Description("A creature's general moral and personal attitudes are represented by its alignment: lawful good, neutral good, chaotic good, lawful neutral, neutral, chaotic neutral, lawful evil, neutral evil, or chaotic evil.").Build();
+            .Salted(true).SetPosition(44).SetSize(1).SetCreation(16).SetMaxRange(16)
+            .SetDescription("A creature's general moral and personal attitudes are represented by its alignment: lawful good, neutral good, chaotic good, lawful neutral, neutral, chaotic neutral, lawful evil, neutral evil, or chaotic evil.").Build();
         public int Allignment => AllignmentAttr.GetValue();
 
         public List<Attribute> All => new List<Attribute>() { LuckAttr, AllignmentAttr };

@@ -11,8 +11,8 @@
         public string Txid { get; set; }
         public string Category { get; set; }
         public decimal Amount { get; set; }
-        public double Amount_satoshi { get; set; }
+        public double AmountSatoshi { get; set; }
         public decimal Fee { get; set; }
-        public double Fee_satoshi { get; set; }
+        public double FeeSatoshi { get; set; }
     }
 }

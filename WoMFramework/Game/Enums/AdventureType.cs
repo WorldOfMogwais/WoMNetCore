@@ -2,10 +2,10 @@
 {
     public enum AdventureType
     {
-        TEST_ROOM = 0,
-        CHAMBER = 1,
-        DUNGEON = 2,
-        BATTLE = 3,
-        QUEST = 4
+        TestRoom = 0,
+        Chamber = 1,
+        Dungeon = 2,
+        Battle = 3,
+        Quest = 4
     }
 }

@@ -2,17 +2,17 @@
 {
     public enum ClassType
     {
-        NONE,
-        BARBARIAN,
-        BARD,
-        CLERIC,
-        DRUID,
-        FIGHTER,
-        MONK,
-        PALADIN,
-        RANGER,
-        ROGUE,
-        SORCERER,
-        WIZARD
+        None,
+        Barbarian,
+        Bard,
+        Cleric,
+        Druid,
+        Fighter,
+        Monk,
+        Paladin,
+        Ranger,
+        Rogue,
+        Sorcerer,
+        Wizard
     }
 }

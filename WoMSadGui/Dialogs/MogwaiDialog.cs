@@ -11,7 +11,7 @@ namespace WoMSadGui.Dialogs
 {
     public class MogwaiDialog : Window
     {
-        public Button button;
+        public Button Button;
 
         public MogwaiDialog(string title, string text, int width, int height) : base(width, height)
         {
@@ -31,10 +31,10 @@ namespace WoMSadGui.Dialogs
 
         public void AddButon(string text)
         {
-            button = new Button(text.Length + 2, 1);
-            button.Position = new Point(2, 6);
-            button.Text = text;
-            Add(button);
+            Button = new Button(text.Length + 2, 1);
+            Button.Position = new Point(2, 6);
+            Button.Text = text;
+            Add(Button);
         }
     }
 }

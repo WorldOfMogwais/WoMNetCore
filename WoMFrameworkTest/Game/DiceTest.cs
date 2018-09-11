@@ -21,24 +21,24 @@ namespace WoMFramework.Game.Tests
                0.0001m);
 
             Dice dice = new Dice(shift);
-            Dictionary<int, int> ProbabilityDict = new Dictionary<int, int>();
+            Dictionary<int, int> probabilityDict = new Dictionary<int, int>();
 
             int n = 1000000;
 
             for (int i = 0; i < 20 * n; i++)
             {
                 int roll = dice.Roll(20);
-                if (ProbabilityDict.TryGetValue(roll, out int count))
+                if (probabilityDict.TryGetValue(roll, out int count))
                 {
-                    ProbabilityDict[roll] = count + 1;
+                    probabilityDict[roll] = count + 1;
                 }
                 else
                 {
-                    ProbabilityDict[roll] = 1;
+                    probabilityDict[roll] = 1;
                 }
             }
 
-            foreach (var keyValue in ProbabilityDict)
+            foreach (var keyValue in probabilityDict)
             {
                 Assert.True(keyValue.Value > 0.9 * n && keyValue.Value < 1.1 * n);
             }
@@ -59,24 +59,24 @@ namespace WoMFramework.Game.Tests
                0.0001m);
 
             Dice dice = new Dice(shift, 2);
-            Dictionary<int, int> ProbabilityDict = new Dictionary<int, int>();
+            Dictionary<int, int> probabilityDict = new Dictionary<int, int>();
 
             int n = 1000000;
 
             for (int i = 0; i < 20 * n; i++)
             {
                 int roll = dice.Roll(20);
-                if (ProbabilityDict.TryGetValue(roll, out int count))
+                if (probabilityDict.TryGetValue(roll, out int count))
                 {
-                    ProbabilityDict[roll] = count + 1;
+                    probabilityDict[roll] = count + 1;
                 }
                 else
                 {
-                    ProbabilityDict[roll] = 1;
+                    probabilityDict[roll] = 1;
                 }
             }
 
-            foreach (var keyValue in ProbabilityDict)
+            foreach (var keyValue in probabilityDict)
             {
                 Assert.True(keyValue.Value > 0.9 * n && keyValue.Value < 1.1 * n);
             }

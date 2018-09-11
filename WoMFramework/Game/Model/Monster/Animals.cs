@@ -10,25 +10,25 @@ namespace WoMFramework.Game.Model
     public partial class Monsters
     {
         public static Monster Rat =>
-            MonsterBuilder.Create("Rat", 0.25, MonsterType.ANIMALS, 100)
-             .SetSizeType(SizeType.TINY)
+            MonsterBuilder.Create("Rat", 0.25, MonsterType.Animals, 100)
+             .SetSizeType(SizeType.Tiny)
              .SetAbilities(2, 15, 11, 2, 13, 2)
              .SetBaseSpeed(15)
              .SetHitPointDiceRollEvent(new int[] { 1, 8 })
              .SetBaseAttackBonus(0)
-             .SetBaseWeapon(NaturalWeapon.Bite(SizeType.TINY))
+             .SetBaseWeapon(NaturalWeapon.Bite(SizeType.Tiny))
              .SetDescription("Fecund and secretive, rats are omnivorous rodents that particularly thrive in urban areas.")
              .Build();
 
         public static Monster Wolf =>
-            MonsterBuilder.Create("Wolf", 1, MonsterType.ANIMALS, 400)
-            .SetSizeType(SizeType.MEDIUM)
+            MonsterBuilder.Create("Wolf", 1, MonsterType.Animals, 400)
+            .SetSizeType(SizeType.Medium)
             .SetAbilities(13, 15, 15, 2, 12, 6)
             .SetBaseSpeed(50)
             .SetNaturalArmor(2)
             .SetHitPointDiceRollEvent(new int[] { 2, 8, 0, 4 })
             .SetBaseAttackBonus(1)
-            .SetBaseWeapon(NaturalWeapon.Bite(SizeType.MEDIUM))
+            .SetBaseWeapon(NaturalWeapon.Bite(SizeType.Medium))
             .SetDescription("Wandering alone or in packs, wolves sit at the top of the food chain. Ferociously " +
                 "territorial and exceptionally wide-ranging in their hunting, wolf packs cover broad " +
                 "areas. A wolf’s wide paws contain slight webbing between the toes that assists in " +

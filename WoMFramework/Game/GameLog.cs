@@ -8,14 +8,14 @@ namespace WoMFramework.Game
 {
     public class GameLog
     {
-        public int pointer;
-        public List<LogEntry> logEntries;
+        public int Pointer;
+        public List<LogEntry> LogEntries;
 
         public GameLog()
         {
 
-            logEntries = new List<LogEntry>();
-            pointer = logEntries.Count - 1;
+            LogEntries = new List<LogEntry>();
+            Pointer = LogEntries.Count - 1;
         }
 
         public void Add(LogType logType, string message)
@@ -25,13 +25,13 @@ namespace WoMFramework.Game
 
         public void Add(LogEntry entry)
         {
-            logEntries.Add(entry);
-            pointer = logEntries.Count - 1;
+            LogEntries.Add(entry);
+            Pointer = LogEntries.Count - 1;
         }
 
     }
 
-    public enum LogType { INFO, DAMG, HEAL, EVNT, COMB }
+    public enum LogType { Info, Damg, Heal, Evnt, Comb }
 
     public class LogEntry
     {
@@ -53,15 +53,15 @@ namespace WoMFramework.Game
         {
             switch (logType)
             {
-                case LogType.INFO:
+                case LogType.Info:
                     return "[¬aINFO§]";
-                case LogType.DAMG:
+                case LogType.Damg:
                     return "[¬rDAMG§]";
-                case LogType.HEAL:
+                case LogType.Heal:
                     return "[¬gHEAL§]";
-                case LogType.EVNT:
+                case LogType.Evnt:
                     return "[¬YEVNT§]";
-                case LogType.COMB:
+                case LogType.Comb:
                     return "[¬yCOMB§]";
                 default:
                     return "[¬aINFO§]";

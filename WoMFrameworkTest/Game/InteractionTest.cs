@@ -17,7 +17,7 @@ namespace WoMFramework.Game.Interaction.Tests
             //string actionType = parm1.Substring(2, 2);
             //string addParm = parm1.Substring(4, 4);
 
-            AdventureAction adventure1 = new AdventureAction(AdventureType.TEST_ROOM, DifficultyType.CHALLENGING, 2);
+            AdventureAction adventure1 = new AdventureAction(AdventureType.TestRoom, DifficultyType.Challenging, 2);
             Assert.Equal(0.01040003m, adventure1.GetValue1());
             Assert.Equal(0.00001002m, adventure1.GetValue2());
 
@@ -54,9 +54,9 @@ namespace WoMFramework.Game.Interaction.Tests
                0.00001002m);
 
 
-            Assert.Equal(shift.Interaction.InteractionType, InteractionType.ADVENTURE);
-            Assert.Equal(((AdventureAction)shift.Interaction).AdventureType, AdventureType.TEST_ROOM);
-            Assert.Equal(((AdventureAction)shift.Interaction).DifficultyType, DifficultyType.CHALLENGING);
+            Assert.Equal(shift.Interaction.InteractionType, InteractionType.Adventure);
+            Assert.Equal(((AdventureAction)shift.Interaction).AdventureType, AdventureType.TestRoom);
+            Assert.Equal(((AdventureAction)shift.Interaction).DifficultyType, DifficultyType.Challenging);
             Assert.Equal(((AdventureAction)shift.Interaction).AveragePartyLevel, 2);
         }
     }

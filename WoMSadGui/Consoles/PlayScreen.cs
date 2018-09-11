@@ -14,21 +14,21 @@ namespace WoMSadGui.Consoles
 {
     public class PlayScreen : SadConsole.Console
     {
-        private MogwaiController controller;
+        private MogwaiController _controller;
 
-        private Basic borderSurface;
+        private Basic _borderSurface;
 
         public SadGuiState State { get; set; }
 
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
-            borderSurface = new Basic(width + 2, height + 2, base.Font);
-            borderSurface.DrawBox(new Rectangle(0, 0, borderSurface.Width, borderSurface.Height),
+            _borderSurface = new Basic(width + 2, height + 2, base.Font);
+            _borderSurface.DrawBox(new Rectangle(0, 0, _borderSurface.Width, _borderSurface.Height),
                                   new Cell(Color.DarkCyan, Color.Black), null, SurfaceBase.ConnectedLineThick);
-            borderSurface.Position = new Point(-1, -1);
-            Children.Add(borderSurface);
+            _borderSurface.Position = new Point(-1, -1);
+            Children.Add(_borderSurface);
 
-            State = SadGuiState.PLAY;
+            State = SadGuiState.Play;
         }
 
         internal SadGuiState GetState()
@@ -41,7 +41,7 @@ namespace WoMSadGui.Consoles
         {
             if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Enter))
             {
-                State = SadGuiState.SELECTION;
+                State = SadGuiState.Selection;
                 return true;
             }
             return false;

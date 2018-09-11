@@ -17,7 +17,7 @@ namespace WoMFramework.Game.Interaction
 
         public int ClassLevel { get; }
 
-        public SelectionAction(SelectionType selectionType, ClassType classType, int currentLevel, int classLevel) : base(InteractionType.SELECTION)
+        public SelectionAction(SelectionType selectionType, ClassType classType, int currentLevel, int classLevel) : base(InteractionType.Selection)
         {
             SelectionType = selectionType;
             ClassType = classType;
@@ -40,7 +40,7 @@ namespace WoMFramework.Game.Interaction
             return false;
         }
 
-        private SelectionAction(int paramAdd1, int paramAdd2) : base(InteractionType.SELECTION)
+        private SelectionAction(int paramAdd1, int paramAdd2) : base(InteractionType.Selection)
         {
             string param1 = paramAdd1.ToString("0000");
             SelectionType = (SelectionType)int.Parse(param1.Substring(0, 2));

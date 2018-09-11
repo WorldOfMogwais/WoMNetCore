@@ -121,23 +121,23 @@ namespace WoMFramework.Game.Model
             {
                 if (CurrentHitPoints == MaxHitPoints)
                 {
-                    return HealthState.HEALTHY;
+                    return HealthState.Healthy;
                 }
                 else if (CurrentHitPoints > 0)
                 {
-                    return HealthState.INJURED;
+                    return HealthState.Injured;
                 }
                 else if (CurrentHitPoints == 0)
                 {
-                    return HealthState.DISABLED;
+                    return HealthState.Disabled;
                 }
                 else if (CurrentHitPoints > -10)
                 {
-                    return HealthState.DYING;
+                    return HealthState.Dying;
                 }
                 else
                 {
-                    return HealthState.DEAD;
+                    return HealthState.Dead;
                 }
             }
         }
@@ -205,12 +205,12 @@ namespace WoMFramework.Game.Model
                         }
                     }
                     string criticalStr = criticalDamage > 0 ? $"¬y(+{criticalDamage})§" : string.Empty;
-                    Mogwai.History.Add(LogType.COMB, $"{message} ¬Ghit for§ ¬y{damage}§{criticalStr} ¬Gdamage!§¬");
-                    target.Damage(damage + criticalDamage, DamageType.WEAPON);
+                    Mogwai.History.Add(LogType.Comb, $"{message} ¬Ghit for§ ¬y{damage}§{criticalStr} ¬Gdamage!§¬");
+                    target.Damage(damage + criticalDamage, DamageType.Weapon);
                 }
                 else
                 {
-                    Mogwai.History.Add(LogType.COMB, $"{message} ¬Rfailed§!¬");
+                    Mogwai.History.Add(LogType.Comb, $"{message} ¬Rfailed§!¬");
                 }
             }
         }
@@ -262,7 +262,7 @@ namespace WoMFramework.Game.Model
                 healAmount = missingHealth;
             }
 
-            Mogwai.History.Add(LogType.HEAL, $"¬C{Name}§ restores ¬G{healAmount}§ HP from {healType.ToString().ToLower()} healing.¬");
+            Mogwai.History.Add(LogType.Heal, $"¬C{Name}§ restores ¬G{healAmount}§ HP from {healType.ToString().ToLower()} healing.¬");
             CurrentHitPoints += healAmount;
         }
 
@@ -278,12 +278,12 @@ namespace WoMFramework.Game.Model
                 return;
             }
 
-            Mogwai.History.Add(LogType.DAMG, $"¬C{Name}§ suffers ¬R{damageAmount}§ HP from {damageType.ToString().ToLower()} damage.¬");
+            Mogwai.History.Add(LogType.Damg, $"¬C{Name}§ suffers ¬R{damageAmount}§ HP from {damageType.ToString().ToLower()} damage.¬");
             CurrentHitPoints -= damageAmount;
 
             if (CurrentHitPoints < 1)
             {
-                Mogwai.History.Add(LogType.DAMG, $"¬C{Name}§ got a deadly hit, healthstate is ¬R{HealthState.ToString().ToLower()}§.¬");
+                Mogwai.History.Add(LogType.Damg, $"¬C{Name}§ got a deadly hit, healthstate is ¬R{HealthState.ToString().ToLower()}§.¬");
             }
         }
     }

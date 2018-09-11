@@ -16,59 +16,59 @@ namespace WoMWallet.Node
 {
     public class WalletFile
     {
-        public string wifKey;
+        public string WifKey;
 
-        public string depositAddress;
+        public string DepositAddress;
 
-        public byte[] chainCode;
+        public byte[] ChainCode;
 
         public Dictionary<string, uint> EncryptedSecrets = new Dictionary<string, uint>();
 
         public WalletFile(string wifKey, byte[] chainCode)
         {
-            this.wifKey = wifKey;
-            this.chainCode = chainCode;
+            this.WifKey = wifKey;
+            this.ChainCode = chainCode;
         }
 
     }
 
     public class MogwaiWallet
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private const string defaultWalletFile = "wallet.dat";
+        private const string DefaultWalletFile = "wallet.dat";
 
-        private readonly Network network = NBitcoin.Altcoins.Mogwai.Instance.Mainnet;
+        private readonly Network _network = NBitcoin.Altcoins.Mogwai.Instance.Mainnet;
 
-        private readonly string path;
+        private readonly string _path;
 
-        private WalletFile walletFile;
+        private WalletFile _walletFile;
 
-        private ExtKey extKey;
+        private ExtKey _extKey;
 
-        private Mnemonic mnemo;
+        private Mnemonic _mnemo;
         public string MnemonicWords
         {
             get
             {
-                string mnemoStr = mnemo != null ? mnemo.ToString() : string.Empty;
-                mnemo = null;
+                string mnemoStr = _mnemo != null ? _mnemo.ToString() : string.Empty;
+                _mnemo = null;
                 return mnemoStr;
             }
         }
 
         public Dictionary<string, MogwaiKeys> MogwaiKeyDict { get; set; } = new Dictionary<string, MogwaiKeys>();
 
-        public bool IsUnlocked => extKey != null;
+        public bool IsUnlocked => _extKey != null;
 
-        public bool IsCreated => walletFile != null;
+        public bool IsCreated => _walletFile != null;
 
-        private MogwaiKeys depositKeys;
+        private MogwaiKeys _depositKeys;
         public MogwaiKeys Deposit
         {
             get
             {
-                return depositKeys ?? (depositKeys = GetMogwaiKeys(0));
+                return _depositKeys ?? (_depositKeys = GetMogwaiKeys(0));
             }
         }
 
@@ -81,11 +81,11 @@ namespace WoMWallet.Node
         /// <summary>
         /// 
         /// </summary>
-        public MogwaiWallet(string path = defaultWalletFile)
+        public MogwaiWallet(string path = DefaultWalletFile)
         {
-            this.path = path;
+            this._path = path;
 
-            if (!Caching.TryReadFile(path, out walletFile))
+            if (!Caching.TryReadFile(path, out _walletFile))
             {
             }
         }
@@ -97,9 +97,9 @@ namespace WoMWallet.Node
         /// <param name="path"></param>
         public MogwaiWallet(string password, string path)
         {
-            this.path = path;
+            this._path = path;
 
-            if (!Caching.TryReadFile(path, out walletFile))
+            if (!Caching.TryReadFile(path, out _walletFile))
             {
                 Create(password);
             }
@@ -121,15 +121,15 @@ namespace WoMWallet.Node
                 return true;
             }
 
-            mnemo = new Mnemonic(Wordlist.English, WordCount.Twelve);
-            extKey = mnemo.DeriveExtKey(password);
-            var chainCode = extKey.ChainCode;
-            var encSecretWif = extKey.PrivateKey.GetEncryptedBitcoinSecret(password, network).ToWif();
-            walletFile = new WalletFile(encSecretWif, chainCode)
+            _mnemo = new Mnemonic(Wordlist.English, WordCount.Twelve);
+            _extKey = _mnemo.DeriveExtKey(password);
+            var chainCode = _extKey.ChainCode;
+            var encSecretWif = _extKey.PrivateKey.GetEncryptedBitcoinSecret(password, _network).ToWif();
+            _walletFile = new WalletFile(encSecretWif, chainCode)
             {
-                depositAddress = Deposit.Address
+                DepositAddress = Deposit.Address
             };
-            Caching.Persist(path, walletFile);
+            Caching.Persist(_path, _walletFile);
             return true;
         }
 
@@ -146,12 +146,12 @@ namespace WoMWallet.Node
             }
             try
             {
-                var masterKey = Key.Parse(walletFile.wifKey, password, network);
-                extKey = new ExtKey(masterKey, walletFile.chainCode);
+                var masterKey = Key.Parse(_walletFile.WifKey, password, _network);
+                _extKey = new ExtKey(masterKey, _walletFile.ChainCode);
             }
             catch (SecurityException ex)
             {
-                _log.Error(ex);
+                Log.Error(ex);
                 return false;
             }
             // finally load all keys
@@ -162,7 +162,7 @@ namespace WoMWallet.Node
 
         private void LoadKeys()
         {
-            foreach (var seed in walletFile.EncryptedSecrets.Values)
+            foreach (var seed in _walletFile.EncryptedSecrets.Values)
             {
                 var mogwaiKey = GetMogwaiKeys(seed);
                 if (!MogwaiKeyDict.ContainsKey(mogwaiKey.Address))
@@ -188,9 +188,9 @@ namespace WoMWallet.Node
             }
 
             uint seed = 1000;
-            if (walletFile.EncryptedSecrets.Values.Count > 0)
+            if (_walletFile.EncryptedSecrets.Values.Count > 0)
             {
-                seed = walletFile.EncryptedSecrets.Values.Max() + 1;
+                seed = _walletFile.EncryptedSecrets.Values.Max() + 1;
             }
 
             for (uint i = seed; i < seed + tryes; i++)
@@ -199,14 +199,14 @@ namespace WoMWallet.Node
                 if (mogwayKeysTemp.HasMirrorAddress)
                 {
                     var wif = mogwayKeysTemp.GetEncryptedSecretWif();
-                    if (!walletFile.EncryptedSecrets.ContainsKey(wif))
+                    if (!_walletFile.EncryptedSecrets.ContainsKey(wif))
                     {
-                        walletFile.EncryptedSecrets[wif] = i;
+                        _walletFile.EncryptedSecrets[wif] = i;
                         mogwaiKeys = mogwayKeysTemp;
                         // add to the current mogwai keys
                         MogwaiKeyDict[mogwaiKeys.Address] = mogwaiKeys;
                         // persist to not loose
-                        Caching.Persist(path, walletFile);
+                        Caching.Persist(_path, _walletFile);
                         return true;
                     }
 
@@ -228,9 +228,9 @@ namespace WoMWallet.Node
                 return null;
             }
 
-            var extKeyDerived = extKey.Derive(seed);
-            var wif = extKey.PrivateKey.GetWif(network);
-            return new MogwaiKeys(extKeyDerived, network);
+            var extKeyDerived = _extKey.Derive(seed);
+            var wif = _extKey.PrivateKey.GetWif(_network);
+            return new MogwaiKeys(extKeyDerived, _network);
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace WoMFramework.Game.Generator
         {
             switch (adventureAction.AdventureType)
             {
-                case Enums.AdventureType.TEST_ROOM:
+                case Enums.AdventureType.TestRoom:
                     //return CreateTestRoom(adventureAction.ChallengeRating);
                 default:
                     throw new NotImplementedException();

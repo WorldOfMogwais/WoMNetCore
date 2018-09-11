@@ -2,6 +2,6 @@
 {
     public enum MonsterType
     {
-        ABERRATIONS, ANIMALS, CONSTRUCTS, DRAGONS, FEY, HUMANOIDS, MAGICALBEASTS, OOZES, OUTSIDERS, PLANTS, UNDEAD, VERMIN
+        Aberrations, Animals, Constructs, Dragons, Fey, Humanoids, Magicalbeasts, Oozes, Outsiders, Plants, Undead, Vermin
     }
 }

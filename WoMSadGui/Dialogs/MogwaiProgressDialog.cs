@@ -9,11 +9,11 @@ namespace WoMSadGui
 {
     internal class MogwaiProgressDialog : Window
     {
-        public Button button;
-        private ProgressBar progressbar;
-        private MogwaiController controller;
+        public Button Button;
+        private ProgressBar _progressbar;
+        private MogwaiController _controller;
 
-        private Progress<float> progressIndicator;
+        private Progress<float> _progressIndicator;
 
         public bool IsComplete { get; set; } = false;
 
@@ -30,34 +30,34 @@ namespace WoMSadGui
             label1.Surface.Print(0, 0, text, Color.DarkCyan);
             Add(label1);
 
-            progressbar = new ProgressBar(Width - 4, 1, HorizontalAlignment.Left);
-            progressbar.Position = new Point(2, 4);
-            Add(progressbar);
+            _progressbar = new ProgressBar(Width - 4, 1, HorizontalAlignment.Left);
+            _progressbar.Position = new Point(2, 4);
+            Add(_progressbar);
             Center();
 
-            controller = mogwaicontroller;
+            _controller = mogwaicontroller;
 
-            progressIndicator = new Progress<float>(UpdateProgressBar);
+            _progressIndicator = new Progress<float>(UpdateProgressBar);
         }
 
         public void AddButon(string text)
         {
-            button = new Button(text.Length + 2, 1);
-            button.Position = new Point((Width - text.Length) / 2, 6);
-            button.Text = text;
-            Add(button);
+            Button = new Button(text.Length + 2, 1);
+            Button.Position = new Point((Width - text.Length) / 2, 6);
+            Button.Text = text;
+            Add(Button);
         }
 
         private void UpdateProgressBar(float value)
         {
-            progressbar.Progress = value;
+            _progressbar.Progress = value;
             var tt = (int)(value * 100);
-            button.Text = tt < 100 ? tt.ToString("#0") : "ok";
+            Button.Text = tt < 100 ? tt.ToString("#0") : "ok";
         }
 
         public async void StartAsync()
         {
-            await Blockchain.Instance.CacheBlockhashesAsync(progressIndicator);
+            await Blockchain.Instance.CacheBlockhashesAsync(_progressIndicator);
             IsComplete = true;
         }
 

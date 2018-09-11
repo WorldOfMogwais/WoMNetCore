@@ -6,13 +6,14 @@ using WoMWallet.Node;
 using System.Reflection;
 using log4net;
 using log4net.Config;
+using System.IO;
 
 namespace WoMSadGui
 {
 
     class Program
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public const int Width = 141;
         public const int Height = 40;
@@ -29,7 +30,8 @@ namespace WoMSadGui
 
         static void Main(string[] args)
         {
-            //XmlConfigurator.Configure();
+            var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
             // Setup the engine and creat the main window.
             SadConsole.Game.Create("IBM.font", Width, Height);
@@ -67,12 +69,12 @@ namespace WoMSadGui
             // Called each logic update.
             switch (_state)
             {
-                case SadGuiState.START:
+                case SadGuiState.Start:
                     _state = LoadBlocksAsync();
                     return;
-                case SadGuiState.ACTION:
+                case SadGuiState.Action:
                     return;
-                case SadGuiState.LOGIN:
+                case SadGuiState.Login:
                     if (!_controller.IsWalletCreated)
                     {
                         _state = CreateWallet();
@@ -82,10 +84,10 @@ namespace WoMSadGui
                         _state = Unlock();
                     }
                     return;
-                case SadGuiState.MNEMOIC:
+                case SadGuiState.Mnemoic:
                     _state = ShowMnemoic();
                     break;
-                case SadGuiState.SELECTION:
+                case SadGuiState.Selection:
                     if (_selectionScreen == null)
                     {
                         _playScreen = null;
@@ -96,7 +98,7 @@ namespace WoMSadGui
                     _selectionScreen.ProcessKeyboard(Global.KeyboardState);
                     _state = _selectionScreen.GetState();
                     break;
-                case SadGuiState.PLAY:
+                case SadGuiState.Play:
                     if (_playScreen == null)
                     {
                         _selectionScreen = null;
@@ -106,10 +108,10 @@ namespace WoMSadGui
                     _playScreen.ProcessKeyboard(Global.KeyboardState);
                     _state = _playScreen.GetState();
                     break;
-                case SadGuiState.FATALERROR:
+                case SadGuiState.Fatalerror:
                     _state = Warning("A fatal error happend!", true);
                     break;
-                case SadGuiState.QUIT:
+                case SadGuiState.Quit:
                     SadConsole.Game.Instance.Exit();
                     break;
             }
@@ -121,38 +123,38 @@ namespace WoMSadGui
             var dialog = new MogwaiProgressDialog("Loading", "caching all mogwai blocks.", _controller, 40, 8);
             dialog.AddButon("ok");
             dialog.StartAsync();
-            dialog.button.Click += (btn, args) =>
+            dialog.Button.Click += (btn, args) =>
             {
                 if (dialog.IsComplete)
                 {
                     dialog.Hide();
-                    _state = SadGuiState.LOGIN;
+                    _state = SadGuiState.Login;
                 }
             };
             dialog.Show(true);
 
-            return SadGuiState.ACTION;
+            return SadGuiState.Action;
         }
 
         private static SadGuiState Warning(string warning, bool terminate)
         {
             var dialog = new MogwaiDialog("Warning", warning, 40, 8);
             dialog.AddButon("ok");
-            dialog.button.Click += (btn, args) =>
+            dialog.Button.Click += (btn, args) =>
             {
                 if (terminate)
                 {
-                    _state = SadGuiState.QUIT;
+                    _state = SadGuiState.Quit;
                 }
                 else
                 {
-                    _state = SadGuiState.SELECTION;
+                    _state = SadGuiState.Selection;
                 }
                 dialog.Hide();
             };
             dialog.Show(true);
 
-            return SadGuiState.ACTION;
+            return SadGuiState.Action;
         }
 
         private static SadGuiState ShowMnemoic()
@@ -161,60 +163,60 @@ namespace WoMSadGui
             var size = mnemoic.Length.ToString();
             var dialog = new MogwaiDialog("Show Mnemoic", "[c:g f:LimeGreen:Orange:" + size + "]" + mnemoic.ToUpper(), 40, 8);
             dialog.AddButon("memorized");
-            dialog.button.Click += (btn, args) =>
+            dialog.Button.Click += (btn, args) =>
             {
-                _state = SadGuiState.SELECTION;
+                _state = SadGuiState.Selection;
                 dialog.Hide();
             };
             dialog.Show(true);
 
-            return SadGuiState.ACTION;
+            return SadGuiState.Action;
         }
 
         private static SadGuiState CreateWallet()
         {
             var inputDialog = new MogwaiInputDialog("WalletCreation", "new wallet password?", 40, 8);
             inputDialog.AddButon("ok");
-            inputDialog.button.Click += (btn, args) =>
+            inputDialog.Button.Click += (btn, args) =>
             {
-                string password = inputDialog.input?.Text;
+                string password = inputDialog.Input?.Text;
                 _controller.CreateWallet(password);
                 if (_controller.IsWalletCreated)
                 {
-                    _state = SadGuiState.MNEMOIC;
+                    _state = SadGuiState.Mnemoic;
                 }
                 else
                 {
-                    _state = SadGuiState.FATALERROR;
+                    _state = SadGuiState.Fatalerror;
                 }
                 inputDialog.Hide();
             };
             inputDialog.Show(true);
 
-            return SadGuiState.ACTION;
+            return SadGuiState.Action;
         }
 
         private static SadGuiState Unlock()
         {
             var dialog = new MogwaiInputDialog("UnlockWallet", "wallet password?", 40, 8);
             dialog.AddButon("ok");
-            dialog.button.Click += (btn, args) =>
+            dialog.Button.Click += (btn, args) =>
             {
-                string password = dialog.input.Text;
+                string password = dialog.Input.Text;
                 _controller.UnlockWallet(password);
                 if (_controller.IsWalletUnlocked)
                 {
-                    _state = SadGuiState.SELECTION;
+                    _state = SadGuiState.Selection;
                 }
                 else
                 {
-                    _state = SadGuiState.FATALERROR;
+                    _state = SadGuiState.Fatalerror;
                 }
                 dialog.Hide();
             };
             dialog.Show(true);
 
-            return SadGuiState.ACTION;
+            return SadGuiState.Action;
         }
 
         private static void PlayScreen()
@@ -267,7 +269,7 @@ namespace WoMSadGui
 
             //SelectionScreen();
             SplashScreen();
-            _state = SadGuiState.START;
+            _state = SadGuiState.Start;
         }
 
         private static void SplashScreenCompleted()
@@ -275,19 +277,19 @@ namespace WoMSadGui
             Global.CurrentScreen.Children.Clear();
             Global.CurrentScreen.Children.Add(_logoConsole);
             Global.CurrentScreen.Children.Add(_selectionScreen);
-            _state = SadGuiState.START;
+            _state = SadGuiState.Start;
         }
     }
 
     public enum SadGuiState
     {
-        START,
-        LOGIN,
-        MNEMOIC,
-        ACTION,
-        SELECTION,
-        PLAY,
-        FATALERROR,
-        QUIT
+        Start,
+        Login,
+        Mnemoic,
+        Action,
+        Selection,
+        Play,
+        Fatalerror,
+        Quit
     }
 }

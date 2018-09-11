@@ -2,7 +2,7 @@
 {
     public enum DamageType
     {
-        WEAPON,
-        SPELL
+        Weapon,
+        Spell
     }
 }

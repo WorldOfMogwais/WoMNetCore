@@ -9,7 +9,7 @@ namespace WoMFramework.Game.Interaction
 {
     public class Unknown : Interaction
     {
-        public Unknown() : base(InteractionType.NONE)
+        public Unknown() : base(InteractionType.None)
         {
         }
     }

@@ -9,7 +9,7 @@ namespace WoMFramework.Game.Model
 {
     public class Barbarian : Classes
     {
-        public Barbarian() : base(ClassType.BARBARIAN)
+        public Barbarian() : base(ClassType.Barbarian)
         {
             HitHitPointDiceRollEvent = new int[] { 1, 12 };
             WealthDiceRollEvent = new int[] { 3, 6 , 0, 1};

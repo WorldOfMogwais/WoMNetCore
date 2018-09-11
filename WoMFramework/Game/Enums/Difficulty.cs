@@ -2,10 +2,10 @@
 {
     public enum DifficultyType
     {
-        EASY = -1,
-        AVERAGE = 0,
-        CHALLENGING = 1,
-        HARD = 2,
-        EPIC = 3
+        Easy = -1,
+        Average = 0,
+        Challenging = 1,
+        Hard = 2,
+        Epic = 3
     }
 }

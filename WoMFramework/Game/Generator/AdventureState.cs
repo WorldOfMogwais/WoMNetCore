@@ -2,6 +2,6 @@
 {
     public enum AdventureState
     {
-        CREATION, RUNNING, FAILED, COMPLETED
+        Creation, Running, Failed, Completed
     }
 }

@@ -6,9 +6,9 @@ namespace WoMSadGui.Dialogs
 {
     public class MogwaiInputDialog : Window
     {
-        public Button button;
+        public Button Button;
 
-        public TextBox input;
+        public TextBox Input;
 
         public MogwaiInputDialog(string title, string text, int width, int height) : base(width, height)
         {
@@ -23,20 +23,20 @@ namespace WoMSadGui.Dialogs
             label1.Surface.Print(0, 0, text);
             Add(label1);
 
-            input = new TextBox(Width - 4);
-            input.Position = new Point(2, 4);
+            Input = new TextBox(Width - 4);
+            Input.Position = new Point(2, 4);
 
-            Add(input);
+            Add(Input);
 
             Center();
         }
 
         public void AddButon(string text)
         {
-            button = new Button(text.Length+2, 1);
-            button.Position = new Point(2, 6);
-            button.Text = text;
-            Add(button);
+            Button = new Button(text.Length+2, 1);
+            Button.Position = new Point(2, 6);
+            Button.Text = text;
+            Add(Button);
         }
     }
 }

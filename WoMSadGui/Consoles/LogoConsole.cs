@@ -12,19 +12,19 @@ namespace WoMSadGui.Consoles
 {
     public class LogoConsole : SadConsole.Console
     {
-        Basic borderSurface;
+        Basic _borderSurface;
 
         public LogoConsole(int width, int height) : base(width, height)
         {
             var footer = "Mogwaicoin Team 2018";
             Cursor.Position = new Point(0, 0);
    
-            borderSurface = new Basic(width + 2, height + 2, base.Font);
-            borderSurface.DrawBox(new Rectangle(0, 0, borderSurface.Width, borderSurface.Height), 
+            _borderSurface = new Basic(width + 2, height + 2, base.Font);
+            _borderSurface.DrawBox(new Rectangle(0, 0, _borderSurface.Width, _borderSurface.Height), 
                                   new Cell(Color.DarkCyan, Color.Black), null, SurfaceBase.ConnectedLineThick);
-            borderSurface.Position = new Point(-1, -1);
-            borderSurface.Print(width - footer.Length - 2, height + 1, footer, Color.DarkCyan, Color.Black);
-            Children.Add(borderSurface);
+            _borderSurface.Position = new Point(-1, -1);
+            _borderSurface.Print(width - footer.Length - 2, height + 1, footer, Color.DarkCyan, Color.Black);
+            Children.Add(_borderSurface);
 
             for (int i = 0; i < Ascii.Logo.Length; i++)
             {

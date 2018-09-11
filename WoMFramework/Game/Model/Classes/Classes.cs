@@ -27,7 +27,7 @@ namespace WoMFramework.Game.Model
         public string Description { get; set; }
         public string Role { get; set; }
 
-        public Classes(ClassType ClassType)
+        public Classes(ClassType classType)
         {
             ClassLevel = 0;
             BaseAttackBonus = new int[] { 0 };

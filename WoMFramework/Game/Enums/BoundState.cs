@@ -2,6 +2,6 @@
 {
     public enum BoundState
         {
-            BOUND, WAIT, NONE
+            Bound, Wait, None
         }
 }

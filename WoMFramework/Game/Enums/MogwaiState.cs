@@ -8,6 +8,6 @@ namespace WoMFramework.Game.Enums
 {
     public enum MogwaiState
     {
-        NONE
+        None
     }
 }

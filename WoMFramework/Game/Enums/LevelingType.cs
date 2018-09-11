@@ -2,8 +2,8 @@
 {
     public enum LevelingType
     {
-        NONE = 0,
-        CLASS = 1,
-        ABILITY = 2
+        None = 0,
+        Class = 1,
+        Ability = 2
     }
 }

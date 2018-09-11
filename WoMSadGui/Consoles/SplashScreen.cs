@@ -23,7 +23,7 @@ namespace WoMSadGui.Consoles
         //private EffectsManager effectsManager;
         int _x = -50;
 
-        List<int> cellindexes = new List<int>();
+        List<int> _cellindexes = new List<int>();
 
         public SplashScreen(int x, int y) : base(x, y)
         {
@@ -93,7 +93,7 @@ namespace WoMSadGui.Consoles
                     {
                         var point = new Point(26, this.Height - 1).ToIndex(this.Width) + 3 + index;
                         cells.Add(Cells[point]);
-                        cellindexes.Add(point);
+                        _cellindexes.Add(point);
                     }
 
                     SetEffect(cells, fadeEffect);

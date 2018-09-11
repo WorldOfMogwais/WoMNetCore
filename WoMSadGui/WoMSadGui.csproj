@@ -22,6 +22,9 @@
     <None Update="IBM8x16.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="sad.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -1,4 +1,4 @@
 ﻿namespace WoMFramework.Game.Enums
 {
-    public enum EvolutionPattern { NONE }
+    public enum EvolutionPattern { None }
 }

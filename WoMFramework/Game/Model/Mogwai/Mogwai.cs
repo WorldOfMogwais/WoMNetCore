@@ -13,13 +13,13 @@ namespace WoMFramework.Game.Model
 {
     public class Mogwai : Entity
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static GameLog History => currentShift.History;
+        public static GameLog History => _currentShift.History;
 
-        private readonly int blockHeight;
+        private readonly int _blockHeight;
 
-        private static Shift currentShift;
+        private static Shift _currentShift;
 
         public Dictionary<double, Shift> Shifts { get; }
 
@@ -47,7 +47,7 @@ namespace WoMFramework.Game.Model
 
         public Adventure Adventure { get; set; }
 
-        public override Dice Dice => currentShift.MogwaiDice;
+        public override Dice Dice => _currentShift.MogwaiDice;
 
         public double Rating => (double) (Strength * 3 + Dexterity * 2 + Constitution * 2 + Inteligence * 3 + Wisdom + Charisma) / 12;
 
@@ -56,15 +56,15 @@ namespace WoMFramework.Game.Model
             Key = key;
             Shifts = shifts;
 
-            currentShift = shifts.Values.First();
+            _currentShift = shifts.Values.First();
 
-            LevelShifts.Add(currentShift.Height); // adding initial creation level up
+            LevelShifts.Add(_currentShift.Height); // adding initial creation level up
 
-            blockHeight = currentShift.Height;
-            Pointer = currentShift.Height;
+            _blockHeight = _currentShift.Height;
+            Pointer = _currentShift.Height;
 
             // create appearance           
-            var hexValue = new HexValue(currentShift);
+            var hexValue = new HexValue(_currentShift);
             Name = NameGen.GenerateName(hexValue);
             Body = new Body(hexValue);
             Coat = new Coat(hexValue);
@@ -72,23 +72,23 @@ namespace WoMFramework.Game.Model
 
             // create abilities
             int[] rollEvent = new int[] { 4, 6, 3 };
-            Gender = currentShift.MogwaiDice.Roll(2, -1);
-            Strength = currentShift.MogwaiDice.Roll(rollEvent);
-            Dexterity = currentShift.MogwaiDice.Roll(rollEvent);
-            Constitution = currentShift.MogwaiDice.Roll(rollEvent);
-            Inteligence = currentShift.MogwaiDice.Roll(rollEvent);
-            Wisdom = currentShift.MogwaiDice.Roll(rollEvent);
-            Charisma = currentShift.MogwaiDice.Roll(rollEvent);
+            Gender = _currentShift.MogwaiDice.Roll(2, -1);
+            Strength = _currentShift.MogwaiDice.Roll(rollEvent);
+            Dexterity = _currentShift.MogwaiDice.Roll(rollEvent);
+            Constitution = _currentShift.MogwaiDice.Roll(rollEvent);
+            Inteligence = _currentShift.MogwaiDice.Roll(rollEvent);
+            Wisdom = _currentShift.MogwaiDice.Roll(rollEvent);
+            Charisma = _currentShift.MogwaiDice.Roll(rollEvent);
 
             BaseSpeed = 30;
 
             NaturalArmor = 0;
-            SizeType = SizeType.MEDIUM;
+            SizeType = SizeType.Medium;
 
             BaseAttackBonus = new int[] { 0 };
 
             // create experience
-            Experience = new Experience(currentShift);
+            Experience = new Experience(_currentShift);
 
             // add simple rapier as weapon
             Equipment.PrimaryWeapon = Weapons.Rapier;
@@ -118,36 +118,36 @@ namespace WoMFramework.Game.Model
             Pointer++;
 
             // set current shift to the actual shift we process
-            currentShift = Shifts[Pointer];
+            _currentShift = Shifts[Pointer];
 
             // assign game log for this shift
-            history = currentShift.History;
+            history = _currentShift.History;
 
             // first we always calculated current lazy experience
-            double lazyExp = Experience.GetExp(CurrentLevel, currentShift);
+            double lazyExp = Experience.GetExp(CurrentLevel, _currentShift);
             if (lazyExp > 0)
             {
-                AddExp(Experience.GetExp(CurrentLevel, currentShift));
+                AddExp(Experience.GetExp(CurrentLevel, _currentShift));
             }
 
             // we go for the adventure if there is one up
             if (Adventure != null && Adventure.IsActive)
             {
-                Adventure.NextStep(this, currentShift);
+                Adventure.NextStep(this, _currentShift);
                 return true;
             }
 
             Adventure = null;
 
 
-            if (!currentShift.IsSmallShift)
+            if (!_currentShift.IsSmallShift)
             {
-                switch (currentShift.Interaction.InteractionType)
+                switch (_currentShift.Interaction.InteractionType)
                 {
-                    case InteractionType.ADVENTURE:
-                        Adventure = AdventureGenerator.Create(currentShift, (AdventureAction)currentShift.Interaction);
+                    case InteractionType.Adventure:
+                        Adventure = AdventureGenerator.Create(_currentShift, (AdventureAction)_currentShift.Interaction);
                         break;
-                    case InteractionType.LEVELING:
+                    case InteractionType.Leveling:
                         Console.WriteLine("Received a leveling action!");
                         break;
                     default:
@@ -156,15 +156,15 @@ namespace WoMFramework.Game.Model
             }
 
             // lazy health regeneration
-            if (MogwaiState == MogwaiState.NONE)
+            if (MogwaiState == MogwaiState.None)
             {
-                Heal(currentShift.IsSmallShift ? 2 * CurrentLevel : CurrentLevel, HealType.REST);
+                Heal(_currentShift.IsSmallShift ? 2 * CurrentLevel : CurrentLevel, HealType.Rest);
             }
 
-            History.Add(LogType.INFO, $"Evolved {Name} shift ¬G{Pointer}§!¬");
+            History.Add(LogType.Info, $"Evolved {Name} shift ¬G{Pointer}§!¬");
 
             // no more shifts to proccess, no more logging possible to the game log
-            currentShift = null;
+            _currentShift = null;
 
             return true;
         }
@@ -178,11 +178,11 @@ namespace WoMFramework.Game.Model
         {
             if (monster == null)
             {
-                History.Add(LogType.INFO, $"You just earned ¬G+{exp}§ experience!¬");
+                History.Add(LogType.Info, $"You just earned ¬G+{exp}§ experience!¬");
             }
             else
             {
-                History.Add(LogType.INFO, $"The ¬C{monster.Name}§ gave you ¬G+{exp}§!¬");
+                History.Add(LogType.Info, $"The ¬C{monster.Name}§ gave you ¬G+{exp}§!¬");
             }
 
             Exp += exp;
@@ -190,8 +190,8 @@ namespace WoMFramework.Game.Model
             if (Exp >= XpToLevelUp)
             {
                 CurrentLevel += 1;
-                LevelShifts.Add(currentShift.Height);
-                LevelUp(currentShift);
+                LevelShifts.Add(_currentShift.Height);
+                LevelUp(_currentShift);
             }
         }
 
@@ -201,8 +201,8 @@ namespace WoMFramework.Game.Model
         /// <param name="shift"></param>
         private void LevelUp(Shift shift)
         {
-            History.Add(LogType.INFO, $"¬YYou're mogwai suddenly feels an ancient power around him.§¬");
-            History.Add(LogType.INFO, $"¬YCongratulations he just made the§ ¬G{CurrentLevel}§ ¬Yth level!§¬");
+            History.Add(LogType.Info, $"¬YYou're mogwai suddenly feels an ancient power around him.§¬");
+            History.Add(LogType.Info, $"¬YCongratulations he just made the§ ¬G{CurrentLevel}§ ¬Yth level!§¬");
 
             // hit points roll
             HitPointLevelRolls.Add(shift.MogwaiDice.Roll(HitPointDice));
@@ -214,9 +214,9 @@ namespace WoMFramework.Game.Model
 
         public void EnterSimpleDungeon()
         {
-            var dungeon = new SimpleDungeon(this, currentShift);
+            var dungeon = new SimpleDungeon(this, _currentShift);
             Pointer++;
-            currentShift = Shifts[Pointer];
+            _currentShift = Shifts[Pointer];
 
             dungeon.Enter();
         }

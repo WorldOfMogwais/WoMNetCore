@@ -2,8 +2,8 @@
 {
     public enum WeaponDamageType
     {
-        BLUDGEONING,
-        PIERCING,
-        SLASHING
+        Bludgeoning,
+        Piercing,
+        Slashing
     }
 }

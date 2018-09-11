@@ -20,7 +20,7 @@ namespace WoMFramework.Game.Interaction
 
         public Interaction(InteractionType interactionType)
         {
-            CostType = CostType.STANDARD;
+            CostType = CostType.Standard;
             InteractionType = interactionType;
         }
 
@@ -50,13 +50,13 @@ namespace WoMFramework.Game.Interaction
 
                 switch (interactionType)
                 {
-                    case InteractionType.ADVENTURE:
+                    case InteractionType.Adventure:
                         if (AdventureAction.TryGetAdventure(addParam1, addParam2, out AdventureAction adventure))
                         {
                             return adventure;
                         }
                         break;
-                    case InteractionType.LEVELING:
+                    case InteractionType.Leveling:
                         if (LevelingAction.TryGetAdventure(addParam1, addParam2, out LevelingAction leveling))
                         {
                             return leveling;

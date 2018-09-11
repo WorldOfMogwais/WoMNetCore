@@ -30,9 +30,9 @@ namespace WoMFramework.Tool
 
         public static byte[] StringToByteArray(String hex)
         {
-            int NumberChars = hex.Length;
-            byte[] bytes = new byte[NumberChars / 2];
-            for (int i = 0; i < NumberChars; i += 2)
+            int numberChars = hex.Length;
+            byte[] bytes = new byte[numberChars / 2];
+            for (int i = 0; i < numberChars; i += 2)
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             return bytes;
         }
@@ -56,13 +56,13 @@ namespace WoMFramework.Tool
             return true;
         }
 
-        public static string HashSHA256(string hexString)
+        public static string HashSha256(string hexString)
         {
             byte[] rawBytes = StringToByteArray(hexString);
-            return ByteArrayToString(HashSHA256(rawBytes));
+            return ByteArrayToString(HashSha256(rawBytes));
         }
 
-        public static byte[] HashSHA256(byte[] rawBytes)
+        public static byte[] HashSha256(byte[] rawBytes)
         {
             // Create a SHA256   
             using (SHA256 sha256Hash = SHA256.Create())

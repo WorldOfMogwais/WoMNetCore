@@ -2,15 +2,15 @@
 {
     public enum InteractionType
     {
-        NONE = 0,
-        CREATION = 1,
-        MODIFICATION = 2,
-        LEVELING = 3,
-        ADVENTURE = 4,
-        SELECTION = 5,
-        DUELL = 6,
-        BREEDING = 7,
-        LOOTING = 8
+        None = 0,
+        Creation = 1,
+        Modification = 2,
+        Leveling = 3,
+        Adventure = 4,
+        Selection = 5,
+        Duell = 6,
+        Breeding = 7,
+        Looting = 8
     }
 
 }

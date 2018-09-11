@@ -26,10 +26,10 @@ namespace WoMFramework.Game.Interaction
         public bool IsSmallShift => Interaction == null;
 
         [JsonIgnore]
-        private Dice mogwaiDice;
+        private Dice _mogwaiDice;
 
         [JsonIgnore]
-        public Dice MogwaiDice => mogwaiDice ?? (mogwaiDice = new Dice(this));
+        public Dice MogwaiDice => _mogwaiDice ?? (_mogwaiDice = new Dice(this));
 
         [JsonIgnore]
         public Interaction Interaction { get; }

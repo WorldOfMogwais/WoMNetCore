@@ -18,7 +18,7 @@ namespace WoMFramework.Game.Interaction
 
         public int AveragePartyLevel { get; }
 
-        public AdventureAction(AdventureType adventureType, DifficultyType difficultyType, int averagePartyLevel) : base(InteractionType.ADVENTURE)
+        public AdventureAction(AdventureType adventureType, DifficultyType difficultyType, int averagePartyLevel) : base(InteractionType.Adventure)
         {
             AdventureType = adventureType;
             ChallengeRating = averagePartyLevel + (int)difficultyType;
@@ -42,7 +42,7 @@ namespace WoMFramework.Game.Interaction
             return false;
         }
 
-        private AdventureAction(int paramAdd1, int paramAdd2) : base(InteractionType.ADVENTURE)
+        private AdventureAction(int paramAdd1, int paramAdd2) : base(InteractionType.Adventure)
         {
             string param1 = paramAdd1.ToString("0000");
             AdventureType = (AdventureType)int.Parse(param1.Substring(0, 1));

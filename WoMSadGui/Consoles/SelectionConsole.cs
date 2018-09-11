@@ -14,68 +14,68 @@ namespace WoMSadGui.Consoles
 {
     public class SelectionScreen : SadConsole.Console
     {
-        private Basic borderSurface;
+        private Basic _borderSurface;
 
-        private int glyphIndex = 185;
+        private int _glyphIndex = 185;
 
-        private MogwaiController controller;
+        private MogwaiController _controller;
 
-        private ControlsConsole controlsConsole;
-        private MogwaiConsole infoConsole;
-        private MogwaiConsole logConsole;
+        private ControlsConsole _controlsConsole;
+        private MogwaiConsole _infoConsole;
+        private MogwaiConsole _logConsole;
 
-        public int headerPosition;
-        public int trailerPosition;
+        public int HeaderPosition;
+        public int TrailerPosition;
 
         public bool IsReady { get; set; } = false;
 
         public SadGuiState State {get;set;}
 
-        public int windowOffset = 0;
-        public int maxRows = 21;
+        public int WindowOffset = 0;
+        public int MaxRows = 21;
 
         public SelectionScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
-            borderSurface = new Basic(width + 2, height + 2, base.Font);
-            borderSurface.DrawBox(new Rectangle(0, 0, borderSurface.Width, borderSurface.Height),
+            _borderSurface = new Basic(width + 2, height + 2, base.Font);
+            _borderSurface.DrawBox(new Rectangle(0, 0, _borderSurface.Width, _borderSurface.Height),
                                   new Cell(Color.DarkCyan, Color.Black), null, SurfaceBase.ConnectedLineThick);
-            borderSurface.Position = new Point(-1, -1);
-            Children.Add(borderSurface);
+            _borderSurface.Position = new Point(-1, -1);
+            Children.Add(_borderSurface);
 
-            controlsConsole = new ControlsConsole(110, 1);
-            controlsConsole.Position = new Point(0, 24);
-            controlsConsole.Fill(Color.DarkCyan, Color.Black, null);
-            Children.Add(controlsConsole);
+            _controlsConsole = new ControlsConsole(110, 1);
+            _controlsConsole.Position = new Point(0, 24);
+            _controlsConsole.Fill(Color.DarkCyan, Color.Black, null);
+            Children.Add(_controlsConsole);
 
-            infoConsole = new MogwaiConsole("Info", "", 24, 38);
-            infoConsole.Position = new Point(113, -8);
-            Children.Add(infoConsole);
+            _infoConsole = new MogwaiConsole("Info", "", 24, 38);
+            _infoConsole.Position = new Point(113, -8);
+            Children.Add(_infoConsole);
 
-            logConsole = new MogwaiConsole("Log", "", 110, 3);
-            logConsole.Position = new Point(0, 27);
-            Children.Add(logConsole);
+            _logConsole = new MogwaiConsole("Log", "", 110, 3);
+            _logConsole.Position = new Point(0, 27);
+            Children.Add(_logConsole);
 
-            headerPosition = 1;
-            trailerPosition = height - 2;
+            HeaderPosition = 1;
+            TrailerPosition = height - 2;
 
             CreateHeader();
             CreateTrailer();
 
-            controller = mogwaiController;
+            _controller = mogwaiController;
         }
 
         public void Init()
         {
             IsReady = true;
             Print(65, 0, $"Deposit:", Color.DarkCyan);
-            Print(74, 0, $"[c:g f:LimeGreen:Orange:34]{controller.DepositAddress}");
-            controller.Refresh(1);
-            State = SadGuiState.SELECTION;
+            Print(74, 0, $"[c:g f:LimeGreen:Orange:34]{_controller.DepositAddress}");
+            _controller.Refresh(1);
+            State = SadGuiState.Selection;
 
-            infoConsole.Cursor.NewLine();
-            infoConsole.Cursor.Print(new ColoredString(".:|Keyboard Commands|:.", Color.White, Color.Black));
-            infoConsole.Cursor.NewLine();
-            infoConsole.Cursor.NewLine();
+            _infoConsole.Cursor.NewLine();
+            _infoConsole.Cursor.Print(new ColoredString(".:|Keyboard Commands|:.", Color.White, Color.Black));
+            _infoConsole.Cursor.NewLine();
+            _infoConsole.Cursor.NewLine();
             InfoPrint(".C.", "create mogwai key");
             InfoPrint(".S.", "send 5 mog to addr");
             InfoPrint(".B.", "bind mogwai 1 mog");
@@ -87,39 +87,39 @@ namespace WoMSadGui.Consoles
 
         private void InfoPrint(string key, string descritpion)
         {
-            infoConsole.Cursor.Print(new ColoredString(key, Color.Orange, Color.Black));
-            infoConsole.Cursor.Print(new ColoredString(">>", Color.Lime, Color.Black));
-            infoConsole.Cursor.Print(new ColoredString(descritpion, Color.DeepSkyBlue, Color.Black));
-            infoConsole.Cursor.NewLine();
+            _infoConsole.Cursor.Print(new ColoredString(key, Color.Orange, Color.Black));
+            _infoConsole.Cursor.Print(new ColoredString(">>", Color.Lime, Color.Black));
+            _infoConsole.Cursor.Print(new ColoredString(descritpion, Color.DeepSkyBlue, Color.Black));
+            _infoConsole.Cursor.NewLine();
         }
 
         private void CreateHeader()
         {
-            Print(0, headerPosition, "[c:sg 205:110]".PadRight(124), Color.DarkCyan);
-            borderSurface.SetGlyph(0, headerPosition + 1, 204, Color.DarkCyan);
-            borderSurface.SetGlyph(111, headerPosition + 1, 185, Color.DarkCyan);
+            Print(0, HeaderPosition, "[c:sg 205:110]".PadRight(124), Color.DarkCyan);
+            _borderSurface.SetGlyph(0, HeaderPosition + 1, 204, Color.DarkCyan);
+            _borderSurface.SetGlyph(111, HeaderPosition + 1, 185, Color.DarkCyan);
             //SetGlyph(03, headerPosition, 185, Color.DarkCyan);
 
-            Print(03, headerPosition, " Address ");
-            SetGlyph(39, headerPosition, 185, Color.DarkCyan);
-            Print(40, headerPosition, " State ");
-            SetGlyph(48, headerPosition, 185, Color.DarkCyan);
-            Print(49, headerPosition, " Funds ");
-            SetGlyph(60, headerPosition, 185, Color.DarkCyan);
-            Print(61, headerPosition, " Name ");
-            SetGlyph(74, headerPosition, 185, Color.DarkCyan);
-            Print(75, headerPosition, " Rating ");
-            SetGlyph(84, headerPosition, 185, Color.DarkCyan);
-            Print(85, headerPosition, " Level ");
-            SetGlyph(93, headerPosition, 185, Color.DarkCyan);
-            Print(94, headerPosition, " Gold ");
+            Print(03, HeaderPosition, " Address ");
+            SetGlyph(39, HeaderPosition, 185, Color.DarkCyan);
+            Print(40, HeaderPosition, " State ");
+            SetGlyph(48, HeaderPosition, 185, Color.DarkCyan);
+            Print(49, HeaderPosition, " Funds ");
+            SetGlyph(60, HeaderPosition, 185, Color.DarkCyan);
+            Print(61, HeaderPosition, " Name ");
+            SetGlyph(74, HeaderPosition, 185, Color.DarkCyan);
+            Print(75, HeaderPosition, " Rating ");
+            SetGlyph(84, HeaderPosition, 185, Color.DarkCyan);
+            Print(85, HeaderPosition, " Level ");
+            SetGlyph(93, HeaderPosition, 185, Color.DarkCyan);
+            Print(94, HeaderPosition, " Gold ");
         }
 
         private void AddButton(int index, string text, Action<string> buttonClicked)
         {
-            SetGlyph(10 + (index * 11), trailerPosition, 203, Color.DarkCyan);
-            controlsConsole.SetGlyph(10 + (index * 11), 0, 186, Color.DarkCyan);
-            borderSurface.SetGlyph(11 + (index * 11), trailerPosition + 3, 202, Color.DarkCyan);
+            SetGlyph(10 + (index * 11), TrailerPosition, 203, Color.DarkCyan);
+            _controlsConsole.SetGlyph(10 + (index * 11), 0, 186, Color.DarkCyan);
+            _borderSurface.SetGlyph(11 + (index * 11), TrailerPosition + 3, 202, Color.DarkCyan);
             var txt = text;
             var button = new Button(8, 1)
             {
@@ -130,15 +130,15 @@ namespace WoMSadGui.Consoles
             {
                 buttonClicked(((Button)btn).Text);
             };
-            controlsConsole.Add(button);
+            _controlsConsole.Add(button);
         }
 
         private void CreateTrailer()
         {
             // 202 203 1086
-            Print(0, trailerPosition, "[c:sg 205:110]".PadRight(124), Color.DarkCyan);
-            borderSurface.SetGlyph(0, trailerPosition + 1, 204, Color.DarkCyan);
-            borderSurface.SetGlyph(111, trailerPosition + 1, 185, Color.DarkCyan);
+            Print(0, TrailerPosition, "[c:sg 205:110]".PadRight(124), Color.DarkCyan);
+            _borderSurface.SetGlyph(0, TrailerPosition + 1, 204, Color.DarkCyan);
+            _borderSurface.SetGlyph(111, TrailerPosition + 1, 185, Color.DarkCyan);
 
             AddButton(0, "create", DoAction);
             AddButton(1, "send", DoAction);
@@ -157,15 +157,15 @@ namespace WoMSadGui.Consoles
             switch(actionStr)
             {
                 case "create":
-                    controller.NewMogwaiKeys();
+                    _controller.NewMogwaiKeys();
                     LogInConsole("TASK", "created new mogwaikeys.");
                     break;
                 case "send":
-                    if (controller.HasMogwayKeys)
+                    if (_controller.HasMogwayKeys)
                     {
-                        if (controller.SendMog())
+                        if (_controller.SendMog())
                         {
-                            LogInConsole("DONE", $"sending mogs to address {controller.CurrentMogwayKeys.Address}.");
+                            LogInConsole("DONE", $"sending mogs to address {_controller.CurrentMogwayKeys.Address}.");
                         }
                         else
                         {
@@ -174,11 +174,11 @@ namespace WoMSadGui.Consoles
                     }
                     break;
                 case "bind":
-                    if (controller.HasMogwayKeys)
+                    if (_controller.HasMogwayKeys)
                     {
-                        if (controller.BindMogwai())
+                        if (_controller.BindMogwai())
                         {
-                            LogInConsole("DONE", $"binding mogwai on address {controller.CurrentMogwayKeys.Address}.");
+                            LogInConsole("DONE", $"binding mogwai on address {_controller.CurrentMogwayKeys.Address}.");
                         }
                         else
                         {
@@ -189,9 +189,9 @@ namespace WoMSadGui.Consoles
                 case "show":
                     break;
                 case "play":
-                    if (controller.CurrentMogwayKeys != null && controller.CurrentMogwayKeys.Mogwai != null)
+                    if (_controller.CurrentMogwayKeys != null && _controller.CurrentMogwayKeys.Mogwai != null)
                     {
-                        State = SadGuiState.PLAY;
+                        State = SadGuiState.Play;
                     } else
                     {
                         LogInConsole("FAIL", $"make sure to choosse a mogwai before trying to play.");
@@ -202,7 +202,7 @@ namespace WoMSadGui.Consoles
             }
 
             // clear all taggs after actions
-            controller.ClearTag();
+            _controller.ClearTag();
         }
 
         public override bool ProcessKeyboard(Keyboard state)
@@ -233,35 +233,35 @@ namespace WoMSadGui.Consoles
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.L))
             {
-                controller.PrintMogwaiKeys();
+                _controller.PrintMogwaiKeys();
                 LogInConsole("TASK", "loging public keys into a file.");
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.T))
             {
-                controller.Tag();
+                _controller.Tag();
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Down))
             {
-                controller.Next();
+                _controller.Next();
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Up))
             {
-                controller.Previous();
+                _controller.Previous();
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Right))
             {
-                borderSurface.SetGlyph(0, 0, ++glyphIndex, Color.DarkCyan);
-                borderSurface.Print(10, 0, glyphIndex.ToString(), Color.Yellow);
+                _borderSurface.SetGlyph(0, 0, ++_glyphIndex, Color.DarkCyan);
+                _borderSurface.Print(10, 0, _glyphIndex.ToString(), Color.Yellow);
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Left))
             {
-                borderSurface.SetGlyph(0, 0, --glyphIndex, Color.DarkCyan);
-                borderSurface.Print(10, 0, glyphIndex.ToString(), Color.Yellow);
+                _borderSurface.SetGlyph(0, 0, --_glyphIndex, Color.DarkCyan);
+                _borderSurface.Print(10, 0, _glyphIndex.ToString(), Color.Yellow);
                 return true;
             }
 
@@ -279,8 +279,8 @@ namespace WoMSadGui.Consoles
                 color = "red";
             }
             var time = DateTime.Now.ToLocalTime().ToLongTimeString();
-            logConsole.Cursor.Print($"[c:r f:{color}]{time}[[c:r f:khaki]{type}[c:r f:{color}]]:[c:r f:gray] {msg}");
-            logConsole.Cursor.NewLine();
+            _logConsole.Cursor.Print($"[c:r f:{color}]{time}[[c:r f:khaki]{type}[c:r f:{color}]]:[c:r f:gray] {msg}");
+            _logConsole.Cursor.NewLine();
         }
 
         public override void Update(TimeSpan delta)
@@ -288,14 +288,14 @@ namespace WoMSadGui.Consoles
             if (IsReady)
             {
 
-                decimal deposit = controller.GetDepositFunds();
+                decimal deposit = _controller.GetDepositFunds();
                 var depositStr = deposit < 10000 ? deposit.ToString("###0.0000").PadLeft(9) : "TYCOON".PadRight(9);
-                var lastBlock = controller.WalletLastBlock;
+                var lastBlock = _controller.WalletLastBlock;
                 if (lastBlock != null)
                 {
-                    Print(1, 0, controller.WalletLastBlock.Height.ToString("#######0").PadLeft(8), Color.DeepSkyBlue);
+                    Print(1, 0, _controller.WalletLastBlock.Height.ToString("#######0").PadLeft(8), Color.DeepSkyBlue);
                     Print(10, 0, "Block", Color.White);
-                    var localTime = DateUtil.GetBlockLocalDateTime(controller.WalletLastBlock.Time);
+                    var localTime = DateUtil.GetBlockLocalDateTime(_controller.WalletLastBlock.Time);
                     var localtimeStr = localTime.ToString();
                     var t = DateTime.Now.Subtract(localTime);
                     Print(16, 0, localtimeStr + " [   s]", Color.Gainsboro);
@@ -304,24 +304,24 @@ namespace WoMSadGui.Consoles
                 Print(45, 0, "Funds:", Color.DarkCyan);
                 Print(52, 0, depositStr, Color.Orange);
 
-                if (windowOffset > controller.CurrentMogwayKeysIndex)
+                if (WindowOffset > _controller.CurrentMogwayKeysIndex)
                 {
-                    windowOffset = controller.CurrentMogwayKeysIndex;
+                    WindowOffset = _controller.CurrentMogwayKeysIndex;
                 }
-                else if(maxRows < controller.CurrentMogwayKeysIndex + 1)
+                else if(MaxRows < _controller.CurrentMogwayKeysIndex + 1)
                 {
-                    windowOffset = controller.CurrentMogwayKeysIndex + 1 - maxRows;
+                    WindowOffset = _controller.CurrentMogwayKeysIndex + 1 - MaxRows;
                 }
                 
                 // only updated if we have keys
-                if (controller.HasMogwayKeys)
+                if (_controller.HasMogwayKeys)
                 {
-                    var list = controller.MogwaiKeysList;
-                    for (int i = windowOffset; i < list.Count && i - windowOffset < maxRows; i++)
+                    var list = _controller.MogwaiKeysList;
+                    for (int i = WindowOffset; i < list.Count && i - WindowOffset < MaxRows; i++)
                     {
                         var mogwaiKeys = list[i];
-                        var pos = i - windowOffset;
-                        PrintRow(pos + headerPosition + 1, mogwaiKeys, mogwaiKeys.Address == controller.CurrentMogwayKeys.Address, controller.TaggedMogwaiKeys.Contains(mogwaiKeys));
+                        var pos = i - WindowOffset;
+                        PrintRow(pos + HeaderPosition + 1, mogwaiKeys, mogwaiKeys.Address == _controller.CurrentMogwayKeys.Address, _controller.TaggedMogwaiKeys.Contains(mogwaiKeys));
                     }
                     //PrintRow(pointer + headerPosition + 1, list[pointer], true);
                 }
@@ -361,39 +361,39 @@ namespace WoMSadGui.Consoles
             Print(gPos, index, goldStr, standard);
         }
 
-        private Color GetColorStandard(MogwaiKeysState mogwaiKeysState, bool Selected)
+        private Color GetColorStandard(MogwaiKeysState mogwaiKeysState, bool selected)
         {
             switch (mogwaiKeysState)
             {
-                case MogwaiKeysState.NONE:
-                    return Selected ? Color.WhiteSmoke : Color.DarkGray;
-                case MogwaiKeysState.WAIT:
-                    return Selected ? Color.WhiteSmoke : Color.DarkGray;
-                case MogwaiKeysState.READY:
-                    return Selected ? Color.Sienna : Color.SaddleBrown;
-                case MogwaiKeysState.CREATE:
-                    return Selected ? Color.Gold : Color.DarkGoldenrod;
-                case MogwaiKeysState.BOUND:
-                    return Selected ? Color.Gold : Color.DarkGoldenrod;
+                case MogwaiKeysState.None:
+                    return selected ? Color.WhiteSmoke : Color.DarkGray;
+                case MogwaiKeysState.Wait:
+                    return selected ? Color.WhiteSmoke : Color.DarkGray;
+                case MogwaiKeysState.Ready:
+                    return selected ? Color.Sienna : Color.SaddleBrown;
+                case MogwaiKeysState.Create:
+                    return selected ? Color.Gold : Color.DarkGoldenrod;
+                case MogwaiKeysState.Bound:
+                    return selected ? Color.Gold : Color.DarkGoldenrod;
                 default:
                     return Color.MediumSeaGreen;
             }
         }
 
-        private Color GetMogwaiKeysStateColor(MogwaiKeysState mogwaiKeysState, bool Selected)
+        private Color GetMogwaiKeysStateColor(MogwaiKeysState mogwaiKeysState, bool selected)
         {
             switch (mogwaiKeysState)
             {
-                case MogwaiKeysState.NONE:
-                    return Selected ? Color.Red : Color.DarkRed;
-                case MogwaiKeysState.WAIT:
-                    return Selected ? Color.RoyalBlue : Color.SteelBlue;
-                case MogwaiKeysState.READY:
-                    return Selected ? Color.LimeGreen : Color.DarkGreen;
-                case MogwaiKeysState.CREATE:
-                    return Selected ? Color.RoyalBlue : Color.SteelBlue;
-                case MogwaiKeysState.BOUND:
-                    return Selected ? Color.Gold : Color.DarkGoldenrod;
+                case MogwaiKeysState.None:
+                    return selected ? Color.Red : Color.DarkRed;
+                case MogwaiKeysState.Wait:
+                    return selected ? Color.RoyalBlue : Color.SteelBlue;
+                case MogwaiKeysState.Ready:
+                    return selected ? Color.LimeGreen : Color.DarkGreen;
+                case MogwaiKeysState.Create:
+                    return selected ? Color.RoyalBlue : Color.SteelBlue;
+                case MogwaiKeysState.Bound:
+                    return selected ? Color.Gold : Color.DarkGoldenrod;
                 default:
                     return Color.RoyalBlue;
             }

@@ -4,8 +4,8 @@
     {
         public Weapon BaseWeapon { get; set; }
 
-        private Weapon primaryWeapon;
-        public Weapon PrimaryWeapon { get { return primaryWeapon ?? BaseWeapon; } set { primaryWeapon = value; } }
+        private Weapon _primaryWeapon;
+        public Weapon PrimaryWeapon { get { return _primaryWeapon ?? BaseWeapon; } set { _primaryWeapon = value; } }
 
         public Weapon SecondaryWeapon { get; set; }
 

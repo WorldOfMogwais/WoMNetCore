@@ -10,8 +10,8 @@ namespace WoMFramework.Game.Model
     public partial class Monsters
     {
         public static Monster Kobold =>
-            MonsterBuilder.Create("Kobold", 0.25, MonsterType.HUMANOIDS, 100)
-            .SetSizeType(SizeType.SMALL)
+            MonsterBuilder.Create("Kobold", 0.25, MonsterType.Humanoids, 100)
+            .SetSizeType(SizeType.Small)
             .SetAbilities(9, 13, 10, 10, 9, 8)
             .SetNaturalArmor(1)
             .SetHitPointDiceRollEvent(new int[] { 1, 10 })

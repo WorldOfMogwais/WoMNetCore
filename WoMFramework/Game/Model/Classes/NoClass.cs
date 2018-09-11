@@ -9,7 +9,7 @@ namespace WoMFramework.Game.Model
 {
     public class NoClass : Classes
     {
-        public NoClass() : base(ClassType.NONE)
+        public NoClass() : base(ClassType.None)
         {
         }
 

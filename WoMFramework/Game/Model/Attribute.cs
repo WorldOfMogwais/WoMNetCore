@@ -8,19 +8,20 @@ namespace WoMFramework.Game.Model
 {
     public sealed class AttributBuilder
     {
-        private string name;
-        private bool salted = true;
-        private int position = -1;
-        private int size = 2;
-        private int creation = 16;
-        private int minRange = 0;
-        private int maxRange = 32;
-        private EvolutionPattern evoPat = Enums.EvolutionPattern.NONE;
+        private readonly string _name;
+        private bool _salted = true;
+        private int _position = -1;
+        private int _size = 2;
+        private int _creation = 16;
+        private int _minRange = 0;
+        private int _maxRange = 32;
+        private EvolutionPattern _evoPat = Enums.EvolutionPattern.None;
 
-        public HexValue hexValue;
-        public string description;
+        public HexValue HexValue;
 
-        private AttributBuilder(string name) { this.name = name; }
+        public string Description;
+
+        private AttributBuilder(string name) { this._name = name; }
 
         public static AttributBuilder Create(string name)
         {
@@ -29,67 +30,67 @@ namespace WoMFramework.Game.Model
 
         public AttributBuilder Salted(bool salted)
         {
-            this.salted = salted;
+            this._salted = salted;
             return this;
         }
 
-        public AttributBuilder Position(int position)
+        public AttributBuilder SetPosition(int position)
         {
-            this.position = position;
+            this._position = position;
             return this;
         }
 
-        public AttributBuilder Size(int size)
+        public AttributBuilder SetSize(int size)
         {
-            this.size = size;
+            this._size = size;
             return this;
         }
 
-        public AttributBuilder Creation(int creation)
+        public AttributBuilder SetCreation(int creation)
         {
-            this.creation = creation;
+            this._creation = creation;
             return this;
         }
 
-        public AttributBuilder MinRange(int minRange)
+        public AttributBuilder SetMinRange(int minRange)
         {
-            this.minRange = minRange;
+            this._minRange = minRange;
             return this;
         }
 
-        public AttributBuilder MaxRange(int maxRange)
+        public AttributBuilder SetMaxRange(int maxRange)
         {
-            this.maxRange = maxRange;
+            this._maxRange = maxRange;
             return this;
         }
 
-        public AttributBuilder EvolutionPattern(EvolutionPattern evoPat)
+        public AttributBuilder SetEvolutionPattern(EvolutionPattern evoPat)
         {
-            this.evoPat = evoPat;
+            this._evoPat = evoPat;
             return this;
         }
 
-        public AttributBuilder HexValue(HexValue hexValue)
+        public AttributBuilder SetHexValue(HexValue hexValue)
         {
-            this.hexValue = hexValue;
+            this.HexValue = hexValue;
             return this;
         }
 
-        public AttributBuilder Description(string description)
+        public AttributBuilder SetDescription(string description)
         {
-            this.description = description;
+            this.Description = description;
             return this;
         }
 
         public Attribute Build()
         {
-            return new Attribute(name, salted, position, size, creation, minRange, maxRange, evoPat);
+            return new Attribute(_name, _salted, _position, _size, _creation, _minRange, _maxRange, _evoPat);
         }
     }
 
     public class Attribute
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private HexValue _hexValue;
 
@@ -102,9 +103,9 @@ namespace WoMFramework.Game.Model
         public int MaxRange { get; }
         public EvolutionPattern EvoPat { get; set; }
 
-        public bool Valid => value > -1;
+        public bool Valid => _value > -1;
 
-        private double value = -1;
+        private double _value = -1;
 
         public Attribute(string name, bool salted, int position, int size, int creation, int minRange, int maxRange, EvolutionPattern evoPat)
         {
@@ -120,7 +121,7 @@ namespace WoMFramework.Game.Model
 
         public int GetValue()
         {
-            return (int)value;
+            return (int)_value;
         }
         
         public bool CreateValue(HexValue hexValue)
@@ -147,7 +148,7 @@ namespace WoMFramework.Game.Model
                 return false;
             }
 
-            value = (int)modValue;
+            _value = (int)modValue;
             return true;
         }
 

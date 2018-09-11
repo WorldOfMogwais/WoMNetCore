@@ -45,7 +45,7 @@ namespace WoMWallet.Node
 
         public bool HasMogwayKeys => MogwaiKeysDict.Count > 0;
 
-        private Timer timer;
+        private Timer _timer;
 
         public MogwaiController()
         {
@@ -57,10 +57,10 @@ namespace WoMWallet.Node
         public void Refresh(int minutes)
         {
             Update();
-            timer = new Timer(minutes * 60 * 1000);
-            timer.Elapsed += OnTimedEventAsync;
-            timer.AutoReset = true;
-            timer.Enabled = true;
+            _timer = new Timer(minutes * 60 * 1000);
+            _timer.Elapsed += OnTimedEventAsync;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
         }
 
         private async void OnTimedEventAsync(object sender, ElapsedEventArgs e)
@@ -162,7 +162,7 @@ namespace WoMWallet.Node
                 return false;
             };
 
-            mogwaiKeysList.ForEach(p => p.MogwaiKeysState = MogwaiKeysState.WAIT);
+            mogwaiKeysList.ForEach(p => p.MogwaiKeysState = MogwaiKeysState.Wait);
             return true;
         }
 
@@ -178,7 +178,7 @@ namespace WoMWallet.Node
                 return false;
             };
 
-            CurrentMogwayKeys.MogwaiKeysState = MogwaiKeysState.CREATE;
+            CurrentMogwayKeys.MogwaiKeysState = MogwaiKeysState.Create;
             return true;
         }
     }

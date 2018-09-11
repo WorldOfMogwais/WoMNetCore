@@ -2,6 +2,6 @@
 {
     public enum HealType
     {
-        REST
+        Rest
     }
 }

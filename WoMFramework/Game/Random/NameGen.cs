@@ -9,7 +9,7 @@ namespace WoMFramework.Game.Random
 {
     public class NameGen
     {
-        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static string GenerateName(HexValue hexValue)
         {
@@ -41,7 +41,7 @@ namespace WoMFramework.Game.Random
                 }
                 else
                 {
-                    _log.Error("Gnerating names seems currently troublesome!");
+                    Log.Error("Gnerating names seems currently troublesome!");
                 }
                 consonanNow = !consonanNow;
                 ind += 2;

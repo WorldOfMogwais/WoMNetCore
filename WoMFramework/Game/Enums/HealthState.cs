@@ -2,10 +2,10 @@
 {
     public enum HealthState
     {
-        HEALTHY = 1,
-        INJURED = 0,
-        DISABLED = -1,
-        DYING = -2,
-        DEAD = -3
+        Healthy = 1,
+        Injured = 0,
+        Disabled = -1,
+        Dying = -2,
+        Dead = -3
     }
 }
