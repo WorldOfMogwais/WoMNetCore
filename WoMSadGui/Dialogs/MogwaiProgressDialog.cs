@@ -2,7 +2,6 @@
 using SadConsole;
 using SadConsole.Controls;
 using System;
-using System.Threading.Tasks;
 using WoMWallet.Node;
 
 namespace WoMSadGui
@@ -20,7 +19,7 @@ namespace WoMSadGui
         public MogwaiProgressDialog(string title, string text, MogwaiController mogwaicontroller, int width, int height) : base(width, height)
         {
             Title = "[" + title + "]";
-            base.Fill(Color.DarkCyan, Color.Black, null);
+            Fill(Color.DarkCyan, Color.Black, null);
 
             var label1 = new DrawingSurface(Width - 4, height - 5)
             {

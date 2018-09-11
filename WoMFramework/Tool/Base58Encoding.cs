@@ -2,9 +2,6 @@
 using System.Numerics;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics.Contracts;
 
 namespace WoMFramework.Tool
 {

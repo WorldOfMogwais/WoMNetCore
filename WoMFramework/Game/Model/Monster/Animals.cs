@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WoMFramework.Game.Enums;
+﻿using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Model
 {

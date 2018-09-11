@@ -1,10 +1,8 @@
 ﻿using Xunit;
 
 using System.Collections.Generic;
-using System.Text;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
-using Newtonsoft.Json;
 using WoMFramework.Tool;
 
 namespace WoMFramework.Game

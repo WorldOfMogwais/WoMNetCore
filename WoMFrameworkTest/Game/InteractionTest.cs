@@ -54,10 +54,10 @@ namespace WoMFramework.Game.Interaction.Tests
                0.00001002m);
 
 
-            Assert.Equal(shift.Interaction.InteractionType, InteractionType.Adventure);
-            Assert.Equal(((AdventureAction)shift.Interaction).AdventureType, AdventureType.TestRoom);
-            Assert.Equal(((AdventureAction)shift.Interaction).DifficultyType, DifficultyType.Challenging);
-            Assert.Equal(((AdventureAction)shift.Interaction).AveragePartyLevel, 2);
+            Assert.Equal(InteractionType.Adventure, shift.Interaction.InteractionType);
+            Assert.Equal(AdventureType.TestRoom, ((AdventureAction)shift.Interaction).AdventureType);
+            Assert.Equal(DifficultyType.Challenging, ((AdventureAction)shift.Interaction).DifficultyType );
+            Assert.Equal(2, ((AdventureAction)shift.Interaction).AveragePartyLevel);
         }
     }
 }

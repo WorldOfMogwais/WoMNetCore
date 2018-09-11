@@ -1,9 +1,5 @@
 ﻿using System;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Random;
-using WoMFramework.Game.Combat;
-using System.Collections.Generic;
 
 namespace WoMFramework.Game.Generator
 {

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WoMFramework.Tool
 {
@@ -49,7 +47,7 @@ namespace WoMFramework.Tool
                 for (int i = 0; i < length; i++)
                 {
                     //Console.Write($"[{i}] x:{hexStr[position + i]}, 16^{length - 1 - i} * {HexUtil.GetHexVal(hexStr[position + i])} ");
-                    value += Math.Pow(16, length - 1 - i) * HexHashUtil.GetHexVal(hexStr[position + i]);
+                    value += Math.Pow(16, length - 1 - i) * GetHexVal(hexStr[position + i]);
                 }
                 //Console.WriteLine();
             }

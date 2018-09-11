@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using WoMFramework.Game.Model;
-using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Combat
 {
@@ -115,7 +114,7 @@ namespace WoMFramework.Game.Combat
             {
                 if (path.Length < AttackRange)
                 {
-                    System.Diagnostics.Debug.WriteLine($"{this.Entity.Name} in {CurrentTile} attacked {target.Entity.Name} in {target.CurrentTile}");
+                    System.Diagnostics.Debug.WriteLine($"{Entity.Name} in {CurrentTile} attacked {target.Entity.Name} in {target.CurrentTile}");
                     Entity.Attack(0, target.Entity);    // why Entity.Attack() has turn parameter?
                     return true;
                 }

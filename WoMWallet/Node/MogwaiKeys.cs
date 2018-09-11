@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using WoMWallet.Tool;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
 using WoMFramework.Tool;
@@ -54,12 +53,12 @@ namespace WoMWallet.Node
 
         public MogwaiKeys(ExtKey extkey, Network network)
         {
-            this._extkey = extkey;
-            this._network = network;
-            this._pubKey = extkey.PrivateKey.PubKey;
+            _extkey = extkey;
+            _network = network;
+            _pubKey = extkey.PrivateKey.PubKey;
             if (TryMirrorPubKey(extkey.PrivateKey.PubKey, out PubKey mirrorPubKey))
             {
-                this._mirrorPubKey = mirrorPubKey;
+                _mirrorPubKey = mirrorPubKey;
             }
         }
 

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WoMFramework.Game.Combat;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
     /// <summary>
     /// Wrapper class for an combatant.

@@ -2,29 +2,22 @@
 using SadConsole;
 using SadConsole.Surfaces;
 using WoMSadGui.Art;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WoMSadGui.Consoles
 {
-    public class LogoConsole : SadConsole.Console
+    public class LogoConsole : Console
     {
-        Basic _borderSurface;
-
         public LogoConsole(int width, int height) : base(width, height)
         {
-            var footer = "Mogwaicoin Team 2018";
+            const string footer = "Mogwaicoin Team 2018";
             Cursor.Position = new Point(0, 0);
    
-            _borderSurface = new Basic(width + 2, height + 2, base.Font);
-            _borderSurface.DrawBox(new Rectangle(0, 0, _borderSurface.Width, _borderSurface.Height), 
-                                  new Cell(Color.DarkCyan, Color.Black), null, SurfaceBase.ConnectedLineThick);
-            _borderSurface.Position = new Point(-1, -1);
-            _borderSurface.Print(width - footer.Length - 2, height + 1, footer, Color.DarkCyan, Color.Black);
-            Children.Add(_borderSurface);
+            var borderSurface = new Basic(width + 2, height + 2, Font);
+            borderSurface.DrawBox(new Rectangle(0, 0, borderSurface.Width, borderSurface.Height), 
+                                  new Cell(Color.DarkCyan, Color.Black), null, ConnectedLineThick);
+            borderSurface.Position = new Point(-1, -1);
+            borderSurface.Print(width - footer.Length - 2, height + 1, footer, Color.DarkCyan, Color.Black);
+            Children.Add(borderSurface);
 
             for (int i = 0; i < Ascii.Logo.Length; i++)
             {

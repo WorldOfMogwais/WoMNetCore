@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WoMSadGui.Dialogs
 {
@@ -16,7 +11,7 @@ namespace WoMSadGui.Dialogs
         public MogwaiDialog(string title, string text, int width, int height) : base(width, height)
         {
             Title = "[" + title + "]";
-            base.Fill(Color.DarkCyan, Color.Black, null);
+            Fill(Color.DarkCyan, Color.Black, null);
 
             var label1 = new DrawingSurface(Width - 4, height - 5)
             {

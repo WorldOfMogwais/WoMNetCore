@@ -1,14 +1,9 @@
 ﻿using log4net;
 using NBitcoin;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security;
-using System.Text;
 using System.Threading.Tasks;
 using WoMWallet.Tool;
 
@@ -26,8 +21,8 @@ namespace WoMWallet.Node
 
         public WalletFile(string wifKey, byte[] chainCode)
         {
-            this.WifKey = wifKey;
-            this.ChainCode = chainCode;
+            WifKey = wifKey;
+            ChainCode = chainCode;
         }
 
     }
@@ -83,7 +78,7 @@ namespace WoMWallet.Node
         /// </summary>
         public MogwaiWallet(string path = DefaultWalletFile)
         {
-            this._path = path;
+            _path = path;
 
             if (!Caching.TryReadFile(path, out _walletFile))
             {
@@ -97,7 +92,7 @@ namespace WoMWallet.Node
         /// <param name="path"></param>
         public MogwaiWallet(string password, string path)
         {
-            this._path = path;
+            _path = path;
 
             if (!Caching.TryReadFile(path, out _walletFile))
             {

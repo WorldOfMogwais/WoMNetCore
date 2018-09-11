@@ -15,13 +15,13 @@ namespace WoMFramework.Game.Model
         private int _creation = 16;
         private int _minRange = 0;
         private int _maxRange = 32;
-        private EvolutionPattern _evoPat = Enums.EvolutionPattern.None;
+        private EvolutionPattern _evoPat = EvolutionPattern.None;
 
         public HexValue HexValue;
 
         public string Description;
 
-        private AttributBuilder(string name) { this._name = name; }
+        private AttributBuilder(string name) { _name = name; }
 
         public static AttributBuilder Create(string name)
         {
@@ -30,55 +30,55 @@ namespace WoMFramework.Game.Model
 
         public AttributBuilder Salted(bool salted)
         {
-            this._salted = salted;
+            _salted = salted;
             return this;
         }
 
         public AttributBuilder SetPosition(int position)
         {
-            this._position = position;
+            _position = position;
             return this;
         }
 
         public AttributBuilder SetSize(int size)
         {
-            this._size = size;
+            _size = size;
             return this;
         }
 
         public AttributBuilder SetCreation(int creation)
         {
-            this._creation = creation;
+            _creation = creation;
             return this;
         }
 
         public AttributBuilder SetMinRange(int minRange)
         {
-            this._minRange = minRange;
+            _minRange = minRange;
             return this;
         }
 
         public AttributBuilder SetMaxRange(int maxRange)
         {
-            this._maxRange = maxRange;
+            _maxRange = maxRange;
             return this;
         }
 
         public AttributBuilder SetEvolutionPattern(EvolutionPattern evoPat)
         {
-            this._evoPat = evoPat;
+            _evoPat = evoPat;
             return this;
         }
 
         public AttributBuilder SetHexValue(HexValue hexValue)
         {
-            this.HexValue = hexValue;
+            HexValue = hexValue;
             return this;
         }
 
         public AttributBuilder SetDescription(string description)
         {
-            this.Description = description;
+            Description = description;
             return this;
         }
 
@@ -126,9 +126,9 @@ namespace WoMFramework.Game.Model
         
         public bool CreateValue(HexValue hexValue)
         {
-            this._hexValue = hexValue;
+            _hexValue = hexValue;
 
-            if (this._hexValue == null)
+            if (_hexValue == null)
             {
                 Console.WriteLine($"HexValue is null, can't calculate value without.");
                 return false;

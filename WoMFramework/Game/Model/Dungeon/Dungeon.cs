@@ -1,6 +1,5 @@
 ﻿using WoMFramework.Game.Generator;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model
 {

@@ -1,12 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Controls;
-using SadConsole.Effects;
 using SadConsole.Input;
 using SadConsole.Surfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using WoMWallet.Node;
 using WoMWallet.Tool;
 
@@ -14,15 +11,15 @@ namespace WoMSadGui.Consoles
 {
     public class SelectionScreen : SadConsole.Console
     {
-        private Basic _borderSurface;
+        private readonly Basic _borderSurface;
 
         private int _glyphIndex = 185;
 
-        private MogwaiController _controller;
+        private readonly MogwaiController _controller;
 
-        private ControlsConsole _controlsConsole;
-        private MogwaiConsole _infoConsole;
-        private MogwaiConsole _logConsole;
+        private readonly ControlsConsole _controlsConsole;
+        private readonly MogwaiConsole _infoConsole;
+        private readonly MogwaiConsole _logConsole;
 
         public int HeaderPosition;
         public int TrailerPosition;
@@ -36,9 +33,9 @@ namespace WoMSadGui.Consoles
 
         public SelectionScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
-            _borderSurface = new Basic(width + 2, height + 2, base.Font);
+            _borderSurface = new Basic(width + 2, height + 2, Font);
             _borderSurface.DrawBox(new Rectangle(0, 0, _borderSurface.Width, _borderSurface.Height),
-                                  new Cell(Color.DarkCyan, Color.Black), null, SurfaceBase.ConnectedLineThick);
+                                  new Cell(Color.DarkCyan, Color.Black), null, ConnectedLineThick);
             _borderSurface.Position = new Point(-1, -1);
             Children.Add(_borderSurface);
 

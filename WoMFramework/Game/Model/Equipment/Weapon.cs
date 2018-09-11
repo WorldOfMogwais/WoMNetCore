@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Model
@@ -22,9 +21,9 @@ namespace WoMFramework.Game.Model
 
         private WeaponBuilder(string name, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
         {
-            this.Name = name;
-            this.DamageSmallRollEvent = damageSmallRollEvent;
-            this.DamageMediumRollEvent = damageMediumRollEvent;
+            Name = name;
+            DamageSmallRollEvent = damageSmallRollEvent;
+            DamageMediumRollEvent = damageMediumRollEvent;
         }
         public static WeaponBuilder Create(string name, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
         {
@@ -32,7 +31,7 @@ namespace WoMFramework.Game.Model
         }
         public WeaponBuilder SetCriticalMinRoll(int criticalMinRoll)
         {
-            this._criticalMinRoll = criticalMinRoll;
+            _criticalMinRoll = criticalMinRoll;
             return this;
         }
         public WeaponBuilder IsTwoHanded()
@@ -42,37 +41,37 @@ namespace WoMFramework.Game.Model
         }
         public WeaponBuilder SetCriticalMultiplier(int criticalMultiplier)
         {
-            this._criticalMultiplier = criticalMultiplier;
+            _criticalMultiplier = criticalMultiplier;
             return this;
         }
         public WeaponBuilder SetDamageType(WeaponDamageType weaponDamageType)
         {
-            this._weaponDamageTypes = new WeaponDamageType[] { weaponDamageType };
+            _weaponDamageTypes = new WeaponDamageType[] { weaponDamageType };
             return this;
         }
         public WeaponBuilder SetDamageTypes(WeaponDamageType[] weaponDamageTypes)
         {
-            this._weaponDamageTypes = weaponDamageTypes;
+            _weaponDamageTypes = weaponDamageTypes;
             return this;
         }
         public WeaponBuilder SetRange(int range)
         {
-            this._range = range;
+            _range = range;
             return this;
         }
         public WeaponBuilder SetCost(int cost)
         {
-            this._cost = cost;
+            _cost = cost;
             return this;
         }
         public WeaponBuilder SetWeight(double weight)
         {
-            this._weight = weight;
+            _weight = weight;
             return this;
         }
         public WeaponBuilder SetDescription(string description)
         {
-            this._description = description;
+            _description = description;
             return this;
         }
         public Weapon Build()
@@ -138,7 +137,7 @@ namespace WoMFramework.Game.Model
         public Weapon(string name, int[] damageSmallRollEvent, int[] damageMediumRollEvent, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, bool isTwoHanded, int cost, double weight, string description) : base(name, cost, weight, description)
         {
             DamageRoll = damageMediumRollEvent;
-            this._damageSmallRollEvent = damageSmallRollEvent;
+            _damageSmallRollEvent = damageSmallRollEvent;
             CriticalMinRoll = criticalMinRoll;
             CriticalMultiplier = criticalMultiplier;
             WeaponDamageTypes = weaponDamageTypes;

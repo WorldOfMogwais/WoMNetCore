@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WoMFramework.Game.Enums;
+﻿using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Model
 {
@@ -23,10 +18,10 @@ namespace WoMFramework.Game.Model
 
         private ArmorBuilder(string name, ArmorType armorType, int armorBonus, int maxDexterityBonus)
         {
-            this.Name = name;
-            this.ArmorType = armorType;
-            this.ArmorBonus = armorBonus;
-            this.MaxDexterityBonus = maxDexterityBonus;
+            Name = name;
+            ArmorType = armorType;
+            ArmorBonus = armorBonus;
+            MaxDexterityBonus = maxDexterityBonus;
         }
         public static ArmorBuilder Create(string name, ArmorType armorType, int armorBonus, int maxDexterityBonus)
         {
@@ -34,27 +29,27 @@ namespace WoMFramework.Game.Model
         }
         public ArmorBuilder SetArmorCheckPenalty(int armorCheckPenalty)
         {
-            this._armorCheckPenalty = armorCheckPenalty;
+            _armorCheckPenalty = armorCheckPenalty;
             return this;
         }
         public ArmorBuilder SetArcaneSpellFailureChance(double arcaneSpellFailureChance)
         {
-            this._arcaneSpellFailureChance = arcaneSpellFailureChance;
+            _arcaneSpellFailureChance = arcaneSpellFailureChance;
             return this;
         }
         public ArmorBuilder SetCost(int cost)
         {
-            this._cost = cost;
+            _cost = cost;
             return this;
         }
         public ArmorBuilder SetWeight(int weight)
         {
-            this._weight = weight;
+            _weight = weight;
             return this;
         }
         public ArmorBuilder SetDescription(string description)
         {
-            this._description = description;
+            _description = description;
             return this;
         }
         public Armor Build()

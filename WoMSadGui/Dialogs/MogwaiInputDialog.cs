@@ -13,7 +13,7 @@ namespace WoMSadGui.Dialogs
         public MogwaiInputDialog(string title, string text, int width, int height) : base(width, height)
         {
             Title = "[" + title + "]";
-            base.Fill(Color.DarkCyan, Color.Black, null);
+            Fill(Color.DarkCyan, Color.Black, null);
 
             var label1 = new DrawingSurface(Width - 4, height - 6)
             {

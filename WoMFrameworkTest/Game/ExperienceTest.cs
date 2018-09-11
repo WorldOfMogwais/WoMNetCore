@@ -1,9 +1,4 @@
-﻿using Xunit;
-
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-
-namespace WoMFramework.Game.Tests
+﻿namespace WoMFramework.Game.Tests
 {
     public class ExperienceTest
     {

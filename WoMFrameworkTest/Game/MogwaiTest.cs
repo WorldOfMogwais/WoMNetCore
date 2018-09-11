@@ -1,16 +1,4 @@
-﻿using Xunit;
-
-using WoMFramework.Game;
-using WoMFramework.Tool;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Interaction;
-
-namespace WoMFramework.Game.Model.Tests
+﻿namespace WoMFramework.Game.Model.Tests
 {
     public class MogwaiTest
     {

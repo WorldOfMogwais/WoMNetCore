@@ -17,13 +17,13 @@ namespace WoMSadGui.Consoles
     {
         public Action SplashCompleted { get; set; }
 
-        private InstructionSet _animation;
-        private Basic _consoleImage;
-        private Point _consoleImagePosition;
+        private readonly InstructionSet _animation;
+        private readonly Basic _consoleImage;
+        private readonly Point _consoleImagePosition;
         //private EffectsManager effectsManager;
         int _x = -50;
 
-        List<int> _cellindexes = new List<int>();
+        readonly List<int> _cellindexes = new List<int>();
 
         public SplashScreen(int x, int y) : base(x, y)
         {
@@ -69,7 +69,7 @@ namespace WoMSadGui.Consoles
             // Animation for the logo text.
             var logoText = new ColorGradient(new Color[] { Color.Magenta, Color.Yellow }, new float[] { 0.0f, 1f }).ToColoredString("[| Mogwaicoin Team 2018 |]");
             logoText.SetEffect(new Fade() { DestinationForeground = Color.Blue, FadeForeground = true, FadeDuration = 1f, Repeat = false, RemoveOnFinished = true, Permanent = true, CloneOnApply = true });
-            _animation.Instructions.AddLast(new DrawString(this) { Position = new Point(26, this.Height - 1), Text = logoText, TotalTimeToPrint = 1f });
+            _animation.Instructions.AddLast(new DrawString(this) { Position = new Point(26, Height - 1), Text = logoText, TotalTimeToPrint = 1f });
 
             // Animation for fading in the logo picture.
             _animation.Instructions.AddLast(new FadeTextSurfaceTint(_consoleImage, new ColorGradient(Color.Black, Color.Transparent), new TimeSpan(0, 0, 0, 4, 0)));
@@ -91,7 +91,7 @@ namespace WoMSadGui.Consoles
                     List<Cell> cells = new List<Cell>();
                     for (int index = 0; index < 10; index++)
                     {
-                        var point = new Point(26, this.Height - 1).ToIndex(this.Width) + 3 + index;
+                        var point = new Point(26, Height - 1).ToIndex(Width) + 3 + index;
                         cells.Add(Cells[point]);
                         _cellindexes.Add(point);
                     }

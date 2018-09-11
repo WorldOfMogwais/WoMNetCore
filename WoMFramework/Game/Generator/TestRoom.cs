@@ -1,8 +1,4 @@
-﻿using WoMFramework.Game.Combat;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-
-namespace WoMFramework.Game.Generator
+﻿namespace WoMFramework.Game.Generator
 {
     //public class TestRoom : Adventure
     //{

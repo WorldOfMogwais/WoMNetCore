@@ -1,6 +1,4 @@
 ﻿using Xunit;
-
-using WoMFramework.Game;
 using WoMFramework.Game.Interaction;
 
 namespace WoMFramework.Tool.Tests

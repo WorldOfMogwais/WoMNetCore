@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Random;
+﻿using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Model
 {
@@ -43,10 +37,10 @@ namespace WoMFramework.Game.Model
 
         private MonsterBuilder(string name, double challengeRating, MonsterType monsterType, int experience)
         {
-            this.Name = name;
-            this.ChallengeRating = challengeRating;
-            this.MonsterType = monsterType;
-            this.Experience = experience;
+            Name = name;
+            ChallengeRating = challengeRating;
+            MonsterType = monsterType;
+            Experience = experience;
         }
 
         public static MonsterBuilder Create(string name, double challengeRating, MonsterType monsterType, int experience)
@@ -55,62 +49,62 @@ namespace WoMFramework.Game.Model
         }
         public MonsterBuilder SetSizeType(SizeType sizeType)
         {
-            this._sizeType = sizeType;
+            _sizeType = sizeType;
             return this;
         }
         public MonsterBuilder SetAbilities(int strength, int dexterity, int constitution, int intelligence, int wisdom, int charisma)
         {
-            this._strength = strength;
-            this._dexterity = dexterity;
-            this._constitution = constitution;
-            this._intelligence = intelligence;
-            this._wisdom = wisdom;
-            this._charisma = charisma;
+            _strength = strength;
+            _dexterity = dexterity;
+            _constitution = constitution;
+            _intelligence = intelligence;
+            _wisdom = wisdom;
+            _charisma = charisma;
             return this;
         }
         public MonsterBuilder SetBaseSpeed(int baseSpeed)
         {
-            this._baseSpeed = baseSpeed;
+            _baseSpeed = baseSpeed;
             return this;
         }
         public MonsterBuilder SetNaturalArmor(int naturalArmor)
         {
-            this._naturalArmor = naturalArmor;
+            _naturalArmor = naturalArmor;
             return this;
         }
         public MonsterBuilder SetBaseAttackBonus(int baseAttackBonus)
         {
-            this._baseAttackBonus = new int[] { baseAttackBonus };
+            _baseAttackBonus = new int[] { baseAttackBonus };
             return this;
         }
         public MonsterBuilder SetBaseAttackBonus(int[] baseAttackBonus)
         {
-            this._baseAttackBonus = baseAttackBonus;
+            _baseAttackBonus = baseAttackBonus;
             return this;
         }
         public MonsterBuilder SetHitPointDiceRollEvent(int[] hitPointDiceRollEvent)
         {
-            this._hitPointDiceRollEvent = hitPointDiceRollEvent;
+            _hitPointDiceRollEvent = hitPointDiceRollEvent;
             return this;
         }
         public MonsterBuilder SetBaseWeapon(Weapon baseWeapon)
         {
-            this._baseWeapon = baseWeapon;
+            _baseWeapon = baseWeapon;
             return this;
         }
         public MonsterBuilder SetPrimaryWeapon(Weapon primaryWeapon)
         {
-            this._primaryWeapon = primaryWeapon;
+            _primaryWeapon = primaryWeapon;
             return this;
         }
         public MonsterBuilder SetTreasure(Treasure treasure)
         {
-            this._treasure = treasure;
+            _treasure = treasure;
             return this;
         }
         public MonsterBuilder SetDescription(string description)
         {
-            this._description = description;
+            _description = description;
             return this;
         }
         public Monster Build()
