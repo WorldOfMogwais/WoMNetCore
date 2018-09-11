@@ -81,17 +81,7 @@ namespace WoMWallet.Node
         /// <summary>
         /// 
         /// </summary>
-        public MogwaiWallet()
-        {
-            if (!Caching.TryReadFile(defaultWalletFile, out walletFile))
-            {
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public MogwaiWallet(string path)
+        public MogwaiWallet(string path = defaultWalletFile)
         {
             this.path = path;
 
