@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
+using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model;
+using WoMFramework.Tool;
 using WoMWallet.Tool;
 
 namespace WoMWallet.Node
@@ -23,15 +26,17 @@ namespace WoMWallet.Node
 
         public List<MogwaiKeys> TaggedMogwaiKeys { get; set; }
 
-        public int CurrentMogwayKeysIndex { get; set; }
+        public int CurrentMogwaiKeysIndex { get; set; }
 
-        public MogwaiKeys CurrentMogwayKeys
+        public Mogwai CurrentMogwai => CurrentMogwaiKeys?.Mogwai;
+
+        public MogwaiKeys CurrentMogwaiKeys
         {
             get
             {
-                if (Wallet.MogwaiKeyDict.Count > CurrentMogwayKeysIndex)
+                if (Wallet.MogwaiKeyDict.Count > CurrentMogwaiKeysIndex)
                 {
-                    return MogwaiKeysList[CurrentMogwayKeysIndex];
+                    return MogwaiKeysList[CurrentMogwaiKeysIndex];
                 }
                 return null;
             }
@@ -47,7 +52,7 @@ namespace WoMWallet.Node
         {
             Wallet = new MogwaiWallet();
             TaggedMogwaiKeys = new List<MogwaiKeys>();
-            CurrentMogwayKeysIndex = 0;
+            CurrentMogwaiKeysIndex = 0;
         }
 
         public void Refresh(int minutes)
@@ -80,29 +85,29 @@ namespace WoMWallet.Node
 
         public void Next()
         {
-            if (CurrentMogwayKeysIndex + 1 < Wallet.MogwaiKeyDict.Count)
+            if (CurrentMogwaiKeysIndex + 1 < Wallet.MogwaiKeyDict.Count)
             {
-                CurrentMogwayKeysIndex++;
+                CurrentMogwaiKeysIndex++;
             }
         }
 
         public void Previous()
         {
-            if (CurrentMogwayKeysIndex > 0)
+            if (CurrentMogwaiKeysIndex > 0)
             {
-                CurrentMogwayKeysIndex--;
+                CurrentMogwaiKeysIndex--;
             }
         }
 
         public void Tag()
         {
-            if (TaggedMogwaiKeys.Contains(CurrentMogwayKeys))
+            if (TaggedMogwaiKeys.Contains(CurrentMogwaiKeys))
             {
-                TaggedMogwaiKeys.Remove(CurrentMogwayKeys);
+                TaggedMogwaiKeys.Remove(CurrentMogwaiKeys);
             }
             else
             {
-                TaggedMogwaiKeys.Add(CurrentMogwayKeys);
+                TaggedMogwaiKeys.Add(CurrentMogwaiKeys);
             }
         }
 
@@ -155,7 +160,7 @@ namespace WoMWallet.Node
                 return false;
             }
 
-            var mogwaiKeysList = TaggedMogwaiKeys.Count > 0 ? TaggedMogwaiKeys : new List<MogwaiKeys> { CurrentMogwayKeys };
+            var mogwaiKeysList = TaggedMogwaiKeys.Count > 0 ? TaggedMogwaiKeys : new List<MogwaiKeys> { CurrentMogwaiKeys };
             if (!Blockchain.Instance.SendMogs(Wallet.Deposit, mogwaiKeysList.Select(p => p.Address).ToArray(), 5m, 0.0001m))
             {
                 return false;
@@ -172,12 +177,12 @@ namespace WoMWallet.Node
                 return false;
             }
 
-            if (!Blockchain.Instance.BindMogwai(CurrentMogwayKeys))
+            if (!Blockchain.Instance.BindMogwai(CurrentMogwaiKeys))
             {
                 return false;
             };
 
-            CurrentMogwayKeys.MogwaiKeysState = MogwaiKeysState.Create;
+            CurrentMogwaiKeys.MogwaiKeysState = MogwaiKeysState.Create;
             return true;
         }
 
@@ -188,8 +193,19 @@ namespace WoMWallet.Node
                 return;
             }
 
-            var mogwaiKeysList = TaggedMogwaiKeys.Count > 0 ? TaggedMogwaiKeys : new List<MogwaiKeys> { CurrentMogwayKeys };
+            var mogwaiKeysList = TaggedMogwaiKeys.Count > 0 ? TaggedMogwaiKeys : new List<MogwaiKeys> { CurrentMogwaiKeys };
             Wallet.Unwatch(mogwaiKeysList, flag);
+        }
+
+        public Mogwai TestMogwai()
+        {
+            return new Mogwai("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i", new Dictionary<double, Shift>()
+            {
+            {1001, new Shift(0, 1530914381, HexHashUtil.ByteArrayToString(Base58Encoding.Decode("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i")),
+                1001, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
+                2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
+                1.00m,
+                0.0001m)}});
         }
     }
 }
