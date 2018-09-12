@@ -71,7 +71,10 @@ namespace WoMWallet.Node
             Wallet.Deposit.Update();
             foreach (var mogwaiKey in Wallet.MogwaiKeyDict.Values)
             {
-                mogwaiKey.Update();
+                if (!mogwaiKey.IsUnwatched)
+                {
+                    mogwaiKey.Update();
+                }
             }
         }
 
@@ -176,6 +179,17 @@ namespace WoMWallet.Node
 
             CurrentMogwayKeys.MogwaiKeysState = MogwaiKeysState.Create;
             return true;
+        }
+
+        public void Unwatch(bool flag)
+        {
+            if (!IsWalletUnlocked)
+            {
+                return;
+            }
+
+            var mogwaiKeysList = TaggedMogwaiKeys.Count > 0 ? TaggedMogwaiKeys : new List<MogwaiKeys> { CurrentMogwayKeys };
+            Wallet.Unwatch(mogwaiKeysList, flag);
         }
     }
 }
