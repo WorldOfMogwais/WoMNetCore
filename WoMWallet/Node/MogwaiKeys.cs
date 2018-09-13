@@ -35,15 +35,17 @@ namespace WoMWallet.Node
 
         public Mogwai Mogwai { get; set; }
 
-        public decimal Balance { get; set; } = 0.0000m;
+        public decimal Balance { get; set; }
 
         public Dictionary<double, Shift> Shifts { get; set; }
+
+        public bool IsUnwatched { get; set; }
 
         private MogwaiKeysState _oldMogwaiKeysState = MogwaiKeysState.None;
         private MogwaiKeysState _mogwaiKeysState = MogwaiKeysState.None;
         public MogwaiKeysState MogwaiKeysState
         {
-            get { return _mogwaiKeysState; }
+            get => _mogwaiKeysState;
             set
             {
                 _oldMogwaiKeysState = _mogwaiKeysState;

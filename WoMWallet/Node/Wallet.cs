@@ -19,6 +19,8 @@ namespace WoMWallet.Node
 
         public Dictionary<string, uint> EncryptedSecrets = new Dictionary<string, uint>();
 
+        public List<string> Unwatched = new List<string>();
+
         public WalletFile(string wifKey, byte[] chainCode)
         {
             WifKey = wifKey;
@@ -155,6 +157,26 @@ namespace WoMWallet.Node
             return true;
         }
 
+        public void Unwatch(List<MogwaiKeys> mogwaikeys, bool flag)
+        {
+            foreach (var keys in mogwaikeys)
+            {
+                if (flag && !_walletFile.Unwatched.Contains(keys.Address))
+                {
+                    _walletFile.Unwatched.Add(keys.Address);
+                    keys.IsUnwatched = true;
+                }
+                else if (!flag && _walletFile.Unwatched.Contains(keys.Address))
+                {
+                    _walletFile.Unwatched.Remove(keys.Address);
+                    keys.IsUnwatched = false;
+                }
+            }
+
+            // persist
+            Caching.Persist(_path, _walletFile);
+        }
+
         private void LoadKeys()
         {
             foreach (var seed in _walletFile.EncryptedSecrets.Values)
@@ -162,6 +184,7 @@ namespace WoMWallet.Node
                 var mogwaiKey = GetMogwaiKeys(seed);
                 if (!MogwaiKeyDict.ContainsKey(mogwaiKey.Address))
                 {
+                    mogwaiKey.IsUnwatched = _walletFile.Unwatched.Contains(mogwaiKey.Address);
                     MogwaiKeyDict[mogwaiKey.Address] = mogwaiKey;
                 }
             }

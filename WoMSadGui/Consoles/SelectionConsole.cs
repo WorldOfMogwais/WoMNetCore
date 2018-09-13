@@ -140,7 +140,7 @@ namespace WoMSadGui.Consoles
             AddButton(0, "create", DoAction);
             AddButton(1, "send", DoAction);
             AddButton(2, "bind", DoAction);
-            AddButton(3, "show", DoAction);
+            AddButton(3, "watch", DoAction);
             AddButton(4, "play", DoAction);
         }
 
@@ -162,7 +162,7 @@ namespace WoMSadGui.Consoles
                     {
                         if (_controller.SendMog())
                         {
-                            LogInConsole("DONE", $"sending mogs to address {_controller.CurrentMogwayKeys.Address}.");
+                            LogInConsole("DONE", $"sending mogs to address {_controller.CurrentMogwaiKeys.Address}.");
                         }
                         else
                         {
@@ -175,7 +175,7 @@ namespace WoMSadGui.Consoles
                     {
                         if (_controller.BindMogwai())
                         {
-                            LogInConsole("DONE", $"binding mogwai on address {_controller.CurrentMogwayKeys.Address}.");
+                            LogInConsole("DONE", $"binding mogwai on address {_controller.CurrentMogwaiKeys.Address}.");
                         }
                         else
                         {
@@ -183,10 +183,18 @@ namespace WoMSadGui.Consoles
                         }  
                       }
                     break;
-                case "show":
+                case "watch":
+                    if (_controller.CurrentMogwaiKeys != null)
+                    {
+                        _controller.Unwatch(true);
+                    }
+                    else
+                    {
+                        LogInConsole("FAIL", $"make sure to choosse a mogwai before trying to play.");
+                    }
                     break;
                 case "play":
-                    if (_controller.CurrentMogwayKeys != null && _controller.CurrentMogwayKeys.Mogwai != null)
+                    if (_controller.CurrentMogwaiKeys != null && _controller.CurrentMogwaiKeys.Mogwai != null)
                     {
                         State = SadGuiState.Play;
                     } else
@@ -206,6 +214,7 @@ namespace WoMSadGui.Consoles
         {
             if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Enter))
             {
+                DoAction("play");
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.C))
@@ -213,9 +222,9 @@ namespace WoMSadGui.Consoles
                 DoAction("create");
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.S))
+            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.W))
             {
-                DoAction("send");
+                DoAction("watch");
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.B))
@@ -301,13 +310,13 @@ namespace WoMSadGui.Consoles
                 Print(45, 0, "Funds:", Color.DarkCyan);
                 Print(52, 0, depositStr, Color.Orange);
 
-                if (WindowOffset > _controller.CurrentMogwayKeysIndex)
+                if (WindowOffset > _controller.CurrentMogwaiKeysIndex)
                 {
-                    WindowOffset = _controller.CurrentMogwayKeysIndex;
+                    WindowOffset = _controller.CurrentMogwaiKeysIndex;
                 }
-                else if(MaxRows < _controller.CurrentMogwayKeysIndex + 1)
+                else if(MaxRows < _controller.CurrentMogwaiKeysIndex + 1)
                 {
-                    WindowOffset = _controller.CurrentMogwayKeysIndex + 1 - MaxRows;
+                    WindowOffset = _controller.CurrentMogwaiKeysIndex + 1 - MaxRows;
                 }
                 
                 // only updated if we have keys
@@ -318,7 +327,7 @@ namespace WoMSadGui.Consoles
                     {
                         var mogwaiKeys = list[i];
                         var pos = i - WindowOffset;
-                        PrintRow(pos + HeaderPosition + 1, mogwaiKeys, mogwaiKeys.Address == _controller.CurrentMogwayKeys.Address, _controller.TaggedMogwaiKeys.Contains(mogwaiKeys));
+                        PrintRow(pos + HeaderPosition + 1, mogwaiKeys, mogwaiKeys.Address == _controller.CurrentMogwaiKeys.Address, _controller.TaggedMogwaiKeys.Contains(mogwaiKeys));
                     }
                     //PrintRow(pointer + headerPosition + 1, list[pointer], true);
                 }
@@ -346,8 +355,8 @@ namespace WoMSadGui.Consoles
             Print(3, index, !tagged ? " " : ">", !tagged ? Color.Black : Color.DeepSkyBlue);
             Print(1, index, !selected ? "  " : "=>", !selected ? Color.Black : Color.SpringGreen);
 
-            Color standard = GetColorStandard(mogwaiKeys.MogwaiKeysState, selected);
-            Color extState = GetMogwaiKeysStateColor(mogwaiKeys.MogwaiKeysState, selected);
+            Color standard = GetColorStandard(mogwaiKeys, selected);
+            Color extState = GetMogwaiKeysStateColor(mogwaiKeys, selected);
 
             Print(aPos, index, mogwaiKeys.Address.PadRight(36), standard);
             Print(sPos, index, mogwaiKeys.MogwaiKeysState.ToString().PadRight(6), extState);
@@ -358,9 +367,13 @@ namespace WoMSadGui.Consoles
             Print(gPos, index, goldStr, standard);
         }
 
-        private Color GetColorStandard(MogwaiKeysState mogwaiKeysState, bool selected)
+        private Color GetColorStandard(MogwaiKeys mogwaiKeys, bool selected)
         {
-            switch (mogwaiKeysState)
+            if (mogwaiKeys.IsUnwatched)
+            {
+                return selected ? Color.WhiteSmoke : Color.DarkGray;
+            }
+            switch (mogwaiKeys.MogwaiKeysState)
             {
                 case MogwaiKeysState.None:
                     return selected ? Color.WhiteSmoke : Color.DarkGray;
@@ -377,9 +390,13 @@ namespace WoMSadGui.Consoles
             }
         }
 
-        private Color GetMogwaiKeysStateColor(MogwaiKeysState mogwaiKeysState, bool selected)
+        private Color GetMogwaiKeysStateColor(MogwaiKeys mogwaiKeys, bool selected)
         {
-            switch (mogwaiKeysState)
+            if (mogwaiKeys.IsUnwatched)
+            {
+                return selected ? Color.WhiteSmoke : Color.DarkGray;
+            }
+            switch (mogwaiKeys.MogwaiKeysState)
             {
                 case MogwaiKeysState.None:
                     return selected ? Color.Red : Color.DarkRed;
