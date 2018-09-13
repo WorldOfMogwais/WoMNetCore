@@ -40,11 +40,11 @@ namespace WoMFramework.Game.Interaction
 
         private AdventureAction(int paramAdd1, int paramAdd2) : base(InteractionType.Adventure)
         {
-            string param1 = paramAdd1.ToString("0000");
+            var param1 = paramAdd1.ToString("0000");
             AdventureType = (AdventureType)int.Parse(param1.Substring(0, 1));
             ChallengeRating = int.Parse(param1.Substring(1));
 
-            string param2 = paramAdd2.ToString("0000");
+            var param2 = paramAdd2.ToString("0000");
             DifficultyType = (DifficultyType)int.Parse(param2.Substring(0, 1));
             AveragePartyLevel = int.Parse(param2.Substring(1));
 

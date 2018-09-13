@@ -134,13 +134,13 @@ namespace WoMFramework.Game.Model
                 return false;
             }
 
-            if (!HexHashUtil.TryHexPosConversion(Position, Size, Salted? hexValue.Salted : hexValue.UnSalted, out double result))
+            if (!HexHashUtil.TryHexPosConversion(Position, Size, Salted? hexValue.Salted : hexValue.UnSalted, out var result))
             {
                 Console.WriteLine($"CreateValue, failed trying to convert hex position.{Position}, {Size}, {Salted}");
                 return false;
             }
 
-            double modValue = (result % (Creation - MinRange)) + MinRange;
+            var modValue = (result % (Creation - MinRange)) + MinRange;
 
             if (modValue % 1 != 0)
             {

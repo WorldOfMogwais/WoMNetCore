@@ -1,15 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using SadConsole.Input;
 using System;
+using System.Linq;
 using System.Security;
 using log4net.Repository.Hierarchy;
 using SadConsole;
+using SadConsole.Controls;
+using WoMFramework.Game.Interaction;
 using WoMWallet.Node;
 using Console = SadConsole.Console;
+using WoMFramework.Game.Model;
 
 namespace WoMSadGui.Consoles
 {
-    public class PlayScreen : SadConsole.Console
+    public class PlayScreen : Console
     {
         private MogwaiController _controller;
 
@@ -20,11 +24,18 @@ namespace WoMSadGui.Consoles
 
         public SadGuiState State { get; set; }
 
-        public Console _playStatsConsole;
+        private Console _playStatsConsole;
+        private Console _info;
+        private ScrollingConsole _log;
+
+        private readonly Mogwai _mogwai;
+
+        private ControlsConsole _command2;
 
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
             _controller = mogwaiController;
+            _mogwai = _controller.CurrentMogwai ?? _controller.TestMogwai();
 
             _playStatsConsole = new PlayStatsConsole(mogwaiController, 44, 22);
             _playStatsConsole.Position = new Point(0, 0);
@@ -34,21 +45,77 @@ namespace WoMSadGui.Consoles
             _custom.Position = new Point(46, 0);
             Children.Add(_custom);
 
-            var _command = new ControlsConsole(86, 2);
-            _command.Position = new Point(0, 23);
-            _command.Fill(Color.Transparent, Color.DarkGray, null);
-            Children.Add(_command);
+            var _command1 = new ControlsConsole(86, 1);
+            _command1.Position = new Point(0, 23);
+            _command1.Fill(Color.Transparent, Color.DarkGray, null);
+            Children.Add(_command1);
 
-            var _log = new MogwaiConsole("Log", "", 86, 12);
-            _log.Position = new Point(0, 26);
+            _log = new ScrollingConsole(85, 13, 100);
+            _log.Position = new Point(0, 25);
             Children.Add(_log);
 
-            var _info = new MogwaiConsole("Info", "", 49, 14);
+            _info = new MogwaiConsole("Info", "", 49, 14);
             _info.Position = new Point(88, 24);
             Children.Add(_info);
 
+            _command2 = new ControlsConsole(8, 1);
+            _command2.Position = new Point(40, 0);
+            _command2.Fill(Color.Transparent, Color.DarkGray, null);
+            _info.Children.Add(_command2);
+
             State = SadGuiState.Play;
 
+            Init();
+            UpdateShift();
+        }
+
+        public void Init()
+        {
+            var btnNext = new Button(8, 1)
+            {
+                Position = new Point(0,0),
+                Text = "next"
+            };
+            btnNext.Click += (btn, args) =>
+            {
+                Evolve();
+            };
+            _command2.Add(btnNext);
+
+            
+        }
+
+        public void UpdateShift()
+        {
+            _info.Print(40, 1, "max.", Color.Cyan);
+
+            _info.Print( 1, 0, "Shift: ", Color.Gainsboro);
+            _info.Print( 8, 0, (_mogwai.CurrentShift.IsSmallShift ? "smallShift" : _mogwai.CurrentShift.Interaction.InteractionType.ToString()).PadRight(20), Color.Orange);
+            _info.Print( 1, 1, "Next: ", Color.Gainsboro);
+            if (_mogwai.Shifts.TryGetValue(_mogwai.Pointer + 1, out var shift))
+            {
+                _info.Print(8, 1, (shift.IsSmallShift ? "smallShift" : shift.Interaction.InteractionType.ToString()).PadRight(20), Color.LimeGreen);
+            }
+            else
+            {
+                _info.Print(8, 1, "...".PadRight(20), Color.Red);
+            }
+            _info.Print(31, 0, _mogwai.Pointer.ToString().PadLeft(8,'.'));
+            _info.Print(31, 1, _mogwai.Shifts.Keys.Max().ToString().PadLeft(8, '.'));
+
+            foreach (var entry in _mogwai.CurrentShift.History.LogEntries)
+            {
+                _log.MainCursor.Print(entry.ToString());
+                _log.MainCursor.NewLine();
+            }
+            
+        }
+
+        public void Evolve()
+        {
+            _mogwai.Evolve(out var history);
+
+            UpdateShift();
         }
 
         internal SadGuiState GetState()

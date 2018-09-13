@@ -11,17 +11,17 @@ namespace WoMFramework.Game.Model.Tests
         [Fact]
         public void GenderTest()
         {
-            Attribute genderAttr = AttributBuilder.Create("Gender")
+            var genderAttr = AttributBuilder.Create("Gender")
                 .Salted(false).SetPosition(2).SetSize(1).SetCreation(2).SetMaxRange(2).Build();
 
-            Dictionary<int, int> dict = new Dictionary<int, int>();
-            foreach (char b1 in Base58Encoding.Digits.ToCharArray())
+            var dict = new Dictionary<int, int>();
+            foreach (var b1 in Base58Encoding.Digits.ToCharArray())
             {
-                foreach (char b2 in Base58Encoding.Digits.ToCharArray())
+                foreach (var b2 in Base58Encoding.Digits.ToCharArray())
                 {
-                    string addr = "M" + b1 + b2 + "KtKS3AeNuRFWE5Qj9tFiNAahWvQMTiz";
+                    var addr = "M" + b1 + b2 + "KtKS3AeNuRFWE5Qj9tFiNAahWvQMTiz";
                     var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(addr));
-                    HexValue hexValue = 
+                    var hexValue = 
                         new HexValue(
                             new Shift(0D,
                             1530914381,
@@ -35,9 +35,9 @@ namespace WoMFramework.Game.Model.Tests
 
                     genderAttr.CreateValue(hexValue);
 
-                    int value = genderAttr.GetValue();
-                    int orgValue = HexHashUtil.GetHexVal(pubMogAddressHex[1]);
-                    if (dict.TryGetValue(value, out int count))
+                    var value = genderAttr.GetValue();
+                    var orgValue = HexHashUtil.GetHexVal(pubMogAddressHex[1]);
+                    if (dict.TryGetValue(value, out var count))
                     {
                         dict[value] = count + 1;
                     }

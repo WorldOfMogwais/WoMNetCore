@@ -116,7 +116,7 @@ namespace WoMFramework.Game.Combat
                 return true;
             }
 
-            for (int i = 0; i < MoveRange; i++)
+            for (var i = 0; i < MoveRange; i++)
             {
                 if (Distance.Calculate(Coordinate, target.Coordinate) <= AttackRange)
                 {

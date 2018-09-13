@@ -11,7 +11,7 @@ namespace WoMFramework.Tool.Tests
         [Fact]
         public void GenerateNameTest()
         {
-            HexValue hexValue = 
+            var hexValue = 
                 new HexValue(
                     new Shift(0D,
                     1530914381,

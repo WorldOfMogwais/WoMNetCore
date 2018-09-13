@@ -42,25 +42,25 @@ namespace WoMFramework.Game
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", GetHEader(LogType), Message);
+            return string.Format("{0} {1}", GetHeader(LogType), Message);
         }
 
-        private string GetHEader(LogType logType)
+        private string GetHeader(LogType logType)
         {
             switch (logType)
             {
                 case LogType.Info:
-                    return "[¬aINFO§]";
+                    return "[INFO]";
                 case LogType.Damg:
-                    return "[¬rDAMG§]";
+                    return "[DAMG]";
                 case LogType.Heal:
-                    return "[¬gHEAL§]";
+                    return "[HEAL]";
                 case LogType.Evnt:
-                    return "[¬YEVNT§]";
+                    return "[EVNT]";
                 case LogType.Comb:
-                    return "[¬yCOMB§]";
+                    return "[COMB]";
                 default:
-                    return "[¬aINFO§]";
+                    return "[INFO]";
             }
         }
 

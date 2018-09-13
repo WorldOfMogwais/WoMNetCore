@@ -27,15 +27,15 @@ namespace WoMFramework.Game.Model
         {
             var expPatterns = txHex.Replace('0', '8');
             var expPats = new List<string>();
-            for (int i = 0; i + 4 <= 44; i = i + 4)
+            for (var i = 0; i + 4 <= 44; i = i + 4)
             {
                 expPats.Add(expPatterns.Substring(i, 4));
             }
-            for (int i = 44; i + 3 <= 62; i = i + 3)
+            for (var i = 44; i + 3 <= 62; i = i + 3)
             {
                 expPats.Add(expPatterns.Substring(i, 3));
             }
-            for (int i = 62; i + 2 <= 64; i = i + 2)
+            for (var i = 62; i + 2 <= 64; i = i + 2)
             {
                 expPats.Add(expPatterns.Substring(i, 2));
             }
@@ -50,14 +50,14 @@ namespace WoMFramework.Game.Model
         /// <returns></returns>
         internal double GetExp(int cuurentLevel, Shift shift)
         {
-            int hexSize = shift.BkHex.Length;
-            int lazyExpLevel = (int)cuurentLevel / 10;
-            int lazyExp = 0;
+            var hexSize = shift.BkHex.Length;
+            var lazyExpLevel = (int)cuurentLevel / 10;
+            var lazyExp = 0;
 
-            for (int i = 0; i <= lazyExpLevel; i++)
+            for (var i = 0; i <= lazyExpLevel; i++)
             {
-                string exPat = _expPats[i % 18];
-                int indExp = shift.BkHex.IndexOf(exPat);
+                var exPat = _expPats[i % 18];
+                var indExp = shift.BkHex.IndexOf(exPat);
                 if (indExp != -1)
                 {
                     var charMultiplierA = shift.BkHex[(hexSize + indExp - 1)% hexSize];

@@ -38,11 +38,11 @@ namespace WoMFramework.Game.Interaction
 
         private LevelingAction(int paramAdd1, int paramAdd2) : base(InteractionType.Leveling)
         {
-            string param1 = paramAdd1.ToString("0000");
+            var param1 = paramAdd1.ToString("0000");
             LevelingType = (LevelingType)int.Parse(param1.Substring(0, 2));
             ClassType =  (ClassType)int.Parse(param1.Substring(2, 2));
 
-            string param2 = paramAdd2.ToString("0000");
+            var param2 = paramAdd2.ToString("0000");
             CurrentLevel = int.Parse(param2.Substring(0,2));
             ClassLevel = int.Parse(param2.Substring(2,2));
 

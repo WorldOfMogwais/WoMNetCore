@@ -19,9 +19,9 @@ namespace WoMSadGui.Consoles
             borderSurface.Print(width - footer.Length - 2, height + 1, footer, Color.DarkCyan, Color.Black);
             Children.Add(borderSurface);
 
-            for (int i = 0; i < Ascii.Logo.Length; i++)
+            for (var i = 0; i < Ascii.Logo.Length; i++)
             {
-                string str = Ascii.Logo[i];
+                var str = Ascii.Logo[i];
                 Print(4, i, $"[c:g b:0,0,0:Black:DarkCyan:DarkGoldenRod:DarkRed:Black:0,0,0:{str.Length}][c:g f:LimeGreen:Orange:{str.Length}]" + str, Color.Cyan, Color.Black);
             }
 

@@ -17,14 +17,14 @@ namespace WoMFramework.Game.Interaction.Tests
             //string actionType = parm1.Substring(2, 2);
             //string addParm = parm1.Substring(4, 4);
 
-            AdventureAction adventure1 = new AdventureAction(AdventureType.TestRoom, DifficultyType.Challenging, 2);
+            var adventure1 = new AdventureAction(AdventureType.TestRoom, DifficultyType.Challenging, 2);
             Assert.Equal(0.01040003m, adventure1.GetValue1());
             Assert.Equal(0.00001002m, adventure1.GetValue2());
 
-            decimal amount = adventure1.GetValue1();
-            decimal fee = adventure1.GetValue2();
+            var amount = adventure1.GetValue1();
+            var fee = adventure1.GetValue2();
 
-            AdventureAction adventure2 = (AdventureAction) Interaction.GetInteraction(amount, fee);
+            var adventure2 = (AdventureAction) Interaction.GetInteraction(amount, fee);
             Assert.Equal(0.01040003m, adventure2.GetValue1());
             Assert.Equal(0.00001002m, adventure2.GetValue2());
 
@@ -43,7 +43,7 @@ namespace WoMFramework.Game.Interaction.Tests
         {
             // Adventure adventure1 = new Adventure(AdventureType.TEST_ROOM, DifficultyType.CHALLENGING, 2);
 
-            Shift shift = new Shift(0D,
+            var shift = new Shift(0D,
                1535295740,
                "32f13027e869de56de3c2d5af13f572b67b5e75a18594013ec",
                39741,

@@ -26,7 +26,7 @@ namespace WoMFramework.Game
         /// <param name="shift"></param>
         public Dice(Shift shift)
         {
-            string height = shift.Height.ToString();
+            var height = shift.Height.ToString();
             height = height.PadLeft(height.Length + height.Length % 2, '0');
             _seed1 = HexHashUtil.HashSha256(shift.AdHex + height);
             _seed2 = HexHashUtil.HashSha256(shift.AdHex + shift.BkHex).Substring(1);
@@ -35,10 +35,10 @@ namespace WoMFramework.Game
 
         public Dice(Shift shift, int modifier)
         {
-            string height = shift.Height.ToString();
+            var height = shift.Height.ToString();
             height = height.PadLeft(height.Length + height.Length % 2, 'a');
 
-            string modifierStr = modifier.ToString();
+            var modifierStr = modifier.ToString();
             modifierStr = modifierStr.PadLeft(modifierStr.Length + modifierStr.Length % 2, 'a');
 
             _seed1 = HexHashUtil.HashSha256(HexHashUtil.HashSha256(modifierStr) + height);
@@ -63,10 +63,10 @@ namespace WoMFramework.Game
 
         public int Roll(int[] rollEvent)
         {
-            int result = 0;
+            var result = 0;
 
             var rolls = new List<int>();
-            for (int i = 0; i < rollEvent[0]; i++)
+            for (var i = 0; i < rollEvent[0]; i++)
             {
                 rolls.Add(Roll(rollEvent[1]));
             }
@@ -75,7 +75,7 @@ namespace WoMFramework.Game
             if (rollEvent.Length > 2 && rollEvent[2] > 0)
             {
                 var purgeXlowRolls = rollEvent[0] - rollEvent[2];
-                for (int j = 0; purgeXlowRolls > 0 && j  < purgeXlowRolls; j++ )
+                for (var j = 0; purgeXlowRolls > 0 && j  < purgeXlowRolls; j++ )
                 {
                     rolls.Remove(rolls.Min());
                 }
@@ -95,10 +95,10 @@ namespace WoMFramework.Game
 
         private int GetNext()
         {
-            int s1Val = HexHashUtil.GetHexVal(_seed1[_i1]);
-            int s2Val = HexHashUtil.GetHexVal(_seed2[_i2]);
-            int s3Val = HexHashUtil.GetHexVal(_seed3[_i3]);
-            int value = s1Val + s2Val + s3Val;
+            var s1Val = HexHashUtil.GetHexVal(_seed1[_i1]);
+            var s2Val = HexHashUtil.GetHexVal(_seed2[_i2]);
+            var s3Val = HexHashUtil.GetHexVal(_seed3[_i3]);
+            var value = s1Val + s2Val + s3Val;
             _i1 = (_i1 + 1) % _seed1.Length;
             _i2 = _i1 == 0 ? (_i2 + 1) % _seed2.Length : _i2;
             _i3 = _i2 == 0 ? (_i3 + 1) % _seed3.Length : _i3;

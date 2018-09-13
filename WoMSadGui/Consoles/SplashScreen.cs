@@ -30,7 +30,7 @@ namespace WoMSadGui.Consoles
             IsVisible = false;
 
             // Load the logo
-            Stream imageStream = TitleContainer.OpenStream("sad.png");
+            var imageStream = TitleContainer.OpenStream("sad.png");
             var image = Texture2D.FromStream(Global.GraphicsDevice, imageStream);
             imageStream.Dispose();
 
@@ -55,8 +55,8 @@ namespace WoMSadGui.Consoles
                         inst.IsFinished = true;
                     }
 
-                    Color[] colors = new Color[] { Color.Black, Color.Blue, Color.White, Color.Blue, Color.Black };
-                    float[] colorStops = new float[] { 0f, 0.2f, 0.5f, 0.8f, 1f };
+                    var colors = new Color[] { Color.Black, Color.Blue, Color.White, Color.Blue, Color.Black };
+                    var colorStops = new float[] { 0f, 0.2f, 0.5f, 0.8f, 1f };
 
                     Algorithms.GradientFill(Font.Size, new Point(_x, 12), 10, 45, new Rectangle(0, 0, Width, Height), new ColorGradient(colors, colorStops), SetForeground);
                 }
@@ -79,7 +79,7 @@ namespace WoMSadGui.Consoles
             {
                 CodeCallback = (i) =>
                 {
-                    Fade fadeEffect = new Fade();
+                    var fadeEffect = new Fade();
                     fadeEffect.AutoReverse = true;
                     fadeEffect.DestinationForeground = new ColorGradient(Color.Blue, Color.Yellow);
                     fadeEffect.FadeForeground = true;
@@ -88,8 +88,8 @@ namespace WoMSadGui.Consoles
                     fadeEffect.FadeDuration = 0.7f;
                     fadeEffect.RemoveOnFinished = true;
 
-                    List<Cell> cells = new List<Cell>();
-                    for (int index = 0; index < 10; index++)
+                    var cells = new List<Cell>();
+                    for (var index = 0; index < 10; index++)
                     {
                         var point = new Point(26, Height - 1).ToIndex(Width) + 3 + index;
                         cells.Add(Cells[point]);

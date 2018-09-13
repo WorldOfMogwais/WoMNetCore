@@ -14,8 +14,8 @@ namespace WoMFramework.Tool
             Contract.Ensures(Contract.Result<T[]>().Length == arrays.Sum(arr => arr.Length));
 
             var result = new T[arrays.Sum(arr => arr.Length)];
-            int offset = 0;
-            for (int i = 0; i < arrays.Length; i++)
+            var offset = 0;
+            for (var i = 0; i < arrays.Length; i++)
             {
                 var arr = arrays[i];
                 Buffer.BlockCopy(arr, 0, result, offset, arr.Length);

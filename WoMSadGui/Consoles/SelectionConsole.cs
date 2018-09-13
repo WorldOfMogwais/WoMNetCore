@@ -276,7 +276,7 @@ namespace WoMSadGui.Consoles
 
         public void LogInConsole(string type, string msg)
         {
-            string color = "khaki";
+            var color = "khaki";
             if (type == "DONE")
             {
                 color = "limegreen";
@@ -294,7 +294,7 @@ namespace WoMSadGui.Consoles
             if (IsReady)
             {
 
-                decimal deposit = _controller.GetDepositFunds();
+                var deposit = _controller.GetDepositFunds();
                 var depositStr = deposit < 10000 ? deposit.ToString("###0.0000").PadLeft(9) : "TYCOON".PadRight(9);
                 var lastBlock = _controller.WalletLastBlock;
                 if (lastBlock != null)
@@ -323,7 +323,7 @@ namespace WoMSadGui.Consoles
                 if (_controller.HasMogwayKeys)
                 {
                     var list = _controller.MogwaiKeysList;
-                    for (int i = WindowOffset; i < list.Count && i - WindowOffset < MaxRows; i++)
+                    for (var i = WindowOffset; i < list.Count && i - WindowOffset < MaxRows; i++)
                     {
                         var mogwaiKeys = list[i];
                         var pos = i - WindowOffset;
@@ -337,13 +337,13 @@ namespace WoMSadGui.Consoles
 
         private void PrintRow(int index, MogwaiKeys mogwaiKeys, bool selected = false, bool tagged = false)
         {
-            int aPos = 4;
-            int sPos = 41;
-            int fPos = 50;
-            int nPos = 62;
-            int rPos = 76;
-            int lPos = 86;
-            int gPos = 95;
+            var aPos = 4;
+            var sPos = 41;
+            var fPos = 50;
+            var nPos = 62;
+            var rPos = 76;
+            var lPos = 86;
+            var gPos = 95;
             var balance = mogwaiKeys.Balance;
             var balanceStr = balance < 1000 ? balance.ToString("##0.0000").PadLeft(8) : "RICH".PadRight(8);
             var mogwai = mogwaiKeys.Mogwai;
@@ -355,8 +355,8 @@ namespace WoMSadGui.Consoles
             Print(3, index, !tagged ? " " : ">", !tagged ? Color.Black : Color.DeepSkyBlue);
             Print(1, index, !selected ? "  " : "=>", !selected ? Color.Black : Color.SpringGreen);
 
-            Color standard = GetColorStandard(mogwaiKeys, selected);
-            Color extState = GetMogwaiKeysStateColor(mogwaiKeys, selected);
+            var standard = GetColorStandard(mogwaiKeys, selected);
+            var extState = GetMogwaiKeysStateColor(mogwaiKeys, selected);
 
             Print(aPos, index, mogwaiKeys.Address.PadRight(36), standard);
             Print(sPos, index, mogwaiKeys.MogwaiKeysState.ToString().PadRight(6), extState);

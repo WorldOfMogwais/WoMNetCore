@@ -128,12 +128,12 @@ namespace WoMFramework.Game.Model
 
             // deploy monsters and the adventurer
             Monster[] monsters = { Monsters.Rat };
-            for (int i = 0; i < monsters.Length; i++)
+            for (var i = 0; i < monsters.Length; i++)
             {
                 // TODO: Positioning monsters
                 while (true)
                 {
-                    Coord monsterCoord = Coord.Get(4, 4);
+                    var monsterCoord = Coord.Get(4, 4);
                     
                     if (WalkabilityMap[monsterCoord])
                     {
@@ -144,7 +144,7 @@ namespace WoMFramework.Game.Model
             }
 
             // TODO: Mogwais' initial coordinate should be the entering door's location.
-            Coord mogCoord = Coord.Get(length / 2, 1);
+            var mogCoord = Coord.Get(length / 2, 1);
             if (!walkabilityMap[mogCoord]) throw new Exception();
 
             mogwai.Coordinate = mogCoord;

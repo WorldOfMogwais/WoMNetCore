@@ -31,11 +31,11 @@ namespace WoMFramework.Game.Model
 
         internal void AddBaseAttackBonus(int value)
         {
-            int currentBaseAttackBonus = BaseAttackBonus[0] + value;
+            var currentBaseAttackBonus = BaseAttackBonus[0] + value;
 
             var baseAttackBonusList = new List<int>();
 
-            for (int i = currentBaseAttackBonus; i > 0; i = i - 5) {
+            for (var i = currentBaseAttackBonus; i > 0; i = i - 5) {
                 baseAttackBonusList.Add(i);
             }
             BaseAttackBonus = baseAttackBonusList.ToArray();

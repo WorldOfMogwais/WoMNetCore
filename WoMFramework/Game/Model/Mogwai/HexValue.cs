@@ -21,7 +21,7 @@ namespace WoMFramework.Game.Model
 
         public HexValue(Shift shift)
         {
-            string saltgrain = HexHashUtil.ByteArrayToString(BitConverter.GetBytes(shift.Time * Math.Pow(shift.Height, 2)));
+            var saltgrain = HexHashUtil.ByteArrayToString(BitConverter.GetBytes(shift.Time * Math.Pow(shift.Height, 2)));
             _salt = String.Concat(Enumerable.Repeat(saltgrain, (int)(64 / saltgrain.Length) + 1)).ToCharArray();
 
             _adHexChar = shift.AdHex.ToCharArray();

@@ -7,11 +7,12 @@ namespace WoMFramework.Game.Generator
     {
         public AdventureState AdventureState { get; set; }
 
-        public bool IsActive => AdventureState == AdventureState.Creation || AdventureState == AdventureState.Running;
+        public bool IsActive => AdventureState == AdventureState.Preparation 
+                             || AdventureState == AdventureState.Running;
 
         public Adventure()
         {
-            AdventureState = AdventureState.Creation;
+            AdventureState = AdventureState.Preparation;
         }
 
         public abstract void NextStep(Mogwai mogwai, Shift shift);

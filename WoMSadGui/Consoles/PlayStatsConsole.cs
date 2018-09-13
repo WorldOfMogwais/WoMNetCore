@@ -6,15 +6,17 @@ using WoMWallet.Node;
 
 namespace WoMSadGui.Consoles
 {
-    public class PlayStatsConsole : SadConsole.Console
+    public class PlayStatsConsole : Console
     {
         private readonly MogwaiController _controller;
+        private readonly Mogwai _mogwai;
 
         private readonly Basic _borderSurface;
 
         public PlayStatsConsole(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
             _controller = mogwaiController;
+            _mogwai = _controller.CurrentMogwai ?? _controller.TestMogwai();
 
             _borderSurface = new Basic(width + 2, height + 2, Font);
             _borderSurface.DrawBox(new Rectangle(0, 0, _borderSurface.Width, _borderSurface.Height),
@@ -27,12 +29,10 @@ namespace WoMSadGui.Consoles
 
         public void Init()
         {
-            var mogwai = _controller.CurrentMogwai ?? _controller.TestMogwai();
-
-            var nameStr = $"{mogwai.Name} .:{mogwai.CurrentLevel}:.";
+            var nameStr = $"{_mogwai.Name} .:{_mogwai.CurrentLevel}:.";
             nameStr = nameStr.PadLeft(22 + (nameStr.Length / 2)).PadRight(44);
             Print(0, 0, $"[c:g b:red:black:black:blue:{nameStr.Length}]" + nameStr, Color.Orange);
-            var alligmentGender = $".:-| {mogwai.Stats.MapAllignment()} {mogwai.GenderStr} |-:.";
+            var alligmentGender = $".:-| {_mogwai.Stats.MapAllignment()} {_mogwai.GenderStr} |-:.";
             alligmentGender = alligmentGender.PadLeft(22 + (alligmentGender.Length / 2)).PadRight(44);
             Print(0, 1, new ColoredString($"[c:g b:red:black:black:blue:{alligmentGender.Length}]" + alligmentGender));
 
@@ -43,28 +43,28 @@ namespace WoMSadGui.Consoles
             Print(31, 4, "Cleric", Color.RoyalBlue);
             Print(43, 4, "1", Color.Gold);
             Print(31, 5, "Unspent", Color.Gainsboro);
-            Print(43, 5, mogwai.LevelShifts.Count.ToString(), Color.Aqua);
+            Print(43, 5, _mogwai.LevelShifts.Count.ToString(), Color.Aqua);
 
-            CreateHealthBar(16, 2, Color.DarkGreen, Color.LimeGreen, mogwai.CurrentHitPoints, mogwai.MaxHitPoints);
-            CreateExperienceBar(31, 6, Color.DarkOrange, Color.Gold, mogwai.Exp, mogwai.XpToLevelUp);
+            CreateHealthBar(16, 2, Color.DarkGreen, Color.LimeGreen, _mogwai.CurrentHitPoints, _mogwai.MaxHitPoints);
+            CreateExperienceBar(31, 6, Color.DarkOrange, Color.Gold, _mogwai.Exp, _mogwai.XpToLevelUp);
 
 
-            PrintStat(1, 3, "STR", mogwai.Strength, mogwai.StrengthMod, 0);
-            PrintStat(1, 4, "DEX", mogwai.Dexterity, mogwai.DexterityMod, 0);
-            PrintStat(1, 5, "CON", mogwai.Constitution, mogwai.ConstitutionMod, 0);
-            PrintStat(1, 6, "INT", mogwai.Inteligence, mogwai.InteligenceMod, 0);
-            PrintStat(1, 7, "WIS", mogwai.Wisdom, mogwai.WisdomMod, 0);
-            PrintStat(1, 8, "CHA", mogwai.Charisma, mogwai.CharismaMod, 0);
+            PrintStat(1, 3, "STR", _mogwai.Strength, _mogwai.StrengthMod, 0);
+            PrintStat(1, 4, "DEX", _mogwai.Dexterity, _mogwai.DexterityMod, 0);
+            PrintStat(1, 5, "CON", _mogwai.Constitution, _mogwai.ConstitutionMod, 0);
+            PrintStat(1, 6, "INT", _mogwai.Inteligence, _mogwai.InteligenceMod, 0);
+            PrintStat(1, 7, "WIS", _mogwai.Wisdom, _mogwai.WisdomMod, 0);
+            PrintStat(1, 8, "CHA", _mogwai.Charisma, _mogwai.CharismaMod, 0);
 
-            PrintStat(16, 6, "AC", mogwai.ArmorClass, 0, 0);
-            PrintStat(16, 7, "INI", mogwai.Initiative, 0, 0);
-            PrintStat(16, 8, "AB", mogwai.AttackBonus(0), 0, 0);
+            PrintStat(16, 6, "AC", _mogwai.ArmorClass, 0, 0);
+            PrintStat(16, 7, "INI", _mogwai.Initiative, 0, 0);
+            PrintStat(16, 8, "AB", _mogwai.AttackBonus(0), 0, 0);
 
-            PrintWeapons(16, 10, mogwai);
+            PrintWeapons(16, 10, _mogwai);
 
-            PrintStat(1, 10, "FOR", mogwai.Fortitude, 0, 0);
-            PrintStat(1, 11, "REF", mogwai.Reflex, 0, 0);
-            PrintStat(1, 12, "WIL", mogwai.Will, 0, 0);
+            PrintStat(1, 10, "FOR", _mogwai.Fortitude, 0, 0);
+            PrintStat(1, 11, "REF", _mogwai.Reflex, 0, 0);
+            PrintStat(1, 12, "WIL", _mogwai.Will, 0, 0);
 
             _borderSurface.Print(0, 3, "[c:sg 204:1] ", Color.DarkCyan);
             _borderSurface.Print(45, 3, "[c:sg 185:1] ", Color.DarkCyan);
@@ -83,7 +83,7 @@ namespace WoMSadGui.Consoles
 
             _borderSurface.Print(45, 0, "[c:sg 203:1] ", Color.DarkCyan);
 
-            PrintWealth(31, 13, mogwai);
+            PrintWealth(31, 13, _mogwai);
             Print(30, 12, "[c:sg 205:14]" + "".PadRight(14), Color.DarkCyan);
             _borderSurface.SetGlyph(45, 13, 185, Color.DarkCyan);
             SetGlyph(29, 14, 200, Color.DarkCyan);
@@ -165,9 +165,9 @@ namespace WoMSadGui.Consoles
 
         public void PrintStat(int x, int y, string name, int value, int? mod, int temp)
         {
-            int xO = x;
+            var xO = x;
             var modCol = mod > 0 ? Color.LimeGreen : mod < 0 ? Color.Red : Color.Gray;
-            string modSig = mod > 0 ? "+" : "";
+            var modSig = mod > 0 ? "+" : "";
             Print(x, y, name.PadLeft(3), Color.Gainsboro);
             x += 4;
             Print(x, y, value.ToString("#0").PadLeft(2), Color.Orange);

@@ -24,7 +24,7 @@ namespace WoMFramework.Game.Model
 
         public override void NextStep(Mogwai mogwai, Shift shift)
         {
-            if (AdventureState == AdventureState.Creation)
+            if (AdventureState == AdventureState.Preparation)
             {
                 Entrance.Initialise(mogwai);
                 AdventureState = AdventureState.Running;
@@ -71,9 +71,9 @@ namespace WoMFramework.Game.Model
 
         protected override void GenerateRooms(Mogwai mogwai, Shift shift)
         {
-            int n = 1;                              // should be determined by information of shift and mogwai
+            var n = 1;                              // should be determined by information of shift and mogwai
 
-            bool[,] blueprint = new bool[n, n];     // can be substituted with an n*(n - 1) array
+            var blueprint = new bool[n, n];     // can be substituted with an n*(n - 1) array
 
             // TODO: create random connected graph from the blueprint.
             // TODO: create a dungeon with long main chain with few side rooms
@@ -83,7 +83,7 @@ namespace WoMFramework.Game.Model
             // TODO: assign random rooms with probabilities
             // here, the only room is deterministically a monster room
             var rooms = new Room[n];
-            for (int i = 0; i < n; i++)
+            for (var i = 0; i < n; i++)
                 rooms[i] = new SimpleRoom(this, mogwai);
 
             //// specify pointers

@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using WoMFramework.Game.Combat;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model;
 
 namespace WoMFramework.Game.Generator
 {
@@ -9,18 +13,18 @@ namespace WoMFramework.Game.Generator
         {
             switch (adventureAction.AdventureType)
             {
-                case Enums.AdventureType.TestRoom:
-                    //return CreateTestRoom(adventureAction.ChallengeRating);
+                case AdventureType.TestRoom:
+                    return CreateTestRoom(adventureAction.ChallengeRating);
                 default:
                     throw new NotImplementedException();
             }
         }
 
-        //private static TestRoom CreateTestRoom(int challengeRatingt)
-        //{
-        //    SimpleCombat simpleFight = new SimpleCombat(new SimpleRoom(null, null), new List<Monster> {Monsters.Rat, Monsters.Rat});
-        //    TestRoom testRoom = new TestRoom(simpleFight);
-        //    return testRoom;
-        //}
+        private static TestRoom CreateTestRoom(int challengeRatingt)
+        {
+            var simpleFight = new SimpleBrawl(new List<Monster> {Monsters.Rat, Monsters.Rat});
+            var testRoom = new TestRoom(simpleFight);
+            return testRoom;
+        }
     }
 }

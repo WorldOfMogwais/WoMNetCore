@@ -9,7 +9,7 @@ namespace WoMFramework.Tool
     {
         public static int GetHexVal(char hex)
         {
-            int val = (int)hex;
+            var val = (int)hex;
             //For uppercase A-F letters:
             //return val - (val < 58 ? 48 : 55);
             //For lowercase a-f letters:
@@ -20,17 +20,17 @@ namespace WoMFramework.Tool
 
         public static string ByteArrayToString(byte[] ba)
         {
-            StringBuilder hex = new StringBuilder(ba.Length * 2);
-            foreach (byte b in ba)
+            var hex = new StringBuilder(ba.Length * 2);
+            foreach (var b in ba)
                 hex.AppendFormat("{0:x2}", b);
             return hex.ToString();
         }
 
         public static byte[] StringToByteArray(String hex)
         {
-            int numberChars = hex.Length;
-            byte[] bytes = new byte[numberChars / 2];
-            for (int i = 0; i < numberChars; i += 2)
+            var numberChars = hex.Length;
+            var bytes = new byte[numberChars / 2];
+            for (var i = 0; i < numberChars; i += 2)
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             return bytes;
         }
@@ -44,7 +44,7 @@ namespace WoMFramework.Tool
                 {
                     return false;
                 }
-                for (int i = 0; i < length; i++)
+                for (var i = 0; i < length; i++)
                 {
                     //Console.Write($"[{i}] x:{hexStr[position + i]}, 16^{length - 1 - i} * {HexUtil.GetHexVal(hexStr[position + i])} ");
                     value += Math.Pow(16, length - 1 - i) * GetHexVal(hexStr[position + i]);
@@ -56,14 +56,14 @@ namespace WoMFramework.Tool
 
         public static string HashSha256(string hexString)
         {
-            byte[] rawBytes = StringToByteArray(hexString);
+            var rawBytes = StringToByteArray(hexString);
             return ByteArrayToString(HashSha256(rawBytes));
         }
 
         public static byte[] HashSha256(byte[] rawBytes)
         {
             // Create a SHA256   
-            using (SHA256 sha256Hash = SHA256.Create())
+            using (var sha256Hash = SHA256.Create())
             {
                 return sha256Hash.ComputeHash(rawBytes);
             }

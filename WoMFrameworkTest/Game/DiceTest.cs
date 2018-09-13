@@ -10,7 +10,7 @@ namespace WoMFramework.Game.Tests
         [Fact]
         public void RollDiceSimple()
         {
-            Shift shift = new Shift(0D,
+            var shift = new Shift(0D,
                1530914381,
                "32ad9e02792599dfdb6a9d0bc0b924da23bd96b1b7eb4f0a68",
                7234,
@@ -20,15 +20,15 @@ namespace WoMFramework.Game.Tests
                1.00m,
                0.0001m);
 
-            Dice dice = new Dice(shift);
-            Dictionary<int, int> probabilityDict = new Dictionary<int, int>();
+            var dice = new Dice(shift);
+            var probabilityDict = new Dictionary<int, int>();
 
-            int n = 1000000;
+            var n = 1000000;
 
-            for (int i = 0; i < 20 * n; i++)
+            for (var i = 0; i < 20 * n; i++)
             {
-                int roll = dice.Roll(20);
-                if (probabilityDict.TryGetValue(roll, out int count))
+                var roll = dice.Roll(20);
+                if (probabilityDict.TryGetValue(roll, out var count))
                 {
                     probabilityDict[roll] = count + 1;
                 }
@@ -48,7 +48,7 @@ namespace WoMFramework.Game.Tests
         [Fact]
         public void RollDiceModifierSimple()
         {
-            Shift shift = new Shift(0D,
+            var shift = new Shift(0D,
                1530914381,
                "32ad9e02792599dfdb6a9d0bc0b924da23bd96b1b7eb4f0a68",
                7234,
@@ -58,15 +58,15 @@ namespace WoMFramework.Game.Tests
                1.00m,
                0.0001m);
 
-            Dice dice = new Dice(shift, 2);
-            Dictionary<int, int> probabilityDict = new Dictionary<int, int>();
+            var dice = new Dice(shift, 2);
+            var probabilityDict = new Dictionary<int, int>();
 
-            int n = 1000000;
+            var n = 1000000;
 
-            for (int i = 0; i < 20 * n; i++)
+            for (var i = 0; i < 20 * n; i++)
             {
-                int roll = dice.Roll(20);
-                if (probabilityDict.TryGetValue(roll, out int count))
+                var roll = dice.Roll(20);
+                if (probabilityDict.TryGetValue(roll, out var count))
                 {
                     probabilityDict[roll] = count + 1;
                 }
@@ -86,7 +86,7 @@ namespace WoMFramework.Game.Tests
         [Fact]
         public void RollDiceEvent()
         {
-            Shift shift = new Shift(0D,
+            var shift = new Shift(0D,
                1530914381,
                "32ad9e02792599dfdb6a9d0bc0b924da23bd96b1b7eb4f0a68",
                7234,
@@ -96,12 +96,12 @@ namespace WoMFramework.Game.Tests
                1.00m,
                0.0001m);
 
-            Dice dice = new Dice(shift);
-            int n = 1000000;
-            int[] rollEvent = new int[] { 4, 6, 3 };
-            for (int i = 0; i < 20 * n; i++)
+            var dice = new Dice(shift);
+            var n = 1000000;
+            var rollEvent = new int[] { 4, 6, 3 };
+            for (var i = 0; i < 20 * n; i++)
             {
-                int roll = dice.Roll(rollEvent);
+                var roll = dice.Roll(rollEvent);
                 Assert.True(roll < 19 && roll > 2);
             }
 

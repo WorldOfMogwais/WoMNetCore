@@ -34,7 +34,7 @@ namespace WoMWallet.Tool
 
         public static void Persist<T>(string path, T obj)
         {
-            string objEncrypted = Encrypt(JsonConvert.SerializeObject(obj));
+            var objEncrypted = Encrypt(JsonConvert.SerializeObject(obj));
             File.WriteAllText(path, objEncrypted);
         }
 

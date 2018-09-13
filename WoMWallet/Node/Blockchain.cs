@@ -49,12 +49,12 @@ namespace WoMWallet.Node
         {
             await Task.Run(() =>
             {
-                int blockHeight = GetBlockCount();
+                var blockHeight = GetBlockCount();
                 var fromHeight = _blockHashDict.Keys.Count > 0 ? _blockHashDict.Keys.Max() : 0;
-                int bulkSize = 500;
+                var bulkSize = 500;
                 List<BlockhashPair> list;
-                int count = 0;
-                for (int i = fromHeight; i <= blockHeight; i++)
+                var count = 0;
+                for (var i = fromHeight; i <= blockHeight; i++)
                 {
                     count++;
                     if (count % bulkSize == 0 || i == blockHeight)
@@ -104,7 +104,7 @@ namespace WoMWallet.Node
         {
             var request = new RestRequest("getblock/{hash}", Method.GET);
             request.AddUrlSegment("hash", hash);
-            IRestResponse<Block> blockResponse = _client.Execute<Block>(request);
+            var blockResponse = _client.Execute<Block>(request);
             return blockResponse.Data;
         }
 
@@ -113,7 +113,7 @@ namespace WoMWallet.Node
             var request = new RestRequest("getblockhashes/{fromBlock}/{count}", Method.GET);
             request.AddUrlSegment("fromBlock", fromBlock);
             request.AddUrlSegment("count", count);
-            IRestResponse<List<BlockhashPair>> blockResponse = _client.Execute<List<BlockhashPair>>(request);
+            var blockResponse = _client.Execute<List<BlockhashPair>>(request);
             return blockResponse.Data;
         }
 
@@ -121,14 +121,14 @@ namespace WoMWallet.Node
         {
             var request = new RestRequest("getblockhash/{height}", Method.GET);
             request.AddUrlSegment("height", height);
-            IRestResponse blockResponse = _client.Execute(request);
+            var blockResponse = _client.Execute(request);
             return blockResponse.Content;
         }
 
         public int GetBlockCount()
         {
             var request = new RestRequest("getblockcount", Method.GET);
-            IRestResponse<int> blockResponse = _client.Execute<int>(request);
+            var blockResponse = _client.Execute<int>(request);
             return blockResponse.Data;
         }
 
@@ -136,7 +136,7 @@ namespace WoMWallet.Node
         {
             var request = new RestRequest("getbalance/{address}", Method.GET);
             request.AddUrlSegment("address", address);
-            IRestResponse<decimal> blockResponse = _client.Execute<decimal>(request);
+            var blockResponse = _client.Execute<decimal>(request);
             return blockResponse.Data;
         }
 
@@ -146,7 +146,7 @@ namespace WoMWallet.Node
             request.AddUrlSegment("minConf", minConf);
             request.AddUrlSegment("maxConf", maxConf);
             request.AddUrlSegment("address", address);
-            IRestResponse<List<UnspentTx>> blockResponse = _client.Execute<List<UnspentTx>>(request);
+            var blockResponse = _client.Execute<List<UnspentTx>>(request);
             return blockResponse.Data;
         }
 
@@ -154,7 +154,7 @@ namespace WoMWallet.Node
         {
             var request = new RestRequest("sendrawtransaction/{hex}", Method.GET);
             request.AddUrlSegment("hex", rawTransaction);
-            IRestResponse blockResponse = _client.Execute(request);
+            var blockResponse = _client.Execute(request);
             return blockResponse.Content;
         }
 
@@ -163,7 +163,7 @@ namespace WoMWallet.Node
             //:height/:numblocks
             var request = new RestRequest("listtransactions/{address}", Method.GET);
             request.AddUrlSegment("address", address);
-            IRestResponse<List<TxDetail>> blockResponse = _client.Execute<List<TxDetail>>(request);
+            var blockResponse = _client.Execute<List<TxDetail>>(request);
             return blockResponse.Data;
         }
 
@@ -172,7 +172,7 @@ namespace WoMWallet.Node
             //:height/:numblocks
             var request = new RestRequest("listmirrtransactions/{address}", Method.GET);
             request.AddUrlSegment("address", address);
-            IRestResponse<List<TxDetail>> blockResponse = _client.Execute<List<TxDetail>>(request);
+            var blockResponse = _client.Execute<List<TxDetail>>(request);
             if (blockResponse.Data == null)
             {
                 Log.Debug($"ListMirrorTransactions {address} {blockResponse.Content}");
@@ -204,7 +204,7 @@ namespace WoMWallet.Node
             }
 
             // create transaction
-            Transaction tx = mogwaiKey.CreateTransaction(unspentTxList, unspentAmount, toAddresses, amount, txFee);
+            var tx = mogwaiKey.CreateTransaction(unspentTxList, unspentAmount, toAddresses, amount, txFee);
 
             Log.Info($"signedRawTx: {tx.ToHex()}");
 
@@ -224,7 +224,7 @@ namespace WoMWallet.Node
         {
             var result = new Dictionary<double, Shift>();
 
-            List<TxDetail> allTxs = ListMirrorTransactions(mirroraddress);
+            var allTxs = ListMirrorTransactions(mirroraddress);
 
             var validTx = allTxs.Where(p => p.Confirmations > 0).OrderBy(p => p.Blocktime).ThenBy(p => p.Blockindex).ToList();
 
@@ -236,11 +236,11 @@ namespace WoMWallet.Node
 
             var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(mirroraddress));
 
-            bool creation = false;
-            int lastBlockHeight = 0;
+            var creation = false;
+            var lastBlockHeight = 0;
             foreach (var tx in validTx)
             {
-                decimal amount = Math.Abs(tx.Amount);
+                var amount = Math.Abs(tx.Amount);
                 if (!creation && amount < MogwaiCost)
                     continue;
 
@@ -251,7 +251,7 @@ namespace WoMWallet.Node
                 if (lastBlockHeight != 0 && lastBlockHeight + 1 < block.Height)
                 {
                     // add small shifts
-                    for (int i = lastBlockHeight + 1; i < block.Height; i++)
+                    for (var i = lastBlockHeight + 1; i < block.Height; i++)
                     {
                         result.Add(i, new Shift(result.Count(), pubMogAddressHex, i, _blockHashDict[i]));
                     }
@@ -265,7 +265,7 @@ namespace WoMWallet.Node
             // add small shifts
             if (creation)
             {
-                for (int i = lastBlockHeight + 1; i < _blockHashDict.Keys.Max(); i++)
+                for (var i = lastBlockHeight + 1; i < _blockHashDict.Keys.Max(); i++)
                 {
                     result.Add(i, new Shift(result.Count(), pubMogAddressHex, i, _blockHashDict[i]));
                 }

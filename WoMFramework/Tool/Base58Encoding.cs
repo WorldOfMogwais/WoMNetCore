@@ -13,8 +13,8 @@ namespace WoMFramework.Tool
         {
             //Contract.Requires<ArgumentNullException>(data != null);
             //Contract.Ensures(Contract.Result<byte[]>().Length == data.Length + CheckSumSizeInBytes);
-            byte[] checkSum = GetCheckSum(data);
-            byte[] dataWithCheckSum = ArrayHelpers.ConcatArrays(data, checkSum);
+            var checkSum = GetCheckSum(data);
+            var dataWithCheckSum = ArrayHelpers.ConcatArrays(data, checkSum);
             return dataWithCheckSum;
         }
 
@@ -23,9 +23,9 @@ namespace WoMFramework.Tool
         {
             //Contract.Requires<ArgumentNullException>(data != null);
             //Contract.Ensures(Contract.Result<byte[]>() == null || Contract.Result<byte[]>().Length + CheckSumSizeInBytes == data.Length);
-            byte[] result = ArrayHelpers.SubArray(data, 0, data.Length - CheckSumSizeInBytes);
-            byte[] givenCheckSum = ArrayHelpers.SubArray(data, data.Length - CheckSumSizeInBytes);
-            byte[] correctCheckSum = GetCheckSum(result);
+            var result = ArrayHelpers.SubArray(data, 0, data.Length - CheckSumSizeInBytes);
+            var givenCheckSum = ArrayHelpers.SubArray(data, data.Length - CheckSumSizeInBytes);
+            var correctCheckSum = GetCheckSum(result);
             if (givenCheckSum.SequenceEqual(correctCheckSum))
                 return result;
             else
@@ -41,22 +41,22 @@ namespace WoMFramework.Tool
 
             // Decode byte[] to BigInteger
             BigInteger intData = 0;
-            for (int i = 0; i < data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
             {
                 intData = intData * 256 + data[i];
             }
 
             // Encode BigInteger to Base58 string
-            string result = "";
+            var result = "";
             while (intData > 0)
             {
-                int remainder = (int)(intData % 58);
+                var remainder = (int)(intData % 58);
                 intData /= 58;
                 result = Digits[remainder] + result;
             }
 
             // Append `1` for each leading 0 byte
-            for (int i = 0; i < data.Length && data[i] == 0; i++)
+            for (var i = 0; i < data.Length && data[i] == 0; i++)
             {
                 result = '1' + result;
             }
@@ -77,9 +77,9 @@ namespace WoMFramework.Tool
 
             // Decode Base58 string to BigInteger 
             BigInteger intData = 0;
-            for (int i = 0; i < s.Length; i++)
+            for (var i = 0; i < s.Length; i++)
             {
-                int digit = Digits.IndexOf(s[i]); //Slow
+                var digit = Digits.IndexOf(s[i]); //Slow
                 if (digit < 0)
                     throw new FormatException(string.Format("Invalid Base58 character `{0}` at position {1}", s[i], i));
                 intData = intData * 58 + digit;
@@ -87,7 +87,7 @@ namespace WoMFramework.Tool
 
             // Encode BigInteger to byte[]
             // Leading zero bytes get encoded as leading `1` characters
-            int leadingZeroCount = s.TakeWhile(c => c == '1').Count();
+            var leadingZeroCount = s.TakeWhile(c => c == '1').Count();
             var leadingZeros = Enumerable.Repeat((byte)0, leadingZeroCount);
             var bytesWithoutLeadingZeros =
                 intData.ToByteArray()
@@ -115,8 +115,8 @@ namespace WoMFramework.Tool
             //Contract.Ensures(Contract.Result<byte[]>() != null);
 
             SHA256 sha256 = new SHA256Managed();
-            byte[] hash1 = sha256.ComputeHash(data);
-            byte[] hash2 = sha256.ComputeHash(hash1);
+            var hash1 = sha256.ComputeHash(data);
+            var hash2 = sha256.ComputeHash(hash1);
 
             var result = new byte[CheckSumSizeInBytes];
             Buffer.BlockCopy(hash2, 0, result, 0, result.Length);

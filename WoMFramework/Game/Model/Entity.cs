@@ -83,9 +83,9 @@ namespace WoMFramework.Game.Model
         // attack roll
         public int[] AttackRolls(Dice dice, int attackIndex, int criticalMinRoll = 21)
         {
-            int lastRoll = 0;
-            List<int> rolls = new List<int>();
-            for (int i = 0; i < 3; i++) {
+            var lastRoll = 0;
+            var rolls = new List<int>();
+            for (var i = 0; i < 3; i++) {
                 lastRoll = dice.Roll(DiceType.D20);
                 rolls.Add(lastRoll + AttackBonus(attackIndex));
                 if (lastRoll < criticalMinRoll)
@@ -100,7 +100,7 @@ namespace WoMFramework.Game.Model
         // damage
         public int DamageRoll(Dice dice)
         {
-            int damage = dice.Roll(Equipment.PrimaryWeapon.DamageRoll) + (Equipment.PrimaryWeapon.IsTwoHanded ? (int) Math.Floor(1.5 * StrengthMod) : StrengthMod);
+            var damage = dice.Roll(Equipment.PrimaryWeapon.DamageRoll) + (Equipment.PrimaryWeapon.IsTwoHanded ? (int) Math.Floor(1.5 * StrengthMod) : StrengthMod);
             return damage < 1 ? 1 : damage;
         }
 
@@ -113,22 +113,20 @@ namespace WoMFramework.Game.Model
                 {
                     return HealthState.Healthy;
                 }
-                else if (CurrentHitPoints > 0)
+                if (CurrentHitPoints > 0)
                 {
                     return HealthState.Injured;
                 }
-                else if (CurrentHitPoints == 0)
+                if (CurrentHitPoints == 0)
                 {
                     return HealthState.Disabled;
                 }
-                else if (CurrentHitPoints > -10)
+                if (CurrentHitPoints > -10)
                 {
                     return HealthState.Dying;
                 }
-                else
-                {
-                    return HealthState.Dead;
-                }
+
+                return HealthState.Dead;
             }
         }
 
@@ -145,8 +143,8 @@ namespace WoMFramework.Game.Model
         public List<Classes> Classes { get; }
         public int GetClassLevel(ClassType classType)
         {
-            Classes classes = Classes.Where(p => p.ClassType == classType).FirstOrDefault();
-            return classes == null ? 0 : classes.ClassLevel;
+            var classes = Classes.FirstOrDefault(p => p.ClassType == classType);
+            return classes?.ClassLevel ?? 0;
         }
 
         /// <summary>
@@ -167,40 +165,40 @@ namespace WoMFramework.Game.Model
         /// <param name="target"></param>
         internal void Attack(int turn, Entity target)
         {
-            Weapon weapon = Equipment.PrimaryWeapon;
+            var weapon = Equipment.PrimaryWeapon;
 
             // all attacks are calculated
-            for (int attackIndex = 0; attackIndex < BaseAttackBonus.Length; attackIndex++)
+            for (var attackIndex = 0; attackIndex < BaseAttackBonus.Length; attackIndex++)
             {
 
-                int[] attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
-                int attack = AttackRoll(attackRolls, target.ArmorClass, out int criticalCounts);
+                var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
+                var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
 
                 //string turnStr = $" + ¬g{turn.ToString("00")}§: ";
-                string attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
-                string attackIndexStr = (attackIndex + 1).ToString() + (attackIndex == 0 ? "st" : "th");
-                string message = $"¬C{Name}§[¬G{CurrentHitPoints}§] ¬y{attackIndexStr}§ " +
-                    $"attack ¬C{target.Name}§ with ¬c{weapon.Name}§ roll ¬Y{attackStr}§[¬a{target.ArmorClass}§]:";
+                var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
+                var attackIndexStr = (attackIndex + 1) + (attackIndex == 0 ? "st" : "th");
+                var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
+                    $"attack {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
 
                 if (attack > target.ArmorClass || criticalCounts > 0)
                 {
 
-                    int damage = DamageRoll(Dice);
-                    int criticalDamage = 0;
+                    var damage = DamageRoll(Dice);
+                    var criticalDamage = 0;
                     if (criticalCounts > 0)
                     {
-                        for (int i = 0; i < weapon.CriticalMultiplier - 1; i++)
+                        for (var i = 0; i < weapon.CriticalMultiplier - 1; i++)
                         {
                             criticalDamage += DamageRoll(Dice);
                         }
                     }
-                    string criticalStr = criticalDamage > 0 ? $"¬y(+{criticalDamage})§" : string.Empty;
-                    Mogwai.History.Add(LogType.Comb, $"{message} ¬Ghit for§ ¬y{damage}§{criticalStr} ¬Gdamage!§¬");
+                    var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
+                    Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
                     target.Damage(damage + criticalDamage, DamageType.Weapon);
                 }
                 else
                 {
-                    Mogwai.History.Add(LogType.Comb, $"{message} ¬Rfailed§!¬");
+                    Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
                 }
             }
         }
@@ -214,7 +212,7 @@ namespace WoMFramework.Game.Model
         /// <returns></returns>
         private int AttackRoll(int[] attackRolls, int armorClass, out int criticalCount)
         {
-            int attack = attackRolls[attackRolls.Length - 1];
+            var attack = attackRolls[attackRolls.Length - 1];
             if (attack > armorClass)
             {
                 criticalCount = attackRolls.Length - 1;
@@ -241,7 +239,7 @@ namespace WoMFramework.Game.Model
         /// <param name="healType"></param>
         public void Heal(int healAmount, HealType healType)
         {
-            int missingHealth = MaxHitPoints - CurrentHitPoints;
+            var missingHealth = MaxHitPoints - CurrentHitPoints;
             if (missingHealth <= 0 || healAmount <= 0)
             {
                 return;
@@ -252,7 +250,7 @@ namespace WoMFramework.Game.Model
                 healAmount = missingHealth;
             }
 
-            Mogwai.History.Add(LogType.Heal, $"¬C{Name}§ restores ¬G{healAmount}§ HP from {healType.ToString().ToLower()} healing.¬");
+            Mogwai.History.Add(LogType.Heal, $"{Coloring.Name(Name)} restores {Coloring.GetHeal(healAmount)} HP from {healType.ToString()} healing.");
             CurrentHitPoints += healAmount;
         }
 
@@ -268,12 +266,12 @@ namespace WoMFramework.Game.Model
                 return;
             }
 
-            Mogwai.History.Add(LogType.Damg, $"¬C{Name}§ suffers ¬R{damageAmount}§ HP from {damageType.ToString().ToLower()} damage.¬");
+            Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage.");
             CurrentHitPoints -= damageAmount;
 
             if (CurrentHitPoints < 1)
             {
-                Mogwai.History.Add(LogType.Damg, $"¬C{Name}§ got a deadly hit, healthstate is ¬R{HealthState.ToString().ToLower()}§.¬");
+                Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}.");
             }
         }
     }

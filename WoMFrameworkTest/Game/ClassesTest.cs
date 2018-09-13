@@ -7,7 +7,7 @@ namespace WoMFramework.Game.Model.Tests
         [Fact]
         public void NoClasstest()
         {
-            NoClass noClass = new NoClass();
+            var noClass = new NoClass();
             Assert.Single(noClass.BaseAttackBonus);
             Assert.Equal(0, noClass.BaseAttackBonus[0]);
             Assert.Equal(0, noClass.ClassLevel);
@@ -19,7 +19,7 @@ namespace WoMFramework.Game.Model.Tests
         public void BarbarianTest()
         {
 
-            Barbarian barbarian = new Barbarian();
+            var barbarian = new Barbarian();
 
             Assert.Single(barbarian.BaseAttackBonus);
             Assert.Equal(0, barbarian.BaseAttackBonus[0]);

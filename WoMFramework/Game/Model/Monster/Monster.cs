@@ -110,7 +110,7 @@ namespace WoMFramework.Game.Model
         public Monster Build()
         {
 
-            Monster monster = new Monster(Name, ChallengeRating, MonsterType, Experience)
+            var monster = new Monster(Name, ChallengeRating, MonsterType, Experience)
             {
                 SizeType = _sizeType,
                 Strength = _strength,

@@ -8,7 +8,7 @@ namespace WoMFramework.Tool.Tests
         [Fact]
         public void HashSha256Test()
         {
-            Shift shift = new Shift(0D,
+            var shift = new Shift(0D,
                 1530914381,
                 "32ad9e02792599dfdb6a9d0bc0b924da23bd96b1b7eb4f0a68",
                 7234,

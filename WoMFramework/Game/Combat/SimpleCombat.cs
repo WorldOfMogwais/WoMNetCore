@@ -17,7 +17,7 @@ namespace WoMFramework.Game.Combat
         {
             _maxRounds = maxRounds;
 
-            int m = 1;
+            var m = 1;
             var dice = new Dice(room.Parent.CreationShift, m++);
             _room = room;
             foreach (var monster in monsters)
@@ -40,7 +40,7 @@ namespace WoMFramework.Game.Combat
                 .ThenBy(s => s.Entity.Dexterity).ToArray();
 
             var heroes = _allies.Where(p => p.IsHero).Select(p => p.Entity).ToArray();
-            List<Entity> killedMonsters = new List<Entity>(_enemies.Count);
+            var killedMonsters = new List<Entity>(_enemies.Count);
 
             var heroesName = string.Join(",", initiativeOrder.Where(p => !p.IsMonster).Select(p => $"{p.Entity.Name} [{p.InititativeValue}]").ToArray());
             var monsters = string.Join(",", initiativeOrder.Where(p => p.IsMonster).Select(p => $"{p.Entity.Name} [{p.InititativeValue}]").ToArray());
@@ -49,12 +49,12 @@ namespace WoMFramework.Game.Combat
             // let's start the rounds ...
             for (_currentRound = 1; _currentRound < _maxRounds && _enemies.Count > 0; _currentRound++)
             {
-                int sec = (_currentRound - 1) * 6;
+                var sec = (_currentRound - 1) * 6;
                 Mogwai.History.Add(LogType.Evnt, $"[ROUND ¬G{_currentRound.ToString("00")}§] time: ¬a{(sec / 60).ToString("00")}§m:¬a{(sec % 60).ToString("00")}§s Monsters: {_enemies.Count} ({string.Join(",", _enemies.Select(p => p.Entity.Name))})¬");
 
-                for (int turn = 0; turn < initiativeOrder.Length; turn++)
+                for (var turn = 0; turn < initiativeOrder.Length; turn++)
                 {
-                    Combatant combatant = initiativeOrder[turn];
+                    var combatant = initiativeOrder[turn];
 
                     combatant.Replenish();
 
@@ -64,7 +64,7 @@ namespace WoMFramework.Game.Combat
                         continue;
                     }
 
-                    Combatant target = combatant.IsMonster ? _allies[0] : _enemies[0];
+                    var target = combatant.IsMonster ? _allies[0] : _enemies[0];
 
                     // move and attack if available
                     combatant.MoveAndTryAttack(target);
@@ -73,12 +73,12 @@ namespace WoMFramework.Game.Combat
                     {
                         if (target.IsMonster)
                         {
-                            Monster killedMonster = (Monster)target.Entity;
+                            var killedMonster = (Monster)target.Entity;
                             killedMonsters.Add(killedMonster);
 
-                            int expReward = killedMonster.Experience / heroes.Length;
+                            var expReward = killedMonster.Experience / heroes.Length;
                             //Heroes.ForEach(p => p.AddExp(expReward, killedMonster));
-                            for (int i = 0; i < heroes.Length; i++)
+                            for (var i = 0; i < heroes.Length; i++)
                                 heroes[i].AddExp(expReward, killedMonster);
 
                             _enemies.Remove(target);
@@ -122,8 +122,8 @@ namespace WoMFramework.Game.Combat
             {
                 if (p is Monster)
                 {
-                    Treasure treasure = ((Monster)p).Treasure;
-                    string treasureStr = treasure != null ? "¬Ga Treasure§" : "¬Rno Treasure§";
+                    var treasure = ((Monster)p).Treasure;
+                    var treasureStr = treasure != null ? "¬Ga Treasure§" : "¬Rno Treasure§";
                     Mogwai.History.Add(LogType.Evnt, $"¬YLooting§ the ¬C{p.Name}§ he has {treasureStr}!¬");
                 }
             });

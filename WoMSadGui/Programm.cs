@@ -179,7 +179,7 @@ namespace WoMSadGui
             inputDialog.AddButon("ok");
             inputDialog.Button.Click += (btn, args) =>
             {
-                string password = inputDialog.Input?.Text;
+                var password = inputDialog.Input?.Text;
                 _controller.CreateWallet(password);
                 if (_controller.IsWalletCreated)
                 {
@@ -202,7 +202,7 @@ namespace WoMSadGui
             dialog.AddButon("ok");
             dialog.Button.Click += (btn, args) =>
             {
-                string password = dialog.Input.Text;
+                var password = dialog.Input.Text;
                 _controller.UnlockWallet(password);
                 if (_controller.IsWalletUnlocked)
                 {
@@ -266,11 +266,11 @@ namespace WoMSadGui
         private static void Init()
         {
             _controller = new MogwaiController();
-            //SplashScreen();
-            //_state = SadGuiState.Start;
+            SplashScreen();
+            _state = SadGuiState.Start;
 
-            _state = SadGuiState.Play;
-            PlayScreen();
+            //_state = SadGuiState.Play;
+            //PlayScreen();
         }
 
         private static void SplashScreenCompleted()

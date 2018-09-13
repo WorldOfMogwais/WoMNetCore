@@ -20,6 +20,8 @@ namespace WoMFramework.Game.Model
 
         private static Shift _currentShift;
 
+        public Shift CurrentShift => Shifts[Pointer];
+
         public Dictionary<double, Shift> Shifts { get; }
 
         public MogwaiState MogwaiState { get; set; }
@@ -70,7 +72,7 @@ namespace WoMFramework.Game.Model
             Stats = new Stats(hexValue);
 
             // create abilities
-            int[] rollEvent = new int[] { 4, 6, 3 };
+            var rollEvent = new int[] { 4, 6, 3 };
             Gender = _currentShift.MogwaiDice.Roll(2, -1);
             Strength = _currentShift.MogwaiDice.Roll(rollEvent);
             Dexterity = _currentShift.MogwaiDice.Roll(rollEvent);
@@ -123,10 +125,32 @@ namespace WoMFramework.Game.Model
             history = _currentShift.History;
 
             // first we always calculated current lazy experience
-            double lazyExp = Experience.GetExp(CurrentLevel, _currentShift);
+            var lazyExp = Experience.GetExp(CurrentLevel, _currentShift);
             if (lazyExp > 0)
             {
                 AddExp(Experience.GetExp(CurrentLevel, _currentShift));
+            }
+
+            if (!_currentShift.IsSmallShift)
+            {
+                switch (_currentShift.Interaction.InteractionType)
+                {
+                    case InteractionType.Adventure:
+                        // finish adventure before starting a new one ...
+                        if (Adventure == null || !Adventure.IsActive)
+                        {
+                            Adventure = AdventureGenerator.Create(_currentShift,
+                                (AdventureAction) _currentShift.Interaction);
+                        }
+                        break;
+
+                    case InteractionType.Leveling:
+                        Console.WriteLine("Received a leveling action!");
+                        break;
+
+                    default:
+                        break;
+                }
             }
 
             // we go for the adventure if there is one up
@@ -138,29 +162,13 @@ namespace WoMFramework.Game.Model
 
             Adventure = null;
 
-
-            if (!_currentShift.IsSmallShift)
-            {
-                switch (_currentShift.Interaction.InteractionType)
-                {
-                    case InteractionType.Adventure:
-                        Adventure = AdventureGenerator.Create(_currentShift, (AdventureAction)_currentShift.Interaction);
-                        break;
-                    case InteractionType.Leveling:
-                        Console.WriteLine("Received a leveling action!");
-                        break;
-                    default:
-                        break;
-                }
-            }
-
             // lazy health regeneration
             if (MogwaiState == MogwaiState.None)
             {
                 Heal(_currentShift.IsSmallShift ? 2 * CurrentLevel : CurrentLevel, HealType.Rest);
             }
 
-            History.Add(LogType.Info, $"Evolved {Name} shift ¬G{Pointer}§!¬");
+            History.Add(LogType.Info, $"Evolved {Coloring.Name(Name)} shift {Coloring.Exp(Pointer)}!");
 
             // no more shifts to proccess, no more logging possible to the game log
             _currentShift = null;
@@ -175,14 +183,10 @@ namespace WoMFramework.Game.Model
         /// <param name="monster"></param>
         public override void AddExp(double exp, Monster monster = null)
         {
-            if (monster == null)
-            {
-                History.Add(LogType.Info, $"You just earned ¬G+{exp}§ experience!¬");
-            }
-            else
-            {
-                History.Add(LogType.Info, $"The ¬C{monster.Name}§ gave you ¬G+{exp}§!¬");
-            }
+            History.Add(LogType.Info,
+                monster == null
+                    ? $"You just earned +{Coloring.Exp(exp)} experience!"
+                    : $"The {Coloring.Name(monster.Name)} gave you +{Coloring.Exp(exp)}!");
 
             Exp += exp;
 
@@ -200,8 +204,8 @@ namespace WoMFramework.Game.Model
         /// <param name="shift"></param>
         private void LevelUp(Shift shift)
         {
-            History.Add(LogType.Info, $"¬YYou're mogwai suddenly feels an ancient power around him.§¬");
-            History.Add(LogType.Info, $"¬YCongratulations he just made the§ ¬G{CurrentLevel}§ ¬Yth level!§¬");
+            History.Add(LogType.Info, Coloring.LevelUp("You're mogwai suddenly feels an ancient power around him."));
+            History.Add(LogType.Info, $"{Coloring.LevelUp("Congratulations he just made the")} {Coloring.Green(CurrentLevel.ToString())} {Coloring.LevelUp("th level!")}");
 
             // hit points roll
             HitPointLevelRolls.Add(shift.MogwaiDice.Roll(HitPointDice));
@@ -222,7 +226,7 @@ namespace WoMFramework.Game.Model
 
         public void Print()
         {
-            Shift shift = Shifts[0];
+            var shift = Shifts[0];
 
             Console.WriteLine("*** Mogwai Nascency Transaction ***");
             Console.WriteLine($"- Time: {shift.Time}");

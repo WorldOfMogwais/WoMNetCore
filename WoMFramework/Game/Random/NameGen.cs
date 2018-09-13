@@ -13,11 +13,11 @@ namespace WoMFramework.Game.Random
 
         public static string GenerateName(HexValue hexValue)
         {
-            int minLength = GetMinLength(hexValue.UnSalted, 3, 9);
+            var minLength = GetMinLength(hexValue.UnSalted, 3, 9);
             
             string[] consonants = { "b", "c", "ck", "d", "f", "g", "h", "j", "k", "l", "m", "l", "n", "p", "q", "r", "s", "sh", "zh", "t", "v", "w", "x" };
             string[] vowels = { "a", "e", "i", "o", "u", "ae", "y" };
-            string name = "";
+            var name = "";
             double seedValues;
             if (HexHashUtil.TryHexPosConversion(4, 2, hexValue.UnSalted,out seedValues))
             {
@@ -27,8 +27,8 @@ namespace WoMFramework.Game.Random
             {
                 name += vowels[(int)seedValues % vowels.Length];
             }
-            int ind = 8;
-            bool consonanNow = true;
+            var ind = 8;
+            var consonanNow = true;
             while (name.Length < minLength)
             {
                 if (consonanNow && HexHashUtil.TryHexPosConversion(ind, 2, hexValue.UnSalted, out seedValues))
@@ -52,10 +52,10 @@ namespace WoMFramework.Game.Random
 
         private static int GetMinLength(List<char[]> unSalted, int minLength, int maxLength)
         {
-            int result = 0;
-            for(int i = 1; i < 10; i ++)
+            var result = 0;
+            for(var i = 1; i < 10; i ++)
             {
-                if (HexHashUtil.TryHexPosConversion(i, 1, unSalted, out double value))
+                if (HexHashUtil.TryHexPosConversion(i, 1, unSalted, out var value))
                 {
                     result += (int)value;
                 }

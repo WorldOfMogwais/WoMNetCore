@@ -60,7 +60,7 @@ namespace WoMWallet.Node
             _extkey = extkey;
             _network = network;
             _pubKey = extkey.PrivateKey.PubKey;
-            if (TryMirrorPubKey(extkey.PrivateKey.PubKey, out PubKey mirrorPubKey))
+            if (TryMirrorPubKey(extkey.PrivateKey.PubKey, out var mirrorPubKey))
             {
                 _mirrorPubKey = mirrorPubKey;
             }
@@ -75,7 +75,7 @@ namespace WoMWallet.Node
         {
             var pubKeyStr = HexHashUtil.ByteArrayToString(pubKey.ToBytes());
 
-            char[] reversedArray = pubKeyStr.Substring(10, 54).ToCharArray();
+            var reversedArray = pubKeyStr.Substring(10, 54).ToCharArray();
             Array.Reverse(reversedArray);
 
             var mirrorPubKeyStr =
@@ -144,7 +144,7 @@ namespace WoMWallet.Node
         public Transaction CreateTransaction(List<UnspentTx> unspentTxList, decimal unspentAmount, string[] toAddresses, decimal amount, decimal txFee)
         {
             // creating a new transaction
-            Transaction tx = Transaction.Create(_network);
+            var tx = Transaction.Create(_network);
 
             // adding all unspent txs to input
             unspentTxList.ForEach(p =>

@@ -7,7 +7,7 @@ namespace WoMWallet.Node
         [Fact]
         public void WalletTestPersist()
         {
-            MogwaiWallet wallet = new MogwaiWallet("1234", "test.dat");
+            var wallet = new MogwaiWallet("1234", "test.dat");
             var mogwaiKeys = wallet.MogwaiKeyDict["MWG1HtzRAjZMxQDzeoFoHQbzDygGR13aWG"];
             Assert.Equal("MWG1HtzRAjZMxQDzeoFoHQbzDygGR13aWG", mogwaiKeys.Address);
             Assert.True(mogwaiKeys.HasMirrorAddress);
@@ -17,7 +17,7 @@ namespace WoMWallet.Node
         [Fact]
         public void WalletCreation()
         {
-            MogwaiWallet wallet = new MogwaiWallet();
+            var wallet = new MogwaiWallet();
             Assert.False(wallet.IsCreated);
             Assert.False(wallet.IsUnlocked);
         }
@@ -25,7 +25,7 @@ namespace WoMWallet.Node
         [Fact]
         public void WalletUnlock()
         {
-            MogwaiWallet wallet = new MogwaiWallet("test.dat");
+            var wallet = new MogwaiWallet("test.dat");
             Assert.True(wallet.IsCreated);
             Assert.False(wallet.IsUnlocked);
             wallet.Unlock("1234");
@@ -35,7 +35,7 @@ namespace WoMWallet.Node
         [Fact]
         public void WalletDeposit()
         {
-            MogwaiWallet wallet = new MogwaiWallet("test.dat");
+            var wallet = new MogwaiWallet("test.dat");
             Assert.Null(wallet.Deposit);
             wallet.Unlock("1234");
             Assert.NotNull(wallet.Deposit);

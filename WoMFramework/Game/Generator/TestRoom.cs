@@ -1,29 +1,33 @@
-﻿namespace WoMFramework.Game.Generator
+﻿using WoMFramework.Game.Combat;
+using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model;
+
+namespace WoMFramework.Game.Generator
 {
-    //public class TestRoom : Adventure
-    //{
-    //    private SimpleCombat simpleFight;
+    public class TestRoom : Adventure
+    {
+        private SimpleBrawl simpleFight;
 
-    //    public TestRoom(SimpleCombat simpleFight)
-    //    {
-    //        this.simpleFight = simpleFight;
-    //    }
+        public TestRoom(SimpleBrawl simpleFight)
+        {
+            this.simpleFight = simpleFight;
+        }
 
-    //    public override void NextStep(Mogwai mogwai, Shift shift)
-    //    {
-    //        if (AdventureState == AdventureState.CREATION)
-    //        {
-    //            simpleFight.Create(mogwai, shift);
-    //            AdventureState = AdventureState.RUNNING;
-    //        }
-            
-    //        if (!simpleFight.Run())
-    //        {
-    //            AdventureState = AdventureState.FAILED;
-    //            return;
-    //        }
+        public override void NextStep(Mogwai mogwai, Shift shift)
+        {
+            if (AdventureState == AdventureState.Preparation)
+            {
+                simpleFight.Prepare(mogwai, shift);
+                AdventureState = AdventureState.Running;
+            }
 
-    //        AdventureState = AdventureState.COMPLETED;
-    //    }
-    //}
+            if (!simpleFight.Run())
+            {
+                AdventureState = AdventureState.Failed;
+                return;
+            }
+
+            AdventureState = AdventureState.Completed;
+        }
+    }
 }
