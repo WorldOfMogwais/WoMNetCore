@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using GoRogue;
+using GoRogue.Pathing;
 using WoMFramework.Game.Model;
+using Direction = WoMFramework.Game.Model.Direction;
 
 namespace WoMFramework.Game.Combat
 {
     public class Combatant
     {
-        private Tile _currentTile;
+        private static readonly Distance Distance = Distance.MANHATTAN;
+
+        private Coord _coordinate = Coord.Get(0, 0);
         private readonly Room _room;
         public readonly Dungeon Dungeon;
         public readonly bool IsMonster;
@@ -21,13 +26,24 @@ namespace WoMFramework.Game.Combat
         public uint AttackRange { get; private set; }
         public uint RemainingMove { get; set; }
 
-        public Tile CurrentTile
+        //public Tile CurrentTile
+        //{
+        //    get => _currentTile;
+        //    set
+        //    {
+        //        _currentTile = value;
+        //        value.IsOccupied = true;
+        //    }
+        //}
+
+        public Coord Coordinate
         {
-            get => _currentTile;
+            get => _coordinate;
             set
-            {
-                _currentTile = value;
-                value.IsOccupied = true;
+            { 
+                _room.WalkabilityMap[_coordinate] = true;
+                _room.WalkabilityMap[value] = false;
+                _coordinate = value;
             }
         }
 
@@ -37,10 +53,7 @@ namespace WoMFramework.Game.Combat
 
             _room = room;
             Dungeon = room.Parent;
-            if (room.TryGetTile(entity.Coordinate, out Tile tile))
-                _currentTile = tile;
-            else
-                throw new Exception();
+            _coordinate = entity.Coordinate ?? throw new Exception();
 
             System.Diagnostics.Debug.WriteLine($"{entity.Name} is spawned at {entity.Coordinate}");
 
@@ -54,51 +67,32 @@ namespace WoMFramework.Game.Combat
             IsHero = entity is Mogwai;
         }
 
+        //private void Move()
+
         public void Replenish()
         {
             RemainingMove = MoveRange;
         }
 
-
-        private void Move(Tile tile)
+        /// <summary>
+        /// Attempts to move to an orthogonally adjacent coordinate.
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <returns></returns>
+        public bool TryMove(Coord destination)
         {
-            CurrentTile.IsOccupied = false;
-            CurrentTile = tile;
-            RemainingMove--;
-            System.Diagnostics.Debug.WriteLine($"{Entity.Name} moves to {CurrentTile}");
-        }
-
-        public bool TryMoveTo(Direction direction)
-        {
-            if (CurrentTile.Sides[(int)direction]?.IsBlocked ?? false)
+            if (RemainingMove == 0)
                 return false;
 
-            if (_room.TryGetTile(CurrentTile.Coordinate + Coordinate.Direction(direction), out Tile destination))
-            {
-                Move(destination);
-                return true;
-            }
+            if (Coord.EuclideanDistanceMagnitude(Coordinate, destination) != 1)
+                return false;
 
-            return false;
-        }
+            if (!_room.WalkabilityMap[destination])
+                return false;
 
-        public void MoveTowardDestination(Tile destination)
-        {
-            if (destination.Parent != _room)
-                throw new Exception();
-
-            var path = CurrentTile.GetShortestPath(destination);
-            for (int i = 0; i < MoveRange; i++)
-                Move(path[i + 1]);
-        }
-
-        public void MoveArbitrarily()
-        {
-            while (true)
-            {
-                if (TryMoveTo((Direction)Dungeon.DungeonDice.Roll(4, -1)))
-                    return;
-            }
+            Coordinate = destination;
+            RemainingMove--;
+            return true;
         }
 
         /// <summary>
@@ -109,16 +103,30 @@ namespace WoMFramework.Game.Combat
             if (target._room != _room)
                 throw new Exception();
 
-            var path = _currentTile.GetShortestPath(target.CurrentTile);
+            var pathFinding = new AStar(_room.WalkabilityMap, Distance.MANHATTAN);
+
+            var path = pathFinding.ShortestPath(Coordinate, target.Coordinate, true);
+
+            if (path == null)
+            {
+                if (Distance.Calculate(Coordinate, target.Coordinate) > AttackRange)
+                    return false;
+
+                Entity.Attack(0, target.Entity);
+                return true;
+            }
+
             for (int i = 0; i < MoveRange; i++)
             {
-                if (path.Length < AttackRange)
+                if (Distance.Calculate(Coordinate, target.Coordinate) <= AttackRange)
                 {
-                    System.Diagnostics.Debug.WriteLine($"{Entity.Name} in {CurrentTile} attacked {target.Entity.Name} in {target.CurrentTile}");
+                    System.Diagnostics.Debug.WriteLine($"{Entity.Name} in {Entity.Coordinate} attacked {target.Entity.Name} in {target.Coordinate}");
                     Entity.Attack(0, target.Entity);    // why Entity.Attack() has turn parameter?
                     return true;
                 }
-                Move(path[i + 1]);
+
+                if (!TryMove(path.GetStep(i)))
+                    throw new Exception();
             }
 
             return false;

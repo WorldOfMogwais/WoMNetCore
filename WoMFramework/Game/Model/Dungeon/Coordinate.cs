@@ -1,5 +1,6 @@
 ﻿using System;
 using static System.Math;
+using GoRogue;
 
 namespace WoMFramework.Game.Model
 {
@@ -10,6 +11,7 @@ namespace WoMFramework.Game.Model
     /// <summary>
     /// Simple 2D Cartesian coordinate
     /// </summary>
+    [Obsolete("Use GoRogue.Coord instead", true)]
     public struct Coordinate : IEquatable<Coordinate>
     {
         private static readonly Coordinate[] Directions =

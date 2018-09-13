@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GoRogue;
 using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Model
@@ -10,14 +11,7 @@ namespace WoMFramework.Game.Model
         public string Name { get; set; }
 
         public int Gender { get; set; }
-        public string MapGender
-        {
-            get
-            {
-                string gender = ((GenderType)Gender).ToString();
-                return gender.Substring(0,1) + gender.Substring(1).ToLower();
-            }
-        }
+        public string GenderStr => ((GenderType)Gender).ToString();
 
         public SizeType SizeType { get; set; }
 
@@ -46,7 +40,7 @@ namespace WoMFramework.Game.Model
         #endregion
 
         // current position
-        public Coordinate Coordinate { get; set; }
+        public Coord Coordinate { get; set; }
 
         // base speed
         public int BaseSpeed { get; set; }

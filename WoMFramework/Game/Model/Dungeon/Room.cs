@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using GoRogue;
+using GoRogue.MapGeneration.Generators;
+using GoRogue.MapViews;
 using WoMFramework.Game.Combat;
 
 namespace WoMFramework.Game.Model
@@ -8,57 +11,35 @@ namespace WoMFramework.Game.Model
     {
         public Dungeon Parent;
 
-        public List<Corridor> OutgoingDoors;
+        public ArrayMap<bool> WalkabilityMap { get; protected set; }
 
-        public List<Corridor> IncomingDoors;
-
-        public Tile[,] Floor { get; protected set; }
-
-        public int Level { get; protected set; }
-        public int Width { get; protected set; }
-        public int Length { get; protected set; }
-
-
-        //public Tile[,] Floor { get; protected set; }
-
-        protected readonly bool IsHidden;
-
-        protected readonly bool Trapped;    // TODO
-
-        protected readonly bool Blocked;    // needs door breaching
-
-        // Ideas
-        private int _layer = 1;              // don't know what to do with this
-        private int _illuminance;            // affects initiative?
-        // random encounters with special environments (e.g. a barrel full of blackpowder)
-        // ornaments, furnitures
-
-        //public RoomType Type { get; private set; }
+        public int Width => WalkabilityMap.Width;
+        public int Height => WalkabilityMap.Height;
 
         protected Room(Dungeon parent)
         {
             Parent = parent;
         }
 
-        public bool TryGetTile(Coordinate coord, out Tile tile)
-        {
-            if (coord.X >= Width || coord.Y >= Length || coord.X < 0 || coord.Y < 0)
-            {
-                tile = null;
-                return false;
-            }
+        //public bool TryGetTile(Coordinate coord, out Tile tile)
+        //{
+        //    if (coord.X >= Width || coord.Y >= Length || coord.X < 0 || coord.Y < 0)
+        //    {
+        //        tile = null;
+        //        return false;
+        //    }
 
-            tile = Floor[coord.X, coord.Y];
-            return true;
-        }
+        //    tile = Floor[coord.X, coord.Y];
+        //    return true;
+        //}
 
-        public IEnumerable<Tile> GetNeighbours(Coordinate coordinate)
-        {
-            if (!TryGetTile(coordinate, out Tile tile)) yield break;
-            for (int i = 0; i < 4; i++)
-                if (TryGetTile(tile.Coordinate.Neighbour((Direction)i), out Tile neighbour))
-                    yield return neighbour;
-        }
+        //public IEnumerable<Tile> GetNeighbours(Coordinate coordinate)
+        //{
+        //    if (!TryGetTile(coordinate, out Tile tile)) yield break;
+        //    for (int i = 0; i < 4; i++)
+        //        if (TryGetTile(tile.Coordinate.Neighbour((Direction)i), out Tile neighbour))
+        //            yield return neighbour;
+        //}
 
         public abstract bool Enter();
 
@@ -67,13 +48,13 @@ namespace WoMFramework.Game.Model
 
         }
 
-        // create pointers
-        public static void Connect(Room a, Room b)
-        {
-            var corridor = new Corridor(a, b);
-            a.OutgoingDoors.Add(corridor);
-            b.IncomingDoors.Add(corridor);
-        }
+        //// create pointers
+        //public static void Connect(Room a, Room b)
+        //{
+        //    var corridor = new Corridor(a, b);
+        //    a.OutgoingDoors.Add(corridor);
+        //    b.IncomingDoors.Add(corridor);
+        //}
     }
 
     // not have to be inherited class of Room 
@@ -116,16 +97,8 @@ namespace WoMFramework.Game.Model
         }
 
         public override bool Enter()
-        {
-            if (Blocked)
-            {
-                //  need breaching
-            }
-
-            if (Trapped)
-            {
-                // TODO: Trap interaction
-            }
+        { 
+            // door breaching, traps etc
 
             // calculate initiate here maybe?
 
@@ -147,43 +120,36 @@ namespace WoMFramework.Game.Model
 
         public SimpleRoom(Dungeon parent, Mogwai mogwai) : base(parent)
         {
-            const int length = 5;
+            const int length = 7;
 
-            Width = length;
-            Length = length;
-            var floor = new Tile[length, length];
-
-            // Initialise Tiles
-            for (int i = 0; i < length; i++)
-            for (int j = 0; j < length; j++)
-                floor[i, j] = new StoneTile(this, new Coordinate(i, j));
-
+            var walkabilityMap = new ArrayMap<bool>(length, length);
+            RectangleMapGenerator.Generate(walkabilityMap);
+            WalkabilityMap = walkabilityMap;
 
             // deploy monsters and the adventurer
             Monster[] monsters = { Monsters.Rat };
             for (int i = 0; i < monsters.Length; i++)
             {
+                // TODO: Positioning monsters
                 while (true)
                 {
-                    //var x = parent.DungeonDice.Roll(length, -1);
-                    //var y = parent.DungeonDice.Roll(length, -1);
-                    var x = 4;
-                    var y = 4;
-                    Tile tile = floor[x, y];
-                    if (!tile.IsOccupied)
+                    Coord monsterCoord = Coord.Get(4, 4);
+                    
+                    if (WalkabilityMap[monsterCoord])
                     {
-                        monsters[i].Coordinate = new Coordinate(x, y);
+                        monsters[i].Coordinate = monsterCoord;
                         break;
                     }
                 }
             }
 
-            mogwai.Coordinate = new Coordinate(length / 2, 0);
+            // TODO: Mogwais' initial coordinate should be the entering door's location.
+            Coord mogCoord = Coord.Get(length / 2, 1);
+            if (!walkabilityMap[mogCoord]) throw new Exception();
 
-            Floor = floor;
+            mogwai.Coordinate = mogCoord;
 
             _fight = new SimpleCombat(this, new []{mogwai}, monsters);
-            //_fight.Create(mogwai, Parent.CreationShift);
         }
 
 

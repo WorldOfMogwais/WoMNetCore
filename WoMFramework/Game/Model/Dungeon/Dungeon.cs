@@ -86,11 +86,11 @@ namespace WoMFramework.Game.Model
             for (int i = 0; i < n; i++)
                 rooms[i] = new SimpleRoom(this, mogwai);
 
-            // specify pointers
-            for (int i = 0; i < n; i++)
-            for (int j = i + 1; j < n; j++)    // only concern upper diagonal of the matrix
-                if (blueprint[i, j])
-                    Room.Connect(rooms[i], rooms[j]);
+            //// specify pointers
+            //for (int i = 0; i < n; i++)
+            //for (int j = i + 1; j < n; j++)    // only concern upper diagonal of the matrix
+            //    if (blueprint[i, j])
+            //        Room.Connect(rooms[i], rooms[j]);
 
             // set entrance (or maybe we can create a specific class for entrance)
             Entrance = rooms[0];

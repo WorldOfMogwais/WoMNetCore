@@ -56,6 +56,8 @@ namespace WoMFramework.Game.Combat
                 {
                     Combatant combatant = initiativeOrder[turn];
 
+                    combatant.Replenish();
+
                     // dead targets can't attack any more
                     if (combatant.Entity.CurrentHitPoints < 0)
                     {
