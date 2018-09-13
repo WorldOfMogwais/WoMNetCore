@@ -180,7 +180,6 @@ namespace WoMWallet.Node
             return blockResponse.Data;
         }
 
-        
         public bool BindMogwai(MogwaiKeys mogwaiKey)
         {
             return BurnMogs(mogwaiKey, MogwaiCost, TxFee);

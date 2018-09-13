@@ -48,7 +48,7 @@ namespace WoMWallet.Node
         {
             get
             {
-                string mnemoStr = _mnemo != null ? _mnemo.ToString() : string.Empty;
+                var mnemoStr = _mnemo != null ? _mnemo.ToString() : string.Empty;
                 _mnemo = null;
                 return mnemoStr;
             }
@@ -61,17 +61,11 @@ namespace WoMWallet.Node
         public bool IsCreated => _walletFile != null;
 
         private MogwaiKeys _depositKeys;
-        public MogwaiKeys Deposit
-        {
-            get
-            {
-                return _depositKeys ?? (_depositKeys = GetMogwaiKeys(0));
-            }
-        }
+        public MogwaiKeys Deposit => _depositKeys ?? (_depositKeys = GetMogwaiKeys(0));
 
         public int MogwaiAddresses => MogwaiKeyDict.Count();
 
-        public int MogwaisBound => MogwaiKeyDict.Values.Where(p => p.Mogwai != null).Count();
+        public int MogwaisBound => MogwaiKeyDict.Values.Count(p => p.Mogwai != null);
 
         public Block LastBlock { get; set; }
 
@@ -177,6 +171,9 @@ namespace WoMWallet.Node
             Caching.Persist(_path, _walletFile);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void LoadKeys()
         {
             foreach (var seed in _walletFile.EncryptedSecrets.Values)
@@ -211,7 +208,7 @@ namespace WoMWallet.Node
                 seed = _walletFile.EncryptedSecrets.Values.Max() + 1;
             }
 
-            for (uint i = seed; i < seed + tryes; i++)
+            for (var i = seed; i < seed + tryes; i++)
             {
                 var mogwayKeysTemp = GetMogwaiKeys(i);
                 if (mogwayKeysTemp.HasMirrorAddress)

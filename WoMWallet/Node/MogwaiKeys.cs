@@ -41,6 +41,8 @@ namespace WoMWallet.Node
 
         public bool IsUnwatched { get; set; }
 
+        public DateTime LastUpdated { get; set; }
+
         private MogwaiKeysState _oldMogwaiKeysState = MogwaiKeysState.None;
         private MogwaiKeysState _mogwaiKeysState = MogwaiKeysState.None;
         public MogwaiKeysState MogwaiKeysState
@@ -69,7 +71,7 @@ namespace WoMWallet.Node
             return _extkey.PrivateKey.GetEncryptedBitcoinSecret(_extkey.ToString(_network), _network).ToWif();
         }
 
-        private bool TryMirrorPubKey(PubKey pubKey, out PubKey mirrorPubKey)
+        private static bool TryMirrorPubKey(PubKey pubKey, out PubKey mirrorPubKey)
         {
             var pubKeyStr = HexHashUtil.ByteArrayToString(pubKey.ToBytes());
 
@@ -125,6 +127,8 @@ namespace WoMWallet.Node
                     MogwaiKeysState = MogwaiKeysState.None;
                 }
             });
+
+            LastUpdated = DateTime.Now;
         }
 
 

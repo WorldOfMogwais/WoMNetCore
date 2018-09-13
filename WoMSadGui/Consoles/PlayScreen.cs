@@ -3,6 +3,7 @@ using SadConsole.Input;
 using System;
 using System.Security;
 using log4net.Repository.Hierarchy;
+using SadConsole;
 using WoMWallet.Node;
 using Console = SadConsole.Console;
 
@@ -33,8 +34,13 @@ namespace WoMSadGui.Consoles
             _custom.Position = new Point(46, 0);
             Children.Add(_custom);
 
-            var _log = new MogwaiConsole("Log", "", 86, 14);
-            _log.Position = new Point(0, 24);
+            var _command = new ControlsConsole(86, 2);
+            _command.Position = new Point(0, 23);
+            _command.Fill(Color.Transparent, Color.DarkGray, null);
+            Children.Add(_command);
+
+            var _log = new MogwaiConsole("Log", "", 86, 12);
+            _log.Position = new Point(0, 26);
             Children.Add(_log);
 
             var _info = new MogwaiConsole("Info", "", 49, 14);
