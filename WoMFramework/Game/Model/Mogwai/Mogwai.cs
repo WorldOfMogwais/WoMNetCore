@@ -22,6 +22,10 @@ namespace WoMFramework.Game.Model
 
         public Shift CurrentShift => Shifts[Pointer];
 
+        public bool CanEvolve => Shifts.ContainsKey(Pointer + 1);
+
+        public Shift PeekNextShift => CanEvolve ? Shifts[Pointer + 1] : null;
+
         public Dictionary<double, Shift> Shifts { get; }
 
         public MogwaiState MogwaiState { get; set; }
@@ -109,7 +113,7 @@ namespace WoMFramework.Game.Model
         public bool Evolve(out GameLog history)
         {
             // any shift left?
-            if (!Shifts.ContainsKey(Pointer + 1))
+            if (!CanEvolve)
             {
                 history = null;
                 return false;

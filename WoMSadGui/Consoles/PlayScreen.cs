@@ -6,6 +6,7 @@ using System.Security;
 using log4net.Repository.Hierarchy;
 using SadConsole;
 using SadConsole.Controls;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMWallet.Node;
 using Console = SadConsole.Console;
@@ -84,14 +85,14 @@ namespace WoMSadGui.Consoles
 
             var btnNext = new Button(8, 1);
             btnNext.Position = new Point(0, 0);
-            btnNext.Text = "next";
-            btnNext.Click += (btn, args) => { ButtonEvolve(); };
+            btnNext.Text = "evo";
+            btnNext.Click += (btn, args) => { DoAction(((Button)btn).Text); };
             _command2.Add(btnNext);
 
             var btnFast = new Button(8, 1);
             btnFast.Position = new Point(0, 1);
-            btnFast.Text = ">>>>";
-            btnFast.Click += (btn, args) => { ButtonEvolve(); };
+            btnFast.Text = "evo++";
+            btnFast.Click += (btn, args) => { DoAction(((Button)btn).Text); };
             _command2.Add(btnFast);
 
         }
@@ -111,12 +112,40 @@ namespace WoMSadGui.Consoles
 
         private void DoAction(string actionStr)
         {
+            switch (actionStr)
+            {
+                case "evo":
+                    Evolve();
+                    break;
+                case "evo++":
+                    Evolve(true);
+                    break;
+            }
+            
         }
 
-        public void ButtonEvolve()
+        public void Evolve(bool fast = false)
         {
-            _mogwai.Evolve(out var history);
-            UpdateLog();
+            if (!fast)
+            {
+                _mogwai.Evolve(out var history);
+                UpdateLog();
+            }
+            else
+            {
+                for (var i = 0; i < 50; i++)
+                {
+                    if (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.InteractionType == InteractionType.None)
+                    {
+                        _mogwai.Evolve(out var history);
+                        UpdateLog();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
         }
 
         private void UpdateLog()
