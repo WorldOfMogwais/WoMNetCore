@@ -5,6 +5,16 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <ApplicationIcon />
     <StartupObject>WoMSadGui.Program</StartupObject>
+    <Version>1.1.1</Version>
+    <Authors>Cedric Decoster</Authors>
+    <Company>Mogwaicoin</Company>
+    <Product>The World of Mogwais</Product>
+    <Description>World of Mogwais is a experiment driven by the idea of adding gamification to the blockchain technology. It builds up on the cryptocurrency Mogwai Coin.</Description>
+    <Copyright>Mogwaicoin Team 2018</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/WorldOfMogwais/WoMNetCore/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://www.mogwaicoin.org</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/WorldOfMogwais/WoMNetCore</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

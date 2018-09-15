@@ -43,7 +43,7 @@ namespace WoMFramework.Game.Interaction.Tests
         {
             // Adventure adventure1 = new Adventure(AdventureType.TEST_ROOM, DifficultyType.CHALLENGING, 2);
 
-            var shift = new Shift(0D,
+            var shift = new Shift(1,
                1535295740,
                "32f13027e869de56de3c2d5af13f572b67b5e75a18594013ec",
                39741,

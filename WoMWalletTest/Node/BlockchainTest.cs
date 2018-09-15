@@ -41,19 +41,19 @@ namespace WoMWallet.Node
         [Fact]
         public void GetBalance()
         {
-            var blockResponse1 = Blockchain.Instance.GetBalance("MFTHxujEGC7AHNBMCWQCuXZgVurWjLKc5e");
-            Assert.Equal(8.98938803m, blockResponse1);
+            var blockResponse1 = Blockchain.Instance.GetBalance("MPVwCL3zHhyarsU6M68zqyKFm1Ky7cLkc9");
+            Assert.Equal(8.96847793m, blockResponse1);
 
-            var blockResponse2 = Blockchain.Instance.GetBalance("MWG1HtzRAjZMxQDzeoFoHQbzDygGR13aWG");
-            Assert.Equal(8.99999m, blockResponse2);
+            var blockResponse2 = Blockchain.Instance.GetBalance("MHmFrV2t1Gd4739pyNzKu7cV2tpbgachjv");
+            Assert.Equal(8.9999m, blockResponse2);
         }
 
         [Fact]
         public void GetUnspent()
         {
-            var blockResponse1 = Blockchain.Instance.GetUnspent(0, 999999, "MCmpMFvQXeGQxJSSdCuPEf58v5iePJesN5");
+            var blockResponse1 = Blockchain.Instance.GetUnspent(0, 999999, "MHmFrV2t1Gd4739pyNzKu7cV2tpbgachjv");
             Assert.Single(blockResponse1);
-            Assert.Equal(3.9999m, blockResponse1[0].Amount);
+            Assert.Equal(8.9999m, blockResponse1[0].Amount);
 
             var blockResponse2 = Blockchain.Instance.GetUnspent(0, 999999, "MWG1HtzRAjZMxQDzeoFoHQbzDygGR13aWG");
             Assert.Single(blockResponse2);
@@ -64,7 +64,7 @@ namespace WoMWallet.Node
         public void ListTransaction()
         {
             var blockResponse = Blockchain.Instance.ListTransactions("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i");
-            Assert.Equal(3, blockResponse.Count);
+            Assert.Equal(4, blockResponse.Count);
             Assert.Equal("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i", blockResponse[0].Address);
             Assert.Equal("00000000759514788f612f69606edd5751d517c39880f72b03772e26827671c4", blockResponse[0].Blockhash);
             Assert.Equal("receive", blockResponse[0].Category);

@@ -23,7 +23,7 @@ namespace WoMFramework.Game.Model.Tests
                     var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(addr));
                     var hexValue = 
                         new HexValue(
-                            new Shift(0D,
+                            new Shift(0,
                             1530914381,
                             pubMogAddressHex,
                             7234,

@@ -9,7 +9,7 @@ namespace WoMFramework.Game.Tests
         [Fact]
         public void TestMethod1()
         {
-            var shift = new Shift(0D,
+            var shift = new Shift(0,
                 1531171420,
                 "32f13027e869de56de3c2d5af13f572b67b5e75a18594013ec",
                 9196,
