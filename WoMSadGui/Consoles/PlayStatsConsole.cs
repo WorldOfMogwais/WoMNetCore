@@ -1,22 +1,22 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Surfaces;
 using WoMFramework.Game.Model;
 using WoMWallet.Node;
+using Console = SadConsole.Console;
 
 namespace WoMSadGui.Consoles
 {
     public class PlayStatsConsole : Console
     {
-        private readonly MogwaiController _controller;
         private readonly Mogwai _mogwai;
 
         private readonly Basic _borderSurface;
 
-        public PlayStatsConsole(MogwaiController mogwaiController, int width, int height) : base(width, height)
+        public PlayStatsConsole(Mogwai mogwai, int width, int height) : base(width, height)
         {
-            _controller = mogwaiController;
-            _mogwai = _controller.CurrentMogwai ?? _controller.TestMogwai();
+            _mogwai = mogwai;
 
             _borderSurface = new Basic(width + 2, height + 2, Font);
             _borderSurface.DrawBox(new Rectangle(0, 0, _borderSurface.Width, _borderSurface.Height),
@@ -25,30 +25,34 @@ namespace WoMSadGui.Consoles
             Children.Add(_borderSurface);
 
             Init();
+            
         }
 
-        public void Init()
+
+        public override void Update(TimeSpan delta)
+        {
+            if (IsVisible)
+            {
+                UpdateScreen();
+            }
+
+            base.Update(delta);
+        }
+
+        public void UpdateScreen()
         {
             var nameStr = $"{_mogwai.Name} .:{_mogwai.CurrentLevel}:.";
             nameStr = nameStr.PadLeft(22 + (nameStr.Length / 2)).PadRight(44);
             Print(0, 0, $"[c:g b:red:black:black:blue:{nameStr.Length}]" + nameStr, Color.Orange);
-            var alligmentGender = $".:-| {_mogwai.Stats.MapAllignment()} {_mogwai.GenderStr} |-:.";
-            alligmentGender = alligmentGender.PadLeft(22 + (alligmentGender.Length / 2)).PadRight(44);
-            Print(0, 1, new ColoredString($"[c:g b:red:black:black:blue:{alligmentGender.Length}]" + alligmentGender));
-
-
 
             Print(31, 3, "Barbarian", Color.RoyalBlue);
             Print(43, 3, "3", Color.Gold);
             Print(31, 4, "Cleric", Color.RoyalBlue);
             Print(43, 4, "1", Color.Gold);
-            Print(31, 5, "Unspent", Color.Gainsboro);
             Print(43, 5, _mogwai.LevelShifts.Count.ToString(), Color.Aqua);
 
             CreateHealthBar(16, 2, Color.DarkGreen, Color.LimeGreen, _mogwai.CurrentHitPoints, _mogwai.MaxHitPoints);
             CreateExperienceBar(31, 6, Color.DarkOrange, Color.Gold, _mogwai.Exp, _mogwai.XpToLevelUp);
-
-
             PrintStat(1, 3, "STR", _mogwai.Strength, _mogwai.StrengthMod, 0);
             PrintStat(1, 4, "DEX", _mogwai.Dexterity, _mogwai.DexterityMod, 0);
             PrintStat(1, 5, "CON", _mogwai.Constitution, _mogwai.ConstitutionMod, 0);
@@ -65,6 +69,18 @@ namespace WoMSadGui.Consoles
             PrintStat(1, 10, "FOR", _mogwai.Fortitude, 0, 0);
             PrintStat(1, 11, "REF", _mogwai.Reflex, 0, 0);
             PrintStat(1, 12, "WIL", _mogwai.Will, 0, 0);
+
+            PrintWealth(31, 13, _mogwai);
+
+        }
+
+        public void Init()
+        {
+            var alligmentGender = $".:-| {_mogwai.Stats.MapAllignment()} {_mogwai.GenderStr} |-:.";
+            alligmentGender = alligmentGender.PadLeft(22 + (alligmentGender.Length / 2)).PadRight(44);
+            Print(0, 1, new ColoredString($"[c:g b:red:black:black:blue:{alligmentGender.Length}]" + alligmentGender));
+            Print(31, 5, "Unspent", Color.Gainsboro);
+
 
             _borderSurface.Print(0, 3, "[c:sg 204:1] ", Color.DarkCyan);
             _borderSurface.Print(45, 3, "[c:sg 185:1] ", Color.DarkCyan);
@@ -83,25 +99,25 @@ namespace WoMSadGui.Consoles
 
             _borderSurface.Print(45, 0, "[c:sg 203:1] ", Color.DarkCyan);
 
-            PrintWealth(31, 13, _mogwai);
             Print(30, 12, "[c:sg 205:14]" + "".PadRight(14), Color.DarkCyan);
             _borderSurface.SetGlyph(45, 13, 185, Color.DarkCyan);
-            SetGlyph(29, 14, 200, Color.DarkCyan);
             Print(30, 14, "[c:sg 205:14]" + "".PadRight(14), Color.DarkCyan);
             _borderSurface.SetGlyph(45, 15, 185, Color.DarkCyan);
+
+            SetGlyph(29, 14, 200, Color.DarkCyan);
             SetGlyph(29, 13, 186, Color.DarkCyan);
             SetGlyph(29, 12, 201, Color.DarkCyan);
 
-            Print(14, 2, "[c:sg 203:1] ", Color.DarkCyan);
-            Print(14, 9, "[c:sg 206:1] ", Color.DarkCyan);
-            Print(29, 5, "[c:sg 185:1] ", Color.DarkCyan);
-            Print(29, 2, "[c:sg 203:1] ", Color.DarkCyan);
-            Print(14, 5, "[c:sg 204:1] ", Color.DarkCyan);
-            Print(29, 6, "[c:sg 204:1] ", Color.DarkCyan);
-            Print(44, 6, "[c:sg 185:1] ", Color.DarkCyan);
+            SetGlyph(14, 2, 203, Color.DarkCyan);
+            SetGlyph(14, 9, 206, Color.DarkCyan);
+            SetGlyph(29, 5, 185, Color.DarkCyan);
+            SetGlyph(29, 2, 203, Color.DarkCyan);
+            SetGlyph(14, 5, 204, Color.DarkCyan);
+            SetGlyph(29, 6, 204, Color.DarkCyan);
+            SetGlyph(44, 6, 185, Color.DarkCyan);
 
-            Print(29, 9, "[c:sg 202:1] ", Color.DarkCyan);
-            Print(14, 13, "[c:sg 202:1] ", Color.DarkCyan);
+            SetGlyph(29, 9, 202, Color.DarkCyan);
+            SetGlyph(14, 13, 202, Color.DarkCyan);
 
         }
 

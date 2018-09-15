@@ -31,6 +31,11 @@ namespace WoMFramework.Game.Interaction
             return decimal.Parse("0." + ParamAdd2.ToString().PadLeft(8, '0'));
         }
 
+        public static Interaction Creation()
+        {
+            return new CreationAction();
+        }
+
         public static Interaction GetInteraction(decimal amount, decimal fee)
         {
             var parm1 = amount.ToString("0.00000000").Split('.')[1];

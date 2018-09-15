@@ -110,7 +110,14 @@ namespace WoMWallet.Node
                     Shifts = Blockchain.Instance.GetShifts(MirrorAddress);
                     if (Shifts.Count > 0)
                     {
-                        Mogwai = new Mogwai(Address, Shifts);
+                        if (Mogwai != null)
+                        {
+                            Mogwai.UpdateShifts(Shifts);
+                        }
+                        else
+                        {
+                            Mogwai = new Mogwai(Address, Shifts);
+                        }
                     }
                 }
 

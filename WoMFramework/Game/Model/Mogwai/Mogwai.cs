@@ -248,5 +248,15 @@ namespace WoMFramework.Game.Model
             Experience.Print();
         }
 
+        public void UpdateShifts(Dictionary<double, Shift> shifts)
+        {
+            foreach (var shift in shifts)
+            {
+                if (!Shifts.ContainsKey(shift.Key))
+                {
+                    Shifts.Add(shift.Key, shift.Value);
+                }
+            }
+        }
     }
 }

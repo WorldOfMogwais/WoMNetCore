@@ -253,13 +253,13 @@ namespace WoMWallet.Node
                     // add small shifts
                     for (var i = lastBlockHeight + 1; i < block.Height; i++)
                     {
-                        result.Add(i, new Shift(result.Count(), pubMogAddressHex, i, _blockHashDict[i]));
+                        result.Add(i, new Shift(result.Count, pubMogAddressHex, i, _blockHashDict[i]));
                     }
                 }
 
                 lastBlockHeight = block.Height;
 
-                result.Add(block.Height, new Shift(result.Count(), tx.Blocktime, pubMogAddressHex, block.Height, tx.Blockhash, tx.Blockindex, tx.Txid, amount, Math.Abs(tx.Fee + TxFee)));
+                result.Add(block.Height, new Shift(result.Count, tx.Blocktime, pubMogAddressHex, block.Height, tx.Blockhash, tx.Blockindex, tx.Txid, amount, Math.Abs(tx.Fee + TxFee)));
             }
 
             // add small shifts
@@ -267,7 +267,7 @@ namespace WoMWallet.Node
             {
                 for (var i = lastBlockHeight + 1; i < _blockHashDict.Keys.Max(); i++)
                 {
-                    result.Add(i, new Shift(result.Count(), pubMogAddressHex, i, _blockHashDict[i]));
+                    result.Add(i, new Shift(result.Count, pubMogAddressHex, i, _blockHashDict[i]));
                 }
             }
 

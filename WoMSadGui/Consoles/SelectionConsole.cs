@@ -24,8 +24,6 @@ namespace WoMSadGui.Consoles
         public int HeaderPosition;
         public int TrailerPosition;
 
-        public bool IsReady { get; set; } = false;
-
         public SadGuiState State {get;set;}
 
         public int WindowOffset = 0;
@@ -59,14 +57,17 @@ namespace WoMSadGui.Consoles
             CreateTrailer();
 
             _controller = mogwaiController;
+
+            Init();
         }
 
         public void Init()
         {
-            IsReady = true;
+            IsVisible = true;
+            _controller.RefreshAll(1);
+
             Print(65, 0, $"Deposit:", Color.DarkCyan);
             Print(74, 0, $"[c:g f:LimeGreen:Orange:34]{_controller.DepositAddress}");
-            _controller.Refresh(1);
             State = SadGuiState.Selection;
 
             _infoConsole.Cursor.NewLine();
@@ -291,9 +292,8 @@ namespace WoMSadGui.Consoles
 
         public override void Update(TimeSpan delta)
         {
-            if (IsReady)
+            if (IsVisible)
             {
-
                 var deposit = _controller.GetDepositFunds();
                 var depositStr = deposit < 10000 ? deposit.ToString("###0.0000").PadLeft(9) : "TYCOON".PadRight(9);
                 var lastBlock = _controller.WalletLastBlock;
@@ -304,8 +304,8 @@ namespace WoMSadGui.Consoles
                     var localTime = DateUtil.GetBlockLocalDateTime(_controller.WalletLastBlock.Time);
                     var localtimeStr = localTime.ToString();
                     var t = DateTime.Now.Subtract(localTime);
-                    Print(16, 0, localtimeStr + " [   s]", Color.Gainsboro);
-                    Print(18 + localtimeStr.Length, 0, t.TotalSeconds.ToString("##0").PadLeft(3), Color.SpringGreen);
+                    var timeStr = $"[c:r f:springgreen]{string.Format("{0:hh\\:mm\\:ss}", t)}[c:u]";
+                    Print(16, 0, localtimeStr + " " + timeStr, Color.Gainsboro);
                 }
                 Print(45, 0, "Funds:", Color.DarkCyan);
                 Print(52, 0, depositStr, Color.Orange);

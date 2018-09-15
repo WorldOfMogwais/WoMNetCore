@@ -54,32 +54,58 @@ namespace WoMWallet.Node
             TaggedMogwaiKeys = new List<MogwaiKeys>();
             CurrentMogwaiKeysIndex = 0;
         }
-
-        public void Refresh(int minutes)
+        
+        public void RefreshCurrent(int minutes)
         {
             Update();
+            _timer?.Close();
             _timer = new Timer(minutes * 60 * 1000);
-            _timer.Elapsed += OnTimedEventAsync;
+            _timer.Elapsed += OnTimedRefreshCurrent;
             _timer.AutoReset = true;
             _timer.Enabled = true;
         }
 
-        private async void OnTimedEventAsync(object sender, ElapsedEventArgs e)
+        private async void OnTimedRefreshCurrent(object sender, ElapsedEventArgs e)
+        {
+            await Blockchain.Instance.CacheBlockhashesAsyncNoProgressAsync();
+            Update(false);
+        }
+
+        public void RefreshAll(int minutes)
+        {
+            Update();
+            _timer?.Close();
+            _timer = new Timer(minutes * 60 * 1000);
+            _timer.Elapsed += OnTimedRefreshAll;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+        }
+
+        private async void OnTimedRefreshAll(object sender, ElapsedEventArgs e)
         {
             await Blockchain.Instance.CacheBlockhashesAsyncNoProgressAsync();
             Update();
         }
 
-        private void Update()
+        private void Update(bool all = true)
         {
             Wallet.Update();
-            Wallet.Deposit.Update();
-            foreach (var mogwaiKey in Wallet.MogwaiKeyDict.Values)
+
+            if (all)
             {
-                if (!mogwaiKey.IsUnwatched)
+                Wallet.Deposit.Update();
+
+                foreach (var mogwaiKey in Wallet.MogwaiKeyDict.Values)
                 {
-                    mogwaiKey.Update();
+                    if (!mogwaiKey.IsUnwatched)
+                    {
+                        mogwaiKey.Update();
+                    }
                 }
+            }
+            else
+            {
+                CurrentMogwaiKeys.Update();
             }
         }
 
@@ -214,5 +240,6 @@ namespace WoMWallet.Node
                     0.00001002m)}}
             );
         }
+
     }
 }

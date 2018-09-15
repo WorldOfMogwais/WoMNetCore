@@ -10,6 +10,7 @@ using WoMFramework.Game.Interaction;
 using WoMWallet.Node;
 using Console = SadConsole.Console;
 using WoMFramework.Game.Model;
+using WoMWallet.Tool;
 
 namespace WoMSadGui.Consoles
 {
@@ -24,12 +25,13 @@ namespace WoMSadGui.Consoles
 
         public SadGuiState State { get; set; }
 
-        private Console _playStatsConsole;
-        private Console _info;
+        private PlayStatsConsole _playStatsConsole;
+        private PlayInfoConsole _playInfoConsole;
         private ScrollingConsole _log;
 
         private readonly Mogwai _mogwai;
 
+        private ControlsConsole _command1;
         private ControlsConsole _command2;
 
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
@@ -37,7 +39,7 @@ namespace WoMSadGui.Consoles
             _controller = mogwaiController;
             _mogwai = _controller.CurrentMogwai ?? _controller.TestMogwai();
 
-            _playStatsConsole = new PlayStatsConsole(mogwaiController, 44, 22);
+            _playStatsConsole = new PlayStatsConsole(_mogwai, 44, 22);
             _playStatsConsole.Position = new Point(0, 0);
             Children.Add(_playStatsConsole);
 
@@ -45,7 +47,7 @@ namespace WoMSadGui.Consoles
             _custom.Position = new Point(46, 0);
             Children.Add(_custom);
 
-            var _command1 = new ControlsConsole(86, 1);
+            _command1 = new ControlsConsole(86, 1);
             _command1.Position = new Point(0, 23);
             _command1.Fill(Color.Transparent, Color.DarkGray, null);
             Children.Add(_command1);
@@ -54,68 +56,81 @@ namespace WoMSadGui.Consoles
             _log.Position = new Point(0, 25);
             Children.Add(_log);
 
-            _info = new MogwaiConsole("Info", "", 49, 14);
-            _info.Position = new Point(88, 24);
-            Children.Add(_info);
+            _playInfoConsole = new PlayInfoConsole(mogwaiController, _mogwai, 49, 14);
+            _playInfoConsole.Position = new Point(88, 24);
+            Children.Add(_playInfoConsole);
 
-            _command2 = new ControlsConsole(8, 1);
-            _command2.Position = new Point(40, 0);
+            _command2 = new ControlsConsole(8, 2);
+            _command2.Position = new Point(40, 2);
             _command2.Fill(Color.Transparent, Color.DarkGray, null);
-            _info.Children.Add(_command2);
+            _playInfoConsole.Children.Add(_command2);
 
             State = SadGuiState.Play;
 
             Init();
-            UpdateShift();
         }
 
         public void Init()
         {
-            var btnNext = new Button(8, 1)
-            {
-                Position = new Point(0,0),
-                Text = "next"
-            };
-            btnNext.Click += (btn, args) =>
-            {
-                Evolve();
-            };
+            IsVisible = true;
+            _controller.RefreshCurrent(1);
+
+            MenuButton(0, "level", DoAction);
+            MenuButton(1, "inven", DoAction);
+            MenuButton(2, "adven", DoAction);
+            MenuButton(3, "modif", DoAction);
+            MenuButton(4, "breed", DoAction);
+            MenuButton(5, "shop", DoAction);
+
+            var btnNext = new Button(8, 1);
+            btnNext.Position = new Point(0, 0);
+            btnNext.Text = "next";
+            btnNext.Click += (btn, args) => { ButtonEvolve(); };
             _command2.Add(btnNext);
 
-            
+            var btnFast = new Button(8, 1);
+            btnFast.Position = new Point(0, 1);
+            btnFast.Text = ">>>>";
+            btnFast.Click += (btn, args) => { ButtonEvolve(); };
+            _command2.Add(btnFast);
+
         }
 
-        public void UpdateShift()
+        private void MenuButton(int buttonPosition, string buttonText, Action<string> buttonClicked)
         {
-            _info.Print(40, 1, "max.", Color.Cyan);
+            var xBtn = 0;
+            var xSpBtn = 1;
+            var mBtnSize = 7;
 
-            _info.Print( 1, 0, "Shift: ", Color.Gainsboro);
-            _info.Print( 8, 0, (_mogwai.CurrentShift.IsSmallShift ? "smallShift" : _mogwai.CurrentShift.Interaction.InteractionType.ToString()).PadRight(20), Color.Orange);
-            _info.Print( 1, 1, "Next: ", Color.Gainsboro);
-            if (_mogwai.Shifts.TryGetValue(_mogwai.Pointer + 1, out var shift))
-            {
-                _info.Print(8, 1, (shift.IsSmallShift ? "smallShift" : shift.Interaction.InteractionType.ToString()).PadRight(20), Color.LimeGreen);
-            }
-            else
-            {
-                _info.Print(8, 1, "...".PadRight(20), Color.Red);
-            }
-            _info.Print(31, 0, _mogwai.Pointer.ToString().PadLeft(8,'.'));
-            _info.Print(31, 1, _mogwai.Shifts.Keys.Max().ToString().PadLeft(8, '.'));
+            var button = new Button(mBtnSize, 1);
+            button.Position = new Point(xBtn + buttonPosition * (mBtnSize + xSpBtn), 0);
+            button.Text = buttonText;
+            button.Click += (btn, args) => { buttonClicked(((Button)btn).Text); };
+            _command1.Add(button);
+        }
 
+        private void DoAction(string actionStr)
+        {
+        }
+
+        public void ButtonEvolve()
+        {
+            _mogwai.Evolve(out var history);
+            UpdateLog();
+        }
+
+        private void UpdateLog()
+        {
             foreach (var entry in _mogwai.CurrentShift.History.LogEntries)
             {
                 _log.MainCursor.Print(entry.ToString());
                 _log.MainCursor.NewLine();
             }
-            
         }
 
-        public void Evolve()
+        public void ButtonAdventure()
         {
-            _mogwai.Evolve(out var history);
 
-            UpdateShift();
         }
 
         internal SadGuiState GetState()
@@ -181,6 +196,11 @@ namespace WoMSadGui.Consoles
 
         public override void Update(TimeSpan delta)
         {
+            if (IsVisible)
+            {
+
+            }
+
             base.Update(delta);
         }
     }

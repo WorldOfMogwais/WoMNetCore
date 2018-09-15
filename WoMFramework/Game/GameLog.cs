@@ -1,14 +1,23 @@
 ﻿using System.Collections.Generic;
+using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game
 {
     public class GameLog
     {
+
+        private double _index;
+        private int _height;
+        private InteractionType _interactionType;
+
         public int Pointer;
         public List<LogEntry> LogEntries;
 
-        public GameLog()
+        public GameLog(double index, int height, InteractionType interactionType)
         {
+            _index = index;
+            _height = height;
+            _interactionType = interactionType;
 
             LogEntries = new List<LogEntry>();
             Pointer = LogEntries.Count - 1;
@@ -42,7 +51,7 @@ namespace WoMFramework.Game
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", GetHeader(LogType), Message);
+            return string.Format("{0}{1} {2}", "", GetHeader(LogType), Message);
         }
 
         private string GetHeader(LogType logType)

@@ -25,7 +25,7 @@ namespace WoMWallet.Node
         public void GetBlockHashes()
         {
             var blockResponse = Blockchain.Instance.GetBlockHashes(0, 100);
-            Assert.Equal(100, blockResponse.Count());
+            Assert.Equal(100, blockResponse.Count);
             Assert.Equal("1", blockResponse[1].Block);
             Assert.Equal("000004a3418bf6f7a085b0a489d56eea4fbc094be8ec48ad7ec11621a4dd7431", blockResponse[1].Hash);
         }

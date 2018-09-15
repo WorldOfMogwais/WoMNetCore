@@ -63,7 +63,7 @@ namespace WoMWallet.Node
         private MogwaiKeys _depositKeys;
         public MogwaiKeys Deposit => _depositKeys ?? (_depositKeys = GetMogwaiKeys(0));
 
-        public int MogwaiAddresses => MogwaiKeyDict.Count();
+        public int MogwaiAddresses => MogwaiKeyDict.Count;
 
         public int MogwaisBound => MogwaiKeyDict.Values.Count(p => p.Mogwai != null);
 

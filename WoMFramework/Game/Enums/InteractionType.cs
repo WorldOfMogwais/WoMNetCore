@@ -7,10 +7,9 @@
         Modification = 2,
         Leveling = 3,
         Adventure = 4,
-        Selection = 5,
-        Duell = 6,
-        Breeding = 7,
-        Looting = 8
+        Duell = 5,
+        Breeding = 6,
+        Inventory = 7
     }
 
 }

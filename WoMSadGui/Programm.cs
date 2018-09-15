@@ -90,9 +90,12 @@ namespace WoMSadGui
                 case SadGuiState.Selection:
                     if (_selectionScreen == null)
                     {
+                        if (_playScreen != null)
+                        {
+                            _playScreen.IsVisible = false;
+                        }
                         _playScreen = null;
                         SelectionScreen();
-                        _selectionScreen.Init();
                         break;
                     }
                     _selectionScreen.ProcessKeyboard(Global.KeyboardState);
@@ -101,6 +104,10 @@ namespace WoMSadGui
                 case SadGuiState.Play:
                     if (_playScreen == null)
                     {
+                        if (_selectionScreen != null)
+                        {
+                            _selectionScreen.IsVisible = false;
+                        }
                         _selectionScreen = null;
                         PlayScreen();
                         break;

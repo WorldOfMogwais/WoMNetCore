@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
+using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Interaction
 {
     public class Shift
     {
-        public double Index { get; }
+        public int Index { get; }
 
         public double Time { get; }
         public string AdHex { get;}
@@ -24,13 +25,16 @@ namespace WoMFramework.Game.Interaction
         public Dice MogwaiDice => _mogwaiDice ?? (_mogwaiDice = new Dice(this));
 
         [JsonIgnore]
+        public InteractionType InteractionType => Interaction?.InteractionType ?? InteractionType.None;
+
+        [JsonIgnore]
         public Interaction Interaction { get; }
         
         [JsonIgnore]
-        public GameLog History { get; } = new GameLog();
+        public GameLog History { get; }
 
         [JsonConstructor]
-        public Shift(double index, double time, string adHex, int height, string bkHex, double bkIndex, string txHex, decimal amount, decimal fee)
+        public Shift(int index, double time, string adHex, int height, string bkHex, double bkIndex, string txHex, decimal amount, decimal fee)
         {
             Index = index;
             Time = time;
@@ -41,16 +45,18 @@ namespace WoMFramework.Game.Interaction
             TxHex = txHex;
             Amount = amount;
             Fee = fee;
-            Interaction = Interaction.GetInteraction(amount, fee);
+            Interaction = index > 0 ? Interaction.GetInteraction(amount, fee) : Interaction.Creation();
+            History = new GameLog(index, height, InteractionType.None);
         }
 
-        public Shift(double index, string adHex, int height, string bkHex)
+        public Shift(int index, string adHex, int height, string bkHex)
         {
             Index = index;
             AdHex = adHex;
             Height = height;
             BkHex = bkHex;
             Interaction = null;
+            History = new GameLog(index, height, InteractionType.None);
         }
 
         public override string ToString()
