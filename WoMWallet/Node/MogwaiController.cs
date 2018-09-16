@@ -179,7 +179,7 @@ namespace WoMWallet.Node
             Wallet.GetNewMogwaiKey(out var mogwaiKeys);
         }
 
-        public bool SendMog()
+        public bool SendMog(int amount)
         {
             if (!IsWalletUnlocked)
             {
@@ -187,7 +187,7 @@ namespace WoMWallet.Node
             }
 
             var mogwaiKeysList = TaggedMogwaiKeys.Count > 0 ? TaggedMogwaiKeys : new List<MogwaiKeys> { CurrentMogwaiKeys };
-            if (!Blockchain.Instance.SendMogs(Wallet.Deposit, mogwaiKeysList.Select(p => p.Address).ToArray(), 5m, 0.0001m))
+            if (!Blockchain.Instance.SendMogs(Wallet.Deposit, mogwaiKeysList.Select(p => p.Address).ToArray(), amount, 0.0001m))
             {
                 return false;
             };

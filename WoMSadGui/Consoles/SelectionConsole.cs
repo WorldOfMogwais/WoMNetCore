@@ -29,6 +29,8 @@ namespace WoMSadGui.Consoles
         public int WindowOffset = 0;
         public int MaxRows = 21;
 
+        private int _transferFunds;
+
         public SelectionScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
             _borderSurface = new Basic(width + 2, height + 2, Font);
@@ -57,6 +59,7 @@ namespace WoMSadGui.Consoles
             CreateTrailer();
 
             _controller = mogwaiController;
+            _transferFunds = 2;
 
             Init();
         }
@@ -77,10 +80,11 @@ namespace WoMSadGui.Consoles
             InfoPrint(".C.", "create mogwai key");
             InfoPrint(".S.", "send 5 mog to addr");
             InfoPrint(".B.", "bind mogwai 1 mog");
-            InfoPrint(".P.", "play mogwai");
             InfoPrint(".W.", "(un)watch toggle");
+            InfoPrint(".P.", "play mogwai");
             InfoPrint(".L.", "log pub keys file");
             InfoPrint(".T.", "tag for send multi");
+            InfoPrint(".I.", "incr. funds sent");
         }
 
         private void InfoPrint(string key, string descritpion)
@@ -161,7 +165,7 @@ namespace WoMSadGui.Consoles
                 case "send":
                     if (_controller.HasMogwayKeys)
                     {
-                        if (_controller.SendMog())
+                        if (_controller.SendMog(_transferFunds))
                         {
                             LogInConsole("DONE", $"sending mogs to address {_controller.CurrentMogwaiKeys.Address}.");
                         }
@@ -223,14 +227,19 @@ namespace WoMSadGui.Consoles
                 DoAction("create");
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.W))
+            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.S))
             {
-                DoAction("watch");
+                DoAction("send");
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.B))
             {
                 DoAction("bind");
+                return true;
+            }
+            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.W))
+            {
+                DoAction("watch");
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.P))
@@ -247,6 +256,11 @@ namespace WoMSadGui.Consoles
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.T))
             {
                 _controller.Tag();
+                return true;
+            }
+            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.I))
+            {
+                _transferFunds = (_transferFunds - 1) % 7 + 2;
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Down))
@@ -307,6 +321,7 @@ namespace WoMSadGui.Consoles
                     var timeStr = $"[c:r f:springgreen]{string.Format("{0:hh\\:mm\\:ss}", t)}[c:u]";
                     Print(16, 0, localtimeStr + " " + timeStr, Color.Gainsboro);
                 }
+                Print(62, 0, "+" + _transferFunds, Color.LimeGreen);
                 Print(45, 0, "Funds:", Color.DarkCyan);
                 Print(52, 0, depositStr, Color.Orange);
 
