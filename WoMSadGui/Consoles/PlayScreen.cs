@@ -74,7 +74,8 @@ namespace WoMSadGui.Consoles
         public void Init()
         {
             IsVisible = true;
-            _controller.RefreshCurrent(1);
+            if (_controller.CurrentMogwai != null)
+                _controller.RefreshCurrent(1);
 
             MenuButton(0, "level", DoAction);
             MenuButton(1, "inven", DoAction);
@@ -83,13 +84,13 @@ namespace WoMSadGui.Consoles
             MenuButton(4, "breed", DoAction);
             MenuButton(5, "shop", DoAction);
 
-            var btnNext = new Button(8, 1);
+            var btnNext = new MogwaiButton(8, 1);
             btnNext.Position = new Point(0, 0);
             btnNext.Text = "evo";
             btnNext.Click += (btn, args) => { DoAction(((Button)btn).Text); };
             _command2.Add(btnNext);
 
-            var btnFast = new Button(8, 1);
+            var btnFast = new MogwaiButton(8, 1);
             btnFast.Position = new Point(0, 1);
             btnFast.Text = "evo++";
             btnFast.Click += (btn, args) => { DoAction(((Button)btn).Text); };
@@ -103,7 +104,7 @@ namespace WoMSadGui.Consoles
             var xSpBtn = 1;
             var mBtnSize = 7;
 
-            var button = new Button(mBtnSize, 1);
+            var button = new MogwaiButton(mBtnSize, 1);
             button.Position = new Point(xBtn + buttonPosition * (mBtnSize + xSpBtn), 0);
             button.Text = buttonText;
             button.Click += (btn, args) => { buttonClicked(((Button)btn).Text); };
@@ -179,12 +180,14 @@ namespace WoMSadGui.Consoles
             {
                 _glyphIndex++;
                 Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
+                Print(_glyphX + 2, _glyphY, $"{_glyphIndex}", Color.Yellow);
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.A))
             {
                 _glyphIndex--;
                 Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
+                Print(_glyphX + 2, _glyphY, $"{_glyphIndex}", Color.Yellow);
                 return true;
             }
             else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Right))
