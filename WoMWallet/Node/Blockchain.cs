@@ -260,6 +260,12 @@ namespace WoMWallet.Node
                     // add small shifts
                     for (var i = lastBlockHeight + 1; i < block.Height; i++)
                     {
+                        // blockhashes aren't updated need to wait ...
+                        if (!_blockHashDict.ContainsKey(i))
+                        {
+                            Log.Warn($"blockhashes aren't updated to the current block we got {block.Height} and our hashes are at {_blockHashDict.Keys.Max()}!");
+                            return result;
+                        }
                         result.Add(i, new Shift(result.Count, pubMogAddressHex, i, _blockHashDict[i]));
                     }
                 }
