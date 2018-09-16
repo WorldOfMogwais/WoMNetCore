@@ -212,7 +212,7 @@ namespace WoMWallet.Node
             return true;
         }
 
-        public void Unwatch(bool flag)
+        public void WatchToggle()
         {
             if (!IsWalletUnlocked)
             {
@@ -220,7 +220,7 @@ namespace WoMWallet.Node
             }
 
             var mogwaiKeysList = TaggedMogwaiKeys.Count > 0 ? TaggedMogwaiKeys : new List<MogwaiKeys> { CurrentMogwaiKeys };
-            Wallet.Unwatch(mogwaiKeysList, flag);
+            Wallet.Unwatch(mogwaiKeysList, !CurrentMogwaiKeys.IsUnwatched);
         }
 
         public Mogwai TestMogwai()

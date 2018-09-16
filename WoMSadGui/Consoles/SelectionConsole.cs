@@ -78,7 +78,7 @@ namespace WoMSadGui.Consoles
             InfoPrint(".S.", "send 5 mog to addr");
             InfoPrint(".B.", "bind mogwai 1 mog");
             InfoPrint(".P.", "play mogwai");
-            InfoPrint(".S.", "show mogwai");
+            InfoPrint(".W.", "(un)watch toggle");
             InfoPrint(".L.", "log pub keys file");
             InfoPrint(".T.", "tag for send multi");
         }
@@ -187,7 +187,7 @@ namespace WoMSadGui.Consoles
                 case "watch":
                     if (_controller.CurrentMogwaiKeys != null)
                     {
-                        _controller.Unwatch(true);
+                        _controller.WatchToggle();
                     }
                     else
                     {
