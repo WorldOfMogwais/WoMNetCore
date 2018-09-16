@@ -9,7 +9,7 @@ namespace WoMFramework.Game.Model
             .SetSizeType(SizeType.Small)
             .SetAbilities(9, 13, 10, 10, 9, 8)
             .SetNaturalArmor(1)
-            .SetHitPointDiceRollEvent(new int[] { 1, 10 })
+            .SetHitPointDiceRollEvent(new[] { 1, 10 })
             .SetBaseAttackBonus(1)
             .SetBaseWeapon(Weapons.Spear.Small)
             .SetDescription("Kobolds are creatures of the dark, found most commonly in enormous underground warrens " +

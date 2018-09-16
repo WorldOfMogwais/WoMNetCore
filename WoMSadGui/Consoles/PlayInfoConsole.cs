@@ -13,14 +13,16 @@ namespace WoMSadGui.Consoles
     public class PlayInfoConsole : Console
     {
         private readonly Basic _borderSurface;
-        private MogwaiController _controller;
+        private readonly MogwaiController _controller;
+        private readonly MogwaiKeys _mogwaiKeys;
         private readonly Mogwai _mogwai;
 
 
-        public PlayInfoConsole(MogwaiController mogwaiController, Mogwai mogwai, int width, int height) : base(width, height)
+        public PlayInfoConsole(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base(width, height)
         {
             _controller = mogwaiController;
-            _mogwai = mogwai;
+            _mogwaiKeys = mogwaiKeys;
+            _mogwai = mogwaiKeys.Mogwai;
 
             _borderSurface = new Basic(width + 2, height + 2, Font);
             _borderSurface.DrawBox(new Rectangle(0, 0, _borderSurface.Width, _borderSurface.Height),
@@ -46,7 +48,6 @@ namespace WoMSadGui.Consoles
 
             Print(1, 2, "Shift: ", Color.Gainsboro);
 
-
             Print(8, 2, _mogwai.CurrentShift.InteractionType.ToString().PadRight(20), Color.Orange);
             Print(1, 3, "Next: ", Color.Gainsboro);
             if (_mogwai.Shifts.TryGetValue(_mogwai.Pointer + 1, out var shift))
@@ -71,6 +72,29 @@ namespace WoMSadGui.Consoles
                 var timeStr = $"[c:r f:springgreen]{string.Format("{0:hh\\:mm\\:ss}", t)}[c:u]";
                 Print(16, 0, localtimeStr + " " + timeStr, Color.Gainsboro);
             }
+
+            var balance = _mogwaiKeys.Balance;
+            var balanceStr = balance < 1000 ? balance.ToString("##0.0000").PadLeft(8) : "RICH".PadRight(8);
+            Print(10, 13, "MOG", Color.Gainsboro);
+            Print(1, 13, balanceStr, Color.Orange);
+            var addr = _controller.CurrentMogwai != null ? _mogwaiKeys.Address : "MFHRD3E7m6FdJA5HTEDQTMMzFMg9LXNTwA";
+            Print( 1, 10, $"Interactions: ", Color.Gainsboro);
+            
+            if (_mogwaiKeys.InteractionLock.Count == 0)
+            {
+                Print(15, 10, _mogwaiKeys.InteractionLock.Count.ToString().PadLeft(2), Color.LimeGreen);
+                Print(18, 10, "Locked", Color.Gainsboro);
+                Print(14, 13, $"[c:g f:limegreen:orange:limegreen:{addr.Length}]" + addr);
+            }
+            else
+            {
+                Print(15, 10, _mogwaiKeys.InteractionLock.Count.ToString().PadLeft(2), Color.Red);
+                Print(18, 10, "Locked", Color.Gainsboro);
+                Print( 1, 11,  _mogwaiKeys.InteractionLock.Values.First().GetInfo().PadRight(48).Substring(0, 48), Color.Red);
+                Print(14, 13, $"[c:g f:red:orange:red:{addr.Length}]" + addr);
+            }
+
+
         }
 
         public void Init()
@@ -78,6 +102,10 @@ namespace WoMSadGui.Consoles
             _borderSurface.Print(0, 2, "[c:sg 204:1] ", Color.DarkCyan);
             _borderSurface.Print(50, 2, "[c:sg 185:1] ", Color.DarkCyan);
             Print(0, 1, "[c:sg 205:49]" + "".PadRight(49), Color.DarkCyan);
+
+            _borderSurface.Print(0, 13, "[c:sg 204:1] ", Color.DarkCyan);
+            _borderSurface.Print(50, 13, "[c:sg 185:1] ", Color.DarkCyan);
+            Print(0, 12, "[c:sg 205:49]" + "".PadRight(49), Color.DarkCyan);
 
         }
     }

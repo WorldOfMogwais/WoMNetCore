@@ -25,6 +25,14 @@ namespace WoMFramework.Game.Interaction
             ParamAdd2 = ((int)difficultyType * 1000) + averagePartyLevel;
         }
 
+        public virtual string GetInfo()
+        {
+            return InteractionType + ", "
+                 + AdventureType + ", "
+                 + DifficultyType + ", "
+                 + AveragePartyLevel;
+        }
+
         public static bool TryGetAdventure(int paramAdd1, int paramAdd2, out AdventureAction adventure)
         {
             if (Enum.IsDefined(typeof(AdventureType), int.Parse(paramAdd1.ToString("0000").Substring(0, 1)))

@@ -6,8 +6,8 @@ namespace WoMFramework.Game.Model
     {
         public Barbarian() : base(ClassType.Barbarian)
         {
-            HitHitPointDiceRollEvent = new int[] { 1, 12 };
-            WealthDiceRollEvent = new int[] { 3, 6 , 0, 1};
+            HitHitPointDiceRollEvent = new[] { 1, 12 };
+            WealthDiceRollEvent = new[] { 3, 6 , 0, 1};
             Description = "For some, there is only rage. In the ways of their people, in the fury of their passion, " +
                 "in the howl of battle, conflict is all these brutal souls know. Savages, hired muscle, masters of " +
                 "vicious martial techniques, they are not soldiers or professional warriors—they are the battle possessed, " +

@@ -76,7 +76,7 @@ namespace WoMFramework.Game.Model
             Stats = new Stats(hexValue);
 
             // create abilities
-            var rollEvent = new int[] { 4, 6, 3 };
+            var rollEvent = new[] { 4, 6, 3 };
             Gender = _currentShift.MogwaiDice.Roll(2, -1);
             Strength = _currentShift.MogwaiDice.Roll(rollEvent);
             Dexterity = _currentShift.MogwaiDice.Roll(rollEvent);
@@ -90,7 +90,7 @@ namespace WoMFramework.Game.Model
             NaturalArmor = 0;
             SizeType = SizeType.Medium;
 
-            BaseAttackBonus = new int[] { 0 };
+            BaseAttackBonus = new[] { 0 };
 
             // create experience
             Experience = new Experience(_currentShift);

@@ -45,7 +45,7 @@ namespace WoMFramework.Game.Interaction
             TxHex = txHex;
             Amount = amount;
             Fee = fee;
-            Interaction = index > 0 ? Interaction.GetInteraction(amount, fee) : Interaction.Creation();
+            Interaction = index > 0 ? Interaction.GetInteraction(amount, fee) : new CreationAction();
             History = new GameLog(index, height, InteractionType.None);
         }
 

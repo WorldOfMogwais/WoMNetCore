@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using SadConsole.Input;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using log4net.Repository.Hierarchy;
@@ -11,6 +12,7 @@ using WoMFramework.Game.Interaction;
 using WoMWallet.Node;
 using Console = SadConsole.Console;
 using WoMFramework.Game.Model;
+using WoMSadGui.Dialogs;
 using WoMWallet.Tool;
 
 namespace WoMSadGui.Consoles
@@ -30,6 +32,7 @@ namespace WoMSadGui.Consoles
         private PlayInfoConsole _playInfoConsole;
         private ScrollingConsole _log;
 
+        private readonly MogwaiKeys _mogwaiKeys;
         private readonly Mogwai _mogwai;
 
         private ControlsConsole _command1;
@@ -38,7 +41,8 @@ namespace WoMSadGui.Consoles
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
             _controller = mogwaiController;
-            _mogwai = _controller.CurrentMogwai ?? _controller.TestMogwai();
+            _mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
+            _mogwai = _mogwaiKeys.Mogwai;
 
             _playStatsConsole = new PlayStatsConsole(_mogwai, 44, 22);
             _playStatsConsole.Position = new Point(0, 0);
@@ -57,7 +61,7 @@ namespace WoMSadGui.Consoles
             _log.Position = new Point(0, 25);
             Children.Add(_log);
 
-            _playInfoConsole = new PlayInfoConsole(mogwaiController, _mogwai, 49, 14);
+            _playInfoConsole = new PlayInfoConsole(mogwaiController, _mogwaiKeys, 49, 14);
             _playInfoConsole.Position = new Point(88, 24);
             Children.Add(_playInfoConsole);
 
@@ -86,13 +90,13 @@ namespace WoMSadGui.Consoles
 
             var btnNext = new MogwaiButton(8, 1);
             btnNext.Position = new Point(0, 0);
-            btnNext.Text = "evo";
+            btnNext.Text = "evolve";
             btnNext.Click += (btn, args) => { DoAction(((Button)btn).Text); };
             _command2.Add(btnNext);
 
             var btnFast = new MogwaiButton(8, 1);
             btnFast.Position = new Point(0, 1);
-            btnFast.Text = "evo++";
+            btnFast.Text = "evol++";
             btnFast.Click += (btn, args) => { DoAction(((Button)btn).Text); };
             _command2.Add(btnFast);
 
@@ -115,11 +119,64 @@ namespace WoMSadGui.Consoles
         {
             switch (actionStr)
             {
-                case "evo":
+                case "evolve":
                     Evolve();
                     break;
-                case "evo++":
+
+                case "evol++":
                     Evolve(true);
+                    break;
+
+                case "adven":
+                    var dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", 40, 12);
+                    dialog.AddRadioButtons("adventureAction",  
+                        new List<string[]>()
+                        {
+                            new[] {"testroom", "Test Room"},
+                            new[] {"chamber", "Chamber"},
+                            new[] {"dungeon", "Dungeon"},
+                            new[] {"battle", "Battle"},
+                            new[] {"quest", "Quest"},
+                        });
+                    dialog.AddButon("ok");
+                    dialog.Button.Click += (btn, args) =>
+                    {
+                        dialog.Hide();
+                        var str = dialog.SelectedRadioButtonName;
+                        if (str.Length > 0)
+                        {
+                            DoAdventureAction(dialog.SelectedRadioButtonName);
+                        }
+                    };
+                    dialog.Show(true);
+                    break;
+            }
+            
+        }
+
+        private void DoAdventureAction(string actionStr)
+        {
+            switch (actionStr)
+            {
+                case "testroom":
+                    if (_controller.Interaction(new AdventureAction(AdventureType.TestRoom, DifficultyType.Average, _mogwai.CurrentLevel)))
+                    {
+                        LogInConsole("Successful sent mogwai to test room! Wait for interaction locks.");
+                    }
+                    else
+                    {
+                        LogInConsole("Failed to send mogwai to test room!");
+                    }  
+                    break;
+
+                default:
+                    var dialog = new MogwaiDialog("NotImplemented", $"DoAdventureAction {actionStr}!", 40, 6);
+                    dialog.AddButon("ok");
+                    dialog.Button.Click += (btn, args) =>
+                    {
+                        dialog.Hide();
+                    };
+                    dialog.Show(true);
                     break;
             }
             
@@ -129,17 +186,19 @@ namespace WoMSadGui.Consoles
         {
             if (!fast)
             {
-                _mogwai.Evolve(out var history);
-                UpdateLog();
-            }
-            else
-            {
-                for (var i = 0; i < 50; i++)
+                if (_mogwai.Evolve(out var history))
                 {
-                    if (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.InteractionType == InteractionType.None)
+                    UpdateLog();
+                }
+            }
+            else if (_mogwai.PeekNextShift != null)
+            {
+                _log.Reset();
+                for (var i = 0; i < 100; i++)
+                {
+                    if (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve(out var history))
                     {
-                        _mogwai.Evolve(out var history);
-                        UpdateLog();
+                         UpdateLog();
                     }
                     else
                     {
@@ -234,6 +293,12 @@ namespace WoMSadGui.Consoles
             }
 
             base.Update(delta);
+        }
+
+        public void LogInConsole(string msg)
+        {
+            _log.MainCursor.Print(msg);
+            _log.MainCursor.NewLine();
         }
     }
 }

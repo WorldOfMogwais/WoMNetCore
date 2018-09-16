@@ -127,7 +127,7 @@ namespace WoMSadGui
 
         private static SadGuiState LoadBlocksAsync()
         {
-            var dialog = new MogwaiProgressDialog("Loading", "caching all mogwai blocks.", _controller, 40, 8);
+            var dialog = new MogwaiProgressDialog("Loading", "caching all mogwai blocks.", 40, 8);
             dialog.AddButon("ok");
             dialog.StartAsync();
             dialog.Button.Click += (btn, args) =>

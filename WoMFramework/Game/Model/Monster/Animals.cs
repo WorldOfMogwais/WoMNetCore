@@ -9,7 +9,7 @@ namespace WoMFramework.Game.Model
              .SetSizeType(SizeType.Tiny)
              .SetAbilities(2, 15, 11, 2, 13, 2)
              .SetBaseSpeed(15)
-             .SetHitPointDiceRollEvent(new int[] { 1, 8 })
+             .SetHitPointDiceRollEvent(new[] { 1, 8 })
              .SetBaseAttackBonus(0)
              .SetBaseWeapon(NaturalWeapon.Bite(SizeType.Tiny))
              .SetDescription("Fecund and secretive, rats are omnivorous rodents that particularly thrive in urban areas.")
@@ -21,7 +21,7 @@ namespace WoMFramework.Game.Model
             .SetAbilities(13, 15, 15, 2, 12, 6)
             .SetBaseSpeed(50)
             .SetNaturalArmor(2)
-            .SetHitPointDiceRollEvent(new int[] { 2, 8, 0, 4 })
+            .SetHitPointDiceRollEvent(new[] { 2, 8, 0, 4 })
             .SetBaseAttackBonus(1)
             .SetBaseWeapon(NaturalWeapon.Bite(SizeType.Medium))
             .SetDescription("Wandering alone or in packs, wolves sit at the top of the food chain. Ferociously " +

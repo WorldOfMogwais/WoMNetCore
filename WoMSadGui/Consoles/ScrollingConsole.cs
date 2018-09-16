@@ -6,49 +6,57 @@ using Console = SadConsole.Console;
 
 namespace WoMSadGui.Consoles
 {
-    class ScrollingConsole : SadConsole.ConsoleContainer
+    internal class ScrollingConsole : SadConsole.ConsoleContainer
     {
-        SadConsole.Console mainConsole;                 // The main console that is typed into
-        SadConsole.ControlsConsole controlsHost;        // The scroll bar host
-        SadConsole.Controls.ScrollBar scrollBar;        // The scroll bar
+        Console _mainConsole;                 // The main console that is typed into
+        ControlsConsole _controlsHost;        // The scroll bar host
+        SadConsole.Controls.ScrollBar _scrollBar;        // The scroll bar
 
         int scrollingCounter;   // This is a counter to indicate how much buffer is used
 
-        public Cursor MainCursor => mainConsole.Cursor; 
+        public Cursor MainCursor => _mainConsole.Cursor; 
 
         public ScrollingConsole(int width, int height, int bufferHeight)
         {
             UseKeyboard = false;
             UseMouse = true;
-            controlsHost = new ControlsConsole(1, height);
+            _controlsHost = new ControlsConsole(1, height);
 
-            mainConsole = new Console(width - 1, bufferHeight);
-            mainConsole.ViewPort = new Rectangle(0, 0, width - 1, height);
-            mainConsole.Cursor.IsVisible = false;
+            _mainConsole = new Console(width - 1, bufferHeight);
+            _mainConsole.ViewPort = new Rectangle(0, 0, width - 1, height);
+            _mainConsole.Cursor.IsVisible = false;
 
-            scrollBar = SadConsole.Controls.ScrollBar.Create(SadConsole.Orientation.Vertical, height);
-            scrollBar.IsEnabled = false;
-            scrollBar.ValueChanged += ScrollBar_ValueChanged;
+            _scrollBar = SadConsole.Controls.ScrollBar.Create(Orientation.Vertical, height);
+            _scrollBar.IsEnabled = false;
+            _scrollBar.ValueChanged += ScrollBar_ValueChanged;
 
-            controlsHost.Add(scrollBar);
-            controlsHost.Position = new Point(1 + mainConsole.Width, Position.Y);
+            _controlsHost.Add(_scrollBar);
+            _controlsHost.Position = new Point(1 + _mainConsole.Width, Position.Y);
 
-            Children.Add(mainConsole);
-            Children.Add(controlsHost);
+            Children.Add(_mainConsole);
+            Children.Add(_controlsHost);
 
             scrollingCounter = 0;
+        }
+
+        public void Reset()
+        {
+            _mainConsole.Clear();
+            _mainConsole.Cursor.Position = new Point(0,0);
+            scrollingCounter = 0;
+            _scrollBar.Value = scrollingCounter;
         }
 
         private void ScrollBar_ValueChanged(object sender, EventArgs e)
         {
             // Set the visible area of the console based on where the scroll bar is
-            mainConsole.ViewPort = new Rectangle(0, scrollBar.Value, mainConsole.Width, mainConsole.ViewPort.Height);
+            _mainConsole.ViewPort = new Rectangle(0, _scrollBar.Value, _mainConsole.Width, _mainConsole.ViewPort.Height);
         }
 
         public override bool ProcessKeyboard(Keyboard state)
         {
             // Send keyboard input to the main console
-            return mainConsole.ProcessKeyboard(state);
+            return _mainConsole.ProcessKeyboard(state);
         }
 
         public override bool ProcessMouse(MouseConsoleState state)
@@ -56,10 +64,10 @@ namespace WoMSadGui.Consoles
             // Check the scroll bar for mouse info first. If mouse not handled by scroll bar, then..
 
             // Create a mouse state based on the controlsHost
-            if (!controlsHost.ProcessMouse(new MouseConsoleState(controlsHost, state.Mouse)))
+            if (!_controlsHost.ProcessMouse(new MouseConsoleState(_controlsHost, state.Mouse)))
             {
                 // Process this console normally.
-                return mainConsole.ProcessMouse(state);
+                return _mainConsole.ProcessMouse(state);
             }
 
             return false;
@@ -72,23 +80,23 @@ namespace WoMSadGui.Consoles
             // If we detect that this console has shifted the data up for any reason (like the virtual cursor reached the
             // bottom of the entire text surface, OR we reached the bottom of the render area, we need to adjust the 
             // scroll bar and follow the cursor
-            if (mainConsole.TimesShiftedUp != 0 | mainConsole.Cursor.Position.Y >= mainConsole.ViewPort.Height + scrollingCounter)
+            if (_mainConsole.TimesShiftedUp != 0 | _mainConsole.Cursor.Position.Y >= _mainConsole.ViewPort.Height + scrollingCounter)
             {
                 // Once the buffer has finally been filled enough to need scrolling (a single screen's worth), turn on the scroll bar
-                scrollBar.IsEnabled = true;
+                _scrollBar.IsEnabled = true;
 
                 // Make sure we've never scrolled the entire size of the buffer
-                if (scrollingCounter < mainConsole.Height - mainConsole.ViewPort.Height)
+                if (scrollingCounter < _mainConsole.Height - _mainConsole.ViewPort.Height)
                     // Record how much we've scrolled to enable how far back the bar can see
-                    scrollingCounter += mainConsole.TimesShiftedUp != 0 ? mainConsole.TimesShiftedUp : 1;
+                    scrollingCounter += _mainConsole.TimesShiftedUp != 0 ? _mainConsole.TimesShiftedUp : 1;
 
-                scrollBar.Maximum = (mainConsole.Height + scrollingCounter) - mainConsole.Height;
+                _scrollBar.Maximum = (_mainConsole.Height + scrollingCounter) - _mainConsole.Height;
 
                 // This will follow the cursor since we move the render area in the event.
-                scrollBar.Value = scrollingCounter;
+                _scrollBar.Value = scrollingCounter;
 
                 // Reset the shift amount.
-                mainConsole.TimesShiftedUp = 0;
+                _mainConsole.TimesShiftedUp = 0;
             }
         }
     }

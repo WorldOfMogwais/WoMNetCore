@@ -2,7 +2,7 @@
 {
     public class Ascii
     {
-        public static readonly string[] Logo = new string[] {
+        public static readonly string[] Logo = new[] {
             @" __      __            .__       .___         _____     _____                               .__        ",
             @"/  \    /  \___________|  |    __| _/   _____/ ____\   /     \   ____   ______  _  _______  |__| ______",
             @"\   \/\/   /  _ \_  __ \  |   / __ |   /  _ \   __\   /  \ /  \ /  _ \ / ___\ \/ \/ /\__  \ |  |/  ___/",

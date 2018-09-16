@@ -84,7 +84,7 @@ namespace WoMSadGui.Consoles
             InfoPrint(".P.", "play mogwai");
             InfoPrint(".L.", "log pub keys file");
             InfoPrint(".T.", "tag for send multi");
-            InfoPrint(".I.", "incr. funds sent");
+            InfoPrint(".I.", "incr funds sent");
         }
 
         private void InfoPrint(string key, string descritpion)
@@ -123,14 +123,14 @@ namespace WoMSadGui.Consoles
             _controlsConsole.SetGlyph(10 + (index * 11), 0, 186, Color.DarkCyan);
             _borderSurface.SetGlyph(11 + (index * 11), TrailerPosition + 3, 202, Color.DarkCyan);
             var txt = text;
-            var button = new Button(8, 1)
+            var button = new MogwaiButton(8, 1)
             {
                 Position = new Point(1 + (index * 11), 0),
                 Text = txt
             };
             button.Click += (btn, args) =>
             {
-                buttonClicked(((Button)btn).Text);
+                buttonClicked(((MogwaiButton)btn).Text);
             };
             _controlsConsole.Add(button);
         }

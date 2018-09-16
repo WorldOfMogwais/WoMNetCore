@@ -18,9 +18,9 @@ namespace WoMFramework.Game.Model
         // armor
         private int _naturalArmor = 0;
         // attack
-        private int[] _baseAttackBonus = new int[] { 0 };
+        private int[] _baseAttackBonus = new[] { 0 };
         // hitcoints
-        private int[] _hitPointDiceRollEvent = new int[] { 1, 6, 0 };
+        private int[] _hitPointDiceRollEvent = new[] { 1, 6, 0 };
         // equipment
         private Weapon _baseWeapon = NaturalWeapon.Bite(SizeType.Medium);
         private Weapon _primaryWeapon = null;
@@ -74,7 +74,7 @@ namespace WoMFramework.Game.Model
         }
         public MonsterBuilder SetBaseAttackBonus(int baseAttackBonus)
         {
-            _baseAttackBonus = new int[] { baseAttackBonus };
+            _baseAttackBonus = new[] { baseAttackBonus };
             return this;
         }
         public MonsterBuilder SetBaseAttackBonus(int[] baseAttackBonus)

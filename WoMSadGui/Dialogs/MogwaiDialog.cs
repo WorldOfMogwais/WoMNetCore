@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Controls;
+using WoMSadGui.Consoles;
 
 namespace WoMSadGui.Dialogs
 {
@@ -26,8 +27,8 @@ namespace WoMSadGui.Dialogs
 
         public void AddButon(string text)
         {
-            Button = new Button(text.Length + 2, 1);
-            Button.Position = new Point(2, 6);
+            Button = new MogwaiButton(text.Length + 2, 1);
+            Button.Position = new Point((Width - text.Length) / 2, Height-2);
             Button.Text = text;
             Add(Button);
         }

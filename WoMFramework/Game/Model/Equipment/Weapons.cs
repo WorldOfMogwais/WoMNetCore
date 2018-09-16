@@ -8,7 +8,7 @@ namespace WoMFramework.Game.Model
          * Unarmed Weapons
          */
         public static Weapon Gauntlet =>
-            WeaponBuilder.Create("Gauntlet", new int[] { 1, 2 }, new int[] { 1, 3 })
+            WeaponBuilder.Create("Gauntlet", new[] { 1, 2 }, new[] { 1, 3 })
             .SetDamageType(WeaponDamageType.Bludgeoning)
             .SetRange(1)
             .SetCost(2)
@@ -24,7 +24,7 @@ namespace WoMFramework.Game.Model
          * One-Handed Melee Weapons
          */
         public static Weapon Rapier =>
-            WeaponBuilder.Create("Rapier", new int[] { 1, 4 }, new int[] { 1, 6 })
+            WeaponBuilder.Create("Rapier", new[] { 1, 4 }, new[] { 1, 6 })
             .SetCriticalMinRoll(18)
             .SetDamageType(WeaponDamageType.Piercing)
             .SetRange(1)
@@ -38,7 +38,7 @@ namespace WoMFramework.Game.Model
          * Two-Handed Melee Weapons
          */
         public static Weapon Spear =>
-            WeaponBuilder.Create("Spear", new int[] { 1, 6 }, new int[] { 1, 8 })
+            WeaponBuilder.Create("Spear", new[] { 1, 6 }, new[] { 1, 8 })
             .SetCriticalMultiplier(3)
             .SetDamageType(WeaponDamageType.Piercing)
             .IsTwoHanded()

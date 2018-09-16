@@ -26,7 +26,7 @@ namespace WoMFramework.Game.Model
         public Classes(ClassType classType)
         {
             ClassLevel = 0;
-            BaseAttackBonus = new int[] { 0 };
+            BaseAttackBonus = new[] { 0 };
         }
 
         internal void AddBaseAttackBonus(int value)

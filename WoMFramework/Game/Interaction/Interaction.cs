@@ -20,6 +20,11 @@ namespace WoMFramework.Game.Interaction
             InteractionType = interactionType;
         }
 
+        public virtual string GetInfo()
+        {
+            return InteractionType.ToString();
+        }
+
         public decimal GetValue1()
         {
             var value = (int)CostType * 1000000 + (int)InteractionType * 10000 + ParamAdd1;
@@ -29,11 +34,6 @@ namespace WoMFramework.Game.Interaction
         public decimal GetValue2()
         {
             return decimal.Parse("0." + ParamAdd2.ToString().PadLeft(8, '0'));
-        }
-
-        public static Interaction Creation()
-        {
-            return new CreationAction();
         }
 
         public static Interaction GetInteraction(decimal amount, decimal fee)

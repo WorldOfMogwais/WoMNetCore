@@ -55,8 +55,8 @@ namespace WoMSadGui.Consoles
                         inst.IsFinished = true;
                     }
 
-                    var colors = new Color[] { Color.Black, Color.Blue, Color.White, Color.Blue, Color.Black };
-                    var colorStops = new float[] { 0f, 0.2f, 0.5f, 0.8f, 1f };
+                    var colors = new[] { Color.Black, Color.Blue, Color.White, Color.Blue, Color.Black };
+                    var colorStops = new[] { 0f, 0.2f, 0.5f, 0.8f, 1f };
 
                     Algorithms.GradientFill(Font.Size, new Point(_x, 12), 10, 45, new Rectangle(0, 0, Width, Height), new ColorGradient(colors, colorStops), SetForeground);
                 }
@@ -67,7 +67,7 @@ namespace WoMSadGui.Consoles
             _animation.Instructions.AddLast(new CodeInstruction() { CodeCallback = (i) => { Fill(Color.Black, Color.Transparent, 0, null); i.IsFinished = true; } });
 
             // Animation for the logo text.
-            var logoText = new ColorGradient(new Color[] { Color.Magenta, Color.Yellow }, new float[] { 0.0f, 1f }).ToColoredString("[| Mogwaicoin Team 2018 |]");
+            var logoText = new ColorGradient(new[] { Color.Magenta, Color.Yellow }, new[] { 0.0f, 1f }).ToColoredString("[| Mogwaicoin Team 2018 |]");
             logoText.SetEffect(new Fade() { DestinationForeground = Color.Blue, FadeForeground = true, FadeDuration = 1f, Repeat = false, RemoveOnFinished = true, Permanent = true, CloneOnApply = true });
             _animation.Instructions.AddLast(new DrawString(this) { Position = new Point(26, Height - 1), Text = logoText, TotalTimeToPrint = 1f });
 

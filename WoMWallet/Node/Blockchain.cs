@@ -180,19 +180,26 @@ namespace WoMWallet.Node
             return blockResponse.Data;
         }
 
-        public bool BindMogwai(MogwaiKeys mogwaiKey)
+        public bool BindMogwai(MogwaiKeys mogwaiKey, out string txid)
         {
-            return BurnMogs(mogwaiKey, MogwaiCost, TxFee);
+            return BurnMogs(mogwaiKey, MogwaiCost, TxFee, out txid);
         }
 
-        public bool BurnMogs(MogwaiKeys mogwaiKey, decimal burnMogs, decimal txFee)
+        public bool Interaction(MogwaiKeys mogwaiKey, Interaction interaction, out string txid)
         {
-            return SendMogs(mogwaiKey, new string[] { mogwaiKey.MirrorAddress }, burnMogs, txFee);
+            return SendMogs(mogwaiKey, new[] { mogwaiKey.MirrorAddress }, interaction.GetValue1(), TxFee + interaction.GetValue2(), out txid);
         }
 
-        public bool SendMogs(MogwaiKeys mogwaiKey, string[] toAddresses, decimal amount, decimal txFee)
+        public bool BurnMogs(MogwaiKeys mogwaiKey, decimal burnMogs, decimal txFee, out string txid)
+        {
+            return SendMogs(mogwaiKey, new[] { mogwaiKey.MirrorAddress }, burnMogs, txFee, out txid);
+        }
+
+        public bool SendMogs(MogwaiKeys mogwaiKey, string[] toAddresses, decimal amount, decimal txFee, out string txid)
         {
             Log.Debug($"send mogs {mogwaiKey.Address}, [{string.Join(",", toAddresses)}] for {amount} with {txFee}.");
+
+            txid = string.Empty;
 
             var unspentTxList = GetUnspent(0, 9999999, mogwaiKey.Address);
             var unspentAmount = unspentTxList.Sum(p => p.Amount);
@@ -208,11 +215,11 @@ namespace WoMWallet.Node
 
             Log.Info($"signedRawTx: {tx.ToHex()}");
 
-            var answer = SendRawTransaction(tx.ToHex());
+            txid = SendRawTransaction(tx.ToHex());
 
-            Log.Info($"sendRawTx[{(answer.Length != 0 ? "SUCCESS":"FAILED")}]: {answer}");
+            Log.Info($"sendRawTx[{(txid.Length != 0 ? "SUCCESS":"FAILED")}]: {txid}");
 
-            return answer.Length != 0;
+            return txid.Length != 0;
         }
 
         /// <summary>

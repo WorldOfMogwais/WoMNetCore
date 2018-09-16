@@ -2,6 +2,7 @@
 using NBitcoin;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using WoMFramework.Game.Interaction;
@@ -55,6 +56,8 @@ namespace WoMWallet.Node
             }
         }
 
+        public Dictionary<string, Interaction> InteractionLock { get; set; }
+
         public MogwaiKeys(ExtKey extkey, Network network)
         {
             _extkey = extkey;
@@ -64,6 +67,13 @@ namespace WoMWallet.Node
             {
                 _mirrorPubKey = mirrorPubKey;
             }
+            InteractionLock = new Dictionary<string, Interaction>();
+        }
+
+        public MogwaiKeys()
+        {
+            // only for testing purpose !!!
+            InteractionLock = new Dictionary<string, Interaction>();
         }
 
         public string GetEncryptedSecretWif()
@@ -117,6 +127,15 @@ namespace WoMWallet.Node
                         else
                         {
                             Mogwai = new Mogwai(Address, Shifts);
+                        }
+
+                        // Updated interaction locks
+                        foreach (var shift in Shifts.Values)
+                        {
+                            if (!shift.IsSmallShift && InteractionLock.ContainsKey(shift.TxHex))
+                            {
+                                InteractionLock.Remove(shift.TxHex);
+                            }
                         }
                     }
                 }

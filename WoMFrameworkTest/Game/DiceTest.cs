@@ -98,7 +98,7 @@ namespace WoMFramework.Game.Tests
 
             var dice = new Dice(shift);
             var n = 1000000;
-            var rollEvent = new int[] { 4, 6, 3 };
+            var rollEvent = new[] { 4, 6, 3 };
             for (var i = 0; i < 20 * n; i++)
             {
                 var roll = dice.Roll(rollEvent);
