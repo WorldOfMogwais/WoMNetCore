@@ -48,17 +48,17 @@ namespace WoMFramework.Game.Random
 
         public int Roll(int diceSides, int modifier)
         {
-            return (GetNext() % diceSides) + 1 + modifier;
+            return GetNext() % diceSides + 1 + modifier;
         }
 
         public int Roll(int diceSides)
         {
-            return (GetNext() % diceSides) + 1;
+            return GetNext() % diceSides + 1;
         }
 
         public int Roll(DiceType diceType)
         {
-            return (GetNext() % GetSides(diceType)) + 1;
+            return GetNext() % GetSides(diceType) + 1;
         }
 
         public int Roll(int[] rollEvent) {

@@ -48,7 +48,9 @@ namespace WoMFramework.Game.Model
 
         public int CurrentLevel { get; private set; } = 1;
 
-        public double XpToLevelUp => CurrentLevel * 1000;
+        public double XpToLevelUp => LevelUpXp(CurrentLevel);
+
+        public double LevelUpXp(int level) => level * 1000;
 
         public Adventure Adventure { get; set; }
 
@@ -101,7 +103,7 @@ namespace WoMFramework.Game.Model
             // add simple rapier as weapon
             Equipment.Armor = Armors.StuddedLeather;
 
-            HitPointDice = 8;
+            HitPointDice = 6;
             CurrentHitPoints = MaxHitPoints;
 
         }
@@ -149,7 +151,19 @@ namespace WoMFramework.Game.Model
                         break;
 
                     case InteractionType.Leveling:
-                        Console.WriteLine("Received a leveling action!");
+                        var levelingAction = (LevelingAction) _currentShift.Interaction;
+                        switch (levelingAction.LevelingType)
+                        {
+                            case LevelingType.Class:
+                                LevelClass(levelingAction.ClassType);
+                                break;
+                            case LevelingType.Ability:
+                                break;
+                            case LevelingType.None:
+                                break;
+                            default:
+                                break;
+                        }
                         break;
 
                     default:
@@ -179,6 +193,58 @@ namespace WoMFramework.Game.Model
 
             return true;
         }
+
+        public bool CanLevelClass(out int levels)
+        {
+            levels = LevelShifts.Count - (Classes.Count == 0 ? 0 : Classes.Sum(p => p.ClassLevel));
+
+            return levels > 0;
+        }
+
+        private void LevelClass(ClassType classType)
+        {
+            if (!CanLevelClass(out int levels))
+            {
+                Log.Warn("Not allowed class leveling action.");
+                return;
+            }
+
+            var classes = Classes.FirstOrDefault(p => p.ClassType == classType);
+            if (Classes.Count == 0 || classes == null)
+            {
+                Classes.Insert(0, Model.Classes.GetClasses(classType));
+            }
+            else if (Classes.Remove(classes))
+            {
+                Classes.Insert(0, classes);
+            }
+
+            var classesLevels = Classes.Sum(p => p.ClassLevel);
+
+            // do the class level up
+            Classes[0].ClassLevelUp();
+
+            var dice = Shifts[LevelShifts[classesLevels]].MogwaiDice;
+
+            // level class now
+            LevelClass(dice);
+
+            // initial class level
+            if (classesLevels == 0)
+            {
+                AddGold(dice.Roll(Classes[0].WealthDiceRollEvent));
+            }
+
+            History.Add(LogType.Info, Coloring.LevelUp($"You feel the power of the {Classes[0].Name}'s!"));
+        }
+
+        public override void AddGold(int gold)
+        {
+            History.Add(LogType.Info, $"You just found +{Coloring.Gold(gold)} gold!");
+
+            Wealth.Gold += gold;
+        }
+
 
         /// <summary>
         /// 
@@ -210,9 +276,6 @@ namespace WoMFramework.Game.Model
         {
             History.Add(LogType.Info, Coloring.LevelUp("You're mogwai suddenly feels an ancient power around him."));
             History.Add(LogType.Info, $"{Coloring.LevelUp("Congratulations he just made the")} {Coloring.Green(CurrentLevel.ToString())} {Coloring.LevelUp("th level!")}");
-
-            // hit points roll
-            HitPointLevelRolls.Add(shift.MogwaiDice.Roll(HitPointDice));
 
             // leveling up will heal you to max hitpoints
             CurrentHitPoints = MaxHitPoints;

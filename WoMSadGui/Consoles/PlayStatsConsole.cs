@@ -42,17 +42,22 @@ namespace WoMSadGui.Consoles
         public void UpdateScreen()
         {
             var nameStr = $"{_mogwai.Name} .:{_mogwai.CurrentLevel}:.";
-            nameStr = nameStr.PadLeft(22 + (nameStr.Length / 2)).PadRight(44);
+            nameStr = nameStr.PadLeft(22 + nameStr.Length / 2).PadRight(44);
             Print(0, 0, $"[c:g b:red:black:black:blue:{nameStr.Length}]" + nameStr, Color.Orange);
 
-            Print(31, 3, "Barbarian", Color.RoyalBlue);
-            Print(43, 3, "3", Color.Gold);
-            Print(31, 4, "Cleric", Color.RoyalBlue);
-            Print(43, 4, "1", Color.Gold);
-            Print(43, 5, _mogwai.LevelShifts.Count.ToString(), Color.Aqua);
+            for (var i = 0; i < 2 && i < _mogwai.Classes.Count; i++)
+            {
+                var classes = _mogwai.Classes[i];
+                Print(31, i + 3, classes.Name, Color.Orange);
+                Print(43, i + 3, classes.ClassLevel.ToString(), Color.Gold);
+            }
+
+            _mogwai.CanLevelClass(out var levels);
+            Print(43, 5, levels.ToString(), Color.Aqua);
 
             CreateHealthBar(16, 2, Color.DarkGreen, Color.LimeGreen, _mogwai.CurrentHitPoints, _mogwai.MaxHitPoints);
-            CreateExperienceBar(31, 6, Color.DarkOrange, Color.Gold, _mogwai.Exp, _mogwai.XpToLevelUp);
+            var lastLevelXp = _mogwai.LevelUpXp(_mogwai.CurrentLevel - 1);
+            CreateExperienceBar(31, 6, Color.DarkOrange, Color.Gold, _mogwai.Exp - lastLevelXp, _mogwai.XpToLevelUp - lastLevelXp);
             PrintStat(1, 3, "STR", _mogwai.Strength, _mogwai.StrengthMod, 0);
             PrintStat(1, 4, "DEX", _mogwai.Dexterity, _mogwai.DexterityMod, 0);
             PrintStat(1, 5, "CON", _mogwai.Constitution, _mogwai.ConstitutionMod, 0);
@@ -77,7 +82,7 @@ namespace WoMSadGui.Consoles
         public void Init()
         {
             var alligmentGender = $".:-| {_mogwai.Stats.MapAllignment()} {_mogwai.GenderStr} |-:.";
-            alligmentGender = alligmentGender.PadLeft(22 + (alligmentGender.Length / 2)).PadRight(44);
+            alligmentGender = alligmentGender.PadLeft(22 + alligmentGender.Length / 2).PadRight(44);
             Print(0, 1, new ColoredString($"[c:g b:red:black:black:blue:{alligmentGender.Length}]" + alligmentGender));
             Print(31, 5, "Unspent", Color.Gainsboro);
 

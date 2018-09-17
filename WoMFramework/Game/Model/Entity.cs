@@ -159,6 +159,29 @@ namespace WoMFramework.Game.Model
             Classes = new List<Classes>();
         }
 
+        public void LevelClass(Dice dice)
+        {
+            BaseAttackBonus = CalculateBaseAttackBonus(Classes.Sum(p => p.ClassAttackBonus));
+            FortitudeBaseSave = Classes.Sum(p => p.FortitudeBaseSave);
+            ReflexBaseSave = Classes.Sum(p => p.ReflexBaseSave);
+            WillBaseSave = Classes.Sum(p => p.WillBaseSave);
+            HitPointDiceRollEvent = Classes[0].HitPointDiceRollEvent;
+            HitPointLevelRolls.Add(dice.Roll(HitPointDiceRollEvent));
+        }
+
+        private int[] CalculateBaseAttackBonus(int attackBonus)
+        {
+            var currentBaseAttackBonus = attackBonus;
+
+            var baseAttackBonusList = new List<int>();
+
+            for (var i = currentBaseAttackBonus; i > 0; i = i - 5)
+            {
+                baseAttackBonusList.Add(i);
+            }
+            return baseAttackBonusList.ToArray();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -176,7 +199,7 @@ namespace WoMFramework.Game.Model
 
                 //string turnStr = $" + ¬g{turn.ToString("00")}§: ";
                 var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
-                var attackIndexStr = (attackIndex + 1) + (attackIndex == 0 ? "st" : "th");
+                var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
                 var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
                     $"attack {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
 
@@ -220,6 +243,15 @@ namespace WoMFramework.Game.Model
             }
             criticalCount = attackRolls.Length > 2 ? attackRolls.Length - 2 : 0;
             return attack;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gold"></param>
+        public virtual void AddGold(int gold)
+        {
+            // nothing here ..
         }
 
         /// <summary>

@@ -5,7 +5,7 @@ namespace WoMFramework.Game.Model
 {
     public abstract class Classes
     {
-        public string Name => ClassType.ToString().Substring(0, 1) + ClassType.ToString().Substring(1).ToLower();
+        public string Name => ClassType.ToString();
 
         public ClassType ClassType { get; set; }
         public int ClassLevel { get; set; }
@@ -14,36 +14,36 @@ namespace WoMFramework.Game.Model
         public int ReflexBaseSave { get; set; }
         public int WillBaseSave { get; set; }
 
-        public int[] BaseAttackBonus { get; set; }
+        public int ClassAttackBonus { get; set; }
 
-        public int[] HitHitPointDiceRollEvent { get; set; }
+        public int[] HitPointDiceRollEvent { get; set; }
 
         public int[] WealthDiceRollEvent { get; set; }
 
         public string Description { get; set; }
         public string Role { get; set; }
 
-        public Classes(ClassType classType)
+        protected Classes(ClassType classType)
         {
+            ClassType = classType;
             ClassLevel = 0;
-            BaseAttackBonus = new[] { 0 };
-        }
-
-        internal void AddBaseAttackBonus(int value)
-        {
-            var currentBaseAttackBonus = BaseAttackBonus[0] + value;
-
-            var baseAttackBonusList = new List<int>();
-
-            for (var i = currentBaseAttackBonus; i > 0; i = i - 5) {
-                baseAttackBonusList.Add(i);
-            }
-            BaseAttackBonus = baseAttackBonusList.ToArray();
+            ClassAttackBonus = 0;
         }
 
         public virtual void ClassLevelUp()
         {
             ClassLevel += 1;
+        }
+
+        public static Classes GetClasses(ClassType classType)
+        {
+            switch (classType)
+            {
+                case ClassType.Barbarian:
+                    return new Barbarian();
+                default:
+                    return new NoClass();
+            }
         }
 
     }

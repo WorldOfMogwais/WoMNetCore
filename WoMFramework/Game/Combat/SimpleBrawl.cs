@@ -95,7 +95,7 @@ namespace WoMFramework.Game.Combat
 
                     if (target.CurrentHitPoints < 0 && target is Monster)
                     {
-                        var killedMonster = ((Monster)target);
+                        var killedMonster = (Monster)target;
                         var expReward = killedMonster.Experience / Heroes.Count;
                         Heroes.ForEach(p => p.AddExp(expReward, killedMonster));
                     }

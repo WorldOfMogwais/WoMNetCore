@@ -19,8 +19,8 @@ namespace WoMFramework.Game.Interaction
             ClassType = classType;
             CurrentLevel = currentLevel;
             ClassLevel = classLevel;
-            ParamAdd1 = ((int)levelingType * 100) + (int)classType;
-            ParamAdd2 =  ((int)currentLevel * 100) + (int)classLevel;
+            ParamAdd1 = (int)levelingType * 100 + (int)classType;
+            ParamAdd2 =  (int)currentLevel * 100 + (int)classLevel;
         }
 
         public static bool TryGetAdventure(int paramAdd1, int paramAdd2, out LevelingAction leveling)

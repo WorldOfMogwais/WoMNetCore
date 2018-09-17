@@ -97,7 +97,7 @@ namespace WoMSadGui.Consoles
                     // Record how much we've scrolled to enable how far back the bar can see
                     scrollingCounter += _mainConsole.TimesShiftedUp != 0 ? _mainConsole.TimesShiftedUp : 1;
 
-                _scrollBar.Maximum = (_mainConsole.Height + scrollingCounter) - _mainConsole.Height;
+                _scrollBar.Maximum = _mainConsole.Height + scrollingCounter - _mainConsole.Height;
 
                 // This will follow the cursor since we move the render area in the event.
                 _scrollBar.Value = scrollingCounter;

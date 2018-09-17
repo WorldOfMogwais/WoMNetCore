@@ -2,6 +2,11 @@
 {
     public class Wealth
     {
-        public int Gold => 0;
+        public int Gold { get; set; }
+
+        public Wealth()
+        {
+            Gold = 0;
+        }
     }
 }

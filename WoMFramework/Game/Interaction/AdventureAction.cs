@@ -20,9 +20,9 @@ namespace WoMFramework.Game.Interaction
             ChallengeRating = averagePartyLevel + (int)difficultyType;
             DifficultyType = difficultyType;
             AveragePartyLevel = averagePartyLevel;
-            ParamAdd1 = ((int)adventureType * 1000) + ChallengeRating;
+            ParamAdd1 = (int)adventureType * 1000 + ChallengeRating;
             // not really used, but can be freed later ...
-            ParamAdd2 = ((int)difficultyType * 1000) + averagePartyLevel;
+            ParamAdd2 = (int)difficultyType * 1000 + averagePartyLevel;
         }
 
         public virtual string GetInfo()

@@ -119,13 +119,13 @@ namespace WoMSadGui.Consoles
 
         private void AddButton(int index, string text, Action<string> buttonClicked)
         {
-            SetGlyph(10 + (index * 11), TrailerPosition, 203, Color.DarkCyan);
-            _controlsConsole.SetGlyph(10 + (index * 11), 0, 186, Color.DarkCyan);
-            _borderSurface.SetGlyph(11 + (index * 11), TrailerPosition + 3, 202, Color.DarkCyan);
+            SetGlyph(10 + index * 11, TrailerPosition, 203, Color.DarkCyan);
+            _controlsConsole.SetGlyph(10 + index * 11, 0, 186, Color.DarkCyan);
+            _borderSurface.SetGlyph(11 + index * 11, TrailerPosition + 3, 202, Color.DarkCyan);
             var txt = text;
             var button = new MogwaiButton(8, 1)
             {
-                Position = new Point(1 + (index * 11), 0),
+                Position = new Point(1 + index * 11, 0),
                 Text = txt
             };
             button.Click += (btn, args) =>

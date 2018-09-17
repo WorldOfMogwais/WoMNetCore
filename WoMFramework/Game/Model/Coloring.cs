@@ -67,7 +67,12 @@
 
         public static string LevelUp(string name)
         {
-            return $"[c:r f:violet]{name}[c:u]";
+            return $"[c:r f:gold]{name}[c:u]";
+        }
+
+        public static string Gold(int value)
+        {
+            return $"[c:r f:gold]{value}[c:u]";
         }
     }
 }

@@ -28,7 +28,7 @@ namespace WoMFramework.Game.Model
             Y = y;
         }
 
-        public int Length => (Abs(X) + Abs(Y));
+        public int Length => Abs(X) + Abs(Y);
 
         public Coordinate Neighbour(Direction direction)
         {

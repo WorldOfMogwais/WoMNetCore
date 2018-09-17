@@ -204,9 +204,9 @@ namespace WoMWallet.Node
             var unspentTxList = GetUnspent(0, 9999999, mogwaiKey.Address);
             var unspentAmount = unspentTxList.Sum(p => p.Amount);
 
-            if (unspentAmount < ((amount * toAddresses.Length) + txFee))
+            if (unspentAmount < amount * toAddresses.Length + txFee)
             {
-                Log.Debug($"Address hasn't enough funds {unspentAmount} to burn that amount of mogs {((amount * toAddresses.Length) + txFee)}!");
+                Log.Debug($"Address hasn't enough funds {unspentAmount} to burn that amount of mogs {amount * toAddresses.Length + txFee}!");
                 return false;
             }
 

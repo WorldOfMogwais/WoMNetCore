@@ -273,11 +273,11 @@ namespace WoMSadGui
         private static void Init()
         {
             _controller = new MogwaiController();
-            //SplashScreen();
-            //_state = SadGuiState.Start;
+            SplashScreen();
+            _state = SadGuiState.Start;
 
-            _state = SadGuiState.Play;
-            PlayScreen();
+            //_state = SadGuiState.Play;
+            //PlayScreen();
         }
 
         private static void SplashScreenCompleted()

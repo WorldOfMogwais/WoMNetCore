@@ -6,8 +6,8 @@ namespace WoMFramework.Game.Model
     {
         public Barbarian() : base(ClassType.Barbarian)
         {
-            HitHitPointDiceRollEvent = new[] { 1, 12 };
-            WealthDiceRollEvent = new[] { 3, 6 , 0, 1};
+            HitPointDiceRollEvent = new[] { 1, 12 };
+            WealthDiceRollEvent = new[] { 3, 6, 0, 1 };
             Description = "For some, there is only rage. In the ways of their people, in the fury of their passion, " +
                 "in the howl of battle, conflict is all these brutal souls know. Savages, hired muscle, masters of " +
                 "vicious martial techniques, they are not soldiers or professional warriors—they are the battle possessed, " +
@@ -26,11 +26,11 @@ namespace WoMFramework.Game.Model
         {
             base.ClassLevelUp();
 
-            FortitudeBaseSave = (int) (2+((double)ClassLevel/2));
-            ReflexBaseSave = (int) (0+((double)ClassLevel/3));
-            WillBaseSave = (int)  (0+((double)ClassLevel/3));
+            FortitudeBaseSave = (int)(2 + (double)ClassLevel / 2);
+            ReflexBaseSave = (int)(0 + (double)ClassLevel / 3);
+            WillBaseSave = (int)(0 + (double)ClassLevel / 3);
 
-            AddBaseAttackBonus(1);
+            ClassAttackBonus += 1;
         }
     }
 }

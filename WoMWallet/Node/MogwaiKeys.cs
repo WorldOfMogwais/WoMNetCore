@@ -194,12 +194,12 @@ namespace WoMWallet.Node
             }
 
             // check if we need to add a change output
-            if ((unspentAmount - (amount * toAddresses.Length)) > txFee)
+            if (unspentAmount - amount * toAddresses.Length > txFee)
             {
                 tx.AddOutput(new TxOut
                 {
                     ScriptPubKey = _pubKey.GetAddress(_network).ScriptPubKey,
-                    Value = Money.Coins(unspentAmount - (amount * toAddresses.Length) - txFee)
+                    Value = Money.Coins(unspentAmount - amount * toAddresses.Length - txFee)
                 });
             }
 

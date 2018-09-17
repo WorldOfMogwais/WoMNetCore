@@ -140,7 +140,7 @@ namespace WoMFramework.Game.Model
                 return false;
             }
 
-            var modValue = (result % (Creation - MinRange)) + MinRange;
+            var modValue = result % (Creation - MinRange) + MinRange;
 
             if (modValue % 1 != 0)
             {
