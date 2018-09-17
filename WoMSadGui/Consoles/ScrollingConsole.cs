@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Input;
+using SadConsole.Surfaces;
 using Console = SadConsole.Console;
 
 namespace WoMSadGui.Consoles
@@ -22,6 +23,12 @@ namespace WoMSadGui.Consoles
             UseMouse = true;
             _controlsHost = new ControlsConsole(1, height);
 
+            var borderSurface = new Basic(width + 2, height + 2, Font);
+            borderSurface.DrawBox(new Rectangle(0, 0, borderSurface.Width, borderSurface.Height),
+                new Cell(Color.DarkCyan, Color.Black), null, ConnectedLineThick);
+            borderSurface.Position = new Point(-1, -1);
+            Children.Add(borderSurface);
+
             _mainConsole = new Console(width - 1, bufferHeight);
             _mainConsole.ViewPort = new Rectangle(0, 0, width - 1, height);
             _mainConsole.Cursor.IsVisible = false;
@@ -29,7 +36,7 @@ namespace WoMSadGui.Consoles
             _scrollBar = SadConsole.Controls.ScrollBar.Create(Orientation.Vertical, height);
             _scrollBar.IsEnabled = false;
             _scrollBar.ValueChanged += ScrollBar_ValueChanged;
-
+ 
             _controlsHost.Add(_scrollBar);
             _controlsHost.Position = new Point(1 + _mainConsole.Width, Position.Y);
 

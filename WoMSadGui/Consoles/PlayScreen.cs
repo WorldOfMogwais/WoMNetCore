@@ -7,6 +7,7 @@ using System.Security;
 using log4net.Repository.Hierarchy;
 using SadConsole;
 using SadConsole.Controls;
+using SadConsole.Surfaces;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMWallet.Node;
@@ -17,6 +18,19 @@ using WoMWallet.Tool;
 
 namespace WoMSadGui.Consoles
 {
+    public class TestControls : ControlsConsole
+    {
+        public Basic BorderSurface;
+
+        public TestControls(int width, int height) : base(width, height)
+        {
+            BorderSurface = new Basic(width + 2, height + 2, Font);
+            BorderSurface.DrawBox(new Rectangle(0, 0, BorderSurface.Width, BorderSurface.Height),
+                new Cell(Color.DarkCyan, Color.TransparentBlack), null, null);
+            BorderSurface.Position = new Point(-1, -1);
+            Children.Add(BorderSurface);
+        }
+    }
     public class PlayScreen : Console
     {
         private MogwaiController _controller;
@@ -35,7 +49,7 @@ namespace WoMSadGui.Consoles
         private readonly MogwaiKeys _mogwaiKeys;
         private readonly Mogwai _mogwai;
 
-        private ControlsConsole _command1;
+        private TestControls _command1;
         private ControlsConsole _command2;
 
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
@@ -52,11 +66,6 @@ namespace WoMSadGui.Consoles
             _custom.Position = new Point(46, 0);
             Children.Add(_custom);
 
-            _command1 = new ControlsConsole(86, 1);
-            _command1.Position = new Point(0, 23);
-            _command1.Fill(Color.Transparent, Color.DarkGray, null);
-            Children.Add(_command1);
-
             _log = new ScrollingConsole(85, 13, 100);
             _log.Position = new Point(0, 25);
             Children.Add(_log);
@@ -64,6 +73,11 @@ namespace WoMSadGui.Consoles
             _playInfoConsole = new PlayInfoConsole(mogwaiController, _mogwaiKeys, 49, 14);
             _playInfoConsole.Position = new Point(88, 24);
             Children.Add(_playInfoConsole);
+
+            _command1 = new TestControls(86, 1);
+            _command1.Position = new Point(0, 23);
+            _command1.Fill(Color.Transparent, Color.Black, null);
+            Children.Add(_command1);
 
             _command2 = new ControlsConsole(8, 2);
             _command2.Position = new Point(40, 2);
@@ -80,6 +94,10 @@ namespace WoMSadGui.Consoles
             IsVisible = true;
             if (_controller.CurrentMogwai != null)
                 _controller.RefreshCurrent(1);
+
+            _command1.BorderSurface.SetGlyph(0, 0, 204, Color.DarkCyan);
+            _command1.BorderSurface.SetGlyph(0, 1, 186, Color.DarkCyan);
+            _command1.BorderSurface.SetGlyph(0, 2, 200, Color.DarkCyan);
 
             MenuButton(0, "level", DoAction);
             MenuButton(1, "inven", DoAction);
@@ -113,6 +131,11 @@ namespace WoMSadGui.Consoles
             button.Text = buttonText;
             button.Click += (btn, args) => { buttonClicked(((Button)btn).Text); };
             _command1.Add(button);
+            _command1.SetGlyph(xBtn + mBtnSize + buttonPosition * (mBtnSize + xSpBtn), 0, 186, Color.DarkCyan);
+            _command1.BorderSurface.SetGlyph(xBtn + mBtnSize + 1 + buttonPosition * (mBtnSize + xSpBtn), 0, 203, Color.DarkCyan);
+            for(int i = 0; i < mBtnSize; i++)
+                _command1.BorderSurface.SetGlyph(xBtn + i + 1 + buttonPosition * (mBtnSize + xSpBtn), 2, 205, Color.DarkCyan);
+            _command1.BorderSurface.SetGlyph(xBtn + mBtnSize + 1 + buttonPosition * (mBtnSize + xSpBtn), 2, 202, Color.DarkCyan);
         }
 
         private void DoAction(string actionStr)
