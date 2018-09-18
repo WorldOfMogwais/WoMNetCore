@@ -133,13 +133,16 @@ namespace WoMSadGui.Consoles
             _command1.Add(button);
             _command1.SetGlyph(xBtn + mBtnSize + buttonPosition * (mBtnSize + xSpBtn), 0, 186, Color.DarkCyan);
             _command1.BorderSurface.SetGlyph(xBtn + mBtnSize + 1 + buttonPosition * (mBtnSize + xSpBtn), 0, 203, Color.DarkCyan);
-            for(int i = 0; i < mBtnSize; i++)
+            for (int i = 0; i < mBtnSize; i++)
+            {
                 _command1.BorderSurface.SetGlyph(xBtn + i + 1 + buttonPosition * (mBtnSize + xSpBtn), 2, 205, Color.DarkCyan);
+            }
             _command1.BorderSurface.SetGlyph(xBtn + mBtnSize + 1 + buttonPosition * (mBtnSize + xSpBtn), 2, 202, Color.DarkCyan);
         }
 
         private void DoAction(string actionStr)
         {
+            MogwaiOptionDialog dialog;
             switch (actionStr)
             {
                 case "evolve":
@@ -151,26 +154,22 @@ namespace WoMSadGui.Consoles
                     break;
 
                 case "adven":
-                    var dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", 40, 12);
-                    dialog.AddRadioButtons("adventureAction",  
-                        new List<string[]>()
-                        {
+                    dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", DoAdventureAction, 40, 12);
+                    dialog.AddRadioButtons("adventureAction", new List<string[]> {
                             new[] {"testroom", "Test Room"},
                             new[] {"chamber", "Chamber"},
                             new[] {"dungeon", "Dungeon"},
                             new[] {"battle", "Battle"},
                             new[] {"quest", "Quest"},
                         });
-                    dialog.AddButon("ok");
-                    dialog.Button.Click += (btn, args) =>
-                    {
-                        dialog.Hide();
-                        var str = dialog.SelectedRadioButtonName;
-                        if (str.Length > 0)
-                        {
-                            DoAdventureAction(dialog.SelectedRadioButtonName);
-                        }
-                    };
+                    dialog.Show(true);
+                    break;
+                case "level":
+                    dialog = new MogwaiOptionDialog("Leveling", $"Currently up for leveling?", DoAdventureAction, 40, 12);
+                    dialog.AddRadioButtons("levelingAction", new List<string[]> {
+                        new[] {"levelclass", "Class levels."},
+                        new[] {"levelability", "Ability levels."}
+                    });
                     dialog.Show(true);
                     break;
             }
@@ -179,6 +178,8 @@ namespace WoMSadGui.Consoles
 
         private void DoAdventureAction(string actionStr)
         {
+            MogwaiOptionDialog dialog;
+
             switch (actionStr)
             {
                 case "testroom":
@@ -191,18 +192,64 @@ namespace WoMSadGui.Consoles
                         LogInConsole("Failed to send mogwai to test room!");
                     }  
                     break;
-
-                default:
-                    var dialog = new MogwaiDialog("NotImplemented", $"DoAdventureAction {actionStr}!", 40, 6);
-                    dialog.AddButon("ok");
-                    dialog.Button.Click += (btn, args) =>
-                    {
-                        dialog.Hide();
-                    };
+                case "levelclass":
+                    dialog = new MogwaiOptionDialog("Leveling", $"Currently up for leveling?", DoClassLevel, 40, 17);
+                    dialog.AddRadioButtons("levelingAction", new List<string[]> {
+                        new[] { "Barbarian", "Barbarian"},
+                        new[] { "Bard", "Bard"},
+                        new[] { "Cleric", "Cleric"},
+                        new[] { "Druid", "Druid"},
+                        new[] { "Fighter", "Fighter"},
+                        new[] { "Monk", "Monk"},
+                        new[] { "Paladin", "Paladin"},
+                        new[] { "Ranger", "Ranger"},
+                        new[] { "Rogue", "Rogue"},
+                        new[] { "Sorcerer", "Sorcerer"},
+                        new[] { "Wizard", "Wizard"}
+                    });
                     dialog.Show(true);
+                    break;
+                default:
+                    var warning = new MogwaiDialog("NotImplemented", $"DoAdventureAction {actionStr}!", 40, 6);
+                    warning.AddButon("ok");
+                    warning.Button.Click += (btn, args) =>
+                    {
+                        warning.Hide();
+                    };
+                    warning.Show(true);
                     break;
             }
             
+        }
+
+        private void DoClassLevel(string classTypeStr)
+        {
+            if (!_mogwai.CanLevelClass(out var levels))
+            {
+                LogInConsole($"Mogwai can't class levelno level ups!");
+                return;
+            }
+
+            if (_mogwai.Classes.Count >= 2)
+            {
+                LogInConsole($"Mogwais of this generation can't level more then two classes!");
+                return;
+            }
+
+            if (!Enum.TryParse<ClassType>(classTypeStr, true, out var classType))
+            {
+                LogInConsole($"Invalid class, please check {classTypeStr}!");
+                return;
+            }
+
+            if (!_controller.Interaction(new LevelingAction(LevelingType.Class, classType, _mogwai.CurrentLevel,
+                _mogwai.GetClassLevel(classType))))
+            {
+                LogInConsole("Failed to class leveling!");
+                return;
+            }
+
+            LogInConsole("Successful sent mogwai out for class leveling.");
         }
 
         public void Evolve(bool fast = false)

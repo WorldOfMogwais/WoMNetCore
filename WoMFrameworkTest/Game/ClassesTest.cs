@@ -5,16 +5,6 @@ namespace WoMFramework.Game.Model.Tests
     public class ClassesTest
     {
         [Fact]
-        public void NoClasstest()
-        {
-            var noClass = new NoClass();
-            Assert.Equal(0, noClass.ClassAttackBonus);
-            Assert.Equal(0, noClass.ClassLevel);
-            noClass.ClassLevelUp();
-            Assert.Equal(1, noClass.ClassLevel);
-        }
-
-        [Fact]
         public void BarbarianTest()
         {
 

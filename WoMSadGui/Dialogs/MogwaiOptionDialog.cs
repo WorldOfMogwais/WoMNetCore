@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using SadConsole;
@@ -16,6 +17,20 @@ namespace WoMSadGui.Dialogs
         public MogwaiOptionDialog(string title, string text, int width, int height) : base(title, text, width, height)
         {
 
+        }
+
+        public MogwaiOptionDialog(string title, string text, Action<string> doAdventureAction, int width, int height) : base(title, text, width, height)
+        {
+            AddButon("ok");
+            Button.Click += (btn, args) =>
+            {
+                Hide();
+                var str = SelectedRadioButtonName;
+                if (str.Length > 0)
+                {
+                    doAdventureAction(str);
+                }
+            };
         }
 
         private void ClickedRadioButton(object sender, MouseEventArgs e)

@@ -20,6 +20,7 @@ namespace WoMFramework.Game.Model
             Role = "Barbarians excel in combat, possessing the martial prowess and fortitude to take on foes seemingly far " +
                 "superior to themselves. With rage granting them boldness and daring beyond that of most other warriors, " +
                 "barbarians charge furiously into battle and ruin all who would stand in their way.";
+            //Alignment: Any nonlawful.
         }
 
         public override void ClassLevelUp()

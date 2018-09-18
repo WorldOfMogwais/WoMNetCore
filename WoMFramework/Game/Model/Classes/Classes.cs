@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Model
@@ -41,8 +42,30 @@ namespace WoMFramework.Game.Model
             {
                 case ClassType.Barbarian:
                     return new Barbarian();
+                case ClassType.Bard:
+                    return new Bard();
+                case ClassType.Cleric:
+                    return new Cleric();
+                case ClassType.Druid:
+                    return new Druid();
+                case ClassType.Fighter:
+                    return new Fighter();
+                case ClassType.Monk:
+                    return new Monk();
+                case ClassType.Paladin:
+                    return new Paladin();
+                case ClassType.Ranger:
+                    return new Ranger();
+                case ClassType.Rogue:
+                    return new Rogue();
+                case ClassType.Sorcerer:
+                    return new Sorcerer();
+                case ClassType.Wizard:
+                    return new Wizard();
+                case ClassType.None:
+                    return null;
                 default:
-                    return new NoClass();
+                    throw new ArgumentOutOfRangeException(nameof(classType), classType, null);
             }
         }
 
