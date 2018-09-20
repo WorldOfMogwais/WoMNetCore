@@ -21,7 +21,7 @@ namespace WoMFramework.Game.Model
             ReflexBaseSave = (int)(0 + (double)ClassLevel / 3);
             WillBaseSave = (int)(0 + (double)ClassLevel / 3);
 
-            ClassAttackBonus += 1;
+            ClassAttackBonus = ClassLevel;
         }
     }
 }

@@ -211,7 +211,7 @@ namespace WoMSadGui.Consoles
                     break;
                 default:
                     var warning = new MogwaiDialog("NotImplemented", $"DoAdventureAction {actionStr}!", 40, 6);
-                    warning.AddButon("ok");
+                    warning.AddButton("ok");
                     warning.Button.Click += (btn, args) =>
                     {
                         warning.Hide();

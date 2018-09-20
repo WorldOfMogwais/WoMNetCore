@@ -128,7 +128,7 @@ namespace WoMSadGui
         private static SadGuiState LoadBlocksAsync()
         {
             var dialog = new MogwaiProgressDialog("Loading", "caching all mogwai blocks.", 40, 8);
-            dialog.AddButon("ok");
+            dialog.AddButton("ok");
             dialog.StartAsync();
             dialog.Button.Click += (btn, args) =>
             {
@@ -146,7 +146,7 @@ namespace WoMSadGui
         private static SadGuiState Warning(string warning, bool terminate)
         {
             var dialog = new MogwaiDialog("Warning", warning, 40, 8);
-            dialog.AddButon("ok");
+            dialog.AddButton("ok");
             dialog.Button.Click += (btn, args) =>
             {
                 if (terminate)
@@ -169,7 +169,7 @@ namespace WoMSadGui
             var mnemoic = _controller.WalletMnemonicWords;
             var size = mnemoic.Length.ToString();
             var dialog = new MogwaiDialog("Show Mnemoic", "[c:g f:LimeGreen:Orange:" + size + "]" + mnemoic.ToUpper(), 40, 8);
-            dialog.AddButon("memorized");
+            dialog.AddButton("memorized");
             dialog.Button.Click += (btn, args) =>
             {
                 _state = SadGuiState.Selection;
@@ -183,7 +183,7 @@ namespace WoMSadGui
         private static SadGuiState CreateWallet()
         {
             var inputDialog = new MogwaiInputDialog("WalletCreation", "new wallet password?", 40, 8);
-            inputDialog.AddButon("ok");
+            inputDialog.AddButton("ok");
             inputDialog.Button.Click += (btn, args) =>
             {
                 var password = inputDialog.Input?.Text;
@@ -206,7 +206,7 @@ namespace WoMSadGui
         private static SadGuiState Unlock()
         {
             var dialog = new MogwaiInputDialog("UnlockWallet", "wallet password?", 40, 8);
-            dialog.AddButon("ok");
+            dialog.AddButton("ok");
             dialog.Button.Click += (btn, args) =>
             {
                 var password = dialog.Input.Text;

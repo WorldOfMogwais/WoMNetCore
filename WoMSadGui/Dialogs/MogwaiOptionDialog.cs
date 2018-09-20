@@ -21,15 +21,19 @@ namespace WoMSadGui.Dialogs
 
         public MogwaiOptionDialog(string title, string text, Action<string> doAdventureAction, int width, int height) : base(title, text, width, height)
         {
-            AddButon("ok");
+            AddButton("ok", true);
             Button.Click += (btn, args) =>
             {
-                Hide();
                 var str = SelectedRadioButtonName;
-                if (str.Length > 0)
+                if (str?.Length > 0)
                 {
+                    Hide();
                     doAdventureAction(str);
                 }
+            };
+            ButtonCancel.Click += (btn, args) =>
+            {
+                Hide();
             };
         }
 

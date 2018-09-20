@@ -9,6 +9,8 @@ namespace WoMSadGui.Dialogs
     {
         public Button Button;
 
+        public Button ButtonCancel;
+
         public MogwaiDialog(string title, string text, int width, int height) : base(width, height)
         {
             Title = "[" + title + "]";
@@ -25,10 +27,20 @@ namespace WoMSadGui.Dialogs
             Center();
         }
 
-        public void AddButon(string text)
+        public void AddButton(string text, bool cancel = false)
         {
+            int button = (Width - text.Length) / 2;
+            if (cancel)
+            {
+                var textCancel = "Cancel";
+                ButtonCancel = new MogwaiButton(textCancel.Length + 2, 1);
+                ButtonCancel.Position = new Point(Width - textCancel.Length - 4, Height - 2);
+                ButtonCancel.Text = textCancel;
+                Add(ButtonCancel);
+                button = 2;
+            }
             Button = new MogwaiButton(text.Length + 2, 1);
-            Button.Position = new Point((Width - text.Length) / 2, Height-2);
+            Button.Position = new Point(button, Height - 2);
             Button.Text = text;
             Add(Button);
         }

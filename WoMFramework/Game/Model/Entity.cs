@@ -173,9 +173,9 @@ namespace WoMFramework.Game.Model
         {
             var currentBaseAttackBonus = attackBonus;
 
-            var baseAttackBonusList = new List<int>();
+            var baseAttackBonusList = new List<int>() { currentBaseAttackBonus };
 
-            for (var i = currentBaseAttackBonus; i > 0; i = i - 5)
+            for (var i = currentBaseAttackBonus - 5; i > 0; i = i - 5)
             {
                 baseAttackBonusList.Add(i);
             }
