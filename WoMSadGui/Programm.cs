@@ -85,7 +85,7 @@ namespace WoMSadGui
                     }
                     return;
                 case SadGuiState.Mnemoic:
-                    _state = ShowMnemoic();
+                    _state = ShowMnemonic();
                     break;
                 case SadGuiState.Selection:
                     if (_selectionScreen == null)
@@ -164,11 +164,11 @@ namespace WoMSadGui
             return SadGuiState.Action;
         }
 
-        private static SadGuiState ShowMnemoic()
+        private static SadGuiState ShowMnemonic()
         {
-            var mnemoic = _controller.WalletMnemonicWords;
-            var size = mnemoic.Length.ToString();
-            var dialog = new MogwaiDialog("Show Mnemoic", "[c:g f:LimeGreen:Orange:" + size + "]" + mnemoic.ToUpper(), 40, 8);
+            var mnemonicWords = _controller.WalletMnemonicWords;
+            var size = mnemonicWords.Length.ToString();
+            var dialog = new MogwaiDialog("Show Mnemonic", "[c:g f:LimeGreen:Orange:" + size + "]" + mnemonicWords.ToUpper(), 40, 8);
             dialog.AddButton("memorized");
             dialog.Button.Click += (btn, args) =>
             {
