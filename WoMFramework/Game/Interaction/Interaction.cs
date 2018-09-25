@@ -28,12 +28,14 @@ namespace WoMFramework.Game.Interaction
         public decimal GetValue1()
         {
             var value = (int)CostType * 1000000 + (int)InteractionType * 10000 + ParamAdd1;
-            return decimal.Parse("0." + value.ToString().PadLeft(8, '0'));
+            //return decimal.Parse("0." + value.ToString().PadLeft(8, '0'));
+            return (decimal) value / 100000000;
         }
 
         public decimal GetValue2()
         {
-            return decimal.Parse("0." + ParamAdd2.ToString().PadLeft(8, '0'));
+            //return decimal.Parse("0." + ParamAdd2.ToString().PadLeft(8, '0'));
+            return (decimal) ParamAdd2 / 100000000;
         }
 
         public static Interaction GetInteraction(decimal amount, decimal fee)
