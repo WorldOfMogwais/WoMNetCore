@@ -38,16 +38,24 @@ namespace WoMFramework.Game.Interaction
 
         public static Interaction GetInteraction(decimal amount, decimal fee)
         {
-            var parm1 = amount.ToString("0.00000000").Split('.')[1];
+
+            var parm1 = ((int) (amount * 100000000 % 100000000)).ToString("00000000");
+            //var parm1 = amount.ToString("0.00000000").Split('.')[1];
             var costTypeInt = int.Parse(parm1.Substring(0, 2));
+            //var costTypeInt = (int) (amount * 100 % 100);
             var interactionTypInt = int.Parse(parm1.Substring(2, 2));
+            //var interactionTypInt = (int) (amount * 10000 % 10000) % (costTypeInt * 100);
+
             if (Enum.IsDefined(typeof(CostType), costTypeInt)
              && Enum.IsDefined(typeof(InteractionType), interactionTypInt))
             {
                 var costType = (CostType)costTypeInt;
                 var interactionType = (InteractionType)interactionTypInt;
                 var addParam1 = int.Parse(parm1.Substring(4, 4));
-                var addParam2 = int.Parse(fee.ToString("0.00000000").Split('.')[1].Substring(4, 4));
+
+                var feeString = ((int) (fee * 100000000 % 100000000)).ToString("00000000");
+                var addParam2 = int.Parse(feeString.Substring(4, 4));
+                //var addParam2 = int.Parse(fee.ToString("0.00000000").Split('.')[1].Substring(4, 4));
 
                 switch (interactionType)
                 {
