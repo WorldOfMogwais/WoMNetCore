@@ -3,6 +3,13 @@
 ## Introduction
 World of Mogwais is a experiment driven by the idea of adding gamification to the blockchain technology. It builds up on the cryptocurrency Mogwai Coin.
 
+## Getting Started
+Make sure you have the [.NET Core SDK](https://www.microsoft.com/net/download) and git installed and run the following command.
+```
+git clone https://github.com/WorldOfMogwais/WoMNetCore.git
+dotnet run --project ./WoMNetCore/WoMSadGui
+```
+
 ## Tool
 This tool is intended to help Dev's to test the gameframework and the wallet functionality.
 
