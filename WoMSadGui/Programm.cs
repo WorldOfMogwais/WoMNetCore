@@ -1,20 +1,22 @@
-using SadConsole;
-using Microsoft.Xna.Framework;
-using WoMSadGui.Consoles;
-using WoMSadGui.Dialogs;
-using WoMWallet.Node;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Reflection;
 using log4net;
 using log4net.Config;
-using System.IO;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using SadConsole;
+using WoMSadGui.Consoles;
+using WoMSadGui.Dialogs;
+using WoMWallet.Node;
+using Game = SadConsole.Game;
 
 namespace WoMSadGui
 {
-
-    class Program
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
+    internal class Program
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         public const int Width = 141;
         public const int Height = 40;
 
@@ -28,40 +30,41 @@ namespace WoMSadGui
 
         private static MogwaiController _controller;
 
-        static void Main(string[] args)
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+        private static void Main(string[] args)
         {
             var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
             // Setup the engine and creat the main window.
-            SadConsole.Game.Create("IBM.font", Width, Height);
+            Game.Create("IBM.font", Width, Height);
 
             // Hook the start event so we can add consoles to the system.
-            SadConsole.Game.OnInitialize = Init;
+            Game.OnInitialize = Init;
 
             // Hook the update event that happens each frame so we can trap keys and respond.
-            SadConsole.Game.OnUpdate = Update;
+            Game.OnUpdate = Update;
 
             // Start the game.
-            SadConsole.Game.Instance.Run();
+            Game.Instance.Run();
 
             //
             // Code here will not run until the game window closes.
             //
 
-            SadConsole.Game.Instance.Dispose();
+            Game.Instance.Dispose();
         }
 
         private static void Update(GameTime time)
         {
             // As an example, we'll use the F5 key to make the game full screen
-            if (Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.F5))
+            if (Global.KeyboardState.IsKeyReleased(Keys.F5))
             {
                 Settings.ToggleFullScreen();
             }
-            else if (Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape))
+            else if (Global.KeyboardState.IsKeyReleased(Keys.Escape))
             {
-                SadConsole.Game.Instance.Exit();
+                Game.Instance.Exit();
             }
 
             //return;
@@ -75,14 +78,7 @@ namespace WoMSadGui
                 case SadGuiState.Action:
                     return;
                 case SadGuiState.Login:
-                    if (!_controller.IsWalletCreated)
-                    {
-                        _state = CreateWallet();
-                    }
-                    else
-                    {
-                        _state = Unlock();
-                    }
+                    _state = !_controller.IsWalletCreated ? CreateWallet() : Unlock();
                     return;
                 case SadGuiState.Mnemoic:
                     _state = ShowMnemonic();
@@ -119,7 +115,7 @@ namespace WoMSadGui
                     _state = Warning("A fatal error happend!", true);
                     break;
                 case SadGuiState.Quit:
-                    SadConsole.Game.Instance.Exit();
+                    Game.Instance.Exit();
                     break;
             }
 
@@ -149,14 +145,7 @@ namespace WoMSadGui
             dialog.AddButton("ok");
             dialog.Button.Click += (btn, args) =>
             {
-                if (terminate)
-                {
-                    _state = SadGuiState.Quit;
-                }
-                else
-                {
-                    _state = SadGuiState.Selection;
-                }
+                _state = terminate ? SadGuiState.Quit : SadGuiState.Selection;
                 dialog.Hide();
             };
             dialog.Show(true);
@@ -188,14 +177,7 @@ namespace WoMSadGui
             {
                 var password = inputDialog.Input?.Text;
                 _controller.CreateWallet(password);
-                if (_controller.IsWalletCreated)
-                {
-                    _state = SadGuiState.Mnemoic;
-                }
-                else
-                {
-                    _state = SadGuiState.Fatalerror;
-                }
+                _state = _controller.IsWalletCreated ? SadGuiState.Mnemoic : SadGuiState.Fatalerror;
                 inputDialog.Hide();
             };
             inputDialog.Show(true);
@@ -211,14 +193,7 @@ namespace WoMSadGui
             {
                 var password = dialog.Input.Text;
                 _controller.UnlockWallet(password);
-                if (_controller.IsWalletUnlocked)
-                {
-                    _state = SadGuiState.Selection;
-                }
-                else
-                {
-                    _state = SadGuiState.Fatalerror;
-                }
+                _state = _controller.IsWalletUnlocked ? SadGuiState.Selection : SadGuiState.Fatalerror;
                 dialog.Hide();
             };
             dialog.Show(true);
@@ -231,8 +206,7 @@ namespace WoMSadGui
             // clear current childrens
             Global.CurrentScreen.Children.Clear();
 
-            _playScreen = new PlayScreen(_controller, 110, 25);
-            _playScreen.Position = new Point(2, 1);
+            _playScreen = new PlayScreen(_controller, 110, 25) { Position = new Point(2, 1) };
 
             // Set our new console as the thing to render and process
             Global.CurrentScreen.Children.Add(_playScreen);
@@ -243,11 +217,9 @@ namespace WoMSadGui
             // clear current childrens
             Global.CurrentScreen.Children.Clear();
 
-            _logoConsole = new LogoConsole(110, 6);
-            _logoConsole.Position =  new Point(2, 1);
+            _logoConsole = new LogoConsole(110, 6) { Position = new Point(2, 1) };
 
-            _selectionScreen = new SelectionScreen(_controller, 110, 25);
-            _selectionScreen.Position = new Point(2, 9);
+            _selectionScreen = new SelectionScreen(_controller, 110, 25) { Position = new Point(2, 9) };
 
             // Set our new console as the thing to render and process
             Global.CurrentScreen.Children.Add(_logoConsole);
@@ -263,8 +235,7 @@ namespace WoMSadGui
             //_outputDevice.Init(audioFile);
             //_outputDevice.Play();
 
-            _splashScreen = new SplashScreen(140, 30);
-            _splashScreen.IsVisible = true;
+            _splashScreen = new SplashScreen(140, 30) { IsVisible = true };
             //_splashScreen.SplashCompleted += SplashScreenCompleted;
             Global.CurrentScreen.Children.Add(_splashScreen);
         }

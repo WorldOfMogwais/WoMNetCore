@@ -1,9 +1,9 @@
-﻿using Xunit;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Random;
+using Xunit;
 
-namespace WoMFramework.Game.Tests
+namespace WoMFrameworkTest.Game
 {
     public class DiceTest
     {

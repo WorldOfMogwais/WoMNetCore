@@ -1,6 +1,7 @@
-﻿using Xunit;
+﻿using WoMFramework.Game.Model.Classes;
+using Xunit;
 
-namespace WoMFramework.Game.Model.Tests
+namespace WoMFrameworkTest.Game
 {
     public class ClassesTest
     {

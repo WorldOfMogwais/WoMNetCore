@@ -1,6 +1,6 @@
 ﻿using WoMFramework.Game.Enums;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Classes
 {
     public class Druid : Classes
     {

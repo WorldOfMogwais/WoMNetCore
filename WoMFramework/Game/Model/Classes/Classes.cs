@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using WoMFramework.Game.Enums;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Classes
 {
     public abstract class Classes
     {

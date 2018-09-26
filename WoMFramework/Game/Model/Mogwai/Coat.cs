@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Mogwai
 {
     public class Coat
     {
@@ -20,7 +20,7 @@ namespace WoMFramework.Game.Model
                 .Salted(true).SetPosition(18).SetSize(2).SetCreation(256).SetMaxRange(256).Build();
         public int CoatColor2 => CoatColor2Attr.GetValue();
 
-        public List<Attribute> All => new List<Attribute>() { CoatTypeAttr, CoatGeneticAttr, CoatColor1Attr, CoatColor2Attr };
+        public List<Attribute> All => new List<Attribute> { CoatTypeAttr, CoatGeneticAttr, CoatColor1Attr, CoatColor2Attr };
 
         public Coat(HexValue hexValue)
         {

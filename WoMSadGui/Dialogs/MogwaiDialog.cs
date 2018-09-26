@@ -33,15 +33,20 @@ namespace WoMSadGui.Dialogs
             if (cancel)
             {
                 var textCancel = "Cancel";
-                ButtonCancel = new MogwaiButton(textCancel.Length + 2, 1);
-                ButtonCancel.Position = new Point(Width - textCancel.Length - 4, Height - 2);
-                ButtonCancel.Text = textCancel;
+                ButtonCancel = new MogwaiButton(textCancel.Length + 2, 1)
+                {
+                    Position = new Point(Width - textCancel.Length - 4, Height - 2),
+                    Text = textCancel
+                };
                 Add(ButtonCancel);
                 button = 2;
             }
-            Button = new MogwaiButton(text.Length + 2, 1);
-            Button.Position = new Point(button, Height - 2);
-            Button.Text = text;
+
+            Button = new MogwaiButton(text.Length + 2, 1)
+            {
+                Position = new Point(button, Height - 2),
+                Text = text
+            };
             Add(Button);
         }
     }

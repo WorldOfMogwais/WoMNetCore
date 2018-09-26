@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
 using WoMFramework.Game.Enums;
+using WoMFramework.Game.Model.Mogwai;
+using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model
 {
@@ -36,7 +38,7 @@ namespace WoMFramework.Game.Model
         public int CharismaMod => Modifier(Charisma);
 
         private int Modifier(int ability) => (int)Math.Floor((ability - 10) / 2.0);
-        
+
         #endregion
 
         // current position
@@ -50,7 +52,7 @@ namespace WoMFramework.Game.Model
 
         public int NaturalArmor { get; set; }
         // armorclass = 10 + armor bonus + shield bonus + dex modifier + size modifier + natural armor + deflection + misc modifier
-        public int ArmorClass => 10 + Equipment.ArmorBonus + Equipment.ShieldBonus + DexterityMod + (int) SizeType + NaturalArmor;
+        public int ArmorClass => 10 + Equipment.ArmorBonus + Equipment.ShieldBonus + DexterityMod + (int)SizeType + NaturalArmor;
 
         // hitpoints
         public int HitPointDice { get; set; }
@@ -78,15 +80,15 @@ namespace WoMFramework.Game.Model
         public int[] BaseAttackBonus { get; set; }
 
         // attackbonus = base attack bonus + strength modifier + size modifier
-        public int AttackBonus(int attackIndex) => BaseAttackBonus[attackIndex] + StrengthMod + (int) SizeType;
+        public int AttackBonus(int attackIndex) => BaseAttackBonus[attackIndex] + StrengthMod + (int)SizeType;
 
         // attack roll
         public int[] AttackRolls(Dice dice, int attackIndex, int criticalMinRoll = 21)
         {
-            var lastRoll = 0;
             var rolls = new List<int>();
-            for (var i = 0; i < 3; i++) {
-                lastRoll = dice.Roll(DiceType.D20);
+            for (var i = 0; i < 3; i++)
+            {
+                var lastRoll = dice.Roll(DiceType.D20);
                 rolls.Add(lastRoll + AttackBonus(attackIndex));
                 if (lastRoll < criticalMinRoll)
                     break;
@@ -100,7 +102,7 @@ namespace WoMFramework.Game.Model
         // damage
         public int DamageRoll(Dice dice)
         {
-            var damage = dice.Roll(Equipment.PrimaryWeapon.DamageRoll) + (Equipment.PrimaryWeapon.IsTwoHanded ? (int) Math.Floor(1.5 * StrengthMod) : StrengthMod);
+            var damage = dice.Roll(Equipment.PrimaryWeapon.DamageRoll) + (Equipment.PrimaryWeapon.IsTwoHanded ? (int)Math.Floor(1.5 * StrengthMod) : StrengthMod);
             return damage < 1 ? 1 : damage;
         }
 
@@ -131,7 +133,7 @@ namespace WoMFramework.Game.Model
         }
 
         // equipment
-        public Equipment Equipment { get; }
+        public Equipment.Equipment Equipment { get; }
 
         // wealth
         public Wealth Wealth { get; set; }
@@ -139,8 +141,8 @@ namespace WoMFramework.Game.Model
         // dice
         public virtual Dice Dice { get; set; }
 
-        public Classes CurrentClass => Classes.Count > 0 ? Classes[0] : null;
-        public List<Classes> Classes { get; }
+        public Classes.Classes CurrentClass => Classes.Count > 0 ? Classes[0] : null;
+        public List<Classes.Classes> Classes { get; }
         public int GetClassLevel(ClassType classType)
         {
             var classes = Classes.FirstOrDefault(p => p.ClassType == classType);
@@ -154,9 +156,9 @@ namespace WoMFramework.Game.Model
         {
             // initialize
             HitPointLevelRolls = new List<int>();
-            Equipment = new Equipment();
+            Equipment = new Equipment.Equipment();
             Wealth = new Wealth();
-            Classes = new List<Classes>();
+            Classes = new List<Classes.Classes>();
         }
 
         public void LevelClass(Dice dice)
@@ -173,7 +175,7 @@ namespace WoMFramework.Game.Model
         {
             var currentBaseAttackBonus = attackBonus;
 
-            var baseAttackBonusList = new List<int>() { currentBaseAttackBonus };
+            var baseAttackBonusList = new List<int> { currentBaseAttackBonus };
 
             for (var i = currentBaseAttackBonus - 5; i > 0; i = i - 5)
             {
@@ -185,6 +187,7 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="turn"></param>
         /// <param name="target"></param>
         internal void Attack(int turn, Entity target)
         {
@@ -216,12 +219,12 @@ namespace WoMFramework.Game.Model
                         }
                     }
                     var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
-                    Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
+                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
                     target.Damage(damage + criticalDamage, DamageType.Weapon);
                 }
                 else
                 {
-                    Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
+                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
                 }
             }
         }
@@ -259,7 +262,7 @@ namespace WoMFramework.Game.Model
         /// </summary>
         /// <param name="exp"></param>
         /// <param name="monster"></param>
-        public virtual void AddExp(double exp, Monster monster = null)
+        public virtual void AddExp(double exp, Monster.Monster monster = null)
         {
             // nothing here ..
         }
@@ -282,7 +285,7 @@ namespace WoMFramework.Game.Model
                 healAmount = missingHealth;
             }
 
-            Mogwai.History.Add(LogType.Heal, $"{Coloring.Name(Name)} restores {Coloring.GetHeal(healAmount)} HP from {healType.ToString()} healing.");
+            Mogwai.Mogwai.History.Add(LogType.Heal, $"{Coloring.Name(Name)} restores {Coloring.GetHeal(healAmount)} HP from {healType.ToString()} healing.");
             CurrentHitPoints += healAmount;
         }
 
@@ -298,12 +301,12 @@ namespace WoMFramework.Game.Model
                 return;
             }
 
-            Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage.");
+            Mogwai.Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage.");
             CurrentHitPoints -= damageAmount;
 
             if (CurrentHitPoints < 1)
             {
-                Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}.");
+                Mogwai.Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}.");
             }
         }
     }

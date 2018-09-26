@@ -1,12 +1,12 @@
 ﻿using WoMFramework.Game.Enums;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Equipment
 {
     public sealed class ArmorBuilder
     {
         // description
-        private int _armorCheckPenalty = 0;
-        private double _arcaneSpellFailureChance = 0;
+        private int _armorCheckPenalty;
+        private double _arcaneSpellFailureChance;
         private int _cost = 1;
         private int _weight = 1;
         private string _description = string.Empty;

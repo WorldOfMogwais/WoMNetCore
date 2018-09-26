@@ -1,6 +1,7 @@
-﻿using Xunit;
+﻿using WoMWallet.Node;
+using Xunit;
 
-namespace WoMWallet.Node
+namespace WoMWalletTest.Node
 {
     public class WalletTest
     {

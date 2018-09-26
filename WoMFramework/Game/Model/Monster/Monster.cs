@@ -1,6 +1,8 @@
 ﻿using WoMFramework.Game.Enums;
+using WoMFramework.Game.Model.Equipment;
+using WoMFramework.Game.Random;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Monster
 {
     public sealed class MonsterBuilder
     {
@@ -16,15 +18,15 @@ namespace WoMFramework.Game.Model
         // speed
         private int _baseSpeed = 20;
         // armor
-        private int _naturalArmor = 0;
+        private int _naturalArmor;
         // attack
-        private int[] _baseAttackBonus = new[] { 0 };
+        private int[] _baseAttackBonus = { 0 };
         // hitcoints
-        private int[] _hitPointDiceRollEvent = new[] { 1, 6, 0 };
+        private int[] _hitPointDiceRollEvent = { 1, 6, 0 };
         // equipment
         private Weapon _baseWeapon = NaturalWeapon.Bite(SizeType.Medium);
-        private Weapon _primaryWeapon = null;
-        private Treasure _treasure = null;
+        private Weapon _primaryWeapon;
+        private Treasure _treasure;
         // description
         private string _description = string.Empty;
 

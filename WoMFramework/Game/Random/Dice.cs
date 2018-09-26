@@ -4,21 +4,21 @@ using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Tool;
 
-namespace WoMFramework.Game
+namespace WoMFramework.Game.Random
 {
-    public partial class Dice
+    public class Dice
     {
-        private int _i1 = 0;
+        private int _i1;
 
-        private int _i2 = 0;
+        private int _i2;
 
-        private int _i3 = 0;
+        private int _i3;
 
-        private string _seed1;
+        private readonly string _seed1;
 
-        private string _seed2;
+        private readonly string _seed2;
 
-        private string _seed3;
+        private readonly string _seed3;
 
         /// <summary>
         /// 
@@ -63,8 +63,6 @@ namespace WoMFramework.Game
 
         public int Roll(int[] rollEvent)
         {
-            var result = 0;
-
             var rolls = new List<int>();
             for (var i = 0; i < rollEvent[0]; i++)
             {
@@ -75,14 +73,14 @@ namespace WoMFramework.Game
             if (rollEvent.Length > 2 && rollEvent[2] > 0)
             {
                 var purgeXlowRolls = rollEvent[0] - rollEvent[2];
-                for (var j = 0; purgeXlowRolls > 0 && j  < purgeXlowRolls; j++ )
+                for (var j = 0; purgeXlowRolls > 0 && j < purgeXlowRolls; j++)
                 {
                     rolls.Remove(rolls.Min());
                 }
             }
 
             // sum up the rolls
-            result = rolls.Sum();
+            var result = rolls.Sum();
 
             // modifier
             if (rollEvent.Length > 3 && rollEvent[3] > 0)

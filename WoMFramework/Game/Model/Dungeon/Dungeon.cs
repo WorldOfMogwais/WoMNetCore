@@ -1,7 +1,8 @@
 ﻿using WoMFramework.Game.Generator;
 using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Random;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Dungeon
 {
     public class Dungeon : Adventure
     {
@@ -12,17 +13,15 @@ namespace WoMFramework.Game.Model
 
         public Room Entrance { get; protected set; }
 
-        //public bool[,] Blueprint { get; protected set; }
-
-        public Dungeon(Mogwai mogwai, Shift creationShift)
+        public Dungeon(Mogwai.Mogwai mogwai, Shift creationShift)
         {
             CreationShift = creationShift;
             DungeonDice = creationShift.MogwaiDice; // set dungeon dice using the creation shift
+            // ReSharper disable once VirtualMemberCallInConstructor
             GenerateRooms(mogwai, creationShift);
-
         }
 
-        public override void NextStep(Mogwai mogwai, Shift shift)
+        public override void NextStep(Mogwai.Mogwai mogwai, Shift shift)
         {
             if (AdventureState == AdventureState.Preparation)
             {
@@ -47,7 +46,7 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// Generates rooms and corridors
         /// </summary>
-        protected virtual void GenerateRooms(Mogwai mogwai, Shift shift)
+        protected virtual void GenerateRooms(Mogwai.Mogwai mogwai, Shift shift)
         {
 
         }
@@ -64,12 +63,12 @@ namespace WoMFramework.Game.Model
     /// </summary>
     public class SimpleDungeon : Dungeon
     {
-        public SimpleDungeon(Mogwai mogwai, Shift shift) : base(mogwai, shift)
+        public SimpleDungeon(Mogwai.Mogwai mogwai, Shift shift) : base(mogwai, shift)
         {
 
         }
 
-        protected override void GenerateRooms(Mogwai mogwai, Shift shift)
+        protected override void GenerateRooms(Mogwai.Mogwai mogwai, Shift shift)
         {
             var n = 1;                              // should be determined by information of shift and mogwai
 

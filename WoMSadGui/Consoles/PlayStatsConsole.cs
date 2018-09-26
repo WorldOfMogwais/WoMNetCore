@@ -2,8 +2,7 @@
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Surfaces;
-using WoMFramework.Game.Model;
-using WoMWallet.Node;
+using WoMFramework.Game.Model.Mogwai;
 using Console = SadConsole.Console;
 
 namespace WoMSadGui.Consoles

@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GoRogue;
 using GoRogue.Pathing;
 using WoMFramework.Game.Model;
-using Direction = WoMFramework.Game.Model.Direction;
+using WoMFramework.Game.Model.Dungeon;
+using WoMFramework.Game.Model.Mogwai;
+using WoMFramework.Game.Model.Monster;
+using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Combat
 {
@@ -11,7 +15,7 @@ namespace WoMFramework.Game.Combat
     {
         private static readonly Distance Distance = Distance.MANHATTAN;
 
-        private Coord _coordinate = Coord.Get(0, 0);
+        private Coord _coordinate;
         private readonly Room _room;
         public readonly Dungeon Dungeon;
         public readonly bool IsMonster;
@@ -22,8 +26,8 @@ namespace WoMFramework.Game.Combat
         public Dice Dice { get; set; }
         public List<Combatant> Enemies { get; set; }
 
-        public uint MoveRange { get; private set; }
-        public uint AttackRange { get; private set; }
+        public uint MoveRange { get; }
+        public uint AttackRange { get; }
         public uint RemainingMove { get; set; }
 
         //public Tile CurrentTile
@@ -40,7 +44,7 @@ namespace WoMFramework.Game.Combat
         {
             get => _coordinate;
             set
-            { 
+            {
                 _room.WalkabilityMap[_coordinate] = true;
                 _room.WalkabilityMap[value] = false;
                 _coordinate = value;
@@ -55,11 +59,11 @@ namespace WoMFramework.Game.Combat
             Dungeon = room.Parent;
             _coordinate = entity.Coordinate ?? throw new Exception();
 
-            System.Diagnostics.Debug.WriteLine($"{entity.Name} is spawned at {entity.Coordinate}");
+            Debug.WriteLine($"{entity.Name} is spawned at {entity.Coordinate}");
 
             //  TODO: crude implementation of ranges
-            MoveRange = (uint) (entity.Speed / 15); 
-            AttackRange = (uint) entity.Equipment.PrimaryWeapon.Range;
+            MoveRange = (uint)(entity.Speed / 15);
+            AttackRange = (uint)entity.Equipment.PrimaryWeapon.Range;
 
             RemainingMove = MoveRange;
 
@@ -77,14 +81,13 @@ namespace WoMFramework.Game.Combat
         /// <summary>
         /// Attempts to move to an orthogonally adjacent coordinate.
         /// </summary>
-        /// <param name="coordinate"></param>
         /// <returns></returns>
         public bool TryMove(Coord destination)
         {
             if (RemainingMove == 0)
                 return false;
 
-            if (Coord.EuclideanDistanceMagnitude(Coordinate, destination) != 1)
+            if (Math.Abs(Coord.EuclideanDistanceMagnitude(Coordinate, destination) - 1) > Double.Epsilon)
                 return false;
 
             if (!_room.WalkabilityMap[destination])
@@ -105,7 +108,7 @@ namespace WoMFramework.Game.Combat
 
             var pathFinding = new AStar(_room.WalkabilityMap, Distance.MANHATTAN);
 
-            var path = pathFinding.ShortestPath(Coordinate, target.Coordinate, true);
+            var path = pathFinding.ShortestPath(Coordinate, target.Coordinate);
 
             if (path == null)
             {
@@ -120,7 +123,7 @@ namespace WoMFramework.Game.Combat
             {
                 if (Distance.Calculate(Coordinate, target.Coordinate) <= AttackRange)
                 {
-                    System.Diagnostics.Debug.WriteLine($"{Entity.Name} in {Entity.Coordinate} attacked {target.Entity.Name} in {target.Coordinate}");
+                    Debug.WriteLine($"{Entity.Name} in {Entity.Coordinate} attacked {target.Entity.Name} in {target.Coordinate}");
                     Entity.Attack(0, target.Entity);    // why Entity.Attack() has turn parameter?
                     return true;
                 }

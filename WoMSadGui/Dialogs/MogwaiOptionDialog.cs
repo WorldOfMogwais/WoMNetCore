@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using SadConsole;
 using SadConsole.Input;
-using WoMSadGui.Consoles;
 
 namespace WoMSadGui.Dialogs
 {

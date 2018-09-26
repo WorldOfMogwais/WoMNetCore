@@ -1,7 +1,6 @@
-﻿using log4net;
-using System;
-using System.Reflection;
+﻿using System;
 using WoMFramework.Game.Enums;
+using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Tool;
 
 namespace WoMFramework.Game.Model
@@ -13,7 +12,7 @@ namespace WoMFramework.Game.Model
         private int _position = -1;
         private int _size = 2;
         private int _creation = 16;
-        private int _minRange = 0;
+        private int _minRange;
         private int _maxRange = 32;
         private EvolutionPattern _evoPat = EvolutionPattern.None;
 
@@ -90,8 +89,6 @@ namespace WoMFramework.Game.Model
 
     public class Attribute
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         private HexValue _hexValue;
 
         public string Name { get; }
@@ -123,18 +120,18 @@ namespace WoMFramework.Game.Model
         {
             return (int)_value;
         }
-        
+
         public bool CreateValue(HexValue hexValue)
         {
             _hexValue = hexValue;
 
             if (_hexValue == null)
             {
-                Console.WriteLine($"HexValue is null, can't calculate value without.");
+                Console.WriteLine("HexValue is null, can\'t calculate value without.");
                 return false;
             }
 
-            if (!HexHashUtil.TryHexPosConversion(Position, Size, Salted? hexValue.Salted : hexValue.UnSalted, out var result))
+            if (!HexHashUtil.TryHexPosConversion(Position, Size, Salted ? hexValue.Salted : hexValue.UnSalted, out var result))
             {
                 Console.WriteLine($"CreateValue, failed trying to convert hex position.{Position}, {Size}, {Salted}");
                 return false;
@@ -142,7 +139,7 @@ namespace WoMFramework.Game.Model
 
             var modValue = result % (Creation - MinRange) + MinRange;
 
-            if (modValue % 1 != 0)
+            if (Math.Abs(modValue % 1) > Double.Epsilon)
             {
                 Console.WriteLine($"CreateValue, failed to cast double in same int value.{modValue},{(int)modValue}");
                 return false;

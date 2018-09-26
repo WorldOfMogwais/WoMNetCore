@@ -1,8 +1,6 @@
 ﻿using System;
-using static System.Math;
-using GoRogue;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Dungeon
 {
     public enum Direction
     {
@@ -28,7 +26,7 @@ namespace WoMFramework.Game.Model
             Y = y;
         }
 
-        public int Length => Abs(X) + Abs(Y);
+        public int Length => Math.Abs(X) + Math.Abs(Y);
 
         public Coordinate Neighbour(Direction direction)
         {

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using WoMFramework.Game.Model;
+using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Combat
 {
-    class Brawler
+    internal class Brawler
     {
         public bool IsHero { get; set; } = false;
         public Entity Entity { get; }

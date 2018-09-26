@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
-namespace WoMWallet
+namespace WoMWallet.Block
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class Block
     {
         public string Hash { get; set; }

@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using GoRogue;
+﻿using GoRogue;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Dungeon
 {
     /// <summary>
     /// Represents the basic square tile.
@@ -15,7 +14,7 @@ namespace WoMFramework.Game.Model
         public readonly Room Parent;
         public readonly Coord Coordinate;
         public readonly Wall[] Sides = new Wall[4];
-       
+
 
         public int Height;
 
@@ -35,7 +34,7 @@ namespace WoMFramework.Game.Model
 
         public Wall GetSide(Direction direction)
         {
-            return Sides[(int) direction];
+            return Sides[(int)direction];
         }
 
 

@@ -1,11 +1,10 @@
-﻿using Xunit;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Tool;
+using Xunit;
 
-namespace WoMFramework.Game
+namespace WoMFrameworkTest.Game
 {
     public class DungeonTest
     {
@@ -14,7 +13,7 @@ namespace WoMFramework.Game
         {
             var address = "MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i";
             var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(address));
-            var shifts = new Dictionary<double, Shift>()
+            var shifts = new Dictionary<double, Shift>
             {
                 {1001, new Shift(0, 1530914381, pubMogAddressHex,
                                 1001, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",

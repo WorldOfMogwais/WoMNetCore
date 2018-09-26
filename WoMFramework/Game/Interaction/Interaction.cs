@@ -14,7 +14,7 @@ namespace WoMFramework.Game.Interaction
 
         public int ParamAdd2 { get; set; }
 
-        public Interaction(InteractionType interactionType)
+        protected Interaction(InteractionType interactionType)
         {
             CostType = CostType.Standard;
             InteractionType = interactionType;
@@ -29,19 +29,19 @@ namespace WoMFramework.Game.Interaction
         {
             var value = (int)CostType * 1000000 + (int)InteractionType * 10000 + ParamAdd1;
             //return decimal.Parse("0." + value.ToString().PadLeft(8, '0'));
-            return (decimal) value / 100000000;
+            return (decimal)value / 100000000;
         }
 
         public decimal GetValue2()
         {
             //return decimal.Parse("0." + ParamAdd2.ToString().PadLeft(8, '0'));
-            return (decimal) ParamAdd2 / 100000000;
+            return (decimal)ParamAdd2 / 100000000;
         }
 
         public static Interaction GetInteraction(decimal amount, decimal fee)
         {
 
-            var parm1 = ((int) (amount * 100000000 % 100000000)).ToString("00000000");
+            var parm1 = ((int)(amount * 100000000 % 100000000)).ToString("00000000");
             //var parm1 = amount.ToString("0.00000000").Split('.')[1];
             var costTypeInt = int.Parse(parm1.Substring(0, 2));
             //var costTypeInt = (int) (amount * 100 % 100);
@@ -51,11 +51,10 @@ namespace WoMFramework.Game.Interaction
             if (Enum.IsDefined(typeof(CostType), costTypeInt)
              && Enum.IsDefined(typeof(InteractionType), interactionTypInt))
             {
-                var costType = (CostType)costTypeInt;
                 var interactionType = (InteractionType)interactionTypInt;
                 var addParam1 = int.Parse(parm1.Substring(4, 4));
 
-                var feeString = ((int) (fee * 100000000 % 100000000)).ToString("00000000");
+                var feeString = ((int)(fee * 100000000 % 100000000)).ToString("00000000");
                 var addParam2 = int.Parse(feeString.Substring(4, 4));
                 //var addParam2 = int.Parse(fee.ToString("0.00000000").Split('.')[1].Substring(4, 4));
 

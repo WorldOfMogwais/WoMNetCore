@@ -1,15 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Globalization;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using SadConsole;
-using SadConsole.Controls;
-using SadConsole.Input;
 using SadConsole.Surfaces;
-using System;
 using WoMWallet.Node;
 using WoMWallet.Tool;
+using Console = SadConsole.Console;
+using Keyboard = SadConsole.Input.Keyboard;
 
 namespace WoMSadGui.Consoles
 {
-    public class SelectionScreen : SadConsole.Console
+    public class SelectionScreen : Console
     {
         private readonly Basic _borderSurface;
 
@@ -24,9 +26,9 @@ namespace WoMSadGui.Consoles
         public int HeaderPosition;
         public int TrailerPosition;
 
-        public SadGuiState State {get;set;}
+        public SadGuiState State { get; set; }
 
-        public int WindowOffset = 0;
+        public int WindowOffset;
         public int MaxRows = 21;
 
         private int _transferFunds;
@@ -39,17 +41,14 @@ namespace WoMSadGui.Consoles
             _borderSurface.Position = new Point(-1, -1);
             Children.Add(_borderSurface);
 
-            _controlsConsole = new ControlsConsole(110, 1);
-            _controlsConsole.Position = new Point(0, 24);
+            _controlsConsole = new ControlsConsole(110, 1) { Position = new Point(0, 24) };
             _controlsConsole.Fill(Color.DarkCyan, Color.Black, null);
             Children.Add(_controlsConsole);
 
-            _infoConsole = new MogwaiConsole("Info", "", 24, 38);
-            _infoConsole.Position = new Point(113, -8);
+            _infoConsole = new MogwaiConsole("Info", "", 24, 38) { Position = new Point(113, -8) };
             Children.Add(_infoConsole);
 
-            _logConsole = new MogwaiConsole("Log", "", 110, 3);
-            _logConsole.Position = new Point(0, 27);
+            _logConsole = new MogwaiConsole("Log", "", 110, 3) { Position = new Point(0, 27) };
             Children.Add(_logConsole);
 
             HeaderPosition = 1;
@@ -69,7 +68,7 @@ namespace WoMSadGui.Consoles
             IsVisible = true;
             _controller.RefreshAll(1);
 
-            Print(65, 0, $"Deposit:", Color.DarkCyan);
+            Print(65, 0, "Deposit:", Color.DarkCyan);
             Print(74, 0, $"[c:g f:LimeGreen:Orange:34]{_controller.DepositAddress}");
             State = SadGuiState.Selection;
 
@@ -156,7 +155,7 @@ namespace WoMSadGui.Consoles
 
         private void DoAction(string actionStr)
         {
-            switch(actionStr)
+            switch (actionStr)
             {
                 case "create":
                     _controller.NewMogwaiKeys();
@@ -171,8 +170,8 @@ namespace WoMSadGui.Consoles
                         }
                         else
                         {
-                             LogInConsole("FAIL", $"couldn't send mogs, see log file for more information.");
-                        }                        
+                            LogInConsole("FAIL", "couldn\'t send mogs, see log file for more information.");
+                        }
                     }
                     break;
                 case "bind":
@@ -184,9 +183,9 @@ namespace WoMSadGui.Consoles
                         }
                         else
                         {
-                             LogInConsole("FAIL", $"couldn't bind mogwai, see log file for more information.");
-                        }  
-                      }
+                            LogInConsole("FAIL", "couldn\'t bind mogwai, see log file for more information.");
+                        }
+                    }
                     break;
                 case "watch":
                     if (_controller.CurrentMogwaiKeys != null)
@@ -195,19 +194,18 @@ namespace WoMSadGui.Consoles
                     }
                     else
                     {
-                        LogInConsole("FAIL", $"make sure to choosse a mogwai before trying to play.");
+                        LogInConsole("FAIL", "make sure to choosse a mogwai before trying to play.");
                     }
                     break;
                 case "play":
-                    if (_controller.CurrentMogwaiKeys != null && _controller.CurrentMogwaiKeys.Mogwai != null)
+                    if (_controller.CurrentMogwaiKeys?.Mogwai != null)
                     {
                         State = SadGuiState.Play;
-                    } else
-                    {
-                        LogInConsole("FAIL", $"make sure to choosse a mogwai before trying to play.");
                     }
-                    break;             
-                default:
+                    else
+                    {
+                        LogInConsole("FAIL", "make sure to choosse a mogwai before trying to play.");
+                    }
                     break;
             }
 
@@ -217,69 +215,81 @@ namespace WoMSadGui.Consoles
 
         public override bool ProcessKeyboard(Keyboard state)
         {
-            if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Enter))
+            if (state.IsKeyReleased(Keys.Enter))
             {
                 DoAction("play");
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.C))
+
+            if (state.IsKeyReleased(Keys.C))
             {
                 DoAction("create");
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.S))
+
+            if (state.IsKeyReleased(Keys.S))
             {
                 DoAction("send");
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.B))
+
+            if (state.IsKeyReleased(Keys.B))
             {
                 DoAction("bind");
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.W))
+
+            if (state.IsKeyReleased(Keys.W))
             {
                 DoAction("watch");
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.P))
+
+            if (state.IsKeyReleased(Keys.P))
             {
                 DoAction("play");
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.L))
+
+            if (state.IsKeyReleased(Keys.L))
             {
                 _controller.PrintMogwaiKeys();
                 LogInConsole("TASK", "loging public keys into a file.");
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.T))
+
+            if (state.IsKeyReleased(Keys.T))
             {
                 _controller.Tag();
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.I))
+
+            if (state.IsKeyReleased(Keys.I))
             {
                 _transferFunds = (_transferFunds - 1) % 7 + 2;
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Down))
+
+            if (state.IsKeyReleased(Keys.Down))
             {
                 _controller.Next();
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Up))
+
+            if (state.IsKeyReleased(Keys.Up))
             {
                 _controller.Previous();
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Right))
+
+            if (state.IsKeyReleased(Keys.Right))
             {
                 _borderSurface.SetGlyph(0, 0, ++_glyphIndex, Color.DarkCyan);
                 _borderSurface.Print(10, 0, _glyphIndex.ToString(), Color.Yellow);
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Left))
+
+            if (state.IsKeyReleased(Keys.Left))
             {
                 _borderSurface.SetGlyph(0, 0, --_glyphIndex, Color.DarkCyan);
                 _borderSurface.Print(10, 0, _glyphIndex.ToString(), Color.Yellow);
@@ -295,7 +305,8 @@ namespace WoMSadGui.Consoles
             if (type == "DONE")
             {
                 color = "limegreen";
-            } else if (type == "FAIL")
+            }
+            else if (type == "FAIL")
             {
                 color = "red";
             }
@@ -316,7 +327,7 @@ namespace WoMSadGui.Consoles
                     Print(1, 0, _controller.WalletLastBlock.Height.ToString("#######0").PadLeft(8), Color.DeepSkyBlue);
                     Print(10, 0, "Block", Color.White);
                     var localTime = DateUtil.GetBlockLocalDateTime(_controller.WalletLastBlock.Time);
-                    var localtimeStr = localTime.ToString();
+                    var localtimeStr = localTime.ToString(CultureInfo.InvariantCulture);
                     var t = DateTime.Now.Subtract(localTime);
                     var timeStr = $"[c:r f:springgreen]{string.Format("{0:hh\\:mm\\:ss}", t)}[c:u]";
                     Print(16, 0, localtimeStr + " " + timeStr, Color.Gainsboro);
@@ -329,11 +340,11 @@ namespace WoMSadGui.Consoles
                 {
                     WindowOffset = _controller.CurrentMogwaiKeysIndex;
                 }
-                else if(MaxRows < _controller.CurrentMogwaiKeysIndex + 1)
+                else if (MaxRows < _controller.CurrentMogwaiKeysIndex + 1)
                 {
                     WindowOffset = _controller.CurrentMogwaiKeysIndex + 1 - MaxRows;
                 }
-                
+
                 // only updated if we have keys
                 if (_controller.HasMogwayKeys)
                 {

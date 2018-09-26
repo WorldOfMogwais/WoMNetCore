@@ -1,10 +1,9 @@
-﻿using Xunit;
-
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
+﻿using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Random;
+using Xunit;
 
-namespace WoMFramework.Tool.Tests
+namespace WoMFrameworkTest.Tool
 {
     public class NameGenTest
     {

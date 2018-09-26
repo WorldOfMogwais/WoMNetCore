@@ -1,26 +1,22 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Controls;
-using System;
-using WoMSadGui.Consoles;
-using WoMSadGui.Dialogs;
 using WoMWallet.Node;
 
-namespace WoMSadGui
+namespace WoMSadGui.Dialogs
 {
     internal class MogwaiProgressDialog : MogwaiDialog
     {
-        private ProgressBar _progressbar;
+        private readonly ProgressBar _progressbar;
 
-        private Progress<float> _progressIndicator;
+        private readonly Progress<float> _progressIndicator;
 
-        public bool IsComplete { get; set; } = false;
+        public bool IsComplete { get; set; }
 
         public MogwaiProgressDialog(string title, string text, int width, int height) : base(title, text, width, height)
         {
-
-            _progressbar = new ProgressBar(Width - 4, 1, HorizontalAlignment.Left);
-            _progressbar.Position = new Point(2, 4);
+            _progressbar = new ProgressBar(Width - 4, 1, HorizontalAlignment.Left) { Position = new Point(2, 4) };
             Add(_progressbar);
 
             _progressIndicator = new Progress<float>(UpdateProgressBar);

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Surfaces;
-using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Mogwai;
 using WoMWallet.Node;
 using WoMWallet.Tool;
 using Console = SadConsole.Console;
@@ -59,7 +60,7 @@ namespace WoMSadGui.Consoles
                 Print(8, 3, "...".PadRight(20), Color.Red);
             }
             Print(31, 2, _mogwai.Pointer.ToString().PadLeft(8, '.'));
-            Print(31, 3, _mogwai.Shifts.Keys.Max().ToString().PadLeft(8, '.'));
+            Print(31, 3, _mogwai.Shifts.Keys.Max().ToString(CultureInfo.InvariantCulture).PadLeft(8, '.'));
 
             var lastBlock = _controller.WalletLastBlock;
             if (lastBlock != null)
@@ -67,7 +68,7 @@ namespace WoMSadGui.Consoles
                 Print(1, 0, _controller.WalletLastBlock.Height.ToString("#######0").PadLeft(8), Color.DeepSkyBlue);
                 Print(10, 0, "Block", Color.White);
                 var localTime = DateUtil.GetBlockLocalDateTime(_controller.WalletLastBlock.Time);
-                var localtimeStr = localTime.ToString();
+                var localtimeStr = localTime.ToString(CultureInfo.InvariantCulture);
                 var t = DateTime.Now.Subtract(localTime);
                 var timeStr = $"[c:r f:springgreen]{string.Format("{0:hh\\:mm\\:ss}", t)}[c:u]";
                 Print(16, 0, localtimeStr + " " + timeStr, Color.Gainsboro);
@@ -78,8 +79,8 @@ namespace WoMSadGui.Consoles
             Print(10, 13, "MOG", Color.Gainsboro);
             Print(1, 13, balanceStr, Color.Orange);
             var addr = _controller.CurrentMogwai != null ? _mogwaiKeys.Address : "MFHRD3E7m6FdJA5HTEDQTMMzFMg9LXNTwA";
-            Print( 1, 10, $"Interactions: ", Color.Gainsboro);
-            
+            Print(1, 10, "Interactions: ", Color.Gainsboro);
+
             if (_mogwaiKeys.InteractionLock.Count == 0)
             {
                 Print(15, 10, _mogwaiKeys.InteractionLock.Count.ToString().PadLeft(2), Color.LimeGreen);
@@ -90,7 +91,7 @@ namespace WoMSadGui.Consoles
             {
                 Print(15, 10, _mogwaiKeys.InteractionLock.Count.ToString().PadLeft(2), Color.Red);
                 Print(18, 10, "Locked", Color.Gainsboro);
-                Print( 1, 11,  _mogwaiKeys.InteractionLock.Values.First().GetInfo().PadRight(48).Substring(0, 48), Color.Red);
+                Print(1, 11, _mogwaiKeys.InteractionLock.Values.First().GetInfo().PadRight(48).Substring(0, 48), Color.Red);
                 Print(14, 13, $"[c:g f:red:orange:red:{addr.Length}]" + addr);
             }
 

@@ -1,8 +1,8 @@
-﻿using log4net;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using WoMFramework.Game.Model;
+using log4net;
+using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Tool;
 
 namespace WoMFramework.Game.Random
@@ -14,12 +14,11 @@ namespace WoMFramework.Game.Random
         public static string GenerateName(HexValue hexValue)
         {
             var minLength = GetMinLength(hexValue.UnSalted, 3, 9);
-            
+
             string[] consonants = { "b", "c", "ck", "d", "f", "g", "h", "j", "k", "l", "m", "l", "n", "p", "q", "r", "s", "sh", "zh", "t", "v", "w", "x" };
             string[] vowels = { "a", "e", "i", "o", "u", "ae", "y" };
             var name = "";
-            double seedValues;
-            if (HexHashUtil.TryHexPosConversion(4, 2, hexValue.UnSalted,out seedValues))
+            if (HexHashUtil.TryHexPosConversion(4, 2, hexValue.UnSalted, out var seedValues))
             {
                 name += consonants[(int)seedValues % consonants.Length];
             }
@@ -53,7 +52,7 @@ namespace WoMFramework.Game.Random
         private static int GetMinLength(List<char[]> unSalted, int minLength, int maxLength)
         {
             var result = 0;
-            for(var i = 1; i < 10; i ++)
+            for (var i = 1; i < 10; i++)
             {
                 if (HexHashUtil.TryHexPosConversion(i, 1, unSalted, out var value))
                 {
@@ -66,10 +65,8 @@ namespace WoMFramework.Game.Random
                     {
                         return result;
                     }
-                    else
-                    {
-                        result = maxLength;
-                    }
+
+                    result = maxLength;
                 }
             }
 

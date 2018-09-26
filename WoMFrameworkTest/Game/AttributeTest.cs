@@ -1,10 +1,11 @@
-﻿using Xunit;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Tool;
+using Xunit;
 
-namespace WoMFramework.Game.Model.Tests
+namespace WoMFrameworkTest.Game
 {
     public class AttributeTest
     {
