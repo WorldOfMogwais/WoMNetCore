@@ -1,19 +1,20 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using SadConsole;
+using SadConsole.Controls;
 using SadConsole.Input;
 using SadConsole.Surfaces;
 using Console = SadConsole.Console;
 
 namespace WoMSadGui.Consoles
 {
-    internal class ScrollingConsole : SadConsole.ConsoleContainer
+    internal class ScrollingConsole : ConsoleContainer
     {
-        Console _mainConsole;                 // The main console that is typed into
-        ControlsConsole _controlsHost;        // The scroll bar host
-        SadConsole.Controls.ScrollBar _scrollBar;        // The scroll bar
+        private readonly Console _mainConsole;                 // The main console that is typed into
+        private readonly ControlsConsole _controlsHost;        // The scroll bar host
+        private readonly ScrollBar _scrollBar;        // The scroll bar
 
-        int scrollingCounter;   // This is a counter to indicate how much buffer is used
+        private int _scrollingCounter;   // This is a counter to indicate how much buffer is used
 
         public Cursor MainCursor => _mainConsole.Cursor; 
 
@@ -29,11 +30,13 @@ namespace WoMSadGui.Consoles
             borderSurface.Position = new Point(-1, -1);
             Children.Add(borderSurface);
 
-            _mainConsole = new Console(width - 1, bufferHeight);
-            _mainConsole.ViewPort = new Rectangle(0, 0, width - 1, height);
-            _mainConsole.Cursor.IsVisible = false;
+            _mainConsole = new Console(width - 1, bufferHeight)
+            {
+                ViewPort = new Rectangle(0, 0, width - 1, height),
+                Cursor = {IsVisible = false}
+            };
 
-            _scrollBar = SadConsole.Controls.ScrollBar.Create(Orientation.Vertical, height);
+            _scrollBar = ScrollBar.Create(Orientation.Vertical, height);
             _scrollBar.IsEnabled = false;
             _scrollBar.ValueChanged += ScrollBar_ValueChanged;
  
@@ -43,15 +46,15 @@ namespace WoMSadGui.Consoles
             Children.Add(_mainConsole);
             Children.Add(_controlsHost);
 
-            scrollingCounter = 0;
+            _scrollingCounter = 0;
         }
 
         public void Reset()
         {
             _mainConsole.Clear();
             _mainConsole.Cursor.Position = new Point(0,0);
-            scrollingCounter = 0;
-            _scrollBar.Value = scrollingCounter;
+            _scrollingCounter = 0;
+            _scrollBar.Value = _scrollingCounter;
         }
 
         private void ScrollBar_ValueChanged(object sender, EventArgs e)
@@ -87,20 +90,20 @@ namespace WoMSadGui.Consoles
             // If we detect that this console has shifted the data up for any reason (like the virtual cursor reached the
             // bottom of the entire text surface, OR we reached the bottom of the render area, we need to adjust the 
             // scroll bar and follow the cursor
-            if (_mainConsole.TimesShiftedUp != 0 | _mainConsole.Cursor.Position.Y >= _mainConsole.ViewPort.Height + scrollingCounter)
+            if (_mainConsole.TimesShiftedUp != 0 | _mainConsole.Cursor.Position.Y >= _mainConsole.ViewPort.Height + _scrollingCounter)
             {
                 // Once the buffer has finally been filled enough to need scrolling (a single screen's worth), turn on the scroll bar
                 _scrollBar.IsEnabled = true;
 
                 // Make sure we've never scrolled the entire size of the buffer
-                if (scrollingCounter < _mainConsole.Height - _mainConsole.ViewPort.Height)
+                if (_scrollingCounter < _mainConsole.Height - _mainConsole.ViewPort.Height)
                     // Record how much we've scrolled to enable how far back the bar can see
-                    scrollingCounter += _mainConsole.TimesShiftedUp != 0 ? _mainConsole.TimesShiftedUp : 1;
+                    _scrollingCounter += _mainConsole.TimesShiftedUp != 0 ? _mainConsole.TimesShiftedUp : 1;
 
-                _scrollBar.Maximum = _mainConsole.Height + scrollingCounter - _mainConsole.Height;
+                _scrollBar.Maximum = _mainConsole.Height + _scrollingCounter - _mainConsole.Height;
 
                 // This will follow the cursor since we move the render area in the event.
-                _scrollBar.Value = scrollingCounter;
+                _scrollBar.Value = _scrollingCounter;
 
                 // Reset the shift amount.
                 _mainConsole.TimesShiftedUp = 0;

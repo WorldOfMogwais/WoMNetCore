@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace WoMFramework.Tool
 {
@@ -9,15 +9,14 @@ namespace WoMFramework.Tool
         public static T[] ConcatArrays<T>(params T[][] arrays)
         {
             Contract.Requires(arrays != null);
-            Contract.Requires(Contract.ForAll(arrays, (arr) => arr != null));
+            Contract.Requires(Contract.ForAll(arrays, arr => arr != null));
             Contract.Ensures(Contract.Result<T[]>() != null);
             Contract.Ensures(Contract.Result<T[]>().Length == arrays.Sum(arr => arr.Length));
 
             var result = new T[arrays.Sum(arr => arr.Length)];
             var offset = 0;
-            for (var i = 0; i < arrays.Length; i++)
+            foreach (var arr in arrays)
             {
-                var arr = arrays[i];
                 Buffer.BlockCopy(arr, 0, result, offset, arr.Length);
                 offset += arr.Length;
             }

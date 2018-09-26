@@ -1,19 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
-using System;
 using SadConsole;
+using SadConsole.DrawCalls;
+using SadConsole.Effects;
+using SadConsole.Instructions;
 using SadConsole.Surfaces;
 using Console = SadConsole.Console;
-using System.Collections.Generic;
-using SadConsole.DrawCalls;
-using SadConsole.Instructions;
-using SadConsole.Effects;
-using System.IO;
 
 namespace WoMSadGui.Consoles
 {
-    class SplashScreen : Console
+    internal class SplashScreen : Console
     {
         public Action SplashCompleted { get; set; }
 
@@ -21,9 +19,9 @@ namespace WoMSadGui.Consoles
         private readonly Basic _consoleImage;
         private readonly Point _consoleImagePosition;
         //private EffectsManager effectsManager;
-        int _x = -50;
+        private int _x = -50;
 
-        readonly List<int> _cellindexes = new List<int>();
+        private readonly List<int> _cellindexes = new List<int>();
 
         public SplashScreen(int x, int y) : base(x, y)
         {
@@ -35,18 +33,18 @@ namespace WoMSadGui.Consoles
             imageStream.Dispose();
 
             // Configure the logo
-            _consoleImage = image.ToSurface(Global.FontDefault, false);
+            _consoleImage = image.ToSurface(Global.FontDefault);
             _consoleImagePosition = new Point(Width / 2 - _consoleImage.Width / 2, -1);
             _consoleImage.Tint = Color.Black;
 
             // Configure the animations
             _animation = new InstructionSet();
-            _animation.Instructions.AddLast(new Wait() { Duration = 0.3f });
+            _animation.Instructions.AddLast(new Wait { Duration = 0.3f });
 
             // Animation to move the angled gradient spotlight effect.
             var moveGradientInstruction = new CodeInstruction
             {
-                CodeCallback = (inst) =>
+                CodeCallback = inst =>
                 {
                     _x += 1;
 
@@ -64,29 +62,31 @@ namespace WoMSadGui.Consoles
             _animation.Instructions.AddLast(moveGradientInstruction);
 
             // Animation to clear the SadConsole text.
-            _animation.Instructions.AddLast(new CodeInstruction() { CodeCallback = (i) => { Fill(Color.Black, Color.Transparent, 0, null); i.IsFinished = true; } });
+            _animation.Instructions.AddLast(new CodeInstruction { CodeCallback = i => { Fill(Color.Black, Color.Transparent, 0, null); i.IsFinished = true; } });
 
             // Animation for the logo text.
             var logoText = new ColorGradient(new[] { Color.Magenta, Color.Yellow }, new[] { 0.0f, 1f }).ToColoredString("[| Mogwaicoin Team 2018 |]");
-            logoText.SetEffect(new Fade() { DestinationForeground = Color.Blue, FadeForeground = true, FadeDuration = 1f, Repeat = false, RemoveOnFinished = true, Permanent = true, CloneOnApply = true });
+            logoText.SetEffect(new Fade { DestinationForeground = Color.Blue, FadeForeground = true, FadeDuration = 1f, Repeat = false, RemoveOnFinished = true, Permanent = true, CloneOnApply = true });
             _animation.Instructions.AddLast(new DrawString(this) { Position = new Point(26, Height - 1), Text = logoText, TotalTimeToPrint = 1f });
 
             // Animation for fading in the logo picture.
             _animation.Instructions.AddLast(new FadeTextSurfaceTint(_consoleImage, new ColorGradient(Color.Black, Color.Transparent), new TimeSpan(0, 0, 0, 4, 0)));
 
             // Animation to blink SadConsole in the logo text
-            _animation.Instructions.AddLast(new CodeInstruction()
+            _animation.Instructions.AddLast(new CodeInstruction
             {
-                CodeCallback = (i) =>
+                CodeCallback = i =>
                 {
-                    var fadeEffect = new Fade();
-                    fadeEffect.AutoReverse = true;
-                    fadeEffect.DestinationForeground = new ColorGradient(Color.Blue, Color.Yellow);
-                    fadeEffect.FadeForeground = true;
-                    fadeEffect.UseCellForeground = false;
-                    fadeEffect.Repeat = true;
-                    fadeEffect.FadeDuration = 0.7f;
-                    fadeEffect.RemoveOnFinished = true;
+                    var fadeEffect = new Fade
+                    {
+                        AutoReverse = true,
+                        DestinationForeground = new ColorGradient(Color.Blue, Color.Yellow),
+                        FadeForeground = true,
+                        UseCellForeground = false,
+                        Repeat = true,
+                        FadeDuration = 0.7f,
+                        RemoveOnFinished = true
+                    };
 
                     var cells = new List<Cell>();
                     for (var index = 0; index < 10; index++)
@@ -102,11 +102,11 @@ namespace WoMSadGui.Consoles
             });
 
             // Animation to delay, keeping the logo and all on there for 2 seconds, then destroy itself.
-            _animation.Instructions.AddLast(new Wait() { Duration = 2.5f });
+            _animation.Instructions.AddLast(new Wait { Duration = 2.5f });
             _animation.Instructions.AddLast(new FadeTextSurfaceTint(_consoleImage, new ColorGradient(Color.Transparent, Color.Black), new TimeSpan(0, 0, 0, 0, 4000)));
-            _animation.Instructions.AddLast(new CodeInstruction()
+            _animation.Instructions.AddLast(new CodeInstruction
             {
-                CodeCallback = (i) =>
+                CodeCallback = i =>
                 {
                     SplashCompleted?.Invoke();
 

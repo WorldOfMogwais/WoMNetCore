@@ -1,5 +1,5 @@
 ﻿using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Mogwai;
 
 namespace WoMFramework.Game.Generator
 {
@@ -7,10 +7,10 @@ namespace WoMFramework.Game.Generator
     {
         public AdventureState AdventureState { get; set; }
 
-        public bool IsActive => AdventureState == AdventureState.Preparation 
+        public bool IsActive => AdventureState == AdventureState.Preparation
                              || AdventureState == AdventureState.Running;
 
-        public Adventure()
+        protected Adventure()
         {
             AdventureState = AdventureState.Preparation;
         }

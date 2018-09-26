@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using SadConsole;
 using SadConsole.Controls;
-using WoMSadGui.Consoles;
 
 namespace WoMSadGui.Dialogs
 {
@@ -11,8 +9,7 @@ namespace WoMSadGui.Dialogs
 
         public MogwaiInputDialog(string title, string text, int width, int height) : base(title, text, width, height)
         {
-            Input = new TextBox(Width - 4);
-            Input.Position = new Point(2, 4);
+            Input = new TextBox(Width - 4) { Position = new Point(2, 4) };
 
             Add(Input);
 

@@ -1,12 +1,12 @@
 ﻿using WoMFramework.Game.Combat;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Mogwai;
 
 namespace WoMFramework.Game.Generator
 {
     public class TestRoom : Adventure
     {
-        private SimpleBrawl simpleFight;
+        private readonly SimpleBrawl simpleFight;
 
         public TestRoom(SimpleBrawl simpleFight)
         {

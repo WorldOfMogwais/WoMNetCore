@@ -1,15 +1,15 @@
-﻿using log4net;
-using NBitcoin;
-using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using WoMWallet.Tool;
+using log4net;
+using RestSharp;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Tool;
+using WoMWallet.Block;
+using WoMWallet.Tool;
 
 namespace WoMWallet.Node
 {
@@ -27,9 +27,9 @@ namespace WoMWallet.Node
 
         private static Blockchain _instance;
 
-        private RestClient _client;
+        private readonly RestClient _client;
 
-        private ConcurrentDictionary<int, string> _blockHashDict;
+        private readonly ConcurrentDictionary<int, string> _blockHashDict;
 
         public static Blockchain Instance => _instance ?? (_instance = new Blockchain());
 
@@ -52,7 +52,6 @@ namespace WoMWallet.Node
                 var blockHeight = GetBlockCount();
                 var fromHeight = _blockHashDict.Keys.Count > 0 ? _blockHashDict.Keys.Max() : 0;
                 var bulkSize = 500;
-                List<BlockhashPair> list;
                 var count = 0;
                 for (var i = fromHeight; i <= blockHeight; i++)
                 {
@@ -60,7 +59,7 @@ namespace WoMWallet.Node
                     if (count % bulkSize == 0 || i == blockHeight)
                     {
                         var currentMax = _blockHashDict.Keys.Count > 0 ? _blockHashDict.Keys.Max() : 0;
-                        list = GetBlockHashes(currentMax, count);
+                        var list = GetBlockHashes(currentMax, count);
                         list.ForEach(p => _blockHashDict[int.Parse(p.Block)] = p.Hash);
                         Log.Debug($"cached from {fromHeight} {count} blockhashes...");
                         count = 0;
@@ -68,7 +67,7 @@ namespace WoMWallet.Node
                     progress.Report((float)(i + 1) / blockHeight);
                 }
                 Caching.Persist(BlockhashesFile, _blockHashDict);
-                Log.Debug($"persisted all blocks!");
+                Log.Debug("persisted all blocks!");
             });
         }
 
@@ -100,11 +99,11 @@ namespace WoMWallet.Node
         //    _log.Debug($"persisted all blocks!");
         //}
 
-        public Block GetBlock(string hash)
+        public Block.Block GetBlock(string hash)
         {
             var request = new RestRequest("getblock/{hash}", Method.GET);
             request.AddUrlSegment("hash", hash);
-            var blockResponse = _client.Execute<Block>(request);
+            var blockResponse = _client.Execute<Block.Block>(request);
             return blockResponse.Data;
         }
 
@@ -217,7 +216,7 @@ namespace WoMWallet.Node
 
             txid = SendRawTransaction(tx.ToHex());
 
-            Log.Info($"sendRawTx[{(txid.Length != 0 ? "SUCCESS":"FAILED")}]: {txid}");
+            Log.Info($"sendRawTx[{(txid.Length != 0 ? "SUCCESS" : "FAILED")}]: {txid}");
 
             return txid.Length != 0;
         }
@@ -239,7 +238,7 @@ namespace WoMWallet.Node
             if (!validTx.Any())
             {
                 return result;
-            } 
+            }
 
             var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(mirroraddress));
 

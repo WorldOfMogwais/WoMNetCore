@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Mogwai
 {
     public class Body
     {
@@ -24,7 +24,7 @@ namespace WoMFramework.Game.Model
                 .Salted(true).SetPosition(10).SetSize(2).SetCreation(128).SetMaxRange(256).Build();
         public int EyeColor => EyeColorAttr.GetValue();
 
-        public List<Attribute> All => new List<Attribute>() { EarAttr, MouthAttr, SkinColorAttr, EyeTypeAttr, EyeColorAttr };
+        public List<Attribute> All => new List<Attribute> { EarAttr, MouthAttr, SkinColorAttr, EyeTypeAttr, EyeColorAttr };
 
         public Body(HexValue hexValue)
         {

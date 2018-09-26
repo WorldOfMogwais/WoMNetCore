@@ -1,24 +1,14 @@
 ﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game
 {
     public class GameLog
     {
-
-        private double _index;
-        private int _height;
-        private InteractionType _interactionType;
-
         public int Pointer;
         public List<LogEntry> LogEntries;
 
-        public GameLog(double index, int height, InteractionType interactionType)
+        public GameLog()
         {
-            _index = index;
-            _height = height;
-            _interactionType = interactionType;
-
             LogEntries = new List<LogEntry>();
             Pointer = LogEntries.Count - 1;
         }

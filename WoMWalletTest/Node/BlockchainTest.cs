@@ -1,9 +1,8 @@
-﻿using Xunit;
+﻿using System.Linq;
+using WoMWallet.Node;
+using Xunit;
 
-using System.Linq;
-using NBitcoin;
-
-namespace WoMWallet.Node
+namespace WoMWalletTest.Node
 {
     public class BlockchainTest
     {

@@ -1,6 +1,7 @@
 ﻿using WoMFramework.Game.Enums;
+using WoMFramework.Game.Model.Equipment;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Monster
 {
     public partial class Monsters
     {
@@ -15,7 +16,7 @@ namespace WoMFramework.Game.Model
             .SetDescription("Kobolds are creatures of the dark, found most commonly in enormous underground warrens " +
                 "or the dark corners of the forest where the sun is unable to reach.Due to their physical similarities, " +
                 "kobolds loudly proclaim themselves the scions of dragonkind, destined to rule the earth beneath the " +
-                "wings of their great god-cousins, but most dragons have little use for the obnoxious pests."+
+                "wings of their great god-cousins, but most dragons have little use for the obnoxious pests." +
                 "While they may speak loudly of divine right and manifest destiny, kobolds are keenly aware of their " +
                 "own weakness.Cowards and schemers, they never fight fair if they can help it, instead setting up ambushes " +
                 "and double-crosses, holing up in their warrens behind countless crude but ingenious traps, or rolling " +

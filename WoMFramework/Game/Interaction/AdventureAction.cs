@@ -25,7 +25,7 @@ namespace WoMFramework.Game.Interaction
             ParamAdd2 = (int)difficultyType * 1000 + averagePartyLevel;
         }
 
-        public virtual string GetInfo()
+        public override string GetInfo()
         {
             return InteractionType + ", "
                  + AdventureType + ", "

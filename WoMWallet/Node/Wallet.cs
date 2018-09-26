@@ -1,10 +1,11 @@
-﻿using log4net;
-using NBitcoin;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security;
 using System.Threading.Tasks;
+using log4net;
+using NBitcoin;
+using NBitcoin.Altcoins;
 using WoMWallet.Tool;
 
 namespace WoMWallet.Node
@@ -35,7 +36,7 @@ namespace WoMWallet.Node
 
         private const string DefaultWalletFile = "wallet.dat";
 
-        private readonly Network _network = NBitcoin.Altcoins.Mogwai.Instance.Mainnet;
+        private readonly Network _network = Mogwai.Instance.Mainnet;
 
         private readonly string _path;
 
@@ -63,11 +64,7 @@ namespace WoMWallet.Node
         private MogwaiKeys _depositKeys;
         public MogwaiKeys Deposit => _depositKeys ?? (_depositKeys = GetMogwaiKeys(0));
 
-        public int MogwaiAddresses => MogwaiKeyDict.Count;
-
-        public int MogwaisBound => MogwaiKeyDict.Values.Count(p => p.Mogwai != null);
-
-        public Block LastBlock { get; set; }
+        public Block.Block LastBlock { get; set; }
 
         /// <summary>
         /// 
@@ -199,7 +196,7 @@ namespace WoMWallet.Node
 
             if (!IsUnlocked)
             {
-                return false; ;
+                return false;
             }
 
             uint seed = 1000;
@@ -234,18 +231,10 @@ namespace WoMWallet.Node
         /// 
         /// </summary>
         /// <param name="seed"></param>
-        /// <param name="persist"></param>
         /// <returns></returns>
         private MogwaiKeys GetMogwaiKeys(uint seed)
         {
-            if (!IsUnlocked)
-            {
-                return null;
-            }
-
-            var extKeyDerived = _extKey.Derive(seed);
-            var wif = _extKey.PrivateKey.GetWif(_network);
-            return new MogwaiKeys(extKeyDerived, _network);
+            return !IsUnlocked ? null : new MogwaiKeys(_extKey.Derive(seed), _network);
         }
 
         /// <summary>

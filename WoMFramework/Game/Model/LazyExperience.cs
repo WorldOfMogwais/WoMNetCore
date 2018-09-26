@@ -7,7 +7,7 @@ namespace WoMFramework.Game.Model
 {
     public class Experience
     {
-        private string[] _expPats;
+        private readonly string[] _expPats;
 
         /// <summary>
         /// 
@@ -17,7 +17,7 @@ namespace WoMFramework.Game.Model
         {
             _expPats = GetExpPatterns(shift.TxHex);
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -41,7 +41,7 @@ namespace WoMFramework.Game.Model
             }
             return expPats.ToArray();
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -51,16 +51,16 @@ namespace WoMFramework.Game.Model
         internal double GetExp(int cuurentLevel, Shift shift)
         {
             var hexSize = shift.BkHex.Length;
-            var lazyExpLevel = (int)cuurentLevel / 10;
+            var lazyExpLevel = cuurentLevel / 10;
             var lazyExp = 0;
 
             for (var i = 0; i <= lazyExpLevel; i++)
             {
                 var exPat = _expPats[i % 18];
-                var indExp = shift.BkHex.IndexOf(exPat);
+                var indExp = shift.BkHex.IndexOf(exPat, StringComparison.Ordinal);
                 if (indExp != -1)
                 {
-                    var charMultiplierA = shift.BkHex[(hexSize + indExp - 1)% hexSize];
+                    var charMultiplierA = shift.BkHex[(hexSize + indExp - 1) % hexSize];
                     var charMultiplierB = shift.BkHex[(indExp + exPat.Length) % hexSize];
                     var exp = HexHashUtil.GetHexVal(charMultiplierA) * HexHashUtil.GetHexVal(charMultiplierB);
                     lazyExp += exp;

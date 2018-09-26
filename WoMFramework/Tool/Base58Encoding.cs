@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Numerics;
 using System.Linq;
+using System.Numerics;
 using System.Security.Cryptography;
 
 namespace WoMFramework.Tool
@@ -28,8 +28,7 @@ namespace WoMFramework.Tool
             var correctCheckSum = GetCheckSum(result);
             if (givenCheckSum.SequenceEqual(correctCheckSum))
                 return result;
-            else
-                return null;
+            return null;
         }
 
         public const string Digits = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -41,9 +40,9 @@ namespace WoMFramework.Tool
 
             // Decode byte[] to BigInteger
             BigInteger intData = 0;
-            for (var i = 0; i < data.Length; i++)
+            foreach (var t in data)
             {
-                intData = intData * 256 + data[i];
+                intData = intData * 256 + t;
             }
 
             // Encode BigInteger to Base58 string

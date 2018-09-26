@@ -1,22 +1,22 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using WoMFramework.Game.Generator;
+using log4net;
 using WoMFramework.Game.Enums;
+using WoMFramework.Game.Generator;
 using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model.Dungeon;
+using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Mogwai
 {
     public class Mogwai : Entity
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static GameLog History => _currentShift.History;
-
-        private readonly int _blockHeight;
 
         private static Shift _currentShift;
 
@@ -44,7 +44,7 @@ namespace WoMFramework.Game.Model
 
         public Experience Experience { get; set; }
 
-        public double Exp { get; private set; } = 0;
+        public double Exp { get; private set; }
 
         public int CurrentLevel { get; private set; } = 1;
 
@@ -54,9 +54,10 @@ namespace WoMFramework.Game.Model
 
         public Adventure Adventure { get; set; }
 
+        /// <inheritdoc />
         public override Dice Dice => _currentShift.MogwaiDice;
 
-        public double Rating => (double) (Strength * 3 + Dexterity * 2 + Constitution * 2 + Inteligence * 3 + Wisdom + Charisma) / 12;
+        public double Rating => (double)(Strength * 3 + Dexterity * 2 + Constitution * 2 + Inteligence * 3 + Wisdom + Charisma) / 12;
 
         public Mogwai(string key, Dictionary<double, Shift> shifts)
         {
@@ -67,7 +68,6 @@ namespace WoMFramework.Game.Model
 
             LevelShifts.Add(_currentShift.Height); // adding initial creation level up
 
-            _blockHeight = _currentShift.Height;
             Pointer = _currentShift.Height;
 
             // create appearance           
@@ -111,7 +111,6 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="blockHeight"></param>
         public bool Evolve(out GameLog history)
         {
             // any shift left?
@@ -146,12 +145,12 @@ namespace WoMFramework.Game.Model
                         if (Adventure == null || !Adventure.IsActive)
                         {
                             Adventure = AdventureGenerator.Create(_currentShift,
-                                (AdventureAction) _currentShift.Interaction);
+                                (AdventureAction)_currentShift.Interaction);
                         }
                         break;
 
                     case InteractionType.Leveling:
-                        var levelingAction = (LevelingAction) _currentShift.Interaction;
+                        var levelingAction = (LevelingAction)_currentShift.Interaction;
                         switch (levelingAction.LevelingType)
                         {
                             case LevelingType.Class:
@@ -161,12 +160,7 @@ namespace WoMFramework.Game.Model
                                 break;
                             case LevelingType.None:
                                 break;
-                            default:
-                                break;
                         }
-                        break;
-
-                    default:
                         break;
                 }
             }
@@ -203,7 +197,7 @@ namespace WoMFramework.Game.Model
 
         private void LevelClass(ClassType classType)
         {
-            if (!CanLevelClass(out int levels))
+            if (!CanLevelClass(out _))
             {
                 Log.Warn("Not allowed class leveling action.");
                 return;
@@ -212,7 +206,7 @@ namespace WoMFramework.Game.Model
             var classes = Classes.FirstOrDefault(p => p.ClassType == classType);
             if (Classes.Count == 0 || classes == null)
             {
-                Classes.Insert(0, Model.Classes.GetClasses(classType));
+                Classes.Insert(0, Model.Classes.Classes.GetClasses(classType));
             }
             else if (Classes.Remove(classes))
             {
@@ -238,6 +232,7 @@ namespace WoMFramework.Game.Model
             History.Add(LogType.Info, Coloring.LevelUp($"You feel the power of the {Classes[0].Name}'s!"));
         }
 
+        /// <inheritdoc />
         public override void AddGold(int gold)
         {
             History.Add(LogType.Info, $"You just found +{Coloring.Gold(gold)} gold!");
@@ -245,13 +240,8 @@ namespace WoMFramework.Game.Model
             Wealth.Gold += gold;
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="exp"></param>
-        /// <param name="monster"></param>
-        public override void AddExp(double exp, Monster monster = null)
+        /// <inheritdoc />
+        public override void AddExp(double exp, Monster.Monster monster = null)
         {
             History.Add(LogType.Info,
                 monster == null
@@ -264,15 +254,14 @@ namespace WoMFramework.Game.Model
             {
                 CurrentLevel += 1;
                 LevelShifts.Add(_currentShift.Height);
-                LevelUp(_currentShift);
+                LevelUp();
             }
         }
 
         /// <summary>
         /// Passive level up, includes for example hit point roles.
         /// </summary>
-        /// <param name="shift"></param>
-        private void LevelUp(Shift shift)
+        private void LevelUp()
         {
             History.Add(LogType.Info, Coloring.LevelUp("You're mogwai suddenly feels an ancient power around him."));
             History.Add(LogType.Info, $"{Coloring.LevelUp("Congratulations he just made the")} {Coloring.Green(CurrentLevel.ToString())} {Coloring.LevelUp("th level!")}");

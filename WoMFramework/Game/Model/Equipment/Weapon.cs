@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using WoMFramework.Game.Enums;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Equipment
 {
     public sealed class WeaponBuilder
     {
         // description
-        private bool _isTwoHanded = false;
+        private bool _isTwoHanded;
         private int _criticalMinRoll = 20;
         private int _criticalMultiplier = 2;
-        private WeaponDamageType[] _weaponDamageTypes = new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing };
+        private WeaponDamageType[] _weaponDamageTypes = { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing };
         private int _range = 1;
         private int _cost = 1;
         private double _weight = 1;
@@ -81,7 +81,8 @@ namespace WoMFramework.Game.Model
     }
     public class NaturalWeapon
     {
-        private static Dictionary<SizeType, int[]> _biteDic = new Dictionary<SizeType, int[]>() {
+        private static readonly Dictionary<SizeType, int[]> BiteDic = new Dictionary<SizeType, int[]>
+        {
             { SizeType.Diminutive, new[] {1, 2} },
             { SizeType.Tiny, new[] {1, 3} },
             { SizeType.Small, new[] {1, 4} },
@@ -89,18 +90,18 @@ namespace WoMFramework.Game.Model
             { SizeType.Large, new[] {1, 8} },
             { SizeType.Huge, new[] {2, 6} },
             { SizeType.Gargantuan, new[] {2, 8} },
-            { SizeType.Colossal, new[] {4, 6} },
+            { SizeType.Colossal, new[] {4, 6} }
         };
 
         public static Weapon Bite(SizeType sizeType)
         {
-            return new Weapon("Bite", _biteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, false, 1, 0, "");
+            return new Weapon("Bite", BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, false, 1, 0, "");
         }
     }
     public class Weapon : BaseItem
     {
         public int[] DamageRoll { get; set; }
-        private int[] _damageSmallRollEvent;
+        private readonly int[] _damageSmallRollEvent;
 
         public int CriticalMinRoll { get; }
         public int CriticalMultiplier { get; }

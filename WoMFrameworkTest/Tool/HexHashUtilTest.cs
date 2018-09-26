@@ -1,7 +1,8 @@
-﻿using Xunit;
-using WoMFramework.Game.Interaction;
+﻿using WoMFramework.Game.Interaction;
+using WoMFramework.Tool;
+using Xunit;
 
-namespace WoMFramework.Tool.Tests
+namespace WoMFrameworkTest.Tool
 {
     public class HexHashUtilTest
     {

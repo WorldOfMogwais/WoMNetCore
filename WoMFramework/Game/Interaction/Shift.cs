@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using WoMFramework.Game.Enums;
+using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Interaction
 {
@@ -8,11 +9,11 @@ namespace WoMFramework.Game.Interaction
         public int Index { get; }
 
         public double Time { get; }
-        public string AdHex { get;}
+        public string AdHex { get; }
         public int Height { get; }
         public string BkHex { get; }
         public double BkIndex { get; }
-        public string TxHex { get;}
+        public string TxHex { get; }
         public decimal Amount { get; }
         public decimal Fee { get; }
 
@@ -29,7 +30,7 @@ namespace WoMFramework.Game.Interaction
 
         [JsonIgnore]
         public Interaction Interaction { get; }
-        
+
         [JsonIgnore]
         public GameLog History { get; }
 
@@ -46,7 +47,7 @@ namespace WoMFramework.Game.Interaction
             Amount = amount;
             Fee = fee;
             Interaction = index > 0 ? Interaction.GetInteraction(amount, fee) : new CreationAction();
-            History = new GameLog(index, height, InteractionType.None);
+            History = new GameLog();
         }
 
         public Shift(int index, string adHex, int height, string bkHex)
@@ -56,7 +57,7 @@ namespace WoMFramework.Game.Interaction
             Height = height;
             BkHex = bkHex;
             Interaction = null;
-            History = new GameLog(index, height, InteractionType.None);
+            History = new GameLog();
         }
 
         public override string ToString()

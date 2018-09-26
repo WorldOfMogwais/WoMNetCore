@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Dungeon;
+using WoMFramework.Game.Model.Mogwai;
+using WoMFramework.Game.Model.Monster;
+using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Combat
 {
@@ -17,14 +21,15 @@ namespace WoMFramework.Game.Combat
         {
             _maxRounds = maxRounds;
 
-            var m = 1;
-            var dice = new Dice(room.Parent.CreationShift, m++);
+            const int m = 1;
+            var dice = new Dice(room.Parent.CreationShift, m);
             _room = room;
-            foreach (var monster in monsters)
+            var monsterArray = monsters as Monster[] ?? monsters.ToArray();
+            foreach (var monster in monsterArray)
             {
                 monster.Dice = dice;
             }
-            _enemies = monsters.Select(p => new Combatant(p, room)
+            _enemies = monsterArray.Select(p => new Combatant(p, room)
             {
                 InititativeValue = p.InitiativeRoll(dice)
             }).ToList();
@@ -50,12 +55,10 @@ namespace WoMFramework.Game.Combat
             for (_currentRound = 1; _currentRound < _maxRounds && _enemies.Count > 0; _currentRound++)
             {
                 var sec = (_currentRound - 1) * 6;
-                Mogwai.History.Add(LogType.Evnt, $"[ROUND ¬G{_currentRound.ToString("00")}§] time: ¬a{(sec / 60).ToString("00")}§m:¬a{(sec % 60).ToString("00")}§s Monsters: {_enemies.Count} ({string.Join(",", _enemies.Select(p => p.Entity.Name))})¬");
+                Mogwai.History.Add(LogType.Evnt, $"[ROUND ¬G{_currentRound:00}§] time: ¬a{(sec / 60):00}§m:¬a{(sec % 60):00}§s Monsters: {_enemies.Count} ({string.Join(",", _enemies.Select(p => p.Entity.Name))})¬");
 
-                for (var turn = 0; turn < initiativeOrder.Length; turn++)
+                foreach (var combatant in initiativeOrder)
                 {
-                    var combatant = initiativeOrder[turn];
-
                     combatant.Replenish();
 
                     // dead targets can't attack any more
@@ -77,10 +80,10 @@ namespace WoMFramework.Game.Combat
                             killedMonsters.Add(killedMonster);
 
                             var expReward = killedMonster.Experience / heroes.Length;
-                            //Heroes.ForEach(p => p.AddExp(expReward, killedMonster));
-                            for (var i = 0; i < heroes.Length; i++)
-                                heroes[i].AddExp(expReward, killedMonster);
-
+                            foreach (var t in heroes)
+                            {
+                                t.AddExp(expReward, killedMonster);
+                            }
                             _enemies.Remove(target);
                         }
                         else if (target.IsHero)
@@ -111,22 +114,19 @@ namespace WoMFramework.Game.Combat
                 }
             }
 
-            Mogwai.History.Add(LogType.Evnt, $"¬YSimpleCombat§ No winner, no loser, this fight was a draw!");
+            Mogwai.History.Add(LogType.Evnt, "¬YSimpleCombat§ No winner, no loser, this fight was a draw!");
             return false;
         }
 
         internal void Loot(List<Entity> mogwais, List<Entity> enemies)
         {
             // award experience for each killed enemy
-            enemies.ForEach(p =>
+            foreach (var m in enemies.OfType<Monster>())
             {
-                if (p is Monster)
-                {
-                    var treasure = ((Monster)p).Treasure;
-                    var treasureStr = treasure != null ? "¬Ga Treasure§" : "¬Rno Treasure§";
-                    Mogwai.History.Add(LogType.Evnt, $"¬YLooting§ the ¬C{p.Name}§ he has {treasureStr}!¬");
-                }
-            });
+                var treasure = m.Treasure;
+                var treasureStr = treasure != null ? "¬Ga Treasure§" : "¬Rno Treasure§";
+                Mogwai.History.Add(LogType.Evnt, $"¬YLooting§ the ¬C{m.Name}§ he has {treasureStr}!¬");
+            }
         }
 
     }

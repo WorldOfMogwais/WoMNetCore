@@ -4,8 +4,9 @@ using GoRogue;
 using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
 using WoMFramework.Game.Combat;
+using WoMFramework.Game.Model.Monster;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Dungeon
 {
     public abstract class Room
     {
@@ -43,7 +44,7 @@ namespace WoMFramework.Game.Model
 
         public abstract bool Enter();
 
-        public virtual void Initialise(Mogwai mogwai)
+        public virtual void Initialise(Mogwai.Mogwai mogwai)
         {
 
         }
@@ -76,7 +77,7 @@ namespace WoMFramework.Game.Model
             throw new NotImplementedException();
         }
 
-        public override void Initialise(Mogwai mogwai)
+        public override void Initialise(Mogwai.Mogwai mogwai)
         {
             throw new NotImplementedException();
         }
@@ -84,20 +85,20 @@ namespace WoMFramework.Game.Model
 
     public class MonsterRoom : Room
     {
-        private readonly List<Monster> _monsters = new List<Monster>();
+        private readonly List<Monster.Monster> _monsters = new List<Monster.Monster>();
 
 
         public MonsterRoom(Dungeon parent) : base(parent)
         {
         }
 
-        public override void Initialise(Mogwai mogwai)
+        public override void Initialise(Mogwai.Mogwai mogwai)
         {
 
         }
 
         public override bool Enter()
-        { 
+        {
             // door breaching, traps etc
 
             // calculate initiate here maybe?
@@ -105,7 +106,7 @@ namespace WoMFramework.Game.Model
             return false;
         }
 
-        private void CreateMonsters(Mogwai mogwai)
+        private void CreateMonsters(Mogwai.Mogwai mogwai)
         {
             // not implemented
             _monsters.Add(Monsters.Rat);
@@ -118,7 +119,7 @@ namespace WoMFramework.Game.Model
     {
         private readonly SimpleCombat _fight;
 
-        public SimpleRoom(Dungeon parent, Mogwai mogwai) : base(parent)
+        public SimpleRoom(Dungeon parent, Mogwai.Mogwai mogwai) : base(parent)
         {
             const int length = 7;
 
@@ -127,17 +128,17 @@ namespace WoMFramework.Game.Model
             WalkabilityMap = walkabilityMap;
 
             // deploy monsters and the adventurer
-            Monster[] monsters = { Monsters.Rat };
-            for (var i = 0; i < monsters.Length; i++)
+            Monster.Monster[] monsters = { Monsters.Rat };
+            foreach (var m in monsters)
             {
                 // TODO: Positioning monsters
                 while (true)
                 {
                     var monsterCoord = Coord.Get(4, 4);
-                    
+
                     if (WalkabilityMap[monsterCoord])
                     {
-                        monsters[i].Coordinate = monsterCoord;
+                        m.Coordinate = monsterCoord;
                         break;
                     }
                 }
@@ -149,7 +150,7 @@ namespace WoMFramework.Game.Model
 
             mogwai.Coordinate = mogCoord;
 
-            _fight = new SimpleCombat(this, new []{mogwai}, monsters);
+            _fight = new SimpleCombat(this, new[] { mogwai }, monsters);
         }
 
 

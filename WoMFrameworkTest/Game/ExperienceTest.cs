@@ -1,4 +1,4 @@
-﻿namespace WoMFramework.Game.Tests
+﻿namespace WoMFrameworkTest.Game
 {
     public class ExperienceTest
     {

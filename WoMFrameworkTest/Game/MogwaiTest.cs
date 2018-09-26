@@ -1,4 +1,4 @@
-﻿namespace WoMFramework.Game.Model.Tests
+﻿namespace WoMFrameworkTest.Game
 {
     public class MogwaiTest
     {

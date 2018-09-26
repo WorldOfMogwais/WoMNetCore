@@ -1,8 +1,8 @@
-﻿using Xunit;
+﻿using WoMFramework.Game.Enums;
+using WoMFramework.Game.Interaction;
+using Xunit;
 
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Interaction.Tests
+namespace WoMFrameworkTest.Game
 {
     public class InteractionTest
     {

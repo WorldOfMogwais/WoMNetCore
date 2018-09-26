@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using NBitcoin;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Tool;
 using WoMWallet.Tool;
 
@@ -19,7 +18,7 @@ namespace WoMWallet.Node
 
         public bool IsWalletCreated => Wallet.IsCreated;
 
-        public Block WalletLastBlock => Wallet.LastBlock;
+        public Block.Block WalletLastBlock => Wallet.LastBlock;
 
         public string DepositAddress => Wallet.IsUnlocked ? Wallet.Deposit.Address : string.Empty;
 
@@ -33,7 +32,7 @@ namespace WoMWallet.Node
 
         public Mogwai CurrentMogwai => CurrentMogwaiKeys?.Mogwai;
 
- public MogwaiKeys CurrentMogwaiKeys
+        public MogwaiKeys CurrentMogwaiKeys
         {
             get
             {
@@ -57,7 +56,7 @@ namespace WoMWallet.Node
             TaggedMogwaiKeys = new List<MogwaiKeys>();
             CurrentMogwaiKeysIndex = 0;
         }
-        
+
         public void RefreshCurrent(int minutes)
         {
             Update();
@@ -179,7 +178,7 @@ namespace WoMWallet.Node
             {
                 return;
             }
-            Wallet.GetNewMogwaiKey(out var mogwaiKeys);
+            Wallet.GetNewMogwaiKey(out _);
         }
 
         public bool SendMog(int amount)
@@ -190,10 +189,10 @@ namespace WoMWallet.Node
             }
 
             var mogwaiKeysList = TaggedMogwaiKeys.Count > 0 ? TaggedMogwaiKeys : new List<MogwaiKeys> { CurrentMogwaiKeys };
-            if (!Blockchain.Instance.SendMogs(Wallet.Deposit, mogwaiKeysList.Select(p => p.Address).ToArray(), amount, 0.0001m, out string txId))
+            if (!Blockchain.Instance.SendMogs(Wallet.Deposit, mogwaiKeysList.Select(p => p.Address).ToArray(), amount, 0.0001m, out _))
             {
                 return false;
-            };
+            }
 
             mogwaiKeysList.ForEach(p => p.MogwaiKeysState = MogwaiKeysState.Wait);
             return true;
@@ -206,10 +205,10 @@ namespace WoMWallet.Node
                 return false;
             }
 
-            if (!Blockchain.Instance.BindMogwai(CurrentMogwaiKeys, out string txId))
+            if (!Blockchain.Instance.BindMogwai(CurrentMogwaiKeys, out _))
             {
                 return false;
-            };
+            }
 
             CurrentMogwaiKeys.MogwaiKeysState = MogwaiKeysState.Create;
             return true;
@@ -248,7 +247,7 @@ namespace WoMWallet.Node
             var lvlAction = new LevelingAction(LevelingType.Class, ClassType.Barbarian, 0, 1);
 
             var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i"));
-            var shifts = new Dictionary<double, Shift>()
+            var shifts = new Dictionary<double, Shift>
             {
                 {
                     1001, new Shift(0, 1530914381, pubMogAddressHex,
@@ -312,7 +311,7 @@ namespace WoMWallet.Node
                 LastUpdated = DateTime.Now,
                 MogwaiKeysState = MogwaiKeysState.Bound,
                 Shifts = shifts
-                    
+
             };
         }
 

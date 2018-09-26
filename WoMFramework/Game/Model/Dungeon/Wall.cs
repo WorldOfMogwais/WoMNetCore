@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Dungeon
 {
     public abstract class Wall
     {
@@ -8,7 +8,7 @@ namespace WoMFramework.Game.Model
 
         public abstract bool IsBlocked { get; set; }
 
-        public abstract bool Interact(Mogwai mogwai);
+        public abstract bool Interact(Mogwai.Mogwai mogwai);
     }
 
     public class Door : Wall
@@ -17,7 +17,7 @@ namespace WoMFramework.Game.Model
         public Tile Outside;
         public override bool IsBlocked { get; set; } = false;
 
-        public override bool Interact(Mogwai mogwai)
+        public override bool Interact(Mogwai.Mogwai mogwai)
         {
             throw new NotImplementedException();
         }
@@ -27,7 +27,7 @@ namespace WoMFramework.Game.Model
     {
         public override bool IsBlocked { get; set; } = true;
 
-        public override bool Interact(Mogwai mogwai)
+        public override bool Interact(Mogwai.Mogwai mogwai)
         {
             throw new NotImplementedException();
         }

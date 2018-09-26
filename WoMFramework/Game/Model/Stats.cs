@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using WoMFramework.Game.Model.Mogwai;
 
 namespace WoMFramework.Game.Model
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class Stats
     {
         public Attribute LuckAttr = AttributBuilder.Create("Luck")
@@ -14,15 +17,16 @@ namespace WoMFramework.Game.Model
             .SetDescription("A creature's general moral and personal attitudes are represented by its alignment: lawful good, neutral good, chaotic good, lawful neutral, neutral, chaotic neutral, lawful evil, neutral evil, or chaotic evil.").Build();
         public int Allignment => AllignmentAttr.GetValue();
 
-        public List<Attribute> All => new List<Attribute>() { LuckAttr, AllignmentAttr };
+        public List<Attribute> All => new List<Attribute> { LuckAttr, AllignmentAttr };
 
         public Stats(HexValue hexValue)
         {
             All.ForEach(p => p.CreateValue(hexValue));
         }
 
-        public string MapAllignment() {
-            switch(Allignment)
+        public string MapAllignment()
+        {
+            switch (Allignment)
             {
                 case 0:
                     return "Lawful Good";
@@ -56,7 +60,7 @@ namespace WoMFramework.Game.Model
                     return "Neutral Evil";
                 case 15:
                     return "Chaotic Evil";
-                default: 
+                default:
                     return "Lawful Good";
             }
         }

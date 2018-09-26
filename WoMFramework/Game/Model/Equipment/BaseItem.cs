@@ -1,4 +1,4 @@
-﻿namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model.Equipment
 {
     public class BaseItem
     {

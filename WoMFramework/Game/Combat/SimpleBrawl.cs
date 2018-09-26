@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Mogwai;
+using WoMFramework.Game.Model.Monster;
+using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Combat
 {
@@ -14,7 +15,7 @@ namespace WoMFramework.Game.Combat
 
         private List<Brawler> _inititiveOrder;
 
-        private List<Monster> _monsters;
+        private readonly List<Monster> _monsters;
 
         private int _currentRound;
 
@@ -47,7 +48,7 @@ namespace WoMFramework.Game.Combat
                         InititativeValue = monster.InitiativeRoll(dice),
                         Enemies = new List<Entity> { mogwai }
                     });
-            };
+            }
 
             _inititiveOrder.Add(
                 new Brawler(mogwai)
@@ -57,7 +58,7 @@ namespace WoMFramework.Game.Combat
                     Enemies = _monsters.Select(p => p as Entity).ToList()
                 });
 
-            _inititiveOrder.OrderBy(s => s.InititativeValue).ThenBy(s => s.Entity.Dexterity);
+            _inititiveOrder = _inititiveOrder.OrderBy(s => s.InititativeValue).ThenBy(s => s.Entity.Dexterity).ToList();
         }
 
         /// <summary>
@@ -76,7 +77,7 @@ namespace WoMFramework.Game.Combat
             for (_currentRound = 1; _currentRound < _maxRounds && winner == null; _currentRound++)
             {
                 var sec = (_currentRound - 1) * 6;
-                Mogwai.History.Add(LogType.Evnt, $"Round {_currentRound.ToString("00")}, time: {(sec / 60).ToString("00")}m:{(sec % 60).ToString("00")}s Monsters: {Monsters.Count} ({string.Join(",", Monsters.Select(p => p.Name))})");
+                Mogwai.History.Add(LogType.Evnt, $"Round {_currentRound:00}, time: {(sec / 60):00}m:{(sec % 60):00}s Monsters: {Monsters.Count} ({string.Join(",", Monsters.Select(p => p.Name))})");
 
                 for (var turn = 0; turn < _inititiveOrder.Count; turn++)
                 {
@@ -88,14 +89,13 @@ namespace WoMFramework.Game.Combat
                         continue;
                     }
 
-                    var target = combatant.Enemies.Where(p => p.CurrentHitPoints > -1).FirstOrDefault();
+                    var target = combatant.Enemies.FirstOrDefault(p => p.CurrentHitPoints > -1);
 
                     // attack
                     combatant.Entity.Attack(turn, target);
 
-                    if (target.CurrentHitPoints < 0 && target is Monster)
+                    if (target?.CurrentHitPoints < 0 && target is Monster killedMonster)
                     {
-                        var killedMonster = (Monster)target;
                         var expReward = killedMonster.Experience / Heroes.Count;
                         Heroes.ForEach(p => p.AddExp(expReward, killedMonster));
                     }
@@ -120,11 +120,9 @@ namespace WoMFramework.Game.Combat
 
                 return false;
             }
-            else
-            {
-                Mogwai.History.Add(LogType.Evnt, $"[c:r f:yellow]SimpleBrawl[c:u] No winner, no loser, this fight was a draw!");
-                return false;
-            }
+
+            Mogwai.History.Add(LogType.Evnt, "[c:r f:yellow]SimpleBrawl[c:u] No winner, no loser, this fight was a draw!");
+            return false;
 
         }
 

@@ -1,8 +1,7 @@
-﻿using Xunit;
+﻿using WoMFramework.Game.Interaction;
+using Xunit;
 
-using WoMFramework.Game.Interaction;
-
-namespace WoMFramework.Game.Tests
+namespace WoMFrameworkTest.Game
 {
     public class CombatTest
     {

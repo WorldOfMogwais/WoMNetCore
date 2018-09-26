@@ -1,6 +1,6 @@
 ﻿using WoMFramework.Game.Enums;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Equipment
 {
     public class Weapons
     {

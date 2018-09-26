@@ -1,20 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using SadConsole.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using log4net.Repository.Hierarchy;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using SadConsole;
 using SadConsole.Controls;
 using SadConsole.Surfaces;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model.Mogwai;
+using WoMSadGui.Dialogs;
 using WoMWallet.Node;
 using Console = SadConsole.Console;
-using WoMFramework.Game.Model;
-using WoMSadGui.Dialogs;
-using WoMWallet.Tool;
+using Keyboard = SadConsole.Input.Keyboard;
 
 namespace WoMSadGui.Consoles
 {
@@ -26,63 +23,54 @@ namespace WoMSadGui.Consoles
         {
             BorderSurface = new Basic(width + 2, height + 2, Font);
             BorderSurface.DrawBox(new Rectangle(0, 0, BorderSurface.Width, BorderSurface.Height),
-                new Cell(Color.DarkCyan, Color.TransparentBlack), null, null);
+                new Cell(Color.DarkCyan, Color.TransparentBlack));
             BorderSurface.Position = new Point(-1, -1);
             Children.Add(BorderSurface);
         }
     }
     public class PlayScreen : Console
     {
-        private MogwaiController _controller;
+        private readonly MogwaiController _controller;
 
-        private int _glyphX = 0;
-        private int _glyphY = 0;
+        private int _glyphX;
+        private int _glyphY;
         private int _oldglyphIndex = 185;
         private int _glyphIndex = 185;
 
         public SadGuiState State { get; set; }
 
-        private PlayStatsConsole _playStatsConsole;
-        private PlayInfoConsole _playInfoConsole;
-        private ScrollingConsole _log;
+        private readonly ScrollingConsole _log;
 
-        private readonly MogwaiKeys _mogwaiKeys;
         private readonly Mogwai _mogwai;
 
-        private TestControls _command1;
-        private ControlsConsole _command2;
+        private readonly TestControls _command1;
+        private readonly ControlsConsole _command2;
 
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
             _controller = mogwaiController;
-            _mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
-            _mogwai = _mogwaiKeys.Mogwai;
+            var mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
+            _mogwai = mogwaiKeys.Mogwai;
 
-            _playStatsConsole = new PlayStatsConsole(_mogwai, 44, 22);
-            _playStatsConsole.Position = new Point(0, 0);
-            Children.Add(_playStatsConsole);
+            var playStatsConsole = new PlayStatsConsole(_mogwai, 44, 22) { Position = new Point(0, 0) };
+            Children.Add(playStatsConsole);
 
-            var _custom = new MogwaiConsole("Custom", "", 91, 22);
-            _custom.Position = new Point(46, 0);
-            Children.Add(_custom);
+            var custom = new MogwaiConsole("Custom", "", 91, 22) { Position = new Point(46, 0) };
+            Children.Add(custom);
 
-            _log = new ScrollingConsole(85, 13, 100);
-            _log.Position = new Point(0, 25);
+            _log = new ScrollingConsole(85, 13, 100) { Position = new Point(0, 25) };
             Children.Add(_log);
 
-            _playInfoConsole = new PlayInfoConsole(mogwaiController, _mogwaiKeys, 49, 14);
-            _playInfoConsole.Position = new Point(88, 24);
-            Children.Add(_playInfoConsole);
+            var playInfoConsole = new PlayInfoConsole(mogwaiController, mogwaiKeys, 49, 14) { Position = new Point(88, 24) };
+            Children.Add(playInfoConsole);
 
-            _command1 = new TestControls(86, 1);
-            _command1.Position = new Point(0, 23);
+            _command1 = new TestControls(86, 1) { Position = new Point(0, 23) };
             _command1.Fill(Color.Transparent, Color.Black, null);
             Children.Add(_command1);
 
-            _command2 = new ControlsConsole(8, 2);
-            _command2.Position = new Point(40, 2);
+            _command2 = new ControlsConsole(8, 2) { Position = new Point(40, 2) };
             _command2.Fill(Color.Transparent, Color.DarkGray, null);
-            _playInfoConsole.Children.Add(_command2);
+            playInfoConsole.Children.Add(_command2);
 
             State = SadGuiState.Play;
 
@@ -106,15 +94,19 @@ namespace WoMSadGui.Consoles
             MenuButton(4, "breed", DoAction);
             MenuButton(5, "shop", DoAction);
 
-            var btnNext = new MogwaiButton(8, 1);
-            btnNext.Position = new Point(0, 0);
-            btnNext.Text = "evolve";
+            var btnNext = new MogwaiButton(8, 1)
+            {
+                Position = new Point(0, 0),
+                Text = "evolve"
+            };
             btnNext.Click += (btn, args) => { DoAction(((Button)btn).Text); };
             _command2.Add(btnNext);
 
-            var btnFast = new MogwaiButton(8, 1);
-            btnFast.Position = new Point(0, 1);
-            btnFast.Text = "evol++";
+            var btnFast = new MogwaiButton(8, 1)
+            {
+                Position = new Point(0, 1),
+                Text = "evol++"
+            };
             btnFast.Click += (btn, args) => { DoAction(((Button)btn).Text); };
             _command2.Add(btnFast);
 
@@ -126,9 +118,11 @@ namespace WoMSadGui.Consoles
             var xSpBtn = 1;
             var mBtnSize = 7;
 
-            var button = new MogwaiButton(mBtnSize, 1);
-            button.Position = new Point(xBtn + buttonPosition * (mBtnSize + xSpBtn), 0);
-            button.Text = buttonText;
+            var button = new MogwaiButton(mBtnSize, 1)
+            {
+                Position = new Point(xBtn + buttonPosition * (mBtnSize + xSpBtn), 0),
+                Text = buttonText
+            };
             button.Click += (btn, args) => { buttonClicked(((Button)btn).Text); };
             _command1.Add(button);
             _command1.SetGlyph(xBtn + mBtnSize + buttonPosition * (mBtnSize + xSpBtn), 0, 186, Color.DarkCyan);
@@ -160,12 +154,12 @@ namespace WoMSadGui.Consoles
                             new[] {"chamber", "Chamber"},
                             new[] {"dungeon", "Dungeon"},
                             new[] {"battle", "Battle"},
-                            new[] {"quest", "Quest"},
+                            new[] {"quest", "Quest"}
                         });
                     dialog.Show(true);
                     break;
                 case "level":
-                    dialog = new MogwaiOptionDialog("Leveling", $"Currently up for leveling?", DoAdventureAction, 40, 12);
+                    dialog = new MogwaiOptionDialog("Leveling", "Currently up for leveling?", DoAdventureAction, 40, 12);
                     dialog.AddRadioButtons("levelingAction", new List<string[]> {
                         new[] {"levelclass", "Class levels."},
                         new[] {"levelability", "Ability levels."}
@@ -173,27 +167,22 @@ namespace WoMSadGui.Consoles
                     dialog.Show(true);
                     break;
             }
-            
+
         }
 
         private void DoAdventureAction(string actionStr)
         {
-            MogwaiOptionDialog dialog;
-
             switch (actionStr)
             {
                 case "testroom":
-                    if (_controller.Interaction(new AdventureAction(AdventureType.TestRoom, DifficultyType.Average, _mogwai.CurrentLevel)))
-                    {
-                        LogInConsole("Successful sent mogwai to test room! Wait for interaction locks.");
-                    }
-                    else
-                    {
-                        LogInConsole("Failed to send mogwai to test room!");
-                    }  
+                    LogInConsole(
+                        _controller.Interaction(new AdventureAction(AdventureType.TestRoom, DifficultyType.Average,
+                            _mogwai.CurrentLevel))
+                            ? "Successful sent mogwai to test room! Wait for interaction locks."
+                            : "Failed to send mogwai to test room!");
                     break;
                 case "levelclass":
-                    dialog = new MogwaiOptionDialog("Leveling", $"Currently up for leveling?", DoClassLevel, 40, 17);
+                    var dialog = new MogwaiOptionDialog("Leveling", "Currently up for leveling?", DoClassLevel, 40, 17);
                     dialog.AddRadioButtons("levelingAction", new List<string[]> {
                         new[] { "Barbarian", "Barbarian"},
                         new[] { "Bard", "Bard"},
@@ -219,20 +208,20 @@ namespace WoMSadGui.Consoles
                     warning.Show(true);
                     break;
             }
-            
+
         }
 
         private void DoClassLevel(string classTypeStr)
         {
-            if (!_mogwai.CanLevelClass(out var levels))
+            if (!_mogwai.CanLevelClass(out _))
             {
-                LogInConsole($"Mogwai can't class levelno level ups!");
+                LogInConsole("Mogwai can\'t class levelno level ups!");
                 return;
             }
 
             if (_mogwai.Classes.Count >= 2)
             {
-                LogInConsole($"Mogwais of this generation can't level more then two classes!");
+                LogInConsole("Mogwais of this generation can\'t level more then two classes!");
                 return;
             }
 
@@ -256,7 +245,7 @@ namespace WoMSadGui.Consoles
         {
             if (!fast)
             {
-                if (_mogwai.Evolve(out var history))
+                if (_mogwai.Evolve(out _))
                 {
                     UpdateLog();
                 }
@@ -266,9 +255,9 @@ namespace WoMSadGui.Consoles
                 _log.Reset();
                 for (var i = 0; i < 100; i++)
                 {
-                    if (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve(out var history))
+                    if (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve(out _))
                     {
-                         UpdateLog();
+                        UpdateLog();
                     }
                     else
                     {
@@ -287,11 +276,6 @@ namespace WoMSadGui.Consoles
             }
         }
 
-        public void ButtonAdventure()
-        {
-
-        }
-
         internal SadGuiState GetState()
         {
             return State;
@@ -300,26 +284,29 @@ namespace WoMSadGui.Consoles
 
         public override bool ProcessKeyboard(Keyboard state)
         {
-            if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Enter))
+            if (state.IsKeyReleased(Keys.Enter))
             {
                 State = SadGuiState.Selection;
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Q))
+
+            if (state.IsKeyReleased(Keys.Q))
             {
                 _glyphIndex++;
                 Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
                 Print(_glyphX + 2, _glyphY, $"{_glyphIndex}", Color.Yellow);
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.A))
+
+            if (state.IsKeyReleased(Keys.A))
             {
                 _glyphIndex--;
                 Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
                 Print(_glyphX + 2, _glyphY, $"{_glyphIndex}", Color.Yellow);
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Right))
+
+            if (state.IsKeyReleased(Keys.Right))
             {
                 Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
                 _glyphX++;
@@ -327,7 +314,8 @@ namespace WoMSadGui.Consoles
                 Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Left))
+
+            if (state.IsKeyReleased(Keys.Left))
             {
                 Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
                 _glyphX--;
@@ -335,7 +323,8 @@ namespace WoMSadGui.Consoles
                 Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Up))
+
+            if (state.IsKeyReleased(Keys.Up))
             {
                 Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
                 _glyphY--;
@@ -343,7 +332,8 @@ namespace WoMSadGui.Consoles
                 Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
                 return true;
             }
-            else if (state.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Down))
+
+            if (state.IsKeyReleased(Keys.Down))
             {
                 Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
                 _glyphY++;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Model.Monster
 {
     public partial class Monsters
     {
@@ -9,7 +9,7 @@ namespace WoMFramework.Game.Model
 
         public Monsters()
         {
-            Animals = new List<Monster>()
+            Animals = new List<Monster>
             {
                 Rat,
                 Wolf

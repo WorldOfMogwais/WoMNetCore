@@ -1,5 +1,8 @@
-﻿namespace WoMWallet
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace WoMWallet.Block
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class UnspentTx
     {
         public string Txid { get; set; }

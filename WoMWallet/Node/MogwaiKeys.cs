@@ -1,13 +1,13 @@
-﻿using log4net;
-using NBitcoin;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using log4net;
+using NBitcoin;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Tool;
+using WoMWallet.Block;
 
 namespace WoMWallet.Node
 {
@@ -44,17 +44,7 @@ namespace WoMWallet.Node
 
         public DateTime LastUpdated { get; set; }
 
-        private MogwaiKeysState _oldMogwaiKeysState = MogwaiKeysState.None;
-        private MogwaiKeysState _mogwaiKeysState = MogwaiKeysState.None;
-        public MogwaiKeysState MogwaiKeysState
-        {
-            get => _mogwaiKeysState;
-            set
-            {
-                _oldMogwaiKeysState = _mogwaiKeysState;
-                _mogwaiKeysState = value;
-            }
-        }
+        public MogwaiKeysState MogwaiKeysState { get; set; } = MogwaiKeysState.None;
 
         public Dictionary<string, Interaction> InteractionLock { get; set; }
 
@@ -144,11 +134,11 @@ namespace WoMWallet.Node
                 {
                     MogwaiKeysState = MogwaiKeysState.Bound;
                 }
-                else if(Balance > 1.0001m && MogwaiKeysState != MogwaiKeysState.Create)
+                else if (Balance > 1.0001m && MogwaiKeysState != MogwaiKeysState.Create)
                 {
                     MogwaiKeysState = MogwaiKeysState.Ready;
                 }
-                else if(Balance < 1.0001m && MogwaiKeysState != MogwaiKeysState.Wait)
+                else if (Balance < 1.0001m && MogwaiKeysState != MogwaiKeysState.Wait)
                 {
                     MogwaiKeysState = MogwaiKeysState.None;
                 }

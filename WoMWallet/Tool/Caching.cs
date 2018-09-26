@@ -1,12 +1,12 @@
-﻿using log4net;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
+using log4net;
+using Newtonsoft.Json;
 
 namespace WoMWallet.Tool
 {
-    class Caching
+    internal class Caching
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -27,7 +27,7 @@ namespace WoMWallet.Tool
             }
             catch (Exception e)
             {
-                Log.Error($"TryReadFile<{obj.GetType()}>: {e}");
+                Log.Error($"TryReadFile<{obj?.GetType()}>: {e}");
                 return false;
             }
         }
