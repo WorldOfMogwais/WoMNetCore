@@ -5,49 +5,17 @@ namespace WoMFramework.Game.Model.Equipment
     public class Weapons
     {
         /***
-         * Unarmed Weapons
-         */
-        public static Weapon Gauntlet =>
-            WeaponBuilder.Create("Gauntlet", new[] { 1, 2 }, new[] { 1, 3 })
-            .SetDamageType(WeaponDamageType.Bludgeoning)
-            .SetRange(1)
-            .SetCost(2)
-            .SetWeight(1)
-            .SetDescription(" This metal glove lets you deal lethal damage rather than nonlethal " +
-                "damage with unarmed strikes. A strike with a gauntlet is otherwise considered an " +
-                "unarmed attack. Your opponent cannot use a disarm action to disarm you of " +
-                "gauntlets.")
-            .Build();
-
-
-        /***
          * One-Handed Melee Weapons
          */
         public static Weapon Rapier =>
-            WeaponBuilder.Create("Rapier", new[] { 1, 4 }, new[] { 1, 6 })
+            WeaponBuilder.Create("Rapier", ProficiencyType.Martial, WeaponType.OneHanded, new[] { 1, 4 }, new[] { 1, 6 })
             .SetCriticalMinRoll(18)
+            .SetCriticalMultiplier(2)
             .SetDamageType(WeaponDamageType.Piercing)
-            .SetRange(1)
+            .SetRange(0)
             .SetCost(20)
             .SetWeight(2)
             .SetDescription("Just a rapier.")
             .Build();
-
-
-        /***
-         * Two-Handed Melee Weapons
-         */
-        public static Weapon Spear =>
-            WeaponBuilder.Create("Spear", new[] { 1, 6 }, new[] { 1, 8 })
-            .SetCriticalMultiplier(3)
-            .SetDamageType(WeaponDamageType.Piercing)
-            .IsTwoHanded()
-            .SetRange(20)
-            .SetCost(2)
-            .SetWeight(6)
-            .SetDescription("A spear is 5 feet in length and can be thrown.")
-            .Build();
-
-
     }
 }

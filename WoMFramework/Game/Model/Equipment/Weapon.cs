@@ -6,37 +6,35 @@ namespace WoMFramework.Game.Model.Equipment
     public sealed class WeaponBuilder
     {
         // description
-        private bool _isTwoHanded;
         private int _criticalMinRoll = 20;
         private int _criticalMultiplier = 2;
         private WeaponDamageType[] _weaponDamageTypes = { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing };
-        private int _range = 1;
+        private int _range = 0;
         private int _cost = 1;
         private double _weight = 1;
         private string _description = string.Empty;
 
         public string Name;
+        public ProficiencyType ProficiencyType;
+        public WeaponType WeaponType;
         public int[] DamageSmallRollEvent;
         public int[] DamageMediumRollEvent;
 
-        private WeaponBuilder(string name, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
+        private WeaponBuilder(string name, ProficiencyType proficiencyType, WeaponType weaponType, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
         {
             Name = name;
+            ProficiencyType = proficiencyType;
+            WeaponType = weaponType;
             DamageSmallRollEvent = damageSmallRollEvent;
             DamageMediumRollEvent = damageMediumRollEvent;
         }
-        public static WeaponBuilder Create(string name, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
+        public static WeaponBuilder Create(string name, ProficiencyType proficiencyType, WeaponType weaponType, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
         {
-            return new WeaponBuilder(name, damageSmallRollEvent, damageMediumRollEvent);
+            return new WeaponBuilder(name, proficiencyType, weaponType, damageSmallRollEvent, damageMediumRollEvent);
         }
         public WeaponBuilder SetCriticalMinRoll(int criticalMinRoll)
         {
             _criticalMinRoll = criticalMinRoll;
-            return this;
-        }
-        public WeaponBuilder IsTwoHanded()
-        {
-            _isTwoHanded = true;
             return this;
         }
         public WeaponBuilder SetCriticalMultiplier(int criticalMultiplier)
@@ -76,7 +74,7 @@ namespace WoMFramework.Game.Model.Equipment
         }
         public Weapon Build()
         {
-            return new Weapon(Name, DamageSmallRollEvent, DamageMediumRollEvent, _criticalMinRoll, _criticalMultiplier, _weaponDamageTypes, _range, _isTwoHanded, _cost, _weight, _description);
+            return new Weapon(Name, ProficiencyType, WeaponType, DamageSmallRollEvent, DamageMediumRollEvent, _criticalMinRoll, _criticalMultiplier, _weaponDamageTypes, _range, _cost, _weight, _description);
         }
     }
     public class NaturalWeapon
@@ -95,24 +93,23 @@ namespace WoMFramework.Game.Model.Equipment
 
         public static Weapon Bite(SizeType sizeType)
         {
-            return new Weapon("Bite", BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, false, 1, 0, "");
+            return new Weapon("Bite", ProficiencyType.Simple, WeaponType.Unarmed, BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 0, 1, 0, "");
         }
     }
     public class Weapon : BaseItem
     {
+        public ProficiencyType ProficiencyType { get; }
+        public WeaponType WeaponType { get; }
         public int[] DamageRoll { get; set; }
-        private readonly int[] _damageSmallRollEvent;
-
         public int CriticalMinRoll { get; }
         public int CriticalMultiplier { get; }
         public WeaponDamageType[] WeaponDamageTypes { get; }
         public int Range { get; }
-        public bool IsCriticalRoll(int roll) => roll >= CriticalMinRoll;
-        public bool IsTwoHanded { get; }
 
         public int MinDmg => DamageRoll[0] + (DamageRoll.Length > 3 ? DamageRoll[3] : 0);
         public int MaxDmg => DamageRoll[0] * DamageRoll[1] + (DamageRoll.Length > 3 ? DamageRoll[3] : 0);
 
+        private readonly int[] _damageSmallRollEvent;
         public Weapon Small
         {
             get
@@ -125,27 +122,47 @@ namespace WoMFramework.Game.Model.Equipment
             }
         }
 
-        public Weapon(string name, int[] damageRoll, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, bool isTwoHanded, int cost, double weight, string description) : base(name, cost, weight, description)
+        public bool IsCriticalRoll(int roll) => roll >= CriticalMinRoll;
+
+        public Weapon(string name, ProficiencyType proficiencyType,  WeaponType weaponType, int[] damageRoll, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, int cost, double weight, string description) : base(name, cost, weight, description)
         {
+            ProficiencyType = proficiencyType;
+            WeaponType = weaponType;
             DamageRoll = damageRoll;
             CriticalMinRoll = criticalMinRoll;
             CriticalMultiplier = criticalMultiplier;
             WeaponDamageTypes = weaponDamageTypes;
             Range = range;
-            IsTwoHanded = isTwoHanded;
         }
 
-        public Weapon(string name, int[] damageSmallRollEvent, int[] damageMediumRollEvent, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, bool isTwoHanded, int cost, double weight, string description) : base(name, cost, weight, description)
+        public Weapon(string name,  ProficiencyType proficiencyType,  WeaponType weaponType, int[] damageSmallRollEvent, int[] damageMediumRollEvent, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, int cost, double weight, string description) : base(name, cost, weight, description)
         {
+            ProficiencyType = proficiencyType;
+            WeaponType = weaponType;
             DamageRoll = damageMediumRollEvent;
             _damageSmallRollEvent = damageSmallRollEvent;
             CriticalMinRoll = criticalMinRoll;
             CriticalMultiplier = criticalMultiplier;
             WeaponDamageTypes = weaponDamageTypes;
             Range = range;
-            IsTwoHanded = isTwoHanded;
         }
 
     }
 
+    public enum ProficiencyType
+    {
+        Simple,
+        Martial,
+        Exotic
+    }
+
+    public enum WeaponType
+    {
+        Unarmed,
+        Light,
+        OneHanded,
+        TwoHanded,
+        Ranged,
+        Ammunition
+    }
 }
