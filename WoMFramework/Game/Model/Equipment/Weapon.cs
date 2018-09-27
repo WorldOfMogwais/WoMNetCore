@@ -93,7 +93,7 @@ namespace WoMFramework.Game.Model.Equipment
 
         public static Weapon Bite(SizeType sizeType)
         {
-            return new Weapon("Bite", ProficiencyType.Simple, WeaponType.Unarmed, BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 0, 1, 0, "");
+            return new Weapon("Bite", ProficiencyType.Simple, WeaponType.Unarmed, BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, 1, 0, "");
         }
     }
     public class Weapon : BaseItem
@@ -121,6 +121,8 @@ namespace WoMFramework.Game.Model.Equipment
                 return this;
             }
         }
+
+        public bool IsTwoHanded => WeaponType == WeaponType.TwoHanded;
 
         public bool IsCriticalRoll(int roll) => roll >= CriticalMinRoll;
 

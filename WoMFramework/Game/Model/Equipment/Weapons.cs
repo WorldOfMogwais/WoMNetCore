@@ -12,7 +12,7 @@ namespace WoMFramework.Game.Model.Equipment
             .SetCriticalMinRoll(18)
             .SetCriticalMultiplier(2)
             .SetDamageType(WeaponDamageType.Piercing)
-            .SetRange(0)
+            .SetRange(1)
             .SetCost(20)
             .SetWeight(2)
             .SetDescription("Just a rapier.")
