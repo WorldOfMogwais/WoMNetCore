@@ -1,4 +1,9 @@
-﻿using WoMFramework.Game.Generator;
+﻿using System;
+using GoRogue;
+using GoRogue.MapGeneration.Generators;
+using GoRogue.MapViews;
+using WoMFramework.Game.Combat;
+using WoMFramework.Game.Generator;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Random;
 
@@ -11,25 +16,29 @@ namespace WoMFramework.Game.Model.Dungeon
 
         public int Level { get; protected set; }
 
-        public Room Entrance { get; protected set; }
+        public override Map Map { get; set; }
 
-        public Dungeon(Mogwai.Mogwai mogwai, Shift creationShift)
+        public Room Entrance { get; protected set; }
+        public Room CurrentRoom { get; protected set; }
+
+        //public bool[,] Blueprint { get; protected set; }
+
+        public Dungeon(Shift creationShift)
         {
             CreationShift = creationShift;
             DungeonDice = creationShift.MogwaiDice; // set dungeon dice using the creation shift
-            // ReSharper disable once VirtualMemberCallInConstructor
-            GenerateRooms(mogwai, creationShift);
+            GenerateRooms(creationShift);
         }
 
         public override void NextStep(Mogwai.Mogwai mogwai, Shift shift)
         {
             if (AdventureState == AdventureState.Preparation)
             {
-                Entrance.Initialise(mogwai);
+                Entrance.Initialise();
                 AdventureState = AdventureState.Running;
             }
 
-            if (!Enter())
+            if (!Enter(mogwai))
             {
                 AdventureState = AdventureState.Failed;
                 return;
@@ -38,15 +47,16 @@ namespace WoMFramework.Game.Model.Dungeon
             AdventureState = AdventureState.Completed;
         }
 
-        public bool Enter()
+        public bool Enter(Mogwai mogwai)
         {
-            return Entrance.Enter();
+            CurrentRoom = Entrance;
+            return Entrance.Enter(mogwai);
         }
         
         /// <summary>
         /// Generates rooms and corridors
         /// </summary>
-        protected virtual void GenerateRooms(Mogwai.Mogwai mogwai, Shift shift)
+        protected virtual void GenerateRooms(Shift shift)
         {
 
         }
@@ -63,36 +73,79 @@ namespace WoMFramework.Game.Model.Dungeon
     /// </summary>
     public class SimpleDungeon : Dungeon
     {
-        public SimpleDungeon(Mogwai.Mogwai mogwai, Shift shift) : base(mogwai, shift)
+        public override Map Map
+        {
+            get => CurrentRoom.Map;
+            set => throw new NotImplementedException();
+        }
+
+        public SimpleDungeon(Shift shift) : base(shift)
         {
 
         }
 
-        protected override void GenerateRooms(Mogwai.Mogwai mogwai, Shift shift)
+        protected override void GenerateRooms(Shift shift)
         {
-            var n = 1;                              // should be determined by information of shift and mogwai
-
-            var blueprint = new bool[n, n];     // can be substituted with an n*(n - 1) array
-
+            var n = 1;                      // The size of a room should be determined by information of shift and mogwai
+            var blueprint = new bool[n, n]; // This can be substituted with an n*(n - 1) array
             // TODO: create random connected graph from the blueprint.
             // TODO: create a dungeon with long main chain with few side rooms
             // here, it is obviously { { false } }
-
 
             // TODO: assign random rooms with probabilities
             // here, the only room is deterministically a monster room
             var rooms = new Room[n];
             for (var i = 0; i < n; i++)
-                rooms[i] = new SimpleRoom(this, mogwai);
-
-            //// specify pointers
-            //for (int i = 0; i < n; i++)
-            //for (int j = i + 1; j < n; j++)    // only concern upper diagonal of the matrix
-            //    if (blueprint[i, j])
-            //        Room.Connect(rooms[i], rooms[j]);
+                rooms[i] = new SimpleRoom(this);
 
             // set entrance (or maybe we can create a specific class for entrance)
             Entrance = rooms[0];
+
+            CurrentRoom = Entrance;
         }
+    }
+
+    public class SimpleRoom : MonsterRoom
+    {
+        private SimpleCombat fight;
+
+        public SimpleRoom(Dungeon parent) : base(parent)
+        {
+            const int length = 11;
+
+            Map = new Map(length, length, parent);
+        }
+
+        public override void Initialise()
+        {
+
+            // deploy monsters and the adventurer
+            Monster[] monsters = { Monsters.Rat };
+            for (var i = 0; i < monsters.Length; i++)
+            {
+                monsters[i].Dice = Parent.DungeonDice;
+                // TODO: Positioning monsters
+                var monsterCoord = Coord.Get(Map.Width - 2, Map.Height - 2);
+                Map.AddEntity(monsters[i], monsterCoord);
+            }
+
+            _monsters = monsters;
+        }
+
+
+        public override bool Enter(Mogwai mogwai)
+        {
+
+            // TODO: Mogwais' initial coordinate should be the entering door's location.
+            var mogCoord = Coord.Get(Width / 2, 1);
+            Map.AddEntity(mogwai, mogCoord);
+
+            return false;
+            
+            fight = new SimpleCombat(this, new[] { mogwai }, _monsters);
+
+            return fight.Run();
+        }
+
     }
 }

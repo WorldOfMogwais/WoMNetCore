@@ -13,6 +13,8 @@ namespace WoMFramework.Game.Generator
             this.simpleFight = simpleFight;
         }
 
+        public override Map Map { get; set; }
+
         public override void NextStep(Mogwai mogwai, Shift shift)
         {
             if (AdventureState == AdventureState.Preparation)

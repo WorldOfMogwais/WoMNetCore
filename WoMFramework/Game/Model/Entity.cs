@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
 using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Game.Random;
+using WoMFramework.Game.Generator;
 
 namespace WoMFramework.Game.Model
 {
-    public abstract class Entity
+    public abstract class Entity : IAdventureEntity
     {
         public string Name { get; set; }
 
@@ -43,6 +42,8 @@ namespace WoMFramework.Game.Model
 
         // current position
         public Coord Coordinate { get; set; }
+
+        public int AttackRange => Equipment.PrimaryWeapon.Range / 5 + 1;
 
         // base speed
         public int BaseSpeed { get; set; }
@@ -309,5 +310,28 @@ namespace WoMFramework.Game.Model
                 Mogwai.Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}.");
             }
         }
+
+
+        #region IAdventureEntity
+
+        public Adventure Adventure { get; set; }
+        public Map Map { get; set; }
+        int IAdventureEntity.AdventureEntityId { get; set; }
+        public int Size { get; }
+        bool IAdventureEntity.IsStatic => false;
+        bool IAdventureEntity.IsPassable => false;
+
+        void IAdventureEntity.MoveArbitrary()
+        {
+            Coord destination;
+            do
+            {
+                var roll = Dice.Roll(4, -1);
+                destination = Coordinate + Map.Directions[roll];
+            } while (!Map.WalkabilityMap[destination]);
+
+            Map.MoveEntity(this, destination);
+        }
+        #endregion
     }
 }

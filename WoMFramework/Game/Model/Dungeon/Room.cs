@@ -12,50 +12,19 @@ namespace WoMFramework.Game.Model.Dungeon
     {
         public Dungeon Parent;
 
-        public ArrayMap<bool> WalkabilityMap { get; protected set; }
+        public Map Map { get; set; }
 
-        public int Width => WalkabilityMap.Width;
-        public int Height => WalkabilityMap.Height;
+        public int Width => Map.Width;
+        public int Height => Map.Height;
 
         protected Room(Dungeon parent)
         {
             Parent = parent;
         }
 
-        //public bool TryGetTile(Coordinate coord, out Tile tile)
-        //{
-        //    if (coord.X >= Width || coord.Y >= Length || coord.X < 0 || coord.Y < 0)
-        //    {
-        //        tile = null;
-        //        return false;
-        //    }
+        public abstract bool Enter(Mogwai mogwai);
 
-        //    tile = Floor[coord.X, coord.Y];
-        //    return true;
-        //}
-
-        //public IEnumerable<Tile> GetNeighbours(Coordinate coordinate)
-        //{
-        //    if (!TryGetTile(coordinate, out Tile tile)) yield break;
-        //    for (int i = 0; i < 4; i++)
-        //        if (TryGetTile(tile.Coordinate.Neighbour((Direction)i), out Tile neighbour))
-        //            yield return neighbour;
-        //}
-
-        public abstract bool Enter();
-
-        public virtual void Initialise(Mogwai.Mogwai mogwai)
-        {
-
-        }
-
-        //// create pointers
-        //public static void Connect(Room a, Room b)
-        //{
-        //    var corridor = new Corridor(a, b);
-        //    a.OutgoingDoors.Add(corridor);
-        //    b.IncomingDoors.Add(corridor);
-        //}
+        public abstract void Initialise();
     }
 
     // not have to be inherited class of Room 
@@ -72,12 +41,12 @@ namespace WoMFramework.Game.Model.Dungeon
             Exit = exit;
         }
 
-        public override bool Enter()
+        public override bool Enter(Mogwai mogwai)
         {
             throw new NotImplementedException();
         }
 
-        public override void Initialise(Mogwai.Mogwai mogwai)
+        public override void Initialise()
         {
             throw new NotImplementedException();
         }
@@ -85,79 +54,25 @@ namespace WoMFramework.Game.Model.Dungeon
 
     public class MonsterRoom : Room
     {
-        private readonly List<Monster.Monster> _monsters = new List<Monster.Monster>();
+        protected Monster[] _monsters;
 
 
         public MonsterRoom(Dungeon parent) : base(parent)
         {
         }
 
-        public override void Initialise(Mogwai.Mogwai mogwai)
+        public override void Initialise()
         {
 
         }
 
-        public override bool Enter()
-        {
+        public override bool Enter(Mogwai mogwai)
+        { 
             // door breaching, traps etc
 
             // calculate initiate here maybe?
 
             return false;
         }
-
-        private void CreateMonsters(Mogwai.Mogwai mogwai)
-        {
-            // not implemented
-            _monsters.Add(Monsters.Rat);
-
-            // dispose the created monsters to floor
-        }
-    }
-
-    public class SimpleRoom : MonsterRoom
-    {
-        private readonly SimpleCombat _fight;
-
-        public SimpleRoom(Dungeon parent, Mogwai.Mogwai mogwai) : base(parent)
-        {
-            const int length = 7;
-
-            var walkabilityMap = new ArrayMap<bool>(length, length);
-            RectangleMapGenerator.Generate(walkabilityMap);
-            WalkabilityMap = walkabilityMap;
-
-            // deploy monsters and the adventurer
-            Monster.Monster[] monsters = { Monsters.Rat };
-            foreach (var m in monsters)
-            {
-                // TODO: Positioning monsters
-                while (true)
-                {
-                    var monsterCoord = Coord.Get(4, 4);
-
-                    if (WalkabilityMap[monsterCoord])
-                    {
-                        m.Coordinate = monsterCoord;
-                        break;
-                    }
-                }
-            }
-
-            // TODO: Mogwais' initial coordinate should be the entering door's location.
-            var mogCoord = Coord.Get(length / 2, 1);
-            if (!walkabilityMap[mogCoord]) throw new Exception();
-
-            mogwai.Coordinate = mogCoord;
-
-            _fight = new SimpleCombat(this, new[] { mogwai }, monsters);
-        }
-
-
-        public override bool Enter()
-        {
-            return _fight.Run();
-        }
-
     }
 }

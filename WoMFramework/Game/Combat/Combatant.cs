@@ -44,9 +44,10 @@ namespace WoMFramework.Game.Combat
         {
             get => _coordinate;
             set
-            {
-                _room.WalkabilityMap[_coordinate] = true;
-                _room.WalkabilityMap[value] = false;
+            { 
+                //_room.WalkabilityMap[_coordinate] = true;
+                //_room.WalkabilityMap[value] = false;
+                //_room.Map.MoveEntity()
                 _coordinate = value;
             }
         }
@@ -90,8 +91,8 @@ namespace WoMFramework.Game.Combat
             if (Math.Abs(Coord.EuclideanDistanceMagnitude(Coordinate, destination) - 1) > Double.Epsilon)
                 return false;
 
-            if (!_room.WalkabilityMap[destination])
-                return false;
+            //if (!_room.WalkabilityMap[destination])
+            //    return false;
 
             Coordinate = destination;
             RemainingMove--;
@@ -103,34 +104,34 @@ namespace WoMFramework.Game.Combat
         /// </summary>
         public bool MoveAndTryAttack(Combatant target)
         {
-            if (target._room != _room)
-                throw new Exception();
+            //if (target._room != _room)
+            //    throw new Exception();
 
-            var pathFinding = new AStar(_room.WalkabilityMap, Distance.MANHATTAN);
+            //var pathFinding = new AStar(_room.WalkabilityMap, Distance.MANHATTAN);
 
-            var path = pathFinding.ShortestPath(Coordinate, target.Coordinate);
+            //var path = pathFinding.ShortestPath(Coordinate, target.Coordinate, true);
 
-            if (path == null)
-            {
-                if (Distance.Calculate(Coordinate, target.Coordinate) > AttackRange)
-                    return false;
+            //if (path == null)
+            //{
+            //    if (Distance.Calculate(Coordinate, target.Coordinate) > AttackRange)
+            //        return false;
 
-                Entity.Attack(0, target.Entity);
-                return true;
-            }
+            //    Entity.Attack(0, target.Entity);
+            //    return true;
+            //}
 
-            for (var i = 0; i < MoveRange; i++)
-            {
-                if (Distance.Calculate(Coordinate, target.Coordinate) <= AttackRange)
-                {
-                    Debug.WriteLine($"{Entity.Name} in {Entity.Coordinate} attacked {target.Entity.Name} in {target.Coordinate}");
-                    Entity.Attack(0, target.Entity);    // why Entity.Attack() has turn parameter?
-                    return true;
-                }
+            //for (var i = 0; i < MoveRange; i++)
+            //{
+            //    if (Distance.Calculate(Coordinate, target.Coordinate) <= AttackRange)
+            //    {
+            //        System.Diagnostics.Debug.WriteLine($"{Entity.Name} in {Entity.Coordinate} attacked {target.Entity.Name} in {target.Coordinate}");
+            //        Entity.Attack(0, target.Entity);    // why Entity.Attack() has turn parameter?
+            //        return true;
+            //    }
 
-                if (!TryMove(path.GetStep(i)))
-                    throw new Exception();
-            }
+            //    if (!TryMove(path.GetStep(i)))
+            //        throw new Exception();
+            //}
 
             return false;
         }

@@ -273,11 +273,11 @@ namespace WoMFramework.Game.Model.Mogwai
 
         public void EnterSimpleDungeon()
         {
-            var dungeon = new SimpleDungeon(this, _currentShift);
-            Pointer++;
-            _currentShift = Shifts[Pointer];
+            var dungeon = new SimpleDungeon(_currentShift);
+            //_currentShift = Shifts[++Pointer];
 
-            dungeon.Enter();
+            Adventure = dungeon;
+            Evolve(out var history);
         }
 
         public void Print()

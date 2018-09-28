@@ -2,10 +2,6 @@
 
 namespace WoMFramework.Game.Model.Dungeon
 {
-    public enum Direction
-    {
-        Right, Down, Left, Up
-    }
     /// <summary>
     /// Simple 2D Cartesian coordinate
     /// </summary>
