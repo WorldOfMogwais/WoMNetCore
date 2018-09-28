@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using GoRogue;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using SadConsole;
 using SadConsole.Surfaces;
 using WoMFramework.Game.Generator;
 using WoMWallet.Node;
-using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Dungeon;
+using WoMFramework.Game.Model.Mogwai;
+using WoMFramework.Game.Model.Monster;
 using Console = SadConsole.Console;
 using ConsoleEntity = SadConsole.Entities.Entity;
 
@@ -18,9 +18,8 @@ namespace WoMSadGui.Consoles
     {
         private static readonly Cell StoneTileAppearance = new Cell(Color.Black, Color.DarkGray, 46);
         private static readonly Cell StoneWallAppearance = new Cell(Color.Black, Color.DarkGray, 35);
-        private static readonly Font _font;
+        private static readonly Font AdventureFont;
 
-        private readonly Basic _borderSurface;
         private readonly MogwaiController _controller;
         private readonly MogwaiKeys _mogwaiKeys;
         private readonly Mogwai _mogwai;
@@ -36,12 +35,12 @@ namespace WoMSadGui.Consoles
         static AdventureScreen()
         {
             FontMaster fm = Global.LoadFont("Cheepicus12.font");
-            _font = fm.GetFont(Font.FontSizes.Two);
+            AdventureFont = fm.GetFont(Font.FontSizes.Two);
         }
 
         public AdventureScreen(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base(width, height)
         {
-            Font = _font;
+            Font = AdventureFont;
 
             _controller = mogwaiController;
             _mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
@@ -62,7 +61,7 @@ namespace WoMSadGui.Consoles
             var dungeon = console.Adventure as SimpleDungeon;
             var mog = console._mogwai;
             mog.Adventure = dungeon;
-            mog.Evolve(out var histories);
+            mog.Evolve(out _);
 
             // Draw entities (Mogwais, Monsters, etc.)
             var map = dungeon.Map;
@@ -116,7 +115,7 @@ namespace WoMSadGui.Consoles
             }
 
             // TODO: rotating symbols for multiple mogwais
-            var animated = new Animated("default", 1, 1, _font);
+            var animated = new Animated("default", 1, 1, AdventureFont);
             var frame = animated.CreateFrame();
             frame[0].Glyph = glyph;
             frame[0].Foreground = colour;

@@ -1,10 +1,9 @@
 ﻿using System;
 using GoRogue;
-using GoRogue.MapGeneration.Generators;
-using GoRogue.MapViews;
 using WoMFramework.Game.Combat;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model.Monster;
 using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model.Dungeon
@@ -47,7 +46,7 @@ namespace WoMFramework.Game.Model.Dungeon
             AdventureState = AdventureState.Completed;
         }
 
-        public bool Enter(Mogwai mogwai)
+        public bool Enter(Mogwai.Mogwai mogwai)
         {
             CurrentRoom = Entrance;
             return Entrance.Enter(mogwai);
@@ -120,7 +119,7 @@ namespace WoMFramework.Game.Model.Dungeon
         {
 
             // deploy monsters and the adventurer
-            Monster[] monsters = { Monsters.Rat };
+            Monster.Monster[] monsters = { Monsters.Rat };
             for (var i = 0; i < monsters.Length; i++)
             {
                 monsters[i].Dice = Parent.DungeonDice;
@@ -133,7 +132,7 @@ namespace WoMFramework.Game.Model.Dungeon
         }
 
 
-        public override bool Enter(Mogwai mogwai)
+        public override bool Enter(Mogwai.Mogwai mogwai)
         {
 
             // TODO: Mogwais' initial coordinate should be the entering door's location.

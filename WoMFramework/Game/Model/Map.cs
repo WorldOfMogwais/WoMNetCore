@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using GoRogue;
 using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
 using WoMFramework.Game.Generator;
+using WoMFramework.Game.Model.Dungeon;
 
 namespace WoMFramework.Game.Model
 {

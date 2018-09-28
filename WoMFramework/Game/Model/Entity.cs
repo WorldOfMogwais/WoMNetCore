@@ -4,6 +4,8 @@ using System.Linq;
 using GoRogue;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
+using WoMFramework.Game.Model.Mogwai;
+using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model
 {

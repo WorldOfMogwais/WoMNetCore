@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using GoRogue;
-using GoRogue.MapGeneration.Generators;
-using GoRogue.MapViews;
-using WoMFramework.Game.Combat;
-using WoMFramework.Game.Model.Monster;
 
 namespace WoMFramework.Game.Model.Dungeon
 {
@@ -22,7 +16,7 @@ namespace WoMFramework.Game.Model.Dungeon
             Parent = parent;
         }
 
-        public abstract bool Enter(Mogwai mogwai);
+        public abstract bool Enter(Mogwai.Mogwai mogwai);
 
         public abstract void Initialise();
     }
@@ -41,7 +35,7 @@ namespace WoMFramework.Game.Model.Dungeon
             Exit = exit;
         }
 
-        public override bool Enter(Mogwai mogwai)
+        public override bool Enter(Mogwai.Mogwai mogwai)
         {
             throw new NotImplementedException();
         }
@@ -54,7 +48,7 @@ namespace WoMFramework.Game.Model.Dungeon
 
     public class MonsterRoom : Room
     {
-        protected Monster[] _monsters;
+        protected Monster.Monster[] _monsters;
 
 
         public MonsterRoom(Dungeon parent) : base(parent)
@@ -66,7 +60,7 @@ namespace WoMFramework.Game.Model.Dungeon
 
         }
 
-        public override bool Enter(Mogwai mogwai)
+        public override bool Enter(Mogwai.Mogwai mogwai)
         { 
             // door breaching, traps etc
 

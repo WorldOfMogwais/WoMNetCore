@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using GoRogue;
-using GoRogue.Pathing;
 using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Dungeon;
 using WoMFramework.Game.Model.Mogwai;
@@ -13,8 +12,6 @@ namespace WoMFramework.Game.Combat
 {
     public class Combatant
     {
-        private static readonly Distance Distance = Distance.MANHATTAN;
-
         private Coord _coordinate;
         private readonly Room _room;
         public readonly Dungeon Dungeon;
