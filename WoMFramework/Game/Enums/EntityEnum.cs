@@ -1,4 +1,6 @@
-﻿namespace WoMFramework.Game.Enums
+﻿using System;
+
+namespace WoMFramework.Game.Enums
 {
     public enum GenderType
     {
@@ -8,16 +10,48 @@
 
     public enum SizeType
     {
-        Colossal = -8,
-        Gargantuan = -4,
-        Huge = -2,
-        Large = -1,
-        Medium = 0,
-        Small = 1,
+        Fine = 0,
+        Diminutive = 1,
         Tiny = 2,
-        Diminutive = 4,
-        Fine = 8
+        Small = 3,
+        Medium = 4,
+        Large = 5,
+        Huge = 6,
+        Gargantuan = 7,
+        Colossal = 8
     }
+
+    internal static class SizeTypeFunction
+    {
+
+        public static int Modifier(this SizeType sizeType)
+        {
+            switch (sizeType)
+            {
+                case SizeType.Colossal:
+                    return -8;
+                case SizeType.Gargantuan:
+                    return -4;
+                case SizeType.Huge:
+                    return -2;
+                case SizeType.Large:
+                    return -1;
+                case SizeType.Medium:
+                    return 0;
+                case SizeType.Small:
+                    return 1;
+                case SizeType.Tiny:
+                    return 2;
+                case SizeType.Diminutive:
+                    return 4;
+                case SizeType.Fine:
+                    return 8;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(sizeType), sizeType, null);
+            }
+        }
+    }
+
 
     public enum ClassType
     {

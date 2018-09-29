@@ -55,7 +55,7 @@ namespace WoMFramework.Game.Model
 
         public int NaturalArmor { get; set; }
         // armorclass = 10 + armor bonus + shield bonus + dex modifier + size modifier + natural armor + deflection + misc modifier
-        public int ArmorClass => 10 + Equipment.ArmorBonus + Equipment.ShieldBonus + DexterityMod + (int)SizeType + NaturalArmor;
+        public int ArmorClass => 10 + Equipment.ArmorBonus + Equipment.ShieldBonus + DexterityMod + SizeType.Modifier() + NaturalArmor;
 
         // hitpoints
         public int HitPointDice { get; set; }

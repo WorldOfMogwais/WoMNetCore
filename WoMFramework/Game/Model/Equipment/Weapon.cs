@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Model.Equipment
@@ -10,6 +11,7 @@ namespace WoMFramework.Game.Model.Equipment
         private int _criticalMultiplier = 2;
         private WeaponDamageType[] _weaponDamageTypes = { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing };
         private int _range = 0;
+        private SizeType _sizeType = SizeType.Medium;
         private double _cost = 1;
         private double _weight = 1;
         private string _description = string.Empty;
@@ -17,20 +19,18 @@ namespace WoMFramework.Game.Model.Equipment
         public string Name;
         public WeaponProficiencyType WeaponProficiencyType;
         public WeaponEffortType WeaponEffortType;
-        public int[] DamageSmallRollEvent;
         public int[] DamageMediumRollEvent;
 
-        private WeaponBuilder(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
+        private WeaponBuilder(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] damageMediumRollEvent)
         {
             Name = name;
             WeaponProficiencyType = weaponProficiencyType;
             WeaponEffortType = weaponEffortType;
-            DamageSmallRollEvent = damageSmallRollEvent;
             DamageMediumRollEvent = damageMediumRollEvent;
         }
-        public static WeaponBuilder Create(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
+        public static WeaponBuilder Create(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] damageMediumRollEvent)
         {
-            return new WeaponBuilder(name, weaponProficiencyType, weaponEffortType, damageSmallRollEvent, damageMediumRollEvent);
+            return new WeaponBuilder(name, weaponProficiencyType, weaponEffortType, damageMediumRollEvent);
         }
         public WeaponBuilder SetCriticalMinRoll(int criticalMinRoll)
         {
@@ -57,6 +57,11 @@ namespace WoMFramework.Game.Model.Equipment
             _range = range;
             return this;
         }
+        public WeaponBuilder SetSizeType(SizeType sizeType)
+        {
+            _sizeType = sizeType;
+            return this;
+        }
         public WeaponBuilder SetCost(double cost)
         {
             _cost = cost;
@@ -74,31 +79,34 @@ namespace WoMFramework.Game.Model.Equipment
         }
         public Weapon Build()
         {
-            return new Weapon(Name, WeaponProficiencyType, WeaponEffortType, DamageSmallRollEvent, DamageMediumRollEvent, _criticalMinRoll, _criticalMultiplier, _weaponDamageTypes, _range, _cost, _weight, _description);
+            return new Weapon(Name, WeaponProficiencyType, WeaponEffortType, DamageMediumRollEvent, _criticalMinRoll, _criticalMultiplier, _weaponDamageTypes, _range,_sizeType, _cost, _weight, _description);
         }
     }
     public class NaturalWeapon
     {
-        private static readonly Dictionary<SizeType, int[]> BiteDic = new Dictionary<SizeType, int[]>
-        {
-            { SizeType.Diminutive, new[] {1, 2} },
-            { SizeType.Tiny, new[] {1, 3} },
-            { SizeType.Small, new[] {1, 4} },
-            { SizeType.Medium, new[] {1, 6} },
-            { SizeType.Large, new[] {1, 8} },
-            { SizeType.Huge, new[] {2, 6} },
-            { SizeType.Gargantuan, new[] {2, 8} },
-            { SizeType.Colossal, new[] {4, 6} }
-        };
-        public static Weapon Bite(SizeType sizeType, bool isLikeTwoHanded = false) => new Weapon("Bite", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, 1, 0, "");
+        public static Weapon Bite(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            new Weapon("Bite", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 6 }, 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, sizeType, 1, 0, "");
     }
 
     public class Weapon : BaseItem
     {
+        private SizeType _weaponSizeType;
+        public SizeType WeaponSizeType
+        {
+            get => _weaponSizeType;
+            set
+            {
+                DamageRoll = value == SizeType.Medium ? MediumDamageRoll : WeaponDamageSizeConversion(value, MediumDamageRoll);
+                _weaponSizeType = value;
+            }
+        }
+
         public WeaponProficiencyType WeaponProficiencyType { get; }
         public WeaponEffortType WeaponEffortType { get; }
-        public int[] DamageRoll { get; set; }
-        public int[] SmallDamageRollEvent { get; }
+
+        public int[] DamageRoll { get; private set; }
+
+        public int[] MediumDamageRoll { get; }
         public int CriticalMinRoll { get; }
         public int CriticalMultiplier { get; }
         public WeaponDamageType[] WeaponDamageTypes { get; }
@@ -109,45 +117,47 @@ namespace WoMFramework.Game.Model.Equipment
 
         public bool IsCriticalRoll(int roll) => roll >= CriticalMinRoll;
 
-        protected Weapon Small
-        {
-            get
-            {
-                if (SmallDamageRollEvent != null)
-                {
-                    DamageRoll = SmallDamageRollEvent;
-                }
-                return this;
-            }
-        }
-
-        public Weapon(string name, WeaponProficiencyType weaponProficiencyType,  WeaponEffortType weaponEffortType, int[] damageRoll, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, double cost, double weight, string description) : base(name, cost, weight, description)
+        public Weapon(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] mediumDamageRoll, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, SizeType sizeType, double cost, double weight, string description) : base(name, cost, weight, description)
         {
             WeaponProficiencyType = weaponProficiencyType;
             WeaponEffortType = weaponEffortType;
-            DamageRoll = damageRoll;
+            MediumDamageRoll = mediumDamageRoll;
             CriticalMinRoll = criticalMinRoll;
             CriticalMultiplier = criticalMultiplier;
             WeaponDamageTypes = weaponDamageTypes;
             Range = range;
+            WeaponSizeType = sizeType;
         }
 
-        public Weapon(string name,  WeaponProficiencyType weaponProficiencyType,  WeaponEffortType weaponEffortType, int[] smallDamageRollEvent, int[] damageMediumRollEvent, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, double cost, double weight, string description) : base(name, cost, weight, description)
+        public static Dictionary<string, List<int[]>> MediumDamageSizeConversionDict = new Dictionary<string, List<int[]>>
         {
-            WeaponProficiencyType = weaponProficiencyType;
-            WeaponEffortType = weaponEffortType;
-            DamageRoll = damageMediumRollEvent;
-            SmallDamageRollEvent = smallDamageRollEvent;
-            CriticalMinRoll = criticalMinRoll;
-            CriticalMultiplier = criticalMultiplier;
-            WeaponDamageTypes = weaponDamageTypes;
-            Range = range;
-        }
+            {"1d2",  new List<int[]> {new[] {0, 0},new[] {1, 1},new[] {1, 2},new[] {1, 3},new[] {1, 4}}},
+            {"1d3",  new List<int[]> {new[] {1, 1},new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6}}},
+            {"1d4",  new List<int[]> {new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8}}},
+            {"1d6",  new List<int[]> {new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6}}},
+            {"1d8",  new List<int[]> {new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {3, 6}}},
+            {"1d10", new List<int[]> {new[] {1, 6},new[] {1, 8},new[] {1,10},new[] {2, 8},new[] {3, 8}}},
+            {"1d12", new List<int[]> {new[] {1, 8},new[] {1,10},new[] {1,12},new[] {3, 6},new[] {4, 6}}},
+            {"2d4",  new List<int[]> {new[] {1, 4},new[] {1, 6},new[] {2, 4},new[] {2, 6},new[] {3, 6}}},
+            {"2d6",  new List<int[]> {new[] {1, 8},new[] {1,10},new[] {2, 6},new[] {3, 6},new[] {4, 6}}},
+            {"2d8",  new List<int[]> {new[] {1,10},new[] {2, 6},new[] {2, 8},new[] {3, 8},new[] {4, 8}}},
+            {"2d10", new List<int[]> {new[] {2, 6},new[] {2, 8},new[] {2,10},new[] {4, 8},new[] {6, 8}}},
+        };
 
         public static int[] WeaponDamageSizeConversion(SizeType sizeType, int[] currentDamage)
         {
+            var key = $"{currentDamage[0]}d{currentDamage[1]}";
+            if (!MediumDamageSizeConversionDict.TryGetValue(key, out var list))
+            {
+                throw new Exception($"Unknown key '{key}', for MediumDamageSizeConversionDict!");
+            }
 
-            return new int[] {};
+            if (sizeType == SizeType.Diminutive || sizeType == SizeType.Fine || sizeType == SizeType.Colossal ||
+                sizeType == SizeType.Gargantuan)
+            {
+                throw new Exception($"Not supported sizetype for weapon damage conversion '{sizeType}'.");
+            }
+            return list[(int)sizeType - 2];
         }
 
     }
