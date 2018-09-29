@@ -90,7 +90,7 @@ namespace WoMFramework.Game.Model.Equipment
             { SizeType.Gargantuan, new[] {2, 8} },
             { SizeType.Colossal, new[] {4, 6} }
         };
-        public static Weapon Bite(SizeType sizeType) => new Weapon("Bite", WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, 1, 0, "");
+        public static Weapon Bite(SizeType sizeType, bool isLikeTwoHanded = false) => new Weapon("Bite", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, 1, 0, "");
     }
 
     public class Weapon : BaseItem
@@ -142,6 +142,12 @@ namespace WoMFramework.Game.Model.Equipment
             CriticalMultiplier = criticalMultiplier;
             WeaponDamageTypes = weaponDamageTypes;
             Range = range;
+        }
+
+        public static int[] WeaponDamageSizeConversion(SizeType sizeType, int[] currentDamage)
+        {
+
+            return new int[] {};
         }
 
     }
