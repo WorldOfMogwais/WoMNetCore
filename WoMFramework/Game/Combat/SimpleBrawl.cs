@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Mogwai;
@@ -138,8 +139,8 @@ namespace WoMFramework.Game.Combat
             {
                 if (p is Monster monster)
                 {
-                    var treasure = monster.Treasure;
-                    var treasureStr = treasure != null ? "[c:r f:gold]a Treasure[c:u]" : "[c:r f:red]no Treasure[c:u]";
+                    var treasure = monster.TreasureType;
+                    var treasureStr = treasure != TreasureType.None ? "[c:r f:gold]a Treasure[c:u]" : "[c:r f:red]no Treasure[c:u]";
                     Mogwai.History.Add(LogType.Evnt, $"[c:r f:darkorange]Looting[c:u] the {Coloring.Name(monster.Name)} he has {treasureStr}!");
                 }
             });

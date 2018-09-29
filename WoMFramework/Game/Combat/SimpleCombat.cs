@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Dungeon;
 using WoMFramework.Game.Model.Mogwai;
@@ -123,9 +124,9 @@ namespace WoMFramework.Game.Combat
             // award experience for each killed enemy
             foreach (var m in enemies.OfType<Monster>())
             {
-                var treasure = m.Treasure;
-                var treasureStr = treasure != null ? "¬Ga Treasure§" : "¬Rno Treasure§";
-                Mogwai.History.Add(LogType.Evnt, $"¬YLooting§ the ¬C{m.Name}§ he has {treasureStr}!¬");
+                var treasure = m.TreasureType;
+                var treasureStr = treasure != TreasureType.None ? "[c:r f:gold]a Treasure[c:u]" : "[c:r f:red]no Treasure[c:u]";
+                Mogwai.History.Add(LogType.Evnt, $"[c:r f:darkorange]Looting[c:u] the {Coloring.Name(m.Name)} he has {treasureStr}!");
             }
         }
 

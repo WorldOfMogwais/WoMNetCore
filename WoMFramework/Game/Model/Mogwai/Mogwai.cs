@@ -52,7 +52,7 @@ namespace WoMFramework.Game.Model.Mogwai
 
         public double LevelUpXp(int level) => level * 1000;
 
-        public Adventure Adventure { get; set; }
+        //public Adventure Adventure { get; set; }
 
         /// <inheritdoc />
         public override Dice Dice => _currentShift.MogwaiDice;
@@ -105,6 +105,8 @@ namespace WoMFramework.Game.Model.Mogwai
 
             HitPointDice = 6;
             CurrentHitPoints = MaxHitPoints;
+
+            EnvironmentTypes = new[] { EnvironmentType.Any };
 
         }
 

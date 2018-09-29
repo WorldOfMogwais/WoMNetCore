@@ -10,27 +10,27 @@ namespace WoMFramework.Game.Model.Equipment
         private int _criticalMultiplier = 2;
         private WeaponDamageType[] _weaponDamageTypes = { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing };
         private int _range = 0;
-        private int _cost = 1;
+        private double _cost = 1;
         private double _weight = 1;
         private string _description = string.Empty;
 
         public string Name;
-        public ProficiencyType ProficiencyType;
-        public WeaponType WeaponType;
+        public WeaponProficiencyType WeaponProficiencyType;
+        public WeaponEffortType WeaponEffortType;
         public int[] DamageSmallRollEvent;
         public int[] DamageMediumRollEvent;
 
-        private WeaponBuilder(string name, ProficiencyType proficiencyType, WeaponType weaponType, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
+        private WeaponBuilder(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
         {
             Name = name;
-            ProficiencyType = proficiencyType;
-            WeaponType = weaponType;
+            WeaponProficiencyType = weaponProficiencyType;
+            WeaponEffortType = weaponEffortType;
             DamageSmallRollEvent = damageSmallRollEvent;
             DamageMediumRollEvent = damageMediumRollEvent;
         }
-        public static WeaponBuilder Create(string name, ProficiencyType proficiencyType, WeaponType weaponType, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
+        public static WeaponBuilder Create(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] damageSmallRollEvent, int[] damageMediumRollEvent)
         {
-            return new WeaponBuilder(name, proficiencyType, weaponType, damageSmallRollEvent, damageMediumRollEvent);
+            return new WeaponBuilder(name, weaponProficiencyType, weaponEffortType, damageSmallRollEvent, damageMediumRollEvent);
         }
         public WeaponBuilder SetCriticalMinRoll(int criticalMinRoll)
         {
@@ -57,7 +57,7 @@ namespace WoMFramework.Game.Model.Equipment
             _range = range;
             return this;
         }
-        public WeaponBuilder SetCost(int cost)
+        public WeaponBuilder SetCost(double cost)
         {
             _cost = cost;
             return this;
@@ -74,7 +74,7 @@ namespace WoMFramework.Game.Model.Equipment
         }
         public Weapon Build()
         {
-            return new Weapon(Name, ProficiencyType, WeaponType, DamageSmallRollEvent, DamageMediumRollEvent, _criticalMinRoll, _criticalMultiplier, _weaponDamageTypes, _range, _cost, _weight, _description);
+            return new Weapon(Name, WeaponProficiencyType, WeaponEffortType, DamageSmallRollEvent, DamageMediumRollEvent, _criticalMinRoll, _criticalMultiplier, _weaponDamageTypes, _range, _cost, _weight, _description);
         }
     }
     public class NaturalWeapon
@@ -90,17 +90,15 @@ namespace WoMFramework.Game.Model.Equipment
             { SizeType.Gargantuan, new[] {2, 8} },
             { SizeType.Colossal, new[] {4, 6} }
         };
-
-        public static Weapon Bite(SizeType sizeType)
-        {
-            return new Weapon("Bite", ProficiencyType.Simple, WeaponType.Unarmed, BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, 1, 0, "");
-        }
+        public static Weapon Bite(SizeType sizeType) => new Weapon("Bite", WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, BiteDic[sizeType], 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, 1, 0, "");
     }
+
     public class Weapon : BaseItem
     {
-        public ProficiencyType ProficiencyType { get; }
-        public WeaponType WeaponType { get; }
+        public WeaponProficiencyType WeaponProficiencyType { get; }
+        public WeaponEffortType WeaponEffortType { get; }
         public int[] DamageRoll { get; set; }
+        public int[] SmallDamageRollEvent { get; }
         public int CriticalMinRoll { get; }
         public int CriticalMultiplier { get; }
         public WeaponDamageType[] WeaponDamageTypes { get; }
@@ -109,27 +107,24 @@ namespace WoMFramework.Game.Model.Equipment
         public int MinDmg => DamageRoll[0] + (DamageRoll.Length > 3 ? DamageRoll[3] : 0);
         public int MaxDmg => DamageRoll[0] * DamageRoll[1] + (DamageRoll.Length > 3 ? DamageRoll[3] : 0);
 
-        private readonly int[] _damageSmallRollEvent;
-        public Weapon Small
+        public bool IsCriticalRoll(int roll) => roll >= CriticalMinRoll;
+
+        protected Weapon Small
         {
             get
             {
-                if (_damageSmallRollEvent != null)
+                if (SmallDamageRollEvent != null)
                 {
-                    DamageRoll = _damageSmallRollEvent;
+                    DamageRoll = SmallDamageRollEvent;
                 }
                 return this;
             }
         }
 
-        public bool IsTwoHanded => WeaponType == WeaponType.TwoHanded;
-
-        public bool IsCriticalRoll(int roll) => roll >= CriticalMinRoll;
-
-        public Weapon(string name, ProficiencyType proficiencyType,  WeaponType weaponType, int[] damageRoll, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, int cost, double weight, string description) : base(name, cost, weight, description)
+        public Weapon(string name, WeaponProficiencyType weaponProficiencyType,  WeaponEffortType weaponEffortType, int[] damageRoll, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, double cost, double weight, string description) : base(name, cost, weight, description)
         {
-            ProficiencyType = proficiencyType;
-            WeaponType = weaponType;
+            WeaponProficiencyType = weaponProficiencyType;
+            WeaponEffortType = weaponEffortType;
             DamageRoll = damageRoll;
             CriticalMinRoll = criticalMinRoll;
             CriticalMultiplier = criticalMultiplier;
@@ -137,34 +132,17 @@ namespace WoMFramework.Game.Model.Equipment
             Range = range;
         }
 
-        public Weapon(string name,  ProficiencyType proficiencyType,  WeaponType weaponType, int[] damageSmallRollEvent, int[] damageMediumRollEvent, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, int cost, double weight, string description) : base(name, cost, weight, description)
+        public Weapon(string name,  WeaponProficiencyType weaponProficiencyType,  WeaponEffortType weaponEffortType, int[] smallDamageRollEvent, int[] damageMediumRollEvent, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, double cost, double weight, string description) : base(name, cost, weight, description)
         {
-            ProficiencyType = proficiencyType;
-            WeaponType = weaponType;
+            WeaponProficiencyType = weaponProficiencyType;
+            WeaponEffortType = weaponEffortType;
             DamageRoll = damageMediumRollEvent;
-            _damageSmallRollEvent = damageSmallRollEvent;
+            SmallDamageRollEvent = smallDamageRollEvent;
             CriticalMinRoll = criticalMinRoll;
             CriticalMultiplier = criticalMultiplier;
             WeaponDamageTypes = weaponDamageTypes;
             Range = range;
         }
 
-    }
-
-    public enum ProficiencyType
-    {
-        Simple,
-        Martial,
-        Exotic
-    }
-
-    public enum WeaponType
-    {
-        Unarmed,
-        Light,
-        OneHanded,
-        TwoHanded,
-        Ranged,
-        Ammunition
     }
 }

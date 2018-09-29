@@ -1,4 +1,5 @@
-﻿using WoMFramework.Game.Enums;
+﻿using System;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;
 
@@ -15,6 +16,12 @@ namespace WoMFramework.Game.Model.Monster
         private int _intelligence = 10;
         private int _wisdom = 10;
         private int _charisma = 10;
+
+        // abilities
+        public int _fortitude = 0;
+        public int _reflex = 0;
+        public int _will = 0;
+
         // speed
         private int _baseSpeed = 20;
         // armor
@@ -26,7 +33,9 @@ namespace WoMFramework.Game.Model.Monster
         // equipment
         private Weapon _baseWeapon = NaturalWeapon.Bite(SizeType.Medium);
         private Weapon _primaryWeapon;
-        private Treasure _treasure;
+        private TreasureType _treasureType;
+        // environement
+        private EnvironmentType[] _environmentTypes = new EnvironmentType[] {EnvironmentType.Any};
         // description
         private string _description = string.Empty;
 
@@ -44,7 +53,6 @@ namespace WoMFramework.Game.Model.Monster
             MonsterType = monsterType;
             Experience = experience;
         }
-
         public static MonsterBuilder Create(string name, double challengeRating, MonsterType monsterType, int experience)
         {
             return new MonsterBuilder(name, challengeRating, monsterType, experience);
@@ -62,6 +70,13 @@ namespace WoMFramework.Game.Model.Monster
             _intelligence = intelligence;
             _wisdom = wisdom;
             _charisma = charisma;
+            return this;
+        }
+        public MonsterBuilder SetSavingThrows(int fortitude, int reflex, int will)
+        {
+            _fortitude = fortitude;
+            _reflex = reflex;
+            _will = will;
             return this;
         }
         public MonsterBuilder SetBaseSpeed(int baseSpeed)
@@ -99,9 +114,14 @@ namespace WoMFramework.Game.Model.Monster
             _primaryWeapon = primaryWeapon;
             return this;
         }
-        public MonsterBuilder SetTreasure(Treasure treasure)
+        public MonsterBuilder SetTreasure(TreasureType treasureType)
         {
-            _treasure = treasure;
+            _treasureType = treasureType;
+            return this;
+        }
+        public MonsterBuilder SetEnvironementTypes(EnvironmentType[] environmentTypes)
+        {
+            _environmentTypes = environmentTypes;
             return this;
         }
         public MonsterBuilder SetDescription(string description)
@@ -115,25 +135,32 @@ namespace WoMFramework.Game.Model.Monster
             var monster = new Monster(Name, ChallengeRating, MonsterType, Experience)
             {
                 SizeType = _sizeType,
+
                 Strength = _strength,
                 Dexterity = _dexterity,
                 Constitution = _constitution,
                 Inteligence = _intelligence,
                 Wisdom = _wisdom,
                 Charisma = _charisma,
+
+                FortitudeBaseSave = _fortitude,
+                ReflexBaseSave = _reflex,
+                WillBaseSave = _will,
+
                 BaseSpeed = _baseSpeed,
                 NaturalArmor = _naturalArmor,
                 BaseAttackBonus = _baseAttackBonus,
                 HitPointDiceRollEvent = _hitPointDiceRollEvent,
-                Treasure = _treasure,
+                TreasureType = _treasureType,
+                EnvironmentTypes = _environmentTypes,
                 Description = _description
             };
             monster.Equipment.BaseWeapon = _baseWeapon;
             monster.Equipment.PrimaryWeapon = _primaryWeapon;
             return monster;
         }
-
     }
+
     public class Monster : Entity
     {
         public double ChallengeRating { get; }
@@ -142,7 +169,7 @@ namespace WoMFramework.Game.Model.Monster
 
         public int Experience { get; }
 
-        public Treasure Treasure { get; set; }
+        public TreasureType TreasureType { get; set; }
 
         public string Description { get; set; }
 

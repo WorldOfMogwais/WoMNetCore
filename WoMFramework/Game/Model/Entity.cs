@@ -105,7 +105,7 @@ namespace WoMFramework.Game.Model
         // damage
         public int DamageRoll(Dice dice)
         {
-            var damage = dice.Roll(Equipment.PrimaryWeapon.DamageRoll) + (Equipment.PrimaryWeapon.IsTwoHanded ? (int)Math.Floor(1.5 * StrengthMod) : StrengthMod);
+            var damage = dice.Roll(Equipment.PrimaryWeapon.DamageRoll) + (Equipment.PrimaryWeapon.WeaponEffortType == WeaponEffortType.TwoHanded ? (int)Math.Floor(1.5 * StrengthMod) : StrengthMod);
             return damage < 1 ? 1 : damage;
         }
 
@@ -151,6 +151,8 @@ namespace WoMFramework.Game.Model
             var classes = Classes.FirstOrDefault(p => p.ClassType == classType);
             return classes?.ClassLevel ?? 0;
         }
+
+        public EnvironmentType[] EnvironmentTypes { get; set; }
 
         /// <summary>
         /// 

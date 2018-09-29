@@ -3,11 +3,11 @@
     public class BaseItem
     {
         public string Name { get; }
-        public int Cost { get; }
+        public double Cost { get; }
         public double Weight { get; }
         public string Description { get; set; }
 
-        public BaseItem(string name, int cost, double weight, string description)
+        public BaseItem(string name, double cost, double weight, string description)
         {
             Name = name;
             Cost = cost;

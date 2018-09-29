@@ -6,7 +6,7 @@ namespace WoMFramework.Game.Model.Monster
     public partial class Monsters
     {
         public static Monster Rat =>
-            MonsterBuilder.Create("Rat", 0.25, MonsterType.Animals, 100)
+            MonsterBuilder.Create("Rat", 0.25, MonsterType.Animal, 100)
              .SetSizeType(SizeType.Tiny)
              .SetAbilities(2, 15, 11, 2, 13, 2)
              .SetBaseSpeed(15)
@@ -17,7 +17,7 @@ namespace WoMFramework.Game.Model.Monster
              .Build();
 
         public static Monster Wolf =>
-            MonsterBuilder.Create("Wolf", 1, MonsterType.Animals, 400)
+            MonsterBuilder.Create("Wolf", 1, MonsterType.Animal, 400)
             .SetSizeType(SizeType.Medium)
             .SetAbilities(13, 15, 15, 2, 12, 6)
             .SetBaseSpeed(50)
