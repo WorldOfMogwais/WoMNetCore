@@ -1,5 +1,6 @@
-# WoMNetCore "World of Mogwais .NETCore"
 
+# WoMNetCore "World of Mogwais .NETCore"
+![https://ci.appveyor.com/api/projects/status/github/WorldOfMogwais](https://ci.appveyor.com/api/projects/status/github/WorldOfMogwais/WoMNetCore?branch=master&svg=true)
 ## Introduction
 World of Mogwais is a experiment driven by the idea of adding gamification to the blockchain technology. It builds up on the cryptocurrency Mogwai Coin.
 
