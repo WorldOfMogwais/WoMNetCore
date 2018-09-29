@@ -85,7 +85,16 @@ namespace WoMFramework.Game.Model.Equipment
     public class NaturalWeapon
     {
         public static Weapon Bite(SizeType sizeType, bool isLikeTwoHanded = false) => 
-            new Weapon("Bite", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 6 }, 20, 2, new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing }, 1, sizeType, 1, 0, "");
+            WeaponBuilder.Create("Bite", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 6 })
+                .SetCriticalMinRoll(20)
+                .SetCriticalMultiplier(2)
+                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing })
+                .SetRange(1)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
     }
 
     public class Weapon : BaseItem
@@ -133,8 +142,8 @@ namespace WoMFramework.Game.Model.Equipment
         {
             {"1d2",  new List<int[]> {new[] {0, 0},new[] {1, 1},new[] {1, 2},new[] {1, 3},new[] {1, 4}}},
             {"1d3",  new List<int[]> {new[] {1, 1},new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6}}},
-            {"1d4",  new List<int[]> {new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8}}},
-            {"1d6",  new List<int[]> {new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6}}},
+            {"1d4",  new List<int[]> {new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {2, 8}}},
+            {"1d6",  new List<int[]> {new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {2, 8},new[] {4, 6}}},
             {"1d8",  new List<int[]> {new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {3, 6}}},
             {"1d10", new List<int[]> {new[] {1, 6},new[] {1, 8},new[] {1,10},new[] {2, 8},new[] {3, 8}}},
             {"1d12", new List<int[]> {new[] {1, 8},new[] {1,10},new[] {1,12},new[] {3, 6},new[] {4, 6}}},
@@ -152,8 +161,8 @@ namespace WoMFramework.Game.Model.Equipment
                 throw new Exception($"Unknown key '{key}', for MediumDamageSizeConversionDict!");
             }
 
-            if (sizeType == SizeType.Diminutive || sizeType == SizeType.Fine || sizeType == SizeType.Colossal ||
-                sizeType == SizeType.Gargantuan)
+            if (sizeType == SizeType.Diminutive || sizeType == SizeType.Fine || (sizeType == SizeType.Colossal ||
+                sizeType == SizeType.Gargantuan) && list.Count < 7)
             {
                 throw new Exception($"Not supported sizetype for weapon damage conversion '{sizeType}'.");
             }
