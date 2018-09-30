@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;
@@ -33,6 +34,7 @@ namespace WoMFramework.Game.Model.Monster
         // equipment
         private Weapon _baseWeapon = NaturalWeapon.Bite(SizeType.Medium);
         private Weapon _primaryWeapon;
+        private readonly List<Weapon> _weaponsList = new List<Weapon>();
         private TreasureType _treasureType;
         // environement
         private EnvironmentType[] _environmentTypes = new EnvironmentType[] {EnvironmentType.Any};
@@ -77,6 +79,11 @@ namespace WoMFramework.Game.Model.Monster
             _fortitude = fortitude;
             _reflex = reflex;
             _will = will;
+            return this;
+        }
+        public MonsterBuilder SetWeapons(List<Weapon> weaponsList)
+        {
+            _weaponsList.AddRange(weaponsList);
             return this;
         }
         public MonsterBuilder SetBaseSpeed(int baseSpeed)
@@ -131,7 +138,6 @@ namespace WoMFramework.Game.Model.Monster
         }
         public Monster Build()
         {
-
             var monster = new Monster(Name, ChallengeRating, MonsterType, Experience)
             {
                 SizeType = _sizeType,
@@ -157,6 +163,7 @@ namespace WoMFramework.Game.Model.Monster
             };
             monster.Equipment.BaseWeapon = _baseWeapon;
             monster.Equipment.PrimaryWeapon = _primaryWeapon;
+            monster.Equipment.Weapons = _weaponsList;
             return monster;
         }
     }

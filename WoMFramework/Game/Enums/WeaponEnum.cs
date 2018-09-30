@@ -7,7 +7,8 @@
         Piercing,
         Slashing
     }
-        public enum WeaponProficiencyType
+
+    public enum WeaponProficiencyType
     {
         None,
         Simple,
@@ -252,5 +253,11 @@
         Whip,
         WoodenStake,
         WristLauncher
+    }
+
+    public enum WeaponAttackType
+    {
+        Primary,
+        Secondary
     }
 }

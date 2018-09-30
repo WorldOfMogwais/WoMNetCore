@@ -1,4 +1,6 @@
-﻿namespace WoMFramework.Game.Model.Equipment
+﻿using System.Collections.Generic;
+
+namespace WoMFramework.Game.Model.Equipment
 {
     public class Equipment
     {
@@ -17,5 +19,15 @@
         public int ArmorBonus => 0 + (Armor?.ArmorBonus ?? 0);
 
         public int ShieldBonus => 0;
+
+        public List<Weapon> Weapons { get; set; }
+
+        public List<Armor> Armors { get; set; }
+
+        public Equipment()
+        {
+            Weapons = new List<Weapon>();
+            Armors = new List<Armor>();
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace WoMFramework.Game.Model.Equipment
          * Light Armor
          */
         public static Armor StuddedLeather =>
-            ArmorBuilder.Create("Studded Leather", ArmorType.Light, 3, 5)
+            ArmorBuilder.Create("Studded Leather", ArmorEffortType.Light, 3, 5)
             .SetArmorCheckPenalty(-1)
             .SetArcaneSpellFailureChance(0.15)
             .SetWeight(20)
@@ -25,7 +25,7 @@ namespace WoMFramework.Game.Model.Equipment
          * Medium Armor
          */
         public static Armor Breastplate =>
-            ArmorBuilder.Create("Breastplate", ArmorType.Medium, 6, 3)
+            ArmorBuilder.Create("Breastplate", ArmorEffortType.Medium, 6, 3)
             .SetArmorCheckPenalty(-4)
             .SetArcaneSpellFailureChance(0.25)
             .SetWeight(30)
@@ -40,7 +40,7 @@ namespace WoMFramework.Game.Model.Equipment
          * Heaviy Armor
          */
         public static Armor FullPlate =>
-            ArmorBuilder.Create("Full Plate", ArmorType.Heavy, 9, 1)
+            ArmorBuilder.Create("Full Plate", ArmorEffortType.Heavy, 9, 1)
             .SetArmorCheckPenalty(-6)
             .SetArcaneSpellFailureChance(0.35)
             .SetWeight(50)

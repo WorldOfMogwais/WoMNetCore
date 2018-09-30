@@ -7,10 +7,11 @@ namespace WoMFramework.Game.Model.Equipment
     public sealed class WeaponBuilder
     {
         // description
+        private WeaponAttackType _weaponAttackType = WeaponAttackType.Primary;
         private int _criticalMinRoll = 20;
         private int _criticalMultiplier = 2;
         private WeaponDamageType[] _weaponDamageTypes = { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing };
-        private int _range = 0;
+        private int _range = 1;
         private SizeType _sizeType = SizeType.Medium;
         private double _cost = 1;
         private double _weight = 1;
@@ -31,6 +32,11 @@ namespace WoMFramework.Game.Model.Equipment
         public static WeaponBuilder Create(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] damageMediumRollEvent)
         {
             return new WeaponBuilder(name, weaponProficiencyType, weaponEffortType, damageMediumRollEvent);
+        }
+        public WeaponBuilder SetWeaponAttackType(WeaponAttackType weaponAttackType)
+        {
+            _weaponAttackType = weaponAttackType;
+            return this;
         }
         public WeaponBuilder SetCriticalMinRoll(int criticalMinRoll)
         {
@@ -79,17 +85,115 @@ namespace WoMFramework.Game.Model.Equipment
         }
         public Weapon Build()
         {
-            return new Weapon(Name, WeaponProficiencyType, WeaponEffortType, DamageMediumRollEvent, _criticalMinRoll, _criticalMultiplier, _weaponDamageTypes, _range,_sizeType, _cost, _weight, _description);
+            return new Weapon(Name, WeaponProficiencyType, WeaponEffortType, DamageMediumRollEvent,  _weaponAttackType, _criticalMinRoll, _criticalMultiplier, _weaponDamageTypes, _range,_sizeType, _cost, _weight, _description);
         }
     }
     public class NaturalWeapon
     {
         public static Weapon Bite(SizeType sizeType, bool isLikeTwoHanded = false) => 
             WeaponBuilder.Create("Bite", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 6 })
-                .SetCriticalMinRoll(20)
-                .SetCriticalMultiplier(2)
                 .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing })
-                .SetRange(1)
+                .SetWeaponAttackType(WeaponAttackType.Primary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon Claw(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Claw", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 4 })
+                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Slashing })
+                .SetWeaponAttackType(WeaponAttackType.Primary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon Gore(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Gore", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 6 })
+                .SetDamageTypes(new[] { WeaponDamageType.Piercing })
+                .SetWeaponAttackType(WeaponAttackType.Primary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon Hoof(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Hoof", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 4 })
+                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
+                .SetWeaponAttackType(WeaponAttackType.Secondary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon Tentacle(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Tentacle", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 4 })
+                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
+                .SetWeaponAttackType(WeaponAttackType.Secondary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon Wing(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Wing", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 4 })
+                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
+                .SetWeaponAttackType(WeaponAttackType.Secondary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon Pincer(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Pincer", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 6 })
+                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
+                .SetWeaponAttackType(WeaponAttackType.Secondary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon TailSlap(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Tail Slap", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 6 })
+                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
+                .SetWeaponAttackType(WeaponAttackType.Secondary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon Slam(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Slam", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 4 })
+                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
+                .SetWeaponAttackType(WeaponAttackType.Primary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon Sting(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Sting", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 4 })
+                .SetDamageTypes(new[] { WeaponDamageType.Piercing })
+                .SetWeaponAttackType(WeaponAttackType.Primary)
+                .SetSizeType(sizeType)
+                .SetCost(0)
+                .SetWeight(0)
+                .SetDescription("")
+                .Build();
+
+        public static Weapon Talons(SizeType sizeType, bool isLikeTwoHanded = false) => 
+            WeaponBuilder.Create("Talons", WeaponProficiencyType.Simple, isLikeTwoHanded ? WeaponEffortType.TwoHanded : WeaponEffortType.OneHanded, new[] { 1, 4 })
+                .SetDamageTypes(new[] { WeaponDamageType.Slashing })
+                .SetWeaponAttackType(WeaponAttackType.Primary)
                 .SetSizeType(sizeType)
                 .SetCost(0)
                 .SetWeight(0)
@@ -112,6 +216,7 @@ namespace WoMFramework.Game.Model.Equipment
 
         public WeaponProficiencyType WeaponProficiencyType { get; }
         public WeaponEffortType WeaponEffortType { get; }
+        public WeaponAttackType WeaponAttackType { get; }
 
         public int[] DamageRoll { get; private set; }
 
@@ -126,11 +231,12 @@ namespace WoMFramework.Game.Model.Equipment
 
         public bool IsCriticalRoll(int roll) => roll >= CriticalMinRoll;
 
-        public Weapon(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] mediumDamageRoll, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, SizeType sizeType, double cost, double weight, string description) : base(name, cost, weight, description)
+        public Weapon(string name, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] mediumDamageRoll, WeaponAttackType weaponAttackType, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, SizeType sizeType, double cost, double weight, string description) : base(name, cost, weight, description)
         {
             WeaponProficiencyType = weaponProficiencyType;
             WeaponEffortType = weaponEffortType;
             MediumDamageRoll = mediumDamageRoll;
+            WeaponAttackType = WeaponAttackType;
             CriticalMinRoll = criticalMinRoll;
             CriticalMultiplier = criticalMultiplier;
             WeaponDamageTypes = weaponDamageTypes;
