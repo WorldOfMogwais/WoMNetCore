@@ -2,6 +2,7 @@
 using GoRogue;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Actions;
 using WoMFramework.Game.Model.Mogwai;
 
 namespace WoMFramework.Game.Generator
@@ -16,7 +17,7 @@ namespace WoMFramework.Game.Generator
 
         public Queue<AdventureLog> AdventureLogs { get; set; } = new Queue<AdventureLog>();
 
-        public bool IsActive => AdventureState == AdventureState.Preparation 
+        public bool IsActive => AdventureState == AdventureState.Preparation
                              || AdventureState == AdventureState.Running;
 
         public int NextId => _nextId++;
@@ -47,7 +48,7 @@ namespace WoMFramework.Game.Generator
         public int Target { get; }
         public bool Flag { get; }
 
-        public AdventureLog(LogType type, int source, Coord sourceCoord, 
+        public AdventureLog(LogType type, int source, Coord sourceCoord,
             int target = 0, Coord targetCoord = null, bool flag = true)
         {
             Type = type;
@@ -77,14 +78,21 @@ namespace WoMFramework.Game.Generator
     public interface IAdventureEntity
     {
         Adventure Adventure { get; set; }
+
         Map Map { get; set; }
+
         Coord Coordinate { get; set; }
+
         bool IsStatic { get; }
+
         bool IsPassable { get; }
+
         int AdventureEntityId { get; set; }
 
         int Size { get; }
 
         void MoveArbitrary();
+
+        bool TakeAction(EntityAction entityAction);
     }
 }

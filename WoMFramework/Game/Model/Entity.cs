@@ -4,6 +4,7 @@ using System.Linq;
 using GoRogue;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
+using WoMFramework.Game.Model.Actions;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Random;
 
@@ -336,6 +337,20 @@ namespace WoMFramework.Game.Model
 
             Map.MoveEntity(this, destination);
         }
+
+        public bool TakeAction(EntityAction entityAction)
+        {
+            if (entityAction is MeleeAttack)
+                return this.MeleeAttack();
+
+            return false;
+        }
+
         #endregion
+
+        private bool MeleeAttack()
+        {
+            return true;
+        }
     }
 }

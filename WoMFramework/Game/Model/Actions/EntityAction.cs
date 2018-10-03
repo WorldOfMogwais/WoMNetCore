@@ -4,7 +4,11 @@ using System.Text;
 
 namespace WoMFramework.Game.Model.Actions
 {
-    public class CombatAction
+    public abstract class EntityAction {
+
+    }
+
+    public abstract class CombatAction : EntityAction
     {
         public bool ProvokesAttackOfOpportunity;
 
@@ -14,8 +18,10 @@ namespace WoMFramework.Game.Model.Actions
         } 
     }
 
-    public class StandardAction : CombatAction
+    public abstract class StandardAction : CombatAction
     {
+        public Entity[] Targets { get; set; }
+
         public StandardAction(bool provokesAttackOfOpportunity) : base(provokesAttackOfOpportunity)
         {
         }
@@ -23,6 +29,9 @@ namespace WoMFramework.Game.Model.Actions
 
     public class MeleeAttack : StandardAction
     {
+
+        // TODO: Feats
+
         public MeleeAttack() : base(false)
         {
         }
