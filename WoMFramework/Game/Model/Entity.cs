@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using GoRogue;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Model.Actions;
+using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Random;
 
@@ -193,6 +195,29 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="slotType"></param>
+        /// <param name="baseItem"></param>
+        /// <returns></returns>
+        public virtual bool EquipItem(SlotType slotType, BaseItem baseItem)
+        {
+            return Equipment.Equip(slotType, baseItem);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="primaryWeapon"></param>
+        /// <param name="secondaryWeapon"></param>
+        public virtual void EquipWeapon(Weapon primaryWeapon, Weapon secondaryWeapon = null)
+        {
+            var action = CombatAction.CreateStandardAction(primaryWeapon);
+            CombatActions.Add(action);
+            Equipment.Weapons.Add(primaryWeapon);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="turn"></param>
         /// <param name="target"></param>
         internal void Attack(int turn, Entity target)
@@ -326,6 +351,8 @@ namespace WoMFramework.Game.Model
         bool IAdventureEntity.IsStatic => false;
         bool IAdventureEntity.IsPassable => false;
 
+        public List<CombatAction> CombatActions = new List<CombatAction>();
+
         void IAdventureEntity.MoveArbitrary()
         {
             Coord destination;
@@ -340,17 +367,56 @@ namespace WoMFramework.Game.Model
 
         public bool TakeAction(EntityAction entityAction)
         {
-            if (entityAction is MeleeAttack)
-                return this.MeleeAttack();
+            if (!entityAction.IsExecutable)
+            {
+                return false;
+            }
+
+            if (entityAction is WeaponAttack weaponAttack)
+            {
+                Attack(weaponAttack);
+                return true;
+            }
 
             return false;
         }
 
         #endregion
 
-        private bool MeleeAttack()
+        private void Attack(WeaponAttack weaponAttack)
         {
-            return true;
+            // only first attack, it's a standard action
+            var attackIndex = 0;
+            var weapon = weaponAttack.Weapon;
+            var target = weaponAttack.Target;
+
+            var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
+            var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
+
+            var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
+            var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
+            var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
+                          $"attack {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
+
+            if (attack > target.ArmorClass || criticalCounts > 0)
+            {
+                var damage = DamageRoll(Dice);
+                var criticalDamage = 0;
+                if (criticalCounts > 0)
+                {
+                    for (var i = 0; i < weapon.CriticalMultiplier - 1; i++)
+                    {
+                        criticalDamage += DamageRoll(Dice);
+                    }
+                }
+                var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
+                Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
+                target.Damage(damage + criticalDamage, DamageType.Weapon);
+            }
+            else
+            {
+                Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
+            }
         }
     }
 }

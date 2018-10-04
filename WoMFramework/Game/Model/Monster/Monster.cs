@@ -101,11 +101,6 @@ namespace WoMFramework.Game.Model.Monster
             _baseAttackBonus = new[] { baseAttackBonus };
             return this;
         }
-        public MonsterBuilder SetBaseAttackBonus(int[] baseAttackBonus)
-        {
-            _baseAttackBonus = baseAttackBonus;
-            return this;
-        }
         public MonsterBuilder SetHitPointDiceRollEvent(int[] hitPointDiceRollEvent)
         {
             _hitPointDiceRollEvent = hitPointDiceRollEvent;
@@ -163,7 +158,10 @@ namespace WoMFramework.Game.Model.Monster
             };
             monster.Equipment.BaseWeapon = _baseWeapon;
             monster.Equipment.PrimaryWeapon = _primaryWeapon;
-            monster.Equipment.Weapons = _weaponsList;
+            foreach (var weapon in _weaponsList)
+            {
+                monster.EquipWeapon(weapon);
+            }
             return monster;
         }
     }

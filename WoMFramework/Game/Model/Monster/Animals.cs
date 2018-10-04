@@ -1,4 +1,5 @@
-﻿using WoMFramework.Game.Enums;
+﻿using System.Collections.Generic;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Model.Equipment;
 
 namespace WoMFramework.Game.Model.Monster
@@ -12,6 +13,7 @@ namespace WoMFramework.Game.Model.Monster
              .SetBaseSpeed(15)
              .SetHitPointDiceRollEvent(new[] { 1, 8 })
              .SetBaseAttackBonus(0)
+             .SetWeapons(new List<Weapon> {NaturalWeapon.Bite(SizeType.Tiny)})
              .SetBaseWeapon(NaturalWeapon.Bite(SizeType.Tiny))
              .SetDescription("Fecund and secretive, rats are omnivorous rodents that particularly thrive in urban areas.")
              .Build();
@@ -24,6 +26,7 @@ namespace WoMFramework.Game.Model.Monster
             .SetNaturalArmor(2)
             .SetHitPointDiceRollEvent(new[] { 2, 8, 0, 4 })
             .SetBaseAttackBonus(1)
+            .SetWeapons(new List<Weapon> {NaturalWeapon.Bite(SizeType.Medium)})
             .SetBaseWeapon(NaturalWeapon.Bite(SizeType.Medium))
             .SetDescription("Wandering alone or in packs, wolves sit at the top of the food chain. Ferociously " +
                 "territorial and exceptionally wide-ranging in their hunting, wolf packs cover broad " +

@@ -99,9 +99,16 @@ namespace WoMFramework.Game.Model.Mogwai
 
             // add simple rapier as weapon
             Equipment.PrimaryWeapon = Weapons.Rapier;
+            EquipWeapon(Weapons.Rapier);
 
             // add simple rapier as weapon
             Equipment.Armor = Armors.StuddedLeather;
+
+            // create slot types
+            Equipment.CreateEquipmentSlots(new SlotType[] 
+                {SlotType.Head, SlotType.Shoulders, SlotType.Neck,
+                 SlotType.Chest,SlotType.Body, SlotType.Belt,SlotType.Wrists,
+                 SlotType.Hands,SlotType.Ring1,SlotType.Ring2,SlotType.Feet});
 
             HitPointDice = 6;
             CurrentHitPoints = MaxHitPoints;
@@ -113,6 +120,8 @@ namespace WoMFramework.Game.Model.Mogwai
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="history"></param>
+        /// <returns></returns>
         public bool Evolve(out GameLog history)
         {
             // any shift left?
@@ -190,6 +199,11 @@ namespace WoMFramework.Game.Model.Mogwai
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="levels"></param>
+        /// <returns></returns>
         public bool CanLevelClass(out int levels)
         {
             levels = LevelShifts.Count - (Classes.Count == 0 ? 0 : Classes.Sum(p => p.ClassLevel));
@@ -197,6 +211,10 @@ namespace WoMFramework.Game.Model.Mogwai
             return levels > 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classType"></param>
         private void LevelClass(ClassType classType)
         {
             if (!CanLevelClass(out _))

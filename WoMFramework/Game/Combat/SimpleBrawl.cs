@@ -3,6 +3,7 @@ using System.Linq;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Actions;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Model.Monster;
 using WoMFramework.Game.Random;
@@ -92,8 +93,28 @@ namespace WoMFramework.Game.Combat
 
                     var target = combatant.Enemies.FirstOrDefault(p => p.CurrentHitPoints > -1);
 
+                    // get all executable combat actions on that target
+                    var exCombatActions = new List<CombatAction>();
+                    foreach (var combatAction in combatant.Entity.CombatActions)
+                    {
+                        if (combatAction.CanExecute(combatant.Entity, target, out var exCombatAction))
+                        {
+                            exCombatActions.Add(exCombatAction);
+                        }
+                    }
+
+                    // choose just one action here no AI ....
+                    var combatActionExec = exCombatActions.FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack);
+                    if (combatActionExec == null)
+                    {
+                        continue;
+                    }
+
                     // attack
-                    combatant.Entity.Attack(turn, target);
+                    combatant.Entity.TakeAction(combatActionExec);
+
+                    // attack
+                    //combatant.Entity.Attack(turn, target);
 
                     if (target?.CurrentHitPoints < 0 && target is Monster killedMonster)
                     {

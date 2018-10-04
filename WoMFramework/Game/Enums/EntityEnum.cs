@@ -211,4 +211,20 @@ namespace WoMFramework.Game.Enums
         Goblin,
         Other
     }
+
+    public enum SlotType
+    {
+        None,
+        Head,
+        Shoulders,
+        Neck,
+        Chest,
+        Body,
+        Belt,
+        Wrists,
+        Hands,
+        Ring1,
+        Ring2,
+        Feet
+    }
 }
