@@ -98,7 +98,6 @@ namespace WoMFramework.Game.Model.Mogwai
             Experience = new Experience(_currentShift);
 
             // add simple rapier as weapon
-            Equipment.PrimaryWeapon = Weapons.Rapier;
             EquipWeapon(Weapons.Rapier);
 
             // add simple rapier as weapon

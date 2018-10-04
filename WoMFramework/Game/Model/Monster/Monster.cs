@@ -32,8 +32,6 @@ namespace WoMFramework.Game.Model.Monster
         // hitcoints
         private int[] _hitPointDiceRollEvent = { 1, 6, 0 };
         // equipment
-        private Weapon _baseWeapon = NaturalWeapon.Bite(SizeType.Medium);
-        private Weapon _primaryWeapon;
         private readonly List<Weapon> _weaponsList = new List<Weapon>();
         private TreasureType _treasureType;
         // environement
@@ -106,16 +104,6 @@ namespace WoMFramework.Game.Model.Monster
             _hitPointDiceRollEvent = hitPointDiceRollEvent;
             return this;
         }
-        public MonsterBuilder SetBaseWeapon(Weapon baseWeapon)
-        {
-            _baseWeapon = baseWeapon;
-            return this;
-        }
-        public MonsterBuilder SetPrimaryWeapon(Weapon primaryWeapon)
-        {
-            _primaryWeapon = primaryWeapon;
-            return this;
-        }
         public MonsterBuilder SetTreasure(TreasureType treasureType)
         {
             _treasureType = treasureType;
@@ -156,8 +144,6 @@ namespace WoMFramework.Game.Model.Monster
                 EnvironmentTypes = _environmentTypes,
                 Description = _description
             };
-            monster.Equipment.BaseWeapon = _baseWeapon;
-            monster.Equipment.PrimaryWeapon = _primaryWeapon;
             foreach (var weapon in _weaponsList)
             {
                 monster.EquipWeapon(weapon);

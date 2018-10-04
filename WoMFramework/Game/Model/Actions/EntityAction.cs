@@ -79,7 +79,7 @@ namespace WoMFramework.Game.Model.Actions
 
         public virtual int GetRange()
         {
-            return Weapon.Range;
+            return Weapon.Range / 5 + 1;
         }
 
         public virtual bool IsInRange()
@@ -193,6 +193,9 @@ namespace WoMFramework.Game.Model.Actions
 
     public class FullAttack : FullRoundAction
     {
+        public Weapon Weapon { get; }
+        public Entity Target { get; }
+
         public FullAttack(Entity owner) : base(owner, false)
         {
         }

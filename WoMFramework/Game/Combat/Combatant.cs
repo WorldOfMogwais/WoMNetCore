@@ -61,7 +61,8 @@ namespace WoMFramework.Game.Combat
 
             //  TODO: crude implementation of ranges
             MoveRange = (uint)(entity.Speed / 15);
-            AttackRange = (uint)entity.Equipment.PrimaryWeapon.Range;
+            // TODO: darkfriend77, attack range needs to be taken from the entityActions
+            //AttackRange = (uint)entity.Equipment.PrimaryWeapon.Range; 
 
             RemainingMove = MoveRange;
 
