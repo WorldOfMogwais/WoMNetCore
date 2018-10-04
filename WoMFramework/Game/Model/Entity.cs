@@ -210,7 +210,7 @@ namespace WoMFramework.Game.Model
         /// <param name="secondaryWeapon"></param>
         public virtual void EquipWeapon(Weapon primaryWeapon, Weapon secondaryWeapon = null)
         {
-            var action = CombatAction.CreateStandardAction(primaryWeapon);
+            var action = CombatAction.CreateStandardAction(this, primaryWeapon);
             CombatActions.Add(action);
             Equipment.Weapons.Add(primaryWeapon);
         }
