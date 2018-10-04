@@ -253,7 +253,7 @@ namespace WoMSadGui.Consoles
             else if (_mogwai.PeekNextShift != null)
             {
                 _log.Reset();
-                for (var i = 0; i < 100; i++)
+                for (var i = 0; i < 500; i++)
                 {
                     if (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve(out _))
                     {
