@@ -73,6 +73,12 @@ namespace WoMFramework.Game.Generator
         {
             return new AdventureLog(LogType.Move, entity.AdventureEntityId, entity.Coordinate, 0, destination);
         }
+
+        public static AdventureLog Attacked(IAdventureEntity source, IAdventureEntity target)
+        {
+            return new AdventureLog(LogType.Attack, source.AdventureEntityId, source.Coordinate,
+                target.AdventureEntityId, target.Coordinate);
+        }
     }
 
     public interface IAdventureEntity
@@ -91,8 +97,11 @@ namespace WoMFramework.Game.Generator
 
         int Size { get; }
 
-        void MoveArbitrary();
-
         bool TakeAction(EntityAction entityAction);
+    }
+
+    public interface ICombatant : IAdventureEntity
+    {
+        void MoveArbitrary();
     }
 }

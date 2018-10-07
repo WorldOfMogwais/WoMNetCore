@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
 using GoRogue;
+using GoRogue.Pathing;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Model.Actions;
+using WoMFramework.Game.Model.Dungeon;
 using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model
 {
-    public abstract class Entity : IAdventureEntity
+    public abstract class Entity : ICombatant
     {
         public string Name { get; set; }
 
@@ -306,7 +308,7 @@ namespace WoMFramework.Game.Model
 
         public List<CombatAction> CombatActions = new List<CombatAction>();
 
-        void IAdventureEntity.MoveArbitrary()
+        void ICombatant.MoveArbitrary()
         {
             Coord destination;
             do
@@ -330,6 +332,10 @@ namespace WoMFramework.Game.Model
                 Attack(weaponAttack);
                 return true;
             }
+            else if (entityAction is MoveAction moveAction)
+            {
+                return Move(moveAction.Destination);
+            }
 
             return false;
         }
@@ -341,7 +347,7 @@ namespace WoMFramework.Game.Model
             // only first attack, it's a standard action
             var attackIndex = 0;
             var weapon = weaponAttack.Weapon;
-            var target = weaponAttack.Target;
+            var target = weaponAttack.Target as Entity;
 
             var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
             var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
@@ -370,6 +376,8 @@ namespace WoMFramework.Game.Model
             {
                 Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
             }
+
+            Adventure.AdventureLogs.Enqueue(AdventureLog.Attacked(this, target));
         }
 
         /// <summary>
@@ -379,7 +387,7 @@ namespace WoMFramework.Game.Model
         internal void Attack(FullMeleeAttack fullMeleeAttack)
         {
             var weapon = fullMeleeAttack.Weapon;
-            var target = fullMeleeAttack.Target;
+            var target = fullMeleeAttack.Target as Entity;
 
             // all attacks are calculated
             for (var attackIndex = 0; attackIndex < BaseAttackBonus.Length; attackIndex++)
@@ -414,6 +422,139 @@ namespace WoMFramework.Game.Model
                     Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
                 }
             }
+        }
+
+
+        private bool Move(Coord destination)
+        {
+            int moveRange = Speed / 5;
+
+            //var map = Map.WalkabilityMap;
+            //var radius = new RadiusAreaProvider(Coordinate, moveRange, Distance.EUCLIDEAN);
+            //Coord[] walkableTilesInRange = radius.CalculatePositions()
+            //    .Where(pos => pos.X < map.Width && pos.Y < map.Height && map[pos])
+            //    .ToArray();
+
+            //if (!walkableTilesInRange.Contains(destination))
+            //    return false;
+
+            Path path = new AStar(Map.WalkabilityMap, Distance.EUCLIDEAN).ShortestPath(Coordinate, destination, true);
+
+            if (path == null)
+                return false;
+
+            //for (int i = 0; i < moveRange; i++)
+            //    Map.MoveEntity(this, path.GetStep(i));
+
+            int i = 0;
+            int diagonalCount = 0;
+
+            // TODO: Implement the exact movement rule in the manual
+            while (moveRange > 0)
+            {
+                if (path.Length <= i)
+                    break;
+
+                Coord next = path.GetStep(i++);
+                if (next == path.End && !Map.WalkabilityMap[next])
+                    break;
+
+                if (Distance.EUCLIDEAN.Calculate(Coordinate, next) > 1)
+                {
+                    diagonalCount++;
+                    if (diagonalCount % 2 == 1)
+                    {
+                        Map.MoveEntity(this, next);
+                        moveRange--;
+                    }
+                    else
+                    {
+                        if (moveRange == 1)
+                        {
+                            var newNext = next.Translate(0, -(next - Coordinate).Y);  // Prefer X direction for now; can be randomised
+                            if (Map.WalkabilityMap[newNext])
+                                Map.MoveEntity(this, newNext);
+                            else
+                            {
+                                newNext = next.Translate(-(next - Coordinate).X, 0);
+                                if (Map.WalkabilityMap[newNext])
+                                    Map.MoveEntity(this, newNext);
+                                else
+                                    throw new Exception();
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            Map.MoveEntity(this, next);
+                            moveRange -= 2;
+                        }
+                    }
+                }
+                else
+                {
+                    Map.MoveEntity(this, next);
+                    moveRange--;
+                }
+            }
+
+            return true;
+        }
+
+
+        public void TryMoveAndAttack(CombatAction attackAction)
+        {
+            IAdventureEntity target = attackAction.Target;
+
+            var weaponAttack = attackAction as WeaponAttack;
+
+            int attackRange = weaponAttack.GetRange();
+            int moveRange = Speed / 5;
+
+            // If the target is in attackable range
+            if (Distance.EUCLIDEAN.Calculate(target.Coordinate - Coordinate) <= attackRange)
+            {
+                Attack(weaponAttack);
+                return;
+            }
+
+            // Calculate the nearest location 
+            Coord[] attackRadius = new RadiusAreaProvider(target.Coordinate, attackRange, Radius.CIRCLE)
+                .CalculatePositions().ToArray();
+            Coord[] moveRadius = new RadiusAreaProvider(Coordinate, moveRange, Radius.CIRCLE).CalculatePositions()
+                .ToArray();
+            var intersects = new List<Coord>();
+            var map = Map.WalkabilityMap;
+            for (int i = 0; i < attackRadius.Length; i++)
+            {
+                for (int j = 0; j < moveRadius.Length; j++)
+                {
+                    var coord = moveRadius[j];
+                    if (coord.X < 0 || coord.X >= map.Width || coord.Y < 0 || coord.Y >= map.Height || !map[coord] || coord != attackRadius[i])
+                        continue;
+
+                    intersects.Add(coord);
+                }
+            }
+
+            if (intersects.Count == 0)
+            {
+                Move(target.Coordinate);
+                return;
+            }
+
+            Coord nearest = Coord.Get(0, 0);
+            double distance = double.MaxValue;
+            foreach (Coord i in intersects)
+            {
+                double d = Distance.EUCLIDEAN.Calculate(Coordinate, i);
+                if (d >= distance) continue;
+                distance = d;
+                nearest = i;
+            }
+
+            Move(nearest);
+            Attack(weaponAttack);
         }
     }
 }

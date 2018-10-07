@@ -40,17 +40,19 @@ namespace WoMFramework.Game.Model
             Adventure = adventure;
 
             var wMap = new ArrayMap<bool>(width, height);
-            RectangleMapGenerator.Generate(wMap);
+            //RectangleMapGenerator.Generate(wMap);
+            RandomRoomsGenerator.Generate(wMap, 2, 11, 11, 20);
             WalkabilityMap = wMap;
 
             EntityMap = new ArrayMap<IAdventureEntity>(width, height);
 
-            //TileMap = new ArrayMap<Tile>(width, height);
-            
-            //for (int i = 0; i < width; i++)
-            //    for (int j = 0; j < height; j++)
-            //        if (wMap[i, j])
-            //            TileMap[i, j] = 
+            TileMap = new ArrayMap<Tile>(width, height);
+
+            for (int i = 0; i < width; i++)
+                for (int j = 0; j < height; j++)
+                TileMap[i, j] = wMap[i, j]
+                    ? (Tile) new StoneTile(this, Coord.Get(i, j))
+                    : new StoneWall(this, Coord.Get(i, j));
         }
 
         public void AddEntity(IAdventureEntity entity, int x, int y)

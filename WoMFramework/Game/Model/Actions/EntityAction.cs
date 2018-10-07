@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using GoRogue;
 using WoMFramework.Game.Enums;
+using WoMFramework.Game.Generator;
+using WoMFramework.Game.Model.Dungeon;
 using WoMFramework.Game.Model.Equipment;
 
 namespace WoMFramework.Game.Model.Actions
@@ -37,9 +40,9 @@ namespace WoMFramework.Game.Model.Actions
 
         public bool ProvokesAttackOfOpportunity;
 
-        public Entity Target { get; }
+        public IAdventureEntity Target { get; }
 
-        protected CombatAction(ActionType actionType, Entity owner, Entity target, bool provokesAttackOfOpportunity) : base(owner)
+        protected CombatAction(ActionType actionType, Entity owner, IAdventureEntity target, bool provokesAttackOfOpportunity) : base(owner)
         {
             ActionType = actionType;
             ProvokesAttackOfOpportunity = provokesAttackOfOpportunity;
@@ -67,14 +70,14 @@ namespace WoMFramework.Game.Model.Actions
             }
         }
 
-        public abstract CombatAction Executable(Entity target);
+        public abstract CombatAction Executable(IAdventureEntity target);
     }
 
     public abstract class WeaponAttack : CombatAction
     {
         public Weapon Weapon { get; }
 
-        protected WeaponAttack(ActionType actionType, Entity owner, Entity target, Weapon weapon, bool provokesAttackOfOpportunity) : base(actionType, owner,target, provokesAttackOfOpportunity)
+        protected WeaponAttack(ActionType actionType, Entity owner, IAdventureEntity target, Weapon weapon, bool provokesAttackOfOpportunity) : base(actionType, owner,target, provokesAttackOfOpportunity)
         {
             Weapon = weapon;
         }
@@ -111,11 +114,11 @@ namespace WoMFramework.Game.Model.Actions
         {
             IsExecutable = false;
         }
-        private UnarmedAttack(Entity owner, Weapon weapon, Entity target) : base(ActionType.Standard, owner, target, weapon, true)
+        private UnarmedAttack(Entity owner, Weapon weapon, IAdventureEntity target) : base(ActionType.Standard, owner, target, weapon, true)
         {
             IsExecutable = true;
         }
-        public override CombatAction Executable(Entity target)
+        public override CombatAction Executable(IAdventureEntity target)
         {
             // TODO: do all necessary checks here !!!
             return new UnarmedAttack(Owner, Weapon, target);
@@ -128,11 +131,11 @@ namespace WoMFramework.Game.Model.Actions
         {
             IsExecutable = false;
         }
-        private MeleeAttack(Entity owner, Weapon weapon, Entity target) : base(ActionType.Standard, owner, target, weapon, false)
+        private MeleeAttack(Entity owner, Weapon weapon, IAdventureEntity target) : base(ActionType.Standard, owner, target, weapon, false)
         {
             IsExecutable = true;
         }
-        public override CombatAction Executable(Entity target)
+        public override CombatAction Executable(IAdventureEntity target)
         {
             // TODO: do all necessary checks here !!!
             return new MeleeAttack(Owner, Weapon, target);
@@ -145,11 +148,11 @@ namespace WoMFramework.Game.Model.Actions
         {
             IsExecutable = false;
         }
-        private RangedAttack(Entity owner, Weapon weapon, Entity target) : base(ActionType.Standard, owner, target, weapon, true)
+        private RangedAttack(Entity owner, Weapon weapon, IAdventureEntity target) : base(ActionType.Standard, owner, target, weapon, true)
         {
             IsExecutable = true;
         }
-        public override CombatAction Executable(Entity target)
+        public override CombatAction Executable(IAdventureEntity target)
         {
             // TODO: do all necessary checks here !!!
             return new RangedAttack(Owner, Weapon, target);
@@ -163,7 +166,7 @@ namespace WoMFramework.Game.Model.Actions
             IsExecutable = false;
         }
 
-        public override CombatAction Executable(Entity target)
+        public override CombatAction Executable(IAdventureEntity target)
         {
             return null;
         }
@@ -171,13 +174,21 @@ namespace WoMFramework.Game.Model.Actions
 
     public class MoveAction : CombatAction
     {
+        public Coord Destination => Target.Coordinate;
+
         public MoveAction(Entity owner, bool provokesAttackOfOpportunity) : base(ActionType.Move, owner, null, provokesAttackOfOpportunity)
         {
         }
 
-        public override CombatAction Executable(Entity target = null)
+        protected MoveAction(Entity owner, IAdventureEntity target, bool provokesAttacksofOpportunity) : base(
+            ActionType.Move, owner, target, provokesAttacksofOpportunity)
         {
-            return null;
+            IsExecutable = true;
+        }
+
+        public override CombatAction Executable(IAdventureEntity target)
+        {
+            return new MoveAction(Owner, target, ProvokesAttackOfOpportunity);
         }
     }
 
@@ -187,11 +198,11 @@ namespace WoMFramework.Game.Model.Actions
         {
             IsExecutable = false;
         }
-        private FullMeleeAttack(Entity owner, Weapon weapon, Entity target) : base(ActionType.Full, owner, target, weapon, false)
+        private FullMeleeAttack(Entity owner, Weapon weapon, IAdventureEntity target) : base(ActionType.Full, owner, target, weapon, false)
         {
             IsExecutable = true;
         }
-        public override CombatAction Executable(Entity target)
+        public override CombatAction Executable(IAdventureEntity target)
         {
             // TODO: do all necessary checks here !!!
             return new FullMeleeAttack(Owner, Weapon, target);
@@ -204,7 +215,7 @@ namespace WoMFramework.Game.Model.Actions
         {
         }
 
-        public override CombatAction Executable(Entity target = null)
+        public override CombatAction Executable(IAdventureEntity target)
         {
             return null;
         }
@@ -216,7 +227,7 @@ namespace WoMFramework.Game.Model.Actions
         {
         }
 
-        public override CombatAction Executable(Entity target = null)
+        public override CombatAction Executable(IAdventureEntity target)
         {
             return null;
         }
@@ -228,7 +239,7 @@ namespace WoMFramework.Game.Model.Actions
         {
         }
 
-        public override CombatAction Executable(Entity target = null)
+        public override CombatAction Executable(IAdventureEntity target)
         {
             return null;
         }

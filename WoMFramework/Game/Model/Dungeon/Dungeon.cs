@@ -110,9 +110,9 @@ namespace WoMFramework.Game.Model.Dungeon
 
         public SimpleRoom(Dungeon parent) : base(parent)
         {
-            const int length = 11;
+            //const int length = 40;
 
-            Map = new Map(length, length, parent);
+            Map = new Map(36, 13, parent);
         }
 
         public override void Initialise()
@@ -124,7 +124,24 @@ namespace WoMFramework.Game.Model.Dungeon
             {
                 monsters[i].Dice = Parent.DungeonDice;
                 // TODO: Positioning monsters
-                var monsterCoord = Coord.Get(Map.Width - 2, Map.Height - 2);
+                //var monsterCoord = Coord.Get(Map.Width - 2, Map.Height - 2);
+                Coord monsterCoord = Coord.Get(0, 0);
+                for (int x = Map.Width - 1; x >= 0; x--)
+                {
+                    bool found = false;
+                    for (int y = Map.Height - 1; y >= 0; y--)
+                    {
+                        if (Map.WalkabilityMap[x, y])
+                        {
+                            monsterCoord = Coord.Get(x, y);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found)
+                        break;
+                }
+
                 Map.AddEntity(monsters[i], monsterCoord);
             }
 
@@ -136,7 +153,23 @@ namespace WoMFramework.Game.Model.Dungeon
         {
 
             // TODO: Mogwais' initial coordinate should be the entering door's location.
-            var mogCoord = Coord.Get(Width / 2, 1);
+            //var mogCoord = Coord.Get(Width / 2, 1);
+            Coord mogCoord = Coord.Get(0, 0);
+            for (int x = 0; x < Map.Width; x++)
+            {
+                bool found = false;
+                for (int y = 0; y < Map.Height; y++)
+                {
+                    if (Map.WalkabilityMap[x, y])
+                    {
+                        mogCoord = Coord.Get(x, y);
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                    break;
+            }
             Map.AddEntity(mogwai, mogCoord);
 
             return false;

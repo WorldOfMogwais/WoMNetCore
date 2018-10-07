@@ -1,26 +1,29 @@
 ﻿using GoRogue;
+using WoMFramework.Game.Generator;
+using WoMFramework.Game.Model.Actions;
 
 namespace WoMFramework.Game.Model.Dungeon
 {
     /// <summary>
     /// Represents the basic square tile.
     /// </summary>
-    public abstract class Tile
+    public abstract class Tile : IAdventureEntity
     {
         // for algorithms
         private int _d;
         private Tile _p;
 
-        public readonly Room Parent;
-        public readonly Coord Coordinate;
-        public readonly Wall[] Sides = new Wall[4];
+        public Adventure Adventure { get; set; }
+        public Map Map { get; set; }
+        public Coord Coordinate { get; set; }
 
 
         public int Height;
 
-        protected Tile(Room parent, Coord coordinate)
+        protected Tile(Map map, Coord coordinate)
         {
-            Parent = parent;
+            Adventure = map.Adventure;
+            Map = map;
             Coordinate = coordinate;
         }
 
@@ -32,15 +35,19 @@ namespace WoMFramework.Game.Model.Dungeon
 
         public bool IsOccupied { get; set; }
 
-        public Wall GetSide(Direction direction)
-        {
-            return Sides[(int)direction];
-        }
-
-
         public override string ToString()
         {
             return $"[{Coordinate}]";
+        }
+
+
+        public bool IsStatic { get; }
+        public bool IsPassable { get; }
+        public int AdventureEntityId { get; set; }
+        public int Size => 1;
+        public bool TakeAction(EntityAction entityAction)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -49,7 +56,17 @@ namespace WoMFramework.Game.Model.Dungeon
         public override bool IsSolid => true;
         public override bool IsReachable => !IsOccupied;
 
-        public StoneTile(Room parent, Coord coordinate) : base(parent, coordinate)
+        public StoneTile(Map map, Coord coordinate) : base(map, coordinate)
+        {
+        }
+    }
+
+    public class StoneWall : Tile
+    {
+        public override bool IsSolid => true;
+        public override bool IsReachable => false;
+
+        public StoneWall(Map map, Coord coordinate) : base(map, coordinate)
         {
         }
     }
@@ -59,7 +76,7 @@ namespace WoMFramework.Game.Model.Dungeon
         public override bool IsSolid => false;
         public override bool IsReachable => false;
 
-        public WaterTile(Room parent, Coord coordinate) : base(parent, coordinate)
+        public WaterTile(Map map, Coord coordinate) : base(map, coordinate)
         {
         }
     }

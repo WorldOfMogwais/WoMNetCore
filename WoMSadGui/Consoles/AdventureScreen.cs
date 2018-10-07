@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GoRogue;
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Surfaces;
 using WoMFramework.Game.Generator;
+using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Actions;
 using WoMWallet.Node;
 using WoMFramework.Game.Model.Dungeon;
 using WoMFramework.Game.Model.Mogwai;
@@ -55,7 +58,7 @@ namespace WoMSadGui.Consoles
         {
             //var dungeon = new SimpleDungeon(mogwaiController.CurrentMogwai.CurrentShift);
 
-            var console = new AdventureScreen(mogwaiController, null, 20, 20);
+            var console = new AdventureScreen(mogwaiController, null, 40, 40);
 
 
             var dungeon = console.Adventure as SimpleDungeon;
@@ -75,9 +78,24 @@ namespace WoMSadGui.Consoles
 
             console.LastUpdate = DateTime.Now;
 
-            for (int i = 0; i < 15; i ++)
-                foreach (var entity in map.GetEntities())
-                    entity.MoveArbitrary();
+            var entities = map.GetEntities();
+            var e1 = entities[0] as Entity;
+            var e2 = entities[1] as ICombatant;
+
+            var attackAction = e1.CombatActions
+                .Select(p => p.Executable(e2))
+                .Where(p => p != null)
+                .FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack);
+
+            for (int i = 0; i < 10; i++)
+            {
+                e1.TryMoveAndAttack(attackAction);
+                e2.MoveArbitrary();
+            }
+
+            //for (int i = 0; i < 15; i ++)
+            //    foreach (var entity in map.GetEntities())
+            //        entity.MoveArbitrary();
 
             return console;
         }
@@ -142,6 +160,7 @@ namespace WoMSadGui.Consoles
                     MoveEntity(_entities[log.Source], log.TargetCoord);
                     break;
                 case AdventureLog.LogType.Attack:
+                    AttackEntity(log.TargetCoord);
                     break;
                 case AdventureLog.LogType.Entity:
                     break;
@@ -153,6 +172,22 @@ namespace WoMSadGui.Consoles
         private void MoveEntity(ConsoleEntity entity, Coord destination)
         {
             entity.Position = new Point(destination.X, destination.Y);
+        }
+
+        private void AttackEntity(Coord targetCoord)
+        {
+            var effect = new Animated("default", 1, 1, AdventureFont);
+
+            var frame = effect.CreateFrame();
+            effect.CreateFrame();
+            frame[0].Glyph = 15;
+
+
+            effect.AnimationDuration = 1;
+            effect.Start();
+
+            var entity = new ConsoleEntity(effect) {Position = new Point(targetCoord.X, targetCoord.Y)};
+            Children.Add(entity);
         }
     }
 }

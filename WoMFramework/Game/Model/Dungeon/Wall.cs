@@ -1,35 +1,35 @@
-﻿using System;
+﻿//using System;
 
-namespace WoMFramework.Game.Model.Dungeon
-{
-    public abstract class Wall
-    {
-        public Tile Parent;
+//namespace WoMFramework.Game.Model.Dungeon
+//{
+//    public abstract class Wall
+//    {
+//        public Tile Parent;
 
-        public abstract bool IsBlocked { get; set; }
+//        public abstract bool IsBlocked { get; set; }
 
-        public abstract bool Interact(Mogwai.Mogwai mogwai);
-    }
+//        public abstract bool Interact(Mogwai.Mogwai mogwai);
+//    }
 
-    public class Door : Wall
-    {
-        public Tile Inside;
-        public Tile Outside;
-        public override bool IsBlocked { get; set; } = false;
+//    public class Door : Wall
+//    {
+//        public Tile Inside;
+//        public Tile Outside;
+//        public override bool IsBlocked { get; set; } = false;
 
-        public override bool Interact(Mogwai.Mogwai mogwai)
-        {
-            throw new NotImplementedException();
-        }
-    }
+//        public override bool Interact(Mogwai.Mogwai mogwai)
+//        {
+//            throw new NotImplementedException();
+//        }
+//    }
 
-    public class StoneWall : Wall
-    {
-        public override bool IsBlocked { get; set; } = true;
+//    public class StoneWall : Wall
+//    {
+//        public override bool IsBlocked { get; set; } = true;
 
-        public override bool Interact(Mogwai.Mogwai mogwai)
-        {
-            throw new NotImplementedException();
-        }
-    }
-}
+//        public override bool Interact(Mogwai.Mogwai mogwai)
+//        {
+//            throw new NotImplementedException();
+//        }
+//    }
+//}
