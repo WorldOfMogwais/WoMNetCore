@@ -15,6 +15,13 @@ namespace WoMFramework.Game.Model.Equipment
         }
     }
 
+    public class WeaponSlot
+    {
+        public bool IsEmpty => PrimaryWeapon == null && SecondaryWeapon == null;
+        public Weapon PrimaryWeapon { get; set; }
+        public Weapon SecondaryWeapon { get; set; }
+    }
+
     public class Equipment
     {
         public Armor Armor { get; set; }
@@ -23,7 +30,7 @@ namespace WoMFramework.Game.Model.Equipment
 
         public int ShieldBonus => 0;
 
-        public List<Weapon> Weapons { get; }
+        public List<WeaponSlot> WeaponSlots { get; }
 
         public List<Armor> Armors { get; }
 
@@ -33,11 +40,10 @@ namespace WoMFramework.Game.Model.Equipment
 
         public Equipment()
         {
-            Weapons = new List<Weapon>();
+            WeaponSlots = new List<WeaponSlot>();
             Armors = new List<Armor>();
             Slots = new List<EquipmentSlot>();
             Inventory = new List<BaseItem>();
-
         }
 
         public void CreateEquipmentSlots(SlotType[] slotTypes)
