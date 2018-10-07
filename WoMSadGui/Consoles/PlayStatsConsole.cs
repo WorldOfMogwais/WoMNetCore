@@ -133,21 +133,21 @@ namespace WoMSadGui.Consoles
 
         private void PrintWeapons(int x, int y, Mogwai mogwai)
         {
-            if (mogwai.Equipment.Weapons.Count < 1)
+            if (mogwai.Equipment.WeaponSlots.Count < 1)
             {
                 return;
             }
 
-            var primary = mogwai.Equipment.Weapons[0];
+            var primary = mogwai.Equipment.WeaponSlots[0].PrimaryWeapon;
             Print(x, y, "P:", Color.Gainsboro);
             Print(x + 3, y, primary.Name, Color.Orange);
             Print(x + 18, y, new ColoredString($"[c:r f:limegreen]{primary.MinDmg} [c:r f:gainsboro]- [c:r f:limegreen]{primary.MaxDmg} [c:r f:gainsboro]DMG".PadLeft(11)));
-            if (mogwai.Equipment.Weapons.Count < 2)
+            if (mogwai.Equipment.WeaponSlots[0].SecondaryWeapon == null)
             {
                 Print(x + 3, y + 1, "None", Color.Gray);
                 return;
             }
-            var secondary =  mogwai.Equipment.Weapons[1];
+            var secondary =  mogwai.Equipment.WeaponSlots[0].SecondaryWeapon;
             Print(x, y + 1, "S:", Color.Gainsboro);
             Print(x + 3, y + 1, secondary.Name, Color.Orange);
             Print(x + 18, y + 1, new ColoredString($"[c:r f:limegreen]{secondary.MinDmg} [c:r f:gainsboro]- [c:r f:limegreen]{secondary.MaxDmg} [c:r f:gainsboro]DMG".PadLeft(11)));
