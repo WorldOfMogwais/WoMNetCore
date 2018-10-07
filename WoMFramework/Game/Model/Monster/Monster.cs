@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;
@@ -32,7 +33,7 @@ namespace WoMFramework.Game.Model.Monster
         // hitcoints
         private int[] _hitPointDiceRollEvent = { 1, 6, 0 };
         // equipment
-        private readonly List<Weapon> _weaponsList = new List<Weapon>();
+        private readonly List<WeaponSlot> _weaponSlots = new List<WeaponSlot>();
         private TreasureType _treasureType;
         // environement
         private EnvironmentType[] _environmentTypes = new EnvironmentType[] {EnvironmentType.Any};
@@ -79,9 +80,9 @@ namespace WoMFramework.Game.Model.Monster
             _will = will;
             return this;
         }
-        public MonsterBuilder SetWeapons(List<Weapon> weaponsList)
+        public MonsterBuilder SetWeaponSlot(Weapon primary, Weapon secondary = null)
         {
-            _weaponsList.AddRange(weaponsList);
+            _weaponSlots.Add(new WeaponSlot() {PrimaryWeapon = primary, SecondaryWeapon = secondary});
             return this;
         }
         public MonsterBuilder SetBaseSpeed(int baseSpeed)
@@ -144,9 +145,12 @@ namespace WoMFramework.Game.Model.Monster
                 EnvironmentTypes = _environmentTypes,
                 Description = _description
             };
-            foreach (var weapon in _weaponsList)
+            foreach (var weaponSlot in _weaponSlots)
             {
-                monster.EquipWeapon(weapon);
+                // create new weaponslot
+                monster.Equipment.WeaponSlots.Add(new WeaponSlot());
+                // add weapon to empty weaponslot
+                monster.EquipWeapon(weaponSlot.PrimaryWeapon, weaponSlot.SecondaryWeapon);
             }
             return monster;
         }

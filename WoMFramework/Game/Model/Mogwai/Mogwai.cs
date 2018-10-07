@@ -97,6 +97,8 @@ namespace WoMFramework.Game.Model.Mogwai
             // create experience
             Experience = new Experience(_currentShift);
 
+            // add weaponslot
+            Equipment.WeaponSlots.Add(new WeaponSlot());
             // add simple rapier as weapon
             EquipWeapon(Weapons.Rapier);
 

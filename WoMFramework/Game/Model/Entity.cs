@@ -206,11 +206,28 @@ namespace WoMFramework.Game.Model
         /// </summary>
         /// <param name="primaryWeapon"></param>
         /// <param name="secondaryWeapon"></param>
-        public virtual void EquipWeapon(Weapon primaryWeapon, Weapon secondaryWeapon = null)
+        /// <param name="slotIndex"></param>
+        public virtual bool EquipWeapon(Weapon primaryWeapon, Weapon secondaryWeapon = null, int slotIndex = -1)
         {
+            var emptyWeaponSlot = Equipment.WeaponSlots.FirstOrDefault(p => p.IsEmpty);
+            if (emptyWeaponSlot == null)
+            {
+                // no more empty slots
+                return false;
+            }
+
+            // TODO implement remove weapon on slot index
+
             var action = CombatAction.CreateStandardAction(this, primaryWeapon);
             CombatActions.Add(action);
-            Equipment.Weapons.Add(primaryWeapon);
+            emptyWeaponSlot.PrimaryWeapon = primaryWeapon;
+
+            if (secondaryWeapon != null)
+            {
+                // TODO implement secondary weapon
+            }
+
+            return true;
         }
 
         /// <summary>
