@@ -94,14 +94,16 @@ namespace WoMFramework.Game.Combat
                     var target = combatant.Enemies.FirstOrDefault(p => p.CurrentHitPoints > -1);
 
                     // get all executable combat actions on that target
-                    var exCombatActions = new List<CombatAction>();
-                    foreach (var combatAction in combatant.Entity.CombatActions)
-                    {
-                        if (combatAction.CanExecute(combatant.Entity, target, out var exCombatAction))
-                        {
-                            exCombatActions.Add(exCombatAction);
-                        }
-                    }
+                    //var exCombatActions = new List<CombatAction>();
+                    var exCombatActions = combatant.Entity.CombatActions.Select(p => p.Executable(target)).Where(p => p != null);
+                    //foreach (var combatAction in combatant.Entity.CombatActions)
+                    //{
+                    //    var tCombatAction = combatAction.Executable(target);
+                    //    if (tCombatAction != null)
+                    //    {
+                    //        exCombatActions.Add(tCombatAction);
+                    //    }
+                    //}
 
                     // choose just one action here no AI ....
                     var combatActionExec = exCombatActions.FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack);

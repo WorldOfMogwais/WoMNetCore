@@ -375,11 +375,11 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="fullAttack"></param>
-        internal void Attack(FullAttack fullAttack)
+        /// <param name="fullMeleeAttack"></param>
+        internal void Attack(FullMeleeAttack fullMeleeAttack)
         {
-            var weapon = fullAttack.Weapon;
-            var target = fullAttack.Target;
+            var weapon = fullMeleeAttack.Weapon;
+            var target = fullMeleeAttack.Target;
 
             // all attacks are calculated
             for (var attackIndex = 0; attackIndex < BaseAttackBonus.Length; attackIndex++)
@@ -392,7 +392,7 @@ namespace WoMFramework.Game.Model
                 var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
                 var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
                 var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
-                              $"{fullAttack.GetType().Name.ToLower()} {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
+                              $"{fullMeleeAttack.GetType().Name.ToLower()} {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
 
                 if (attack > target.ArmorClass || criticalCounts > 0)
                 {

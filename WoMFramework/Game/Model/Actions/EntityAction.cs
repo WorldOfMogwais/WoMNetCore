@@ -20,13 +20,30 @@ namespace WoMFramework.Game.Model.Actions
         public bool IsExecutable { get; set; }
     }
 
+    public enum ActionType
+    {
+        None,
+        Standard,
+        Move,
+        Full,
+        Swift,
+        Free,
+        Immediate
+    }
+
     public abstract class CombatAction : EntityAction
     {
+        public ActionType ActionType { get; }
+
         public bool ProvokesAttackOfOpportunity;
 
-        protected CombatAction(Entity owner, bool provokesAttackOfOpportunity) : base(owner)
+        public Entity Target { get; }
+
+        protected CombatAction(ActionType actionType, Entity owner, Entity target, bool provokesAttackOfOpportunity) : base(owner)
         {
+            ActionType = actionType;
             ProvokesAttackOfOpportunity = provokesAttackOfOpportunity;
+            Target = target;
         }
 
         public static CombatAction CreateStandardAction(Entity owner, Weapon weapon)
@@ -50,29 +67,14 @@ namespace WoMFramework.Game.Model.Actions
             }
         }
 
-        public abstract bool CanExecute(Entity attacker, Entity target, out CombatAction standard);
+        public abstract CombatAction Executable(Entity target);
     }
 
-    public abstract class StandardAction : CombatAction
-    {
-        public Entity Target { get; }
-
-        protected StandardAction(Entity owner, Entity target, bool provokesAttackOfOpportunity) : base(owner, provokesAttackOfOpportunity)
-        {
-            Target = target;
-        }
-    }
-
-    public abstract class WeaponAttack : StandardAction
+    public abstract class WeaponAttack : CombatAction
     {
         public Weapon Weapon { get; }
 
-        protected WeaponAttack(Entity owner, Weapon weapon, bool provokesAttackOfOpportunity) : base(owner, null, provokesAttackOfOpportunity)
-        {
-            Weapon = weapon;
-        }
-
-        protected WeaponAttack(Entity owner, Entity target, Weapon weapon, bool provokesAttackOfOpportunity) : base(owner,target, provokesAttackOfOpportunity)
+        protected WeaponAttack(ActionType actionType, Entity owner, Entity target, Weapon weapon, bool provokesAttackOfOpportunity) : base(actionType, owner,target, provokesAttackOfOpportunity)
         {
             Weapon = weapon;
         }
@@ -105,143 +107,130 @@ namespace WoMFramework.Game.Model.Actions
 
     public class UnarmedAttack : WeaponAttack
     {
-        public UnarmedAttack(Entity owner, Weapon weapon) : base(owner, weapon, true)
+        public UnarmedAttack(Entity owner, Weapon weapon) : base(ActionType.Standard, owner, null, weapon, true)
         {
             IsExecutable = false;
         }
-        private UnarmedAttack(Entity owner, Weapon weapon, Entity target) : base(owner, target, weapon, true)
+        private UnarmedAttack(Entity owner, Weapon weapon, Entity target) : base(ActionType.Standard, owner, target, weapon, true)
         {
             IsExecutable = true;
         }
-        public override bool CanExecute(Entity attacker, Entity target, out CombatAction combatAction)
+        public override CombatAction Executable(Entity target)
         {
             // TODO: do all necessary checks here !!!
-            combatAction = new UnarmedAttack(Owner, Weapon, target);
-            return true;
+            return new UnarmedAttack(Owner, Weapon, target);
         }
     }
 
     public class MeleeAttack : WeaponAttack
     {
-        public MeleeAttack(Entity owner, Weapon weapon) : base(owner, weapon, false)
+        public MeleeAttack(Entity owner, Weapon weapon) : base(ActionType.Standard, owner, null, weapon, false)
         {
             IsExecutable = false;
         }
-        private MeleeAttack(Entity owner, Weapon weapon, Entity target) : base(owner, target, weapon, false)
+        private MeleeAttack(Entity owner, Weapon weapon, Entity target) : base(ActionType.Standard, owner, target, weapon, false)
         {
             IsExecutable = true;
         }
-        public override bool CanExecute(Entity attacker, Entity target, out CombatAction combatAction)
+        public override CombatAction Executable(Entity target)
         {
             // TODO: do all necessary checks here !!!
-            combatAction = new MeleeAttack(Owner, Weapon, target);
-            return true;
+            return new MeleeAttack(Owner, Weapon, target);
         }
     }
 
     public class RangedAttack : WeaponAttack
     {
-        public RangedAttack(Entity owner, Weapon weapon) : base(owner, weapon, true)
+        public RangedAttack(Entity owner, Weapon weapon) : base(ActionType.Standard, owner, null, weapon, true)
         {
             IsExecutable = false;
         }
-        private RangedAttack(Entity owner, Weapon weapon, Entity target) : base(owner, target, weapon, true)
+        private RangedAttack(Entity owner, Weapon weapon, Entity target) : base(ActionType.Standard, owner, target, weapon, true)
         {
             IsExecutable = true;
         }
-        public override bool CanExecute(Entity attacker, Entity target, out CombatAction combatAction)
+        public override CombatAction Executable(Entity target)
         {
             // TODO: do all necessary checks here !!!
-            combatAction = new RangedAttack(Owner, Weapon, target);
-            return true;
+            return new RangedAttack(Owner, Weapon, target);
         }
     }
 
-    public class SpellCast : StandardAction
+    public class SpellCast : CombatAction
     {
-        public SpellCast(Entity owner) : base(owner, null, false)
+        public SpellCast(Entity owner) : base(ActionType.Standard, owner, null, false)
         {
             IsExecutable = false;
         }
 
-        public override bool CanExecute(Entity attacker, Entity target, out CombatAction standard)
+        public override CombatAction Executable(Entity target)
         {
-            standard = null;
-            return false;
+            return null;
         }
     }
 
     public class MoveAction : CombatAction
     {
-        public MoveAction(Entity owner, bool provokesAttackOfOpportunity) : base(owner, provokesAttackOfOpportunity)
+        public MoveAction(Entity owner, bool provokesAttackOfOpportunity) : base(ActionType.Move, owner, null, provokesAttackOfOpportunity)
         {
         }
 
-        public override bool CanExecute(Entity attacker, Entity target, out CombatAction standard)
+        public override CombatAction Executable(Entity target = null)
         {
-            standard = null;
-            return false;
-        }
-    }
-
-    public abstract class FullRoundAction : CombatAction
-    {
-        public FullRoundAction(Entity owner, bool provokesAttackOfOpportunity) : base(owner, provokesAttackOfOpportunity)
-        {
+            return null;
         }
     }
 
-    public class FullAttack : FullRoundAction
+    public class FullMeleeAttack : WeaponAttack
     {
-        public Weapon Weapon { get; }
-        public Entity Target { get; }
-
-        public FullAttack(Entity owner) : base(owner, false)
+        public FullMeleeAttack(Entity owner, Weapon weapon) : base(ActionType.Full, owner, null, weapon, false)
         {
+            IsExecutable = false;
         }
-
-        public override bool CanExecute(Entity attacker, Entity target, out CombatAction standard)
+        private FullMeleeAttack(Entity owner, Weapon weapon, Entity target) : base(ActionType.Full, owner, target, weapon, false)
         {
-            standard = null;
-            return false;
+            IsExecutable = true;
+        }
+        public override CombatAction Executable(Entity target)
+        {
+            // TODO: do all necessary checks here !!!
+            return new FullMeleeAttack(Owner, Weapon, target);
         }
     }
 
     public class SwiftAction : CombatAction
     {
-        public SwiftAction(Entity owner) : base(owner, false)
+        public SwiftAction(Entity owner) : base(ActionType.Swift, owner, null, false)
         {
         }
 
-        public override bool CanExecute(Entity attacker, Entity target, out CombatAction standard)
+        public override CombatAction Executable(Entity target = null)
         {
-            standard = null;
-            return false;        }
+            return null;
+        }
     }
 
     public class ImmediateAction : CombatAction
     {
-        public ImmediateAction(Entity owner) :base(owner, false)
+        public ImmediateAction(Entity owner) : base(ActionType.Immediate, owner, null, false)
         {
         }
 
-        public override bool CanExecute(Entity attacker, Entity target, out CombatAction standard)
+        public override CombatAction Executable(Entity target = null)
         {
-            standard = null;
-            return false;
+            return null;
         }
     }
 
     public class FreeAction : CombatAction
     {
-        public FreeAction(Entity owner) : base(owner, false)
+        public FreeAction(Entity owner) : base(ActionType.Free, owner, null, false)
         {
         }
 
-        public override bool CanExecute(Entity attacker, Entity target, out CombatAction standard)
+        public override CombatAction Executable(Entity target = null)
         {
-            standard = null;
-            return false;
+            return null;
         }
     }
 
