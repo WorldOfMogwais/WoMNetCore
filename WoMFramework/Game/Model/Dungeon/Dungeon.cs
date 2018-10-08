@@ -17,23 +17,19 @@ namespace WoMFramework.Game.Model.Dungeon
 
         public override Map Map { get; set; }
 
-        public Room Entrance { get; protected set; }
-        public Room CurrentRoom { get; protected set; }
-
         //public bool[,] Blueprint { get; protected set; }
 
         public Dungeon(Shift creationShift)
         {
             CreationShift = creationShift;
             DungeonDice = creationShift.MogwaiDice; // set dungeon dice using the creation shift
-            GenerateRooms(creationShift);
         }
 
         public override void NextStep(Mogwai.Mogwai mogwai, Shift shift)
         {
             if (AdventureState == AdventureState.Preparation)
             {
-                Entrance.Initialise();
+                Initialise();
                 AdventureState = AdventureState.Running;
             }
 
@@ -46,20 +42,16 @@ namespace WoMFramework.Game.Model.Dungeon
             AdventureState = AdventureState.Completed;
         }
 
-        public bool Enter(Mogwai.Mogwai mogwai)
+        public virtual void Initialise()
         {
-            CurrentRoom = Entrance;
-            return Entrance.Enter(mogwai);
+
+        }
+
+        public virtual bool Enter(Mogwai.Mogwai mogwai)
+        {
+            return false;
         }
         
-        /// <summary>
-        /// Generates rooms and corridors
-        /// </summary>
-        protected virtual void GenerateRooms(Shift shift)
-        {
-
-        }
-
         public void Print()
         {
 
@@ -72,47 +64,13 @@ namespace WoMFramework.Game.Model.Dungeon
     /// </summary>
     public class SimpleDungeon : Dungeon
     {
-        public override Map Map
-        {
-            get => CurrentRoom.Map;
-            set => throw new NotImplementedException();
-        }
+        protected Monster.Monster[] _monsters;
 
         public SimpleDungeon(Shift shift) : base(shift)
         {
-
+            Map = new Map(36, 13, this);
         }
 
-
-        protected override void GenerateRooms(Shift shift)
-        {
-            var n = 1;                      // The size of a room should be determined by information of shift and mogwai
-            var blueprint = new bool[n, n]; // This can be substituted with an n*(n - 1) array
-            // TODO: create random connected graph from the blueprint.
-            // TODO: create a dungeon with long main chain with few side rooms
-            // here, it is obviously { { false } }
-
-            // TODO: assign random rooms with probabilities
-            // here, the only room is deterministically a monster room
-            var rooms = new Room[n];
-            for (var i = 0; i < n; i++)
-                rooms[i] = new SimpleRoom(this);
-
-            // set entrance (or maybe we can create a specific class for entrance)
-            Entrance = rooms[0];
-
-            CurrentRoom = Entrance;
-        }
-    }
-
-    public class SimpleRoom : MonsterRoom
-    {
-        public SimpleRoom(Dungeon parent) : base(parent)
-        {
-            //const int length = 40;
-
-            Map = new Map(36, 13, parent);
-        }
 
         public override void Initialise()
         {
@@ -121,7 +79,7 @@ namespace WoMFramework.Game.Model.Dungeon
             Monster.Monster[] monsters = { Monsters.Rat };
             for (var i = 0; i < monsters.Length; i++)
             {
-                monsters[i].Dice = Parent.DungeonDice;
+                monsters[i].Dice = DungeonDice;
                 // TODO: Positioning monsters
                 //var monsterCoord = Coord.Get(Map.Width - 2, Map.Height - 2);
                 Coord monsterCoord = Coord.Get(0, 0);
@@ -147,10 +105,8 @@ namespace WoMFramework.Game.Model.Dungeon
             _monsters = monsters;
         }
 
-
         public override bool Enter(Mogwai.Mogwai mogwai)
         {
-
             // TODO: Mogwais' initial coordinate should be the entering door's location.
             //var mogCoord = Coord.Get(Width / 2, 1);
             Coord mogCoord = Coord.Get(0, 0);
@@ -173,6 +129,5 @@ namespace WoMFramework.Game.Model.Dungeon
 
             return false;
         }
-
     }
 }
