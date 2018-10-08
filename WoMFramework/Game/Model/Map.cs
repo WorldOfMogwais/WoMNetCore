@@ -14,7 +14,7 @@ namespace WoMFramework.Game.Model
 
     public class Map
     {
-        public static readonly Coord[] Directions = 
+        public static readonly Coord[] Directions =
         {
             Coord.Get(1, 0),
             Coord.Get(0, -1),
@@ -40,8 +40,12 @@ namespace WoMFramework.Game.Model
             Adventure = adventure;
 
             var wMap = new ArrayMap<bool>(width, height);
+            
+            // creating map here
             //RectangleMapGenerator.Generate(wMap);
-            RandomRoomsGenerator.Generate(wMap, 2, 11, 11, 20);
+            //RandomRoomsGenerator.Generate(wMap, 2, 11, 11, 20);
+            TestMap(wMap);
+
             WalkabilityMap = wMap;
 
             EntityMap = new ArrayMap<IAdventureEntity>(width, height);
@@ -50,9 +54,33 @@ namespace WoMFramework.Game.Model
 
             for (int i = 0; i < width; i++)
                 for (int j = 0; j < height; j++)
-                TileMap[i, j] = wMap[i, j]
-                    ? (Tile) new StoneTile(this, Coord.Get(i, j))
-                    : new StoneWall(this, Coord.Get(i, j));
+                    TileMap[i, j] = wMap[i, j]
+                        ? (Tile)new StoneTile(this, Coord.Get(i, j))
+                        : new StoneWall(this, Coord.Get(i, j));
+        }
+
+        private void TestMap(ArrayMap<bool> wMap)
+        {
+            int minWidth = 3;
+            for (int x = 1; x < wMap.Width - 1; x++)
+            {
+                double g = Math.Pow(x - (wMap.Width / 2), 2 );
+                for (int y = 1; y < wMap.Height - 1; y++)
+                {
+                    if (g > wMap.Height - 2)
+                    {
+                        wMap[x, y] = true;
+                        continue;
+                    }
+                    var halfWidth = (g < minWidth ? minWidth : g) / 2;
+                    var middle = (double) wMap.Height / 2;
+
+                    if (y < middle  + halfWidth && y > middle - halfWidth)
+                    {
+                        wMap[x, y] = true;
+                    }
+                }
+            }
         }
 
         public void AddEntity(IAdventureEntity entity, int x, int y)
@@ -118,15 +146,16 @@ namespace WoMFramework.Game.Model
 
             int k = 0;
             for (int i = 0; i < Width; i++)
-            for (int j = 0; j < Height; j++)
-                if (EntityMap[i, j] != null)
-                    result[k++] = EntityMap[i, j];
+                for (int j = 0; j < Height; j++)
+                    if (EntityMap[i, j] != null)
+                        result[k++] = EntityMap[i, j];
             return result;
         }
 
         public static Coord GetDirection(Direction direction)
         {
-            return Directions[(int) direction];
+            return Directions[(int)direction];
         }
     }
+
 }
