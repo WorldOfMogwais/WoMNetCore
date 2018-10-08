@@ -21,31 +21,6 @@ namespace WoMFramework.Game.Model.Dungeon
         public abstract void Initialise();
     }
 
-    // not have to be inherited class of Room 
-    public class Corridor : Room
-    {
-        private int[] _corners;     // indices of corner tiles 
-
-        public Room Entrance { get; }
-        public Room Exit { get; }
-
-        public Corridor(Room entrance, Room exit) : base(entrance.Parent)
-        {
-            Entrance = entrance;
-            Exit = exit;
-        }
-
-        public override bool Enter(Mogwai.Mogwai mogwai)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Initialise()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class MonsterRoom : Room
     {
         protected Monster.Monster[] _monsters;

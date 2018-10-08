@@ -38,7 +38,7 @@ namespace WoMSadGui.Consoles
         static AdventureScreen()
         {
             FontMaster fm = Global.LoadFont("Cheepicus12.font");
-            AdventureFont = fm.GetFont(Font.FontSizes.Two);
+            AdventureFont = fm.GetFont(Font.FontSizes.One);
         }
 
         public AdventureScreen(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base(width, height)

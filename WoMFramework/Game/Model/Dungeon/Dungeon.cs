@@ -83,6 +83,7 @@ namespace WoMFramework.Game.Model.Dungeon
 
         }
 
+
         protected override void GenerateRooms(Shift shift)
         {
             var n = 1;                      // The size of a room should be determined by information of shift and mogwai
@@ -106,8 +107,6 @@ namespace WoMFramework.Game.Model.Dungeon
 
     public class SimpleRoom : MonsterRoom
     {
-        private SimpleCombat fight;
-
         public SimpleRoom(Dungeon parent) : base(parent)
         {
             //const int length = 40;
@@ -173,10 +172,6 @@ namespace WoMFramework.Game.Model.Dungeon
             Map.AddEntity(mogwai, mogCoord);
 
             return false;
-            
-            fight = new SimpleCombat(this, new[] { mogwai }, _monsters);
-
-            return fight.Run();
         }
 
     }

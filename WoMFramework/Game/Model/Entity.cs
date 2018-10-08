@@ -401,7 +401,7 @@ namespace WoMFramework.Game.Model
         /// 
         /// </summary>
         /// <param name="fullMeleeAttack"></param>
-        internal void Attack(FullMeleeAttack fullMeleeAttack)
+        private void FullAttack(WeaponAttack fullMeleeAttack)
         {
             var weapon = fullMeleeAttack.Weapon;
             var target = fullMeleeAttack.Target as Entity;
@@ -409,8 +409,6 @@ namespace WoMFramework.Game.Model
             // all attacks are calculated
             for (var attackIndex = 0; attackIndex < BaseAttackBonus.Length; attackIndex++)
             {
-
-
                 var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
                 var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
 

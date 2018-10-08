@@ -7,11 +7,11 @@ namespace WoMFramework.Game.Generator
 {
     public class TestRoom : Adventure
     {
-        private readonly SimpleBrawl simpleFight;
+        private readonly SimpleBrawl _simpleFight;
 
         public TestRoom(SimpleBrawl simpleFight)
         {
-            this.simpleFight = simpleFight;
+            this._simpleFight = simpleFight;
         }
 
         public override Map Map { get; set; }
@@ -20,11 +20,11 @@ namespace WoMFramework.Game.Generator
         {
             if (AdventureState == AdventureState.Preparation)
             {
-                simpleFight.Prepare(mogwai, shift);
+                _simpleFight.Prepare(mogwai, shift);
                 AdventureState = AdventureState.Running;
             }
 
-            if (!simpleFight.Run())
+            if (!_simpleFight.Run())
             {
                 AdventureState = AdventureState.Failed;
                 return;
