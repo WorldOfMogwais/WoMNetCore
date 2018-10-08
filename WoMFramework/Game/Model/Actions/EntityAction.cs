@@ -6,7 +6,6 @@ using System.Text;
 using GoRogue;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
-using WoMFramework.Game.Model.Dungeon;
 using WoMFramework.Game.Model.Equipment;
 
 namespace WoMFramework.Game.Model.Actions

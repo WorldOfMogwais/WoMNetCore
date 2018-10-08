@@ -1,16 +1,15 @@
-﻿using System;
-using GoRogue;
-using WoMFramework.Game.Combat;
-using WoMFramework.Game.Generator;
+﻿using GoRogue;
 using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Model.Monster;
 using WoMFramework.Game.Random;
 
-namespace WoMFramework.Game.Model.Dungeon
+namespace WoMFramework.Game.Generator.Dungeon
 {
     public class Dungeon : Adventure
     {
         public readonly Shift CreationShift;
+
         public readonly Dice DungeonDice;
 
         public int Level { get; protected set; }
@@ -22,10 +21,10 @@ namespace WoMFramework.Game.Model.Dungeon
         public Dungeon(Shift creationShift)
         {
             CreationShift = creationShift;
-            DungeonDice = creationShift.MogwaiDice; // set dungeon dice using the creation shift
+            DungeonDice = new Dice(creationShift, 9999); // set dungeon dice using the creation shift
         }
 
-        public override void NextStep(Mogwai.Mogwai mogwai, Shift shift)
+        public override void NextStep(Mogwai mogwai, Shift shift)
         {
             if (AdventureState == AdventureState.Preparation)
             {
@@ -47,7 +46,7 @@ namespace WoMFramework.Game.Model.Dungeon
 
         }
 
-        public virtual bool Enter(Mogwai.Mogwai mogwai)
+        public virtual bool Enter(Mogwai mogwai)
         {
             return false;
         }
@@ -64,7 +63,7 @@ namespace WoMFramework.Game.Model.Dungeon
     /// </summary>
     public class SimpleDungeon : Dungeon
     {
-        protected Monster.Monster[] _monsters;
+        protected Monster[] _monsters;
 
         public SimpleDungeon(Shift shift) : base(shift)
         {
@@ -76,17 +75,17 @@ namespace WoMFramework.Game.Model.Dungeon
         {
 
             // deploy monsters and the adventurer
-            Monster.Monster[] monsters = { Monsters.Rat };
+            Model.Monster.Monster[] monsters = { Monsters.Rat };
             for (var i = 0; i < monsters.Length; i++)
             {
                 monsters[i].Dice = DungeonDice;
                 // TODO: Positioning monsters
                 //var monsterCoord = Coord.Get(Map.Width - 2, Map.Height - 2);
-                Coord monsterCoord = Coord.Get(0, 0);
-                for (int x = Map.Width - 1; x >= 0; x--)
+                var monsterCoord = Coord.Get(0, 0);
+                for (var x = Map.Width - 1; x >= 0; x--)
                 {
-                    bool found = false;
-                    for (int y = Map.Height - 1; y >= 0; y--)
+                    var found = false;
+                    for (var y = Map.Height - 1; y >= 0; y--)
                     {
                         if (Map.WalkabilityMap[x, y])
                         {
@@ -105,15 +104,15 @@ namespace WoMFramework.Game.Model.Dungeon
             _monsters = monsters;
         }
 
-        public override bool Enter(Mogwai.Mogwai mogwai)
+        public override bool Enter(Model.Mogwai.Mogwai mogwai)
         {
             // TODO: Mogwais' initial coordinate should be the entering door's location.
             //var mogCoord = Coord.Get(Width / 2, 1);
-            Coord mogCoord = Coord.Get(0, 0);
-            for (int x = 0; x < Map.Width; x++)
+            var mogCoord = Coord.Get(0, 0);
+            for (var x = 0; x < Map.Width; x++)
             {
-                bool found = false;
-                for (int y = 0; y < Map.Height; y++)
+                var found = false;
+                for (var y = 0; y < Map.Height; y++)
                 {
                     if (Map.WalkabilityMap[x, y])
                     {

@@ -5,8 +5,8 @@ using System.Reflection;
 using log4net;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
+using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model.Dungeon;
 using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;
 

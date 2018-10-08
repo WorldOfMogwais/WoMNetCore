@@ -1,8 +1,7 @@
 ﻿using GoRogue;
-using WoMFramework.Game.Generator;
 using WoMFramework.Game.Model.Actions;
 
-namespace WoMFramework.Game.Model.Dungeon
+namespace WoMFramework.Game.Generator.Dungeon
 {
     /// <summary>
     /// Represents the basic square tile.

@@ -1,4 +1,5 @@
 ﻿using WoMFramework.Game.Combat;
+using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Mogwai;

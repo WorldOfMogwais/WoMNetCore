@@ -1,11 +1,9 @@
 ﻿using System;
 using GoRogue;
-using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
-using WoMFramework.Game.Generator;
-using WoMFramework.Game.Model.Dungeon;
+using WoMFramework.Game.Model;
 
-namespace WoMFramework.Game.Model
+namespace WoMFramework.Game.Generator.Dungeon
 {
     public enum Direction
     {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GoRogue;
+using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Actions;
@@ -7,6 +8,11 @@ using WoMFramework.Game.Model.Mogwai;
 
 namespace WoMFramework.Game.Generator
 {
+    public enum AdventureState
+    {
+        Preparation, Running, Failed, Completed
+    }
+
     public abstract class Adventure
     {
         private int _nextId;
