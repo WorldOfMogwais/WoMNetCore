@@ -10,27 +10,26 @@ using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Combat
 {
-
-    public class SimpleBrawl
+    public class SimpleCombat
     {
         private readonly int _maxRounds;
 
-        private List<Brawler> _inititiveOrder;
+        private List<Entity> _inititiveOrder;
 
         private readonly List<Monster> _monsters;
 
         private int _currentRound;
 
-        public List<Entity> Heroes => _inititiveOrder.Where(p => p.IsHero).Select(p => p.Entity).ToList();
+        public List<Entity> Heroes => _inititiveOrder.Where(p => p is Mogwai).ToList();
 
-        public List<Entity> Monsters => _inititiveOrder.Where(p => !p.IsHero).Select(p => p.Entity).ToList();
+        public List<Entity> Monsters => _inititiveOrder.Where(p => p is Monster).ToList();
 
-        public SimpleBrawl(List<Monster> monsters, int maxRounds = 50)
+        public SimpleCombat(List<Monster> monsters, int maxRounds = 50)
         {
             _monsters = monsters;
             _maxRounds = maxRounds;
 
-            _inititiveOrder = new List<Brawler>();
+            _inititiveOrder = new List<Entity>();
         }
 
         /// <summary>
@@ -44,23 +43,18 @@ namespace WoMFramework.Game.Combat
             {
                 var dice = new Dice(shift, m++);
                 monster.Initialize(dice);
-                _inititiveOrder.Add(
-                    new Brawler(monster)
-                    {
-                        InititativeValue = monster.InitiativeRoll(dice),
-                        Enemies = new List<Entity> { mogwai }
-                    });
+                monster.CurrentInitiative = monster.InitiativeRoll(dice);
+                monster.EngagedEnemies = new List<Entity> {mogwai};
+                monster.Adventure = mogwai.Adventure;
+                _inititiveOrder.Add(monster);
             }
 
-            _inititiveOrder.Add(
-                new Brawler(mogwai)
-                {
-                    IsHero = true,
-                    InititativeValue = mogwai.InitiativeRoll(mogwai.Dice),
-                    Enemies = _monsters.Select(p => p as Entity).ToList()
-                });
+            mogwai.CurrentInitiative = mogwai.InitiativeRoll(mogwai.Dice);
+            mogwai.EngagedEnemies = new List<Entity>();
+            mogwai.EngagedEnemies.AddRange(_monsters);
+            _inititiveOrder.Add(mogwai);
 
-            _inititiveOrder = _inititiveOrder.OrderBy(s => s.InititativeValue).ThenBy(s => s.Entity.Dexterity).ToList();
+            _inititiveOrder = _inititiveOrder.OrderBy(s => s.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
         }
 
         /// <summary>
@@ -69,11 +63,11 @@ namespace WoMFramework.Game.Combat
         /// <returns></returns>
         public bool Run()
         {
-            var heros = string.Join(",", _inititiveOrder.Where(p => p.IsHero).Select(p => $"{p.Entity.Name} [{p.InititativeValue}]").ToArray());
-            var monsters = string.Join(",", _inititiveOrder.Where(p => !p.IsHero).Select(p => $"{p.Entity.Name} [{p.InititativeValue}]").ToArray());
-            Mogwai.History.Add(LogType.Evnt, $"[c:r f:yellow]SimpleBrawl[c:u] {heros} vs. {monsters}");
+            var heros = string.Join(",", Heroes.Select(p => $"{p.Name} [{p.CurrentInitiative}]").ToArray());
+            var monsters = string.Join(",", Monsters.Select(p => $"{p.Name} [{p.CurrentInitiative}]").ToArray());
+            Mogwai.History.Add(LogType.Evnt, $"[c:r f:yellow]SimpleCombat[c:u] {heros} vs. {monsters}");
 
-            Brawler winner = null;
+            Entity winner = null;
 
             // let's start the rounds ...
             for (_currentRound = 1; _currentRound < _maxRounds && winner == null; _currentRound++)
@@ -86,16 +80,16 @@ namespace WoMFramework.Game.Combat
                     var combatant = _inititiveOrder[turn];
 
                     // dead targets can't attack any more
-                    if (combatant.Entity.CurrentHitPoints < 0)
+                    if (combatant.CurrentHitPoints < 0)
                     {
                         continue;
                     }
 
-                    var target = combatant.Enemies.FirstOrDefault(p => p.CurrentHitPoints > -1);
+                    var target = combatant.EngagedEnemies.FirstOrDefault(p => p.CurrentHitPoints > -1);
 
                     // get all executable combat actions on that target
                     //var exCombatActions = new List<CombatAction>();
-                    var exCombatActions = combatant.Entity.CombatActions.Select(p => p.Executable(target)).Where(p => p != null);
+                    var exCombatActions = combatant.CombatActions.Select(p => p.Executable(target)).Where(p => p != null);
                     //foreach (var combatAction in combatant.Entity.CombatActions)
                     //{
                     //    var tCombatAction = combatAction.Executable(target);
@@ -113,7 +107,7 @@ namespace WoMFramework.Game.Combat
                     }
 
                     // attack
-                    combatant.Entity.TakeAction(combatActionExec);
+                    combatant.TakeAction(combatActionExec);
 
                     // attack
                     //combatant.Entity.Attack(turn, target);
@@ -124,7 +118,7 @@ namespace WoMFramework.Game.Combat
                         Heroes.ForEach(p => p.AddExp(expReward, killedMonster));
                     }
 
-                    if (!combatant.Enemies.Exists(p => p.CurrentHitPoints > -1))
+                    if (!combatant.EngagedEnemies.Exists(p => p.CurrentHitPoints > -1))
                     {
                         winner = combatant;
                         break;
@@ -134,9 +128,9 @@ namespace WoMFramework.Game.Combat
 
             if (winner != null)
             {
-                Mogwai.History.Add(LogType.Evnt, $"[c:r f:yellow]SimpleBrawl[c:u] Fight is over! The winner is {Coloring.Name(winner.Entity.Name)}");
+                Mogwai.History.Add(LogType.Evnt, $"[c:r f:yellow]SimpleCombat[c:u] Fight is over! The winner is {Coloring.Name(winner.Name)}");
 
-                if (winner.IsHero)
+                if (winner is Mogwai)
                 {
                     Loot(Heroes, Monsters);
                     return true;
@@ -145,7 +139,7 @@ namespace WoMFramework.Game.Combat
                 return false;
             }
 
-            Mogwai.History.Add(LogType.Evnt, "[c:r f:yellow]SimpleBrawl[c:u] No winner, no loser, this fight was a draw!");
+            Mogwai.History.Add(LogType.Evnt, "[c:r f:yellow]SimpleCombat[c:u] No winner, no loser, this fight was a draw!");
             return false;
 
         }

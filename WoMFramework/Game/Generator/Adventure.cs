@@ -35,7 +35,7 @@ namespace WoMFramework.Game.Generator
 
         public int NextId => _nextId++;
 
-        public Adventure()
+        protected Adventure()
         {
             AdventureState = AdventureState.Preparation;
             AdventureStats = new Dictionary<AdventureStats, double>
@@ -120,8 +120,19 @@ namespace WoMFramework.Game.Generator
         bool TakeAction(EntityAction entityAction);
     }
 
+    public enum CombatState
+    {
+        None, Engaged 
+    }
+
     public interface ICombatant : IAdventureEntity
     {
+        int CurrentInitiative { get; set; }
+
+        CombatState CombatState { get; set; }
+
+        List<Entity> EngagedEnemies { get; set; }
+
         void MoveArbitrary();
     }
 }

@@ -325,18 +325,6 @@ namespace WoMFramework.Game.Model
 
         public List<CombatAction> CombatActions = new List<CombatAction>();
 
-        void ICombatant.MoveArbitrary()
-        {
-            Coord destination;
-            do
-            {
-                var roll = Dice.Roll(4, -1);
-                destination = Coordinate + Map.Directions[roll];
-            } while (!Map.WalkabilityMap[destination]);
-
-            Map.MoveEntity(this, destination);
-        }
-
         public bool TakeAction(EntityAction entityAction)
         {
             if (!entityAction.IsExecutable)
@@ -355,6 +343,29 @@ namespace WoMFramework.Game.Model
             }
 
             return false;
+        }
+
+        #endregion
+
+
+        #region ICombatant
+
+        public int CurrentInitiative { get; set; }
+
+        public CombatState CombatState { get; set; }
+
+        public List<Entity> EngagedEnemies { get; set; }
+
+        void ICombatant.MoveArbitrary()
+        {
+            Coord destination;
+            do
+            {
+                var roll = Dice.Roll(4, -1);
+                destination = Coordinate + Map.Directions[roll];
+            } while (!Map.WalkabilityMap[destination]);
+
+            Map.MoveEntity(this, destination);
         }
 
         #endregion

@@ -8,11 +8,12 @@ namespace WoMFramework.Game.Generator
 {
     public class TestRoom : Adventure
     {
-        private readonly SimpleBrawl _simpleFight;
+        private readonly SimpleCombat _simpleFight;
 
-        public TestRoom(SimpleBrawl simpleFight)
+        public TestRoom(SimpleCombat simpleFight)
         {
-            this._simpleFight = simpleFight;
+            _simpleFight = simpleFight;
+            Map = new Map(10, 10, this);
         }
 
         public override Map Map { get; set; }
