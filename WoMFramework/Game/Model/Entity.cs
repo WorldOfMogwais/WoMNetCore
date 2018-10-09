@@ -160,13 +160,17 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// 
         /// </summary>
-        public Entity()
+        protected Entity()
         {
             // initialize
             HitPointLevelRolls = new List<int>();
             Equipment = new Equipment.Equipment();
             Wealth = new Wealth();
             Classes = new List<Classes.Classes>();
+
+            // add basic actions
+            CombatActions.Add(CombatAction.CreateMove(this));
+
         }
 
         public void LevelClass(Dice dice)
@@ -220,7 +224,7 @@ namespace WoMFramework.Game.Model
 
             // TODO implement remove weapon on slot index
 
-            var action = CombatAction.CreateStandardAction(this, primaryWeapon);
+            var action = CombatAction.CreateWeaponAttack(this, primaryWeapon);
             CombatActions.Add(action);
             emptyWeaponSlot.PrimaryWeapon = primaryWeapon;
 
@@ -462,7 +466,7 @@ namespace WoMFramework.Game.Model
         /// <returns></returns>
         private bool Move(Coord destination)
         {
-            int moveRange = Speed / 5;
+            var moveRange = Speed / 5;
 
             //var map = Map.WalkabilityMap;
             //var radius = new RadiusAreaProvider(Coordinate, moveRange, Distance.EUCLIDEAN);
@@ -473,7 +477,7 @@ namespace WoMFramework.Game.Model
             //if (!walkableTilesInRange.Contains(destination))
             //    return false;
 
-            Path path = new AStar(Map.WalkabilityMap, Distance.EUCLIDEAN).ShortestPath(Coordinate, destination, true);
+            var path = new AStar(Map.WalkabilityMap, Distance.EUCLIDEAN).ShortestPath(Coordinate, destination, true);
 
             if (path == null)
                 return false;
@@ -481,8 +485,8 @@ namespace WoMFramework.Game.Model
             //for (int i = 0; i < moveRange; i++)
             //    Map.MoveEntity(this, path.GetStep(i));
 
-            int i = 0;
-            int diagonalCount = 0;
+            var i = 0;
+            var diagonalCount = 0;
 
             // TODO: Implement the exact movement rule in the manual
             while (moveRange > 0)
@@ -490,7 +494,7 @@ namespace WoMFramework.Game.Model
                 if (path.Length <= i)
                     break;
 
-                Coord next = path.GetStep(i++);
+                var next = path.GetStep(i++);
                 if (next == path.End && !Map.WalkabilityMap[next])
                     break;
 
@@ -542,12 +546,12 @@ namespace WoMFramework.Game.Model
         /// <param name="attackAction"></param>
         public void TryMoveAndAttack(CombatAction attackAction)
         {
-            IAdventureEntity target = attackAction.Target;
+            var target = attackAction.Target;
 
             var weaponAttack = attackAction as WeaponAttack;
 
-            int attackRange = weaponAttack.GetRange();
-            int moveRange = Speed / 5;
+            var attackRange = weaponAttack.GetRange();
+            var moveRange = Speed / 5;
 
             // If the target is in attackable range
             if (Distance.EUCLIDEAN.Calculate(target.Coordinate - Coordinate) <= attackRange)
@@ -557,15 +561,15 @@ namespace WoMFramework.Game.Model
             }
 
             // Calculate the nearest location 
-            Coord[] attackRadius = new RadiusAreaProvider(target.Coordinate, attackRange, Radius.CIRCLE)
+            var attackRadius = new RadiusAreaProvider(target.Coordinate, attackRange, Radius.CIRCLE)
                 .CalculatePositions().ToArray();
-            Coord[] moveRadius = new RadiusAreaProvider(Coordinate, moveRange, Radius.CIRCLE).CalculatePositions()
+            var moveRadius = new RadiusAreaProvider(Coordinate, moveRange, Radius.CIRCLE).CalculatePositions()
                 .ToArray();
             var intersects = new List<Coord>();
             var map = Map.WalkabilityMap;
-            for (int i = 0; i < attackRadius.Length; i++)
+            for (var i = 0; i < attackRadius.Length; i++)
             {
-                for (int j = 0; j < moveRadius.Length; j++)
+                for (var j = 0; j < moveRadius.Length; j++)
                 {
                     var coord = moveRadius[j];
                     if (coord.X < 0 || coord.X >= map.Width || coord.Y < 0 || coord.Y >= map.Height || !map[coord] || coord != attackRadius[i])
@@ -581,11 +585,11 @@ namespace WoMFramework.Game.Model
                 return;
             }
 
-            Coord nearest = Coord.Get(0, 0);
-            double distance = double.MaxValue;
-            foreach (Coord i in intersects)
+            var nearest = Coord.Get(0, 0);
+            var distance = double.MaxValue;
+            foreach (var i in intersects)
             {
-                double d = Distance.EUCLIDEAN.Calculate(Coordinate, i);
+                var d = Distance.EUCLIDEAN.Calculate(Coordinate, i);
                 if (d >= distance) continue;
                 distance = d;
                 nearest = i;

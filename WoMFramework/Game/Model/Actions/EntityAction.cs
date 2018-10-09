@@ -48,7 +48,7 @@ namespace WoMFramework.Game.Model.Actions
             Target = target;
         }
 
-        public static CombatAction CreateStandardAction(Entity owner, Weapon weapon)
+        public static CombatAction CreateWeaponAttack(Entity owner, Weapon weapon)
         {
             switch (weapon.WeaponEffortType)
             {
@@ -69,6 +69,11 @@ namespace WoMFramework.Game.Model.Actions
             }
         }
 
+        public static CombatAction CreateMove(Entity owner)
+        {
+            return new Move(owner);
+        }
+
         public abstract CombatAction Executable(IAdventureEntity target);
     }
 
@@ -86,25 +91,16 @@ namespace WoMFramework.Game.Model.Actions
             return Weapon.Range / 5 + 1;
         }
 
-        public virtual bool IsInRange()
+        public virtual bool InWeaponRange(IAdventureEntity target)
         {
-            if (Target == null)
+            if (Owner == null || target == null)
+            {
                 return false;
+            }
 
-            // TODO: range check
-
-            return true;
+            return Distance.EUCLIDEAN.Calculate(target.Coordinate - Owner.Coordinate) <= GetRange();
         }
 
-        public virtual bool IsInLos()
-        {
-            if (Target == null)
-                return false;
-
-            // TODO: line of sight check.
-
-            return true;
-        }
     }
 
     public class UnarmedAttack : WeaponAttack
@@ -119,7 +115,10 @@ namespace WoMFramework.Game.Model.Actions
         }
         public override CombatAction Executable(IAdventureEntity target)
         {
-            // TODO: do all necessary checks here !!!
+            if (!InWeaponRange(target))
+            {
+                return null;
+            }
             return new UnarmedAttack(Owner, Weapon, target);
         }
     }
@@ -136,7 +135,10 @@ namespace WoMFramework.Game.Model.Actions
         }
         public override CombatAction Executable(IAdventureEntity target)
         {
-            // TODO: do all necessary checks here !!!
+            if (!InWeaponRange(target))
+            {
+                return null;
+            }
             return new MeleeAttack(Owner, Weapon, target);
         }
     }
@@ -153,7 +155,10 @@ namespace WoMFramework.Game.Model.Actions
         }
         public override CombatAction Executable(IAdventureEntity target)
         {
-            // TODO: do all necessary checks here !!!
+            if (!InWeaponRange(target))
+            {
+                return null;
+            }
             return new RangedAttack(Owner, Weapon, target);
         }
     }
@@ -171,25 +176,33 @@ namespace WoMFramework.Game.Model.Actions
         }
     }
 
-    public class MoveAction : CombatAction
+    public abstract class MoveAction : CombatAction
     {
         public Coord Destination => Target.Coordinate;
 
-        public MoveAction(Entity owner, bool provokesAttackOfOpportunity) : base(ActionType.Move, owner, null, provokesAttackOfOpportunity)
-        {
-        }
-
-        protected MoveAction(Entity owner, IAdventureEntity target, bool provokesAttacksofOpportunity) : base(
-            ActionType.Move, owner, target, provokesAttacksofOpportunity)
+        protected MoveAction(Entity owner, IAdventureEntity target, bool provokesAttacksofOpportunity) : base(ActionType.Move, owner, target, provokesAttacksofOpportunity)
         {
             IsExecutable = true;
         }
 
+    }
+
+    public class Move : MoveAction
+    {
+        public Move(Entity owner) : base(owner, null, true)
+        {
+            IsExecutable = false;
+        }
+        private Move(Entity owner, IAdventureEntity target) : base(owner, target, true)
+        {
+            IsExecutable = true;
+        }
         public override CombatAction Executable(IAdventureEntity target)
         {
-            return new MoveAction(Owner, target, ProvokesAttackOfOpportunity);
+            return new Move(Owner, target);
         }
     }
+
 
     public class FullMeleeAttack : WeaponAttack
     {
@@ -203,7 +216,10 @@ namespace WoMFramework.Game.Model.Actions
         }
         public override CombatAction Executable(IAdventureEntity target)
         {
-            // TODO: do all necessary checks here !!!
+            if (!InWeaponRange(target))
+            {
+                return null;
+            }
             return new FullMeleeAttack(Owner, Weapon, target);
         }
     }

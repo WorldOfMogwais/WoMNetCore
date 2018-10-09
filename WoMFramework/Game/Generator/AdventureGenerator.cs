@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using WoMFramework.Game.Combat;
 using WoMFramework.Game.Enums;
+using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model.Monster;
 
@@ -15,9 +16,16 @@ namespace WoMFramework.Game.Generator
             {
                 case AdventureType.TestRoom:
                     return CreateTestRoom(adventureAction.ChallengeRating);
+                case AdventureType.Dungeon:
+                    return CreateDungeon(generatorShift, adventureAction.ChallengeRating);
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        private static SimpleDungeon CreateDungeon(Shift generatorShift, int adventureActionChallengeRating)
+        {
+            return new SimpleDungeon(generatorShift);
         }
 
         private static TestRoom CreateTestRoom(int challengeRatingt)
