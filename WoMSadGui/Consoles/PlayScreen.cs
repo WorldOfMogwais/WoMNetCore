@@ -247,6 +247,10 @@ namespace WoMSadGui.Consoles
             {
                 if (_mogwai.Evolve(out _))
                 {
+                    if (_mogwai.Adventure != null)
+                    {
+
+                    }
                     UpdateLog();
                 }
             }

@@ -62,15 +62,17 @@ namespace WoMSadGui.Consoles
 
 
             var dungeon = console.Adventure as SimpleDungeon;
+            var map = dungeon.Map;
+
             var mog = console._mogwai;
             mog.Adventure = dungeon;
             mog.Evolve(out _);
 
             // Draw entities (Mogwais, Monsters, etc.)
-            var map = dungeon.Map;
             foreach (var entity in map.GetEntities())
                 if (!entity.IsStatic)
                     console.DrawEntity(entity);
+
 
             Global.CurrentScreen.Children.Clear();
             Global.CurrentScreen.Children.Add(console);
@@ -78,20 +80,20 @@ namespace WoMSadGui.Consoles
 
             console.LastUpdate = DateTime.Now;
 
-            var entities = map.GetEntities();
-            var e1 = entities[0] as Entity;
-            var e2 = entities[1] as ICombatant;
+            //var entities = map.GetEntities();
+            //var e1 = entities[0] as Entity;
+            //var e2 = entities[1] as ICombatant;
 
-            var attackAction = e1.CombatActions
-                .Select(p => p.Executable(e2))
-                .Where(p => p != null)
-                .FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack);
+            //var attackAction = e1.CombatActions
+            //    .Select(p => p.Executable(e2))
+            //    .Where(p => p != null)
+            //    .FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack);
 
-            for (int i = 0; i < 10; i++)
-            {
-                e1.TryMoveAndAttack(attackAction);
-                e2.MoveArbitrary();
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    e1.TryMoveAndAttack(attackAction);
+            //    e2.MoveArbitrary();
+            //}
 
             //for (int i = 0; i < 15; i ++)
             //    foreach (var entity in map.GetEntities())
