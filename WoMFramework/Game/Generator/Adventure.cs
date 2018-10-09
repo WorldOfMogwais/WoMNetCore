@@ -47,6 +47,8 @@ namespace WoMFramework.Game.Generator
             };
         }
 
+        public abstract void EvaluateAdventureState();
+
         public abstract void NextStep(Mogwai mogwai, Shift shift);
     }
 
@@ -122,7 +124,7 @@ namespace WoMFramework.Game.Generator
 
     public enum CombatState
     {
-        None, Engaged 
+        None, Initiation, Engaged 
     }
 
     public interface ICombatant : IAdventureEntity

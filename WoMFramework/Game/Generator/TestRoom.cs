@@ -32,6 +32,11 @@ namespace WoMFramework.Game.Generator
                 return;
             }
 
+            EvaluateAdventureState();
+        }
+
+        public override void EvaluateAdventureState()
+        {
             AdventureState = AdventureState.Completed;
         }
     }

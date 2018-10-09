@@ -337,7 +337,8 @@ namespace WoMFramework.Game.Model
                 Attack(weaponAttack);
                 return true;
             }
-            else if (entityAction is MoveAction moveAction)
+
+            if (entityAction is MoveAction moveAction)
             {
                 return Move(moveAction.Destination);
             }
@@ -370,6 +371,10 @@ namespace WoMFramework.Game.Model
 
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="weaponAttack"></param>
         private void Attack(WeaponAttack weaponAttack)
         {
             // only first attack, it's a standard action
@@ -450,7 +455,11 @@ namespace WoMFramework.Game.Model
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <returns></returns>
         private bool Move(Coord destination)
         {
             int moveRange = Speed / 5;
@@ -527,7 +536,10 @@ namespace WoMFramework.Game.Model
             return true;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attackAction"></param>
         public void TryMoveAndAttack(CombatAction attackAction)
         {
             IAdventureEntity target = attackAction.Target;

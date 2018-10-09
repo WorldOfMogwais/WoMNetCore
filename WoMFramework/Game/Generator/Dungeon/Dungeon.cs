@@ -1,4 +1,6 @@
-﻿using GoRogue;
+﻿using System.Linq;
+using GoRogue;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Model.Monster;
@@ -11,6 +13,8 @@ namespace WoMFramework.Game.Generator.Dungeon
         protected readonly Shift Shift;
 
         public override Map Map { get; set; }
+
+        public const int MaxRoundsPerBlock = 0;
 
         protected Dungeon(Shift shift)
         {
@@ -25,18 +29,15 @@ namespace WoMFramework.Game.Generator.Dungeon
                 AdventureState = AdventureState.Running;
             }
 
-            if (!Enter(mogwai))
+            if (AdventureState == AdventureState.Running && !Run(mogwai))
             {
                 AdventureState = AdventureState.Failed;
-                return;
             }
-
-            AdventureState = AdventureState.Completed;
         }
 
         public abstract void Prepare(Mogwai mogwai, Shift shift);
 
-        public abstract bool Enter(Mogwai mogwai);
+        public abstract bool Run(Mogwai mogwai);
 
     }
 
@@ -137,10 +138,53 @@ namespace WoMFramework.Game.Generator.Dungeon
             Map.AddEntity(mogwai, mogCoord);
         }
 
-        public override bool Enter(Mogwai mogwai)
+        public override bool Run(Mogwai mogwai)
         {
+            for (var round = 0; round < MaxRoundsPerBlock && AdventureState == AdventureState.Running; round++)
+            {
+                if (mogwai.CombatState == CombatState.Initiation)
+                {
+                    // initiate begin of a combat
+                }
+
+                if (mogwai.CombatState == CombatState.Engaged)
+                {
+                    CombatRound();
+                }
+                else
+                {
+                    ExplorationRound();
+                }
+
+                // set adventurestate
+                EvaluateAdventureState();
+            }
             return true;
         }
 
+        private void ExplorationRound()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void CombatRound()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void EvaluateAdventureState()
+        {
+            var monsters = Map.GetEntities().OfType<Monster>().ToList();
+            if (monsters.Count > 0)
+            {
+                var value = monsters.Count(p => p.HealthState == HealthState.Dead) / monsters.Count;
+                AdventureStats[Generator.AdventureStats.Monster] = value;
+            }
+            else
+            {
+                AdventureStats[Generator.AdventureStats.Monster] = 1;
+            }
+            
+        }
     }
 }

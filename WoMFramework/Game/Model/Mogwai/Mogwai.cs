@@ -291,40 +291,10 @@ namespace WoMFramework.Game.Model.Mogwai
             CurrentHitPoints = MaxHitPoints;
         }
 
-
-        public void EnterSimpleDungeon()
-        {
-            var dungeon = new SimpleDungeon(_currentShift);
-            //_currentShift = Shifts[++Pointer];
-
-            Adventure = dungeon;
-            Evolve(out var history);
-        }
-
-        public void Print()
-        {
-            var shift = Shifts[0];
-
-            Console.WriteLine("*** Mogwai Nascency Transaction ***");
-            Console.WriteLine($"- Time: {shift.Time}");
-            Console.WriteLine($"- Index: {shift.BkIndex}");
-            Console.WriteLine($"- Amount: {shift.Amount}");
-            Console.WriteLine($"- Height: {shift.Height}");
-            Console.WriteLine($"- AdHex: {shift.AdHex}");
-            Console.WriteLine($"- BlHex: {shift.BkHex}");
-            Console.WriteLine($"- TxHex: {shift.TxHex}");
-
-            Console.WriteLine();
-            Console.WriteLine("*** Mogwai Attributes ***");
-            Console.WriteLine("- Body:");
-            Body.All.ForEach(p => Console.WriteLine($"{p.Name}: {p.GetValue()} [{p.MinRange}-{p.Creation - 1}] Var:{p.MaxRange}-->{p.Valid}"));
-            Console.WriteLine("- Coat:");
-            Coat.All.ForEach(p => Console.WriteLine($"{p.Name}: {p.GetValue()} [{p.MinRange}-{p.Creation - 1}] Var:{p.MaxRange}-->{p.Valid}"));
-            Console.WriteLine("- Stats:");
-            Stats.All.ForEach(p => Console.WriteLine($"{p.Name}: {p.GetValue()} [{p.MinRange}-{p.Creation - 1}] Var:{p.MaxRange}-->{p.Valid}"));
-            Experience.Print();
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shifts"></param>
         public void UpdateShifts(Dictionary<double, Shift> shifts)
         {
             foreach (var shift in shifts)

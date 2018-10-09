@@ -29,7 +29,7 @@ namespace WoMFrameworkTest.Game
             };
 
             var mogwai = new Mogwai("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i", shifts);
-            mogwai.EnterSimpleDungeon();
+            //mogwai.EnterSimpleDungeon();
 
         }
     }
