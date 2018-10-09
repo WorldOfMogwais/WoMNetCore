@@ -13,6 +13,11 @@ namespace WoMFramework.Game.Generator
         Preparation, Running, Failed, Completed
     }
 
+    public enum AdventureStats
+    {
+        Explore, Monster, Boss, Treasure, Portal
+    }
+
     public abstract class Adventure
     {
         private int _nextId;
@@ -23,6 +28,8 @@ namespace WoMFramework.Game.Generator
 
         public Queue<AdventureLog> AdventureLogs { get; set; } = new Queue<AdventureLog>();
 
+        public Dictionary<AdventureStats, double> AdventureStats { get; }
+
         public bool IsActive => AdventureState == AdventureState.Preparation
                              || AdventureState == AdventureState.Running;
 
@@ -31,6 +38,13 @@ namespace WoMFramework.Game.Generator
         public Adventure()
         {
             AdventureState = AdventureState.Preparation;
+            AdventureStats = new Dictionary<AdventureStats, double>
+            {
+                [Generator.AdventureStats.Explore] = 0,
+                [Generator.AdventureStats.Monster] = 0,
+                [Generator.AdventureStats.Boss] = 0,
+                [Generator.AdventureStats.Portal] = 0
+            };
         }
 
         public abstract void NextStep(Mogwai mogwai, Shift shift);
