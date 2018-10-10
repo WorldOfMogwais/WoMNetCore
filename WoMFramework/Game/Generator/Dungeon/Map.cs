@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
+using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
 using WoMFramework.Game.Model;
 
@@ -44,8 +45,8 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             // creating map here
             //RectangleMapGenerator.Generate(wMap);
-            //RandomRoomsGenerator.Generate(wMap, 2, 11, 11, 20);
-            TestMap(wMap);
+            RandomRoomsGenerator.Generate(wMap, 12, 5, 9, 20);
+            //TestMap(wMap);
 
             WalkabilityMap = wMap;
             EntityMap = new ArrayMap<IAdventureEntity>(width, height);
@@ -99,7 +100,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                     wMap[x, y] = true;
         }
 
-        public void AddEntity(IAdventureEntity entity, int x, int y)
+        public void AddEntity(ICombatant entity, int x, int y)
         {
             // can't add an entity to invalid position
             if (!WalkabilityMap[x, y])
@@ -115,23 +116,19 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             EntityCount++;
 
-            if (entity is Entity combatant)
-            {
-                // calculate fov
-                FovMap.Calculate(combatant.Coordinate.X, combatant.Coordinate.Y, 5, Radius.CIRCLE);
-                combatant.FovCoords = new HashSet<Coord>(FovMap.CurrentFOV);
-
-            }
+            // calculate fov
+            FovMap.Calculate(entity.Coordinate.X, entity.Coordinate.Y, 5, Radius.CIRCLE);
+            entity.FovCoords = new HashSet<Coord>(FovMap.CurrentFOV);
 
             Adventure.AdventureLogs.Enqueue(AdventureLog.EntityCreated(entity));
         }
 
-        public void AddEntity(IAdventureEntity entity, Coord pos)
+        public void AddEntity(ICombatant entity, Coord pos)
         {
             AddEntity(entity, pos.X, pos.Y);
         }
 
-        public void MoveEntity(IAdventureEntity entity, Coord destination)
+        public void MoveEntity(ICombatant entity, Coord destination)
         {
             if (EntityMap[entity.Coordinate] == null)
                 throw new Exception();
@@ -146,10 +143,14 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             entity.Coordinate = destination;
 
+            // calculate fov
+            FovMap.Calculate(entity.Coordinate.X, entity.Coordinate.Y, 5, Radius.CIRCLE);
+            entity.FovCoords = new HashSet<Coord>(FovMap.CurrentFOV);
+
             Adventure.AdventureLogs.Enqueue(AdventureLog.EntityMoved(entity, destination));
         }
 
-        public void RemoveEntity(IAdventureEntity entity)
+        public void RemoveEntity(ICombatant entity)
         {
             if (EntityMap[entity.Coordinate] == null)
                 throw new Exception();

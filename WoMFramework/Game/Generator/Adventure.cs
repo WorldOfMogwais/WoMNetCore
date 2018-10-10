@@ -65,39 +65,41 @@ namespace WoMFramework.Game.Generator
 
         public LogType Type { get; }
         public Coord SourceCoord { get; }
+        public HashSet<Coord> SourceFovCoords { get; }
         public Coord TargetCoord { get; }
         public int Source { get; }
         public int Target { get; }
         public bool Flag { get; }
 
-        public AdventureLog(LogType type, int source, Coord sourceCoord, Coord[] fovCoords = null, int target = 0, Coord targetCoord = null, bool flag = true)
+        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords = null, int target = 0, Coord targetCoord = null, bool flag = true)
         {
             Type = type;
             Source = source;
             Target = target;
             SourceCoord = sourceCoord;
+            SourceFovCoords = sourceFovCoords;
             TargetCoord = targetCoord;
             Flag = flag;
         }
 
-        public static AdventureLog EntityCreated(IAdventureEntity entity)
+        public static AdventureLog EntityCreated(ICombatant entity)
         {
-            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate);
+            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords);
         }
 
-        public static AdventureLog EntityRemoved(IAdventureEntity entity)
+        public static AdventureLog EntityRemoved(ICombatant entity)
         {
             return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, flag: false);
         }
 
-        public static AdventureLog EntityMoved(IAdventureEntity entity, Coord destination)
+        public static AdventureLog EntityMoved(ICombatant entity, Coord destination)
         {
-            return new AdventureLog(LogType.Move, entity.AdventureEntityId, entity.Coordinate, null, 0, destination);
+            return new AdventureLog(LogType.Move, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords, 0, destination);
         }
 
-        public static AdventureLog Attacked(IAdventureEntity source, IAdventureEntity target)
+        public static AdventureLog Attacked(ICombatant entity, IAdventureEntity target)
         {
-            return new AdventureLog(LogType.Attack, source.AdventureEntityId, source.Coordinate, null, target.AdventureEntityId, target.Coordinate);
+            return new AdventureLog(LogType.Attack, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords, target.AdventureEntityId, target.Coordinate);
         }
     }
 

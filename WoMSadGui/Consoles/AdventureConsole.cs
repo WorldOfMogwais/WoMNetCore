@@ -6,6 +6,7 @@ using GoRogue.MapViews;
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Surfaces;
+using SadConsole.Themes;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Model;
@@ -179,8 +180,14 @@ namespace WoMSadGui.Consoles
             if (LastUpdate.Add(GameSpeed) >= DateTime.Now) return;
 
             LastUpdate = DateTime.Now;
+
             if (!Adventure.AdventureLogs.TryDequeue(out var log))
                 return;
+
+            // redraw map
+            DrawMap();
+            DrawFoV(log.SourceFovCoords);
+
             switch (log.Type)
             {
                 case AdventureLog.LogType.Info:
@@ -195,6 +202,14 @@ namespace WoMSadGui.Consoles
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void DrawFoV(HashSet<Coord> fovCoords)
+        {
+            foreach (var fovCoord in fovCoords)
+            {
+                _mapConsole[fovCoord.X, fovCoord.Y].Background = Color.Lerp(Color.DarkGray, Color.Black, 0.75f);
             }
         }
 

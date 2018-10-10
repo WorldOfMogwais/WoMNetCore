@@ -56,7 +56,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public SimpleDungeon(Shift shift) : base(shift)
         {
-            Map = new Map(36, 13, this);
+            Map = new Map(50, 20, this);
             SimpleMonsters = new[] { Monsters.Rat };
         }
 
