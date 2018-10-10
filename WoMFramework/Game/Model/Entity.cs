@@ -361,6 +361,8 @@ namespace WoMFramework.Game.Model
 
         public List<Entity> EngagedEnemies { get; set; }
 
+        public HashSet<Coord> FovCoords { get; set; }
+
         void ICombatant.MoveArbitrary()
         {
             Coord destination;

@@ -70,8 +70,7 @@ namespace WoMFramework.Game.Generator
         public int Target { get; }
         public bool Flag { get; }
 
-        public AdventureLog(LogType type, int source, Coord sourceCoord,
-            int target = 0, Coord targetCoord = null, bool flag = true)
+        public AdventureLog(LogType type, int source, Coord sourceCoord, Coord[] fovCoords = null, int target = 0, Coord targetCoord = null, bool flag = true)
         {
             Type = type;
             Source = source;
@@ -93,13 +92,12 @@ namespace WoMFramework.Game.Generator
 
         public static AdventureLog EntityMoved(IAdventureEntity entity, Coord destination)
         {
-            return new AdventureLog(LogType.Move, entity.AdventureEntityId, entity.Coordinate, 0, destination);
+            return new AdventureLog(LogType.Move, entity.AdventureEntityId, entity.Coordinate, null, 0, destination);
         }
 
         public static AdventureLog Attacked(IAdventureEntity source, IAdventureEntity target)
         {
-            return new AdventureLog(LogType.Attack, source.AdventureEntityId, source.Coordinate,
-                target.AdventureEntityId, target.Coordinate);
+            return new AdventureLog(LogType.Attack, source.AdventureEntityId, source.Coordinate, null, target.AdventureEntityId, target.Coordinate);
         }
     }
 
@@ -134,6 +132,8 @@ namespace WoMFramework.Game.Generator
         CombatState CombatState { get; set; }
 
         List<Entity> EngagedEnemies { get; set; }
+
+        HashSet<Coord> FovCoords { get; set; }
 
         void MoveArbitrary();
     }
