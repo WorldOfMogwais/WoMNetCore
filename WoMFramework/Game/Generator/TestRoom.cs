@@ -1,4 +1,7 @@
-﻿using WoMFramework.Game.Combat;
+﻿using System.Collections.Generic;
+using System.Linq;
+using GoRogue;
+using WoMFramework.Game.Combat;
 using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
@@ -22,7 +25,20 @@ namespace WoMFramework.Game.Generator
         {
             if (AdventureState == AdventureState.Preparation)
             {
+                var coords = new List<Coord>();
                 _simpleFight.Prepare(mogwai, shift);
+                var hero = _simpleFight.Heroes.First();
+                Map.AddEntity(hero, 4, 4);
+                coords.AddRange(new RadiusAreaProvider(hero.Coordinate, 1, Radius.CIRCLE)
+                    .CalculatePositions().ToList());
+
+                foreach (var entity in _simpleFight.Monsters)
+                {
+                    var getAPlace = coords[1];
+                    Map.AddEntity(entity, getAPlace.X, getAPlace.Y);
+                    coords.Remove(getAPlace);
+                }
+
                 AdventureState = AdventureState.Running;
             }
 

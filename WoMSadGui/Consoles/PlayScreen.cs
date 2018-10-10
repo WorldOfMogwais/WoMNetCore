@@ -39,6 +39,8 @@ namespace WoMSadGui.Consoles
 
         public SadGuiState State { get; set; }
 
+        private readonly AdventureConsole _custom;
+
         private readonly ScrollingConsole _log;
 
         private readonly Mogwai _mogwai;
@@ -55,8 +57,8 @@ namespace WoMSadGui.Consoles
             var playStatsConsole = new PlayStatsConsole(_mogwai, 44, 22) { Position = new Point(0, 0) };
             Children.Add(playStatsConsole);
 
-            var custom = new MogwaiConsole("Custom", "", 91, 22) { Position = new Point(46, 0) };
-            Children.Add(custom);
+            _custom = new AdventureConsole(mogwaiController, mogwaiKeys, 91, 22) { Position = new Point(46, 0) };
+            Children.Add(_custom);
 
             _log = new ScrollingConsole(85, 13, 100) { Position = new Point(0, 25) };
             Children.Add(_log);
@@ -249,6 +251,10 @@ namespace WoMSadGui.Consoles
                 {
                     if (_mogwai.Adventure != null)
                     {
+                        _custom.Start(_mogwai.Adventure);
+                    }
+                    else
+                    {
 
                     }
                     UpdateLog();
@@ -353,7 +359,10 @@ namespace WoMSadGui.Consoles
         {
             if (IsVisible)
             {
-
+                if (_custom.Adventure != null)
+                {
+                    _custom.UpdateGame();
+                }
             }
 
             base.Update(delta);

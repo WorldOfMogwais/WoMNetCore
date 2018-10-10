@@ -93,6 +93,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 // initialize monster
                 SimpleMonsters[i].Initialize(new Dice(shift, mDeriv + i));
+                SimpleMonsters[i].Adventure = this;
 
                 // TODO: Positioning monsters
                 var monsterCoord = Coord.Get(0, 0);

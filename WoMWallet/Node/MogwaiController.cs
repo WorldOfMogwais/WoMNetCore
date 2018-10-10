@@ -245,6 +245,7 @@ namespace WoMWallet.Node
         {
 
             var lvlAction = new LevelingAction(LevelingType.Class, ClassType.Barbarian, 0, 1);
+            var dungAction = new AdventureAction(AdventureType.Dungeon, DifficultyType.Average, 2);
 
             var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i"));
             var shifts = new Dictionary<double, Shift>
@@ -297,6 +298,17 @@ namespace WoMWallet.Node
                         1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
                         lvlAction.GetValue1(),
                         lvlAction.GetValue2())
+                },
+                {
+                    1011, new Shift(10, pubMogAddressHex,
+                        1011, "0000000033dbfc163dff671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
+                },
+                {
+                    1012, new Shift(11, 1555299745, pubMogAddressHex,
+                        1012, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bcf29",
+                        dungAction.GetValue1(),
+                        dungAction.GetValue2())
                 }
 
         };

@@ -35,23 +35,15 @@ namespace WoMSadGui.Consoles
 
         // TODO: EntityManager
 
-        static AdventureScreen()
-        {
-            FontMaster fm = Global.LoadFont("Cheepicus12.font");
-            AdventureFont = fm.GetFont(Font.FontSizes.One);
-        }
-
         public AdventureScreen(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base(width, height)
         {
-            Font = AdventureFont;
-
             _controller = mogwaiController;
             _mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
             _mogwai = _mogwaiKeys.Mogwai;
 
             Adventure = new SimpleDungeon(_mogwai.CurrentShift);
 
-            DrawMap();
+
         }
 
         public static AdventureScreen Test(MogwaiController mogwaiController)
@@ -59,7 +51,7 @@ namespace WoMSadGui.Consoles
             //var dungeon = new SimpleDungeon(mogwaiController.CurrentMogwai.CurrentShift);
 
             var console = new AdventureScreen(mogwaiController, null, 40, 40);
-
+            console.DrawMap();
 
             var dungeon = console.Adventure as SimpleDungeon;
             var map = dungeon.Map;
@@ -107,7 +99,7 @@ namespace WoMSadGui.Consoles
             var map = Adventure.Map;
 
             // TODO: Viewport
-            Resize(map.Width, map.Height, true);
+            //Resize(map.Width, map.Height, true);
 
             var wMap = map.WalkabilityMap;
             for (int i = 0; i < wMap.Width; i++)
@@ -135,7 +127,7 @@ namespace WoMSadGui.Consoles
             }
 
             // TODO: rotating symbols for multiple mogwais
-            var animated = new Animated("default", 1, 1, AdventureFont);
+            var animated = new Animated("default", 1, 1);
             var frame = animated.CreateFrame();
             frame[0].Glyph = glyph;
             frame[0].Foreground = colour;
@@ -178,7 +170,7 @@ namespace WoMSadGui.Consoles
 
         private void AttackEntity(Coord targetCoord)
         {
-            var effect = new Animated("default", 1, 1, AdventureFont);
+            var effect = new Animated("default", 1, 1);
 
             var frame = effect.CreateFrame();
             effect.CreateFrame();

@@ -38,13 +38,15 @@ namespace WoMFramework.Game.Generator.Dungeon
             Adventure = adventure;
 
             var wMap = new ArrayMap<bool>(width, height);
-            
+
             // creating map here
             //RectangleMapGenerator.Generate(wMap);
             //RandomRoomsGenerator.Generate(wMap, 2, 11, 11, 20);
             TestMap(wMap);
 
             WalkabilityMap = wMap;
+
+            //var fovMap = new FOV();
 
             EntityMap = new ArrayMap<IAdventureEntity>(width, height);
 
@@ -59,26 +61,31 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         private void TestMap(ArrayMap<bool> wMap)
         {
-            int minWidth = 3;
-            for (int x = 1; x < wMap.Width - 1; x++)
-            {
-                double g = Math.Pow(x - (wMap.Width / 2), 2 );
-                for (int y = 1; y < wMap.Height - 1; y++)
-                {
-                    if (g > wMap.Height - 2)
-                    {
-                        wMap[x, y] = true;
-                        continue;
-                    }
-                    var halfWidth = (g < minWidth ? minWidth : g) / 2;
-                    var middle = (double) wMap.Height / 2;
+            //int minWidth = 3;
+            //for (int x = 1; x < wMap.Width - 1; x++)
+            //{
+            //    double g = Math.Pow(x - (wMap.Width / 2), 2 );
+            //    for (int y = 1; y < wMap.Height - 1; y++)
+            //    {
+            //        if (g > wMap.Height - 2)
+            //        {
+            //            wMap[x, y] = true;
+            //            continue;
+            //        }
+            //        var halfWidth = (g < minWidth ? minWidth : g) / 2;
+            //        var middle = (double) wMap.Height / 2;
 
-                    if (y < middle  + halfWidth && y > middle - halfWidth)
-                    {
-                        wMap[x, y] = true;
-                    }
-                }
-            }
+            //        if (y < middle  + halfWidth && y > middle - halfWidth)
+            //        {
+            //            wMap[x, y] = true;
+            //        }
+            //    }
+            //}
+
+            // Rectangle
+            for (int x = 1; x < wMap.Width - 1; x++)
+                for (int y = 1; y < wMap.Height - 1; y++)
+                    wMap[x, y] = true;
         }
 
         public void AddEntity(IAdventureEntity entity, int x, int y)
