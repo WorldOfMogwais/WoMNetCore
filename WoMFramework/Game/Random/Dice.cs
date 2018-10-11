@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Troschuetz.Random;
+using Troschuetz.Random.Generators;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Tool;
@@ -8,6 +11,8 @@ namespace WoMFramework.Game.Random
 {
     public class Dice
     {
+        private Shift _shift;
+
         private int _i1;
 
         private int _i2;
@@ -26,6 +31,7 @@ namespace WoMFramework.Game.Random
         /// <param name="shift"></param>
         public Dice(Shift shift)
         {
+            _shift = shift;
             var height = shift.Height.ToString();
             height = height.PadLeft(height.Length + height.Length % 2, '0');
             _seed1 = HexHashUtil.HashSha256(shift.AdHex + height);
@@ -35,6 +41,8 @@ namespace WoMFramework.Game.Random
 
         public Dice(Shift shift, int modifier)
         {
+            _shift = shift;
+
             var height = shift.Height.ToString();
             height = height.PadLeft(height.Length + height.Length % 2, 'a');
 
@@ -107,6 +115,17 @@ namespace WoMFramework.Game.Random
         {
             return int.Parse(diceType.ToString().Substring(1));
 
+        }
+
+        public IGenerator GetRandomGenerator()
+        {
+            var genDice = new Dice(_shift, 1337);
+            var seed = 0;
+            for (var i = 0; i < 8; i++)
+            {
+                seed += (int) Math.Pow(10, i) * (genDice.GetNext() % 10);
+            }
+            return new StandardGenerator(seed);
         }
     }
 }

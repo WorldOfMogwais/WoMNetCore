@@ -4,6 +4,7 @@ using System.Linq;
 using GoRogue;
 using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
+using Troschuetz.Random;
 using WoMFramework.Game.Model;
 
 namespace WoMFramework.Game.Generator.Dungeon
@@ -35,6 +36,41 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public int EntityCount { get; private set; }
 
+        public Map(IGenerator dungeonRandom, int width, int height, Adventure adventure)
+        {
+            Width = width;
+            Height = height;
+            Adventure = adventure;
+
+            var wMap = new ArrayMap<bool>(width, height);
+
+            // creating map here
+            //RandomRoomsGenerator.Generate(wMap, dungeonRandom, 12, 5, 9, 20);
+            CellularAutomataGenerator.Generate(wMap, dungeonRandom);
+
+            WalkabilityMap = wMap;
+            EntityMap = new ArrayMap<IAdventureEntity>(width, height);
+            TileMap = new ArrayMap<Tile>(width, height);
+            var resMap = new ArrayMap<double>(width, height);
+            for (var i = 0; i < width; i++)
+            {
+                for (var j = 0; j < height; j++)
+                {
+                    if (wMap[i, j])
+                    {
+                        resMap[i, j] = 0;
+                        TileMap[i, j] = new StoneTile(this, Coord.Get(i, j));
+                    }
+                    else
+                    {
+                        resMap[i, j] = 1;
+                        TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
+                    }
+                }
+            }
+            FovMap = new FOV(resMap);
+        }
+
         public Map(int width, int height, Adventure adventure)
         {
             Width = width;
@@ -44,9 +80,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             var wMap = new ArrayMap<bool>(width, height);
 
             // creating map here
-            //RectangleMapGenerator.Generate(wMap);
-            RandomRoomsGenerator.Generate(wMap, 12, 5, 9, 20);
-            //TestMap(wMap);
+            TestMap(wMap);
 
             WalkabilityMap = wMap;
             EntityMap = new ArrayMap<IAdventureEntity>(width, height);

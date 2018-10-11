@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using GoRogue;
+using Troschuetz.Random;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
@@ -21,9 +22,12 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public const int MaxRoundsPerBlock = 100;
 
+        public IGenerator DungeonRandom { get; }
+
         protected Dungeon(Shift shift)
         {
             Shift = shift;
+            DungeonRandom = new Dice(shift).GetRandomGenerator();
         }
 
         public override void NextStep(Mogwai mogwai, Shift shift)
@@ -56,7 +60,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public SimpleDungeon(Shift shift) : base(shift)
         {
-            Map = new Map(50, 20, this);
+            Map = new Map(DungeonRandom, 50, 22, this);
             SimpleMonsters = new[] { Monsters.Rat };
         }
 
