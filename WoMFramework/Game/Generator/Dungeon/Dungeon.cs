@@ -149,10 +149,10 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public override bool Run(Mogwai mogwai)
         {
-            foreach (var entity in Map.GetEntities().OfType<Entity>())
-            {
-                entity.CombatState = CombatState.Initiation;
-            }
+            //foreach (var entity in Map.GetEntities().OfType<Entity>())
+            //{
+            //    entity.CombatState = CombatState.Initiation;
+            //}
 
             for (var round = 0; round < MaxRoundsPerBlock && AdventureState == AdventureState.Running; round++)
             {
@@ -192,8 +192,27 @@ namespace WoMFramework.Game.Generator.Dungeon
         private void ExplorationRound()
         {
             var mogwais = Map.GetEntities().OfType<Mogwai>().Where(p => p.HealthState > 0);
+            foreach (var entity in mogwais)
+            {
+                var pois = Map.GetCoords<int>(Map.ExplorationMap, i => i > 0).Where(p => Map.WalkabilityMap[p.X,p.Y]).ToList();
+                if (pois.Count == 0)
+                {
+                    continue;
+                }
+                var combatActionQueue = new Queue<CombatAction>();
+                var poi = Map.Nearest(entity.Coordinate, pois);
+                TryEnqueueMove(entity, poi, ref combatActionQueue);
+
+                // dequeue all actions
+                while (combatActionQueue.TryDequeue(out var combatAction))
+                {
+                    entity.TakeAction(combatAction);
+                }
+
+            }
+
             var monsters = Map.GetEntities().OfType<Monster>().Where(p => p.HealthState > 0);
-            foreach (var entity in Map.GetEntities().OfType<Entity>())
+            foreach (var entity in monsters)
             {
 
             }
@@ -222,18 +241,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 if (combatActionQueue.Count == 0)
                 {
                     var intersects = GetIntersections(entity, target);
-
-                    var nearestCoord = target.Coordinate;
-                    var distance = double.MaxValue;
-
-                    foreach (var i in intersects)
-                    {
-                        var d = Distance.EUCLIDEAN.Calculate(entity.Coordinate, i);
-                        if (d >= distance)
-                            continue;
-                        distance = d;
-                        nearestCoord = i;
-                    }
+                    var nearestCoord = Map.Nearest(entity.Coordinate, intersects) ?? target.Coordinate;
 
                     // enqueue move
                     TryEnqueueMove(entity, nearestCoord, ref combatActionQueue);
@@ -318,10 +326,14 @@ namespace WoMFramework.Game.Generator.Dungeon
                 AdventureStats[Generator.AdventureStats.Monster] = 1;
             }
 
-            if (AdventureStats[Generator.AdventureStats.Monster] >= 1)
+            AdventureStats[Generator.AdventureStats.Explore] = Map.GetExplorationState();
+
+            if (AdventureStats[Generator.AdventureStats.Monster] >= 1
+             || AdventureStats[Generator.AdventureStats.Explore] >= 1)
             {
                 AdventureState = AdventureState.Completed;
             }
+
 
         }
     }

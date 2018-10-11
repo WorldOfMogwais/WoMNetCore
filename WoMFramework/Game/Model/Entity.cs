@@ -602,15 +602,16 @@ namespace WoMFramework.Game.Model
                 return;
             }
 
-            var nearest = Coord.Get(0, 0);
-            var distance = double.MaxValue;
-            foreach (var i in intersects)
-            {
-                var d = Distance.EUCLIDEAN.Calculate(Coordinate, i);
-                if (d >= distance) continue;
-                distance = d;
-                nearest = i;
-            }
+            var nearest = Map.Nearest(Coordinate, intersects);
+            //var nearest = Coord.Get(0, 0);
+            //var distance = double.MaxValue;
+            //foreach (var i in intersects)
+            //{
+            //    var d = Distance.EUCLIDEAN.Calculate(Coordinate, i);
+            //    if (d >= distance) continue;
+            //    distance = d;
+            //    nearest = i;
+            //}
 
             Move(nearest);
             Attack(weaponAttack);

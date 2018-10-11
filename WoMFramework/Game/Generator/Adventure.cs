@@ -62,7 +62,6 @@ namespace WoMFramework.Game.Generator
             Entity
         }
 
-
         public LogType Type { get; }
         public Coord SourceCoord { get; }
         public HashSet<Coord> SourceFovCoords { get; }

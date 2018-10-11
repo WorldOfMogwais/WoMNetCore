@@ -6,6 +6,7 @@ using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
 using Troschuetz.Random;
 using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Mogwai;
 
 namespace WoMFramework.Game.Generator.Dungeon
 {
@@ -46,8 +47,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             var wMap = new ArrayMap<bool>(width, height);
 
             // creating map here
-            //RandomRoomsGenerator.Generate(wMap, dungeonRandom, 12, 5, 9, 20);
-            CellularAutomataGenerator.Generate(wMap, dungeonRandom);
+            RandomRoomsGenerator.Generate(wMap, dungeonRandom, 12, 5, 9, 20);
+            //CellularAutomataGenerator.Generate(wMap, dungeonRandom);
 
             WalkabilityMap = wMap;
             ExplorationMap = new ArrayMap<int>(width, height);
@@ -58,14 +59,15 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 for (var j = 0; j < height; j++)
                 {
-                    ExplorationMap[i, j] = 1;
                     if (wMap[i, j])
                     {
+                        ExplorationMap[i, j] = 1;
                         resMap[i, j] = 0;
                         TileMap[i, j] = new StoneTile(this, Coord.Get(i, j));
                     }
                     else
                     {
+                        ExplorationMap[i, j] = 0;
                         resMap[i, j] = 1;
                         TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
                     }
@@ -94,14 +96,15 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 for (var j = 0; j < height; j++)
                 {
-                    ExplorationMap[i, j] = 1;
                     if (wMap[i, j])
                     {
+                        ExplorationMap[i, j] = 1;
                         resMap[i, j] = 0;
                         TileMap[i, j] = new StoneTile(this, Coord.Get(i, j));
                     }
                     else
                     {
+                        ExplorationMap[i, j] = 0;
                         resMap[i, j] = 1;
                         TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
                     }
@@ -157,7 +160,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             // calculate fov
             entity.FovCoords = CalculateFoV(entity.Coordinate);
-
+            //entity.ExploredCoords = GetCoords<int>(ExplorationMap, i => i < 1).ToHashSet();
             Adventure.AdventureLogs.Enqueue(AdventureLog.EntityCreated(entity));
         }
 
@@ -181,34 +184,39 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             entity.Coordinate = destination;
 
-            entity.FovCoords = CalculateFoV(entity.Coordinate);
-
+            entity.FovCoords = CalculateFoV(entity.Coordinate, entity is Mogwai);
 
             Adventure.AdventureLogs.Enqueue(AdventureLog.EntityMoved(entity, destination));
         }
 
-        private HashSet<Coord> CalculateFoV(Coord coords)
+        private HashSet<Coord> CalculateFoV(Coord coords, bool isExploring = false)
         {
-            // exploration fov 1. part
-            FovMap.Calculate(coords.X, coords.Y, 4, Radius.CIRCLE);
-            foreach (var coord in FovMap.CurrentFOV)
+            if (isExploring)
             {
-                ExplorationMap[coord.X, coord.Y] = WalkabilityMap[coord.X, coord.Y] ? 0 : -1;
+                // exploration fov 1. part
+                FovMap.Calculate(coords.X, coords.Y, 4, Radius.CIRCLE);
+                foreach (var coord in FovMap.CurrentFOV)
+                {
+                    ExplorationMap[coord.X, coord.Y] = WalkabilityMap[coord.X, coord.Y] ? 0 : -1;
+                }
             }
 
             // calculate fov
             FovMap.Calculate(coords.X, coords.Y, 5, Radius.CIRCLE);
 
-            // exploration fov 2. part
-            foreach (var coord in FovMap.CurrentFOV)
+            if (isExploring)
             {
-                if (!WalkabilityMap[coord.X, coord.Y])
+                // exploration fov 2. part
+                foreach (var coord in FovMap.CurrentFOV)
                 {
-                    ExplorationMap[coord.X, coord.Y] = -1;
-                }
-                else if (ExplorationMap[coord.X, coord.Y] > 0)
-                {
-                    ExplorationMap[coord.X, coord.Y] += 1;
+                    if (!WalkabilityMap[coord.X, coord.Y])
+                    {
+                        ExplorationMap[coord.X, coord.Y] = -1;
+                    }
+                    else if (ExplorationMap[coord.X, coord.Y] > 0)
+                    {
+                        ExplorationMap[coord.X, coord.Y] += 1;
+                    }
                 }
             }
 
@@ -245,6 +253,56 @@ namespace WoMFramework.Game.Generator.Dungeon
         public static Coord GetDirection(Direction direction)
         {
             return Directions[(int)direction];
+        }
+
+        public List<Coord> GetCoords<T>(ArrayMap<T> map, Func<T, bool> validate)
+        {
+            var corrds = new List<Coord>();
+            for (var i = 0; i < map.Width; i++)
+            {
+                for (var j = 0; j < map.Height; j++)
+                {
+                    if (validate(map[i,j]))
+                    {
+                        corrds.Add(Coord.Get(i, j));
+                    }
+                }
+            }
+            return corrds;
+        }
+
+        public double GetExplorationState()
+        {
+            int walkable = 0;
+            int visited = 0;
+            for (var i = 0; i < WalkabilityMap.Width; i++)
+            {
+                for (var j = 0; j < WalkabilityMap.Height; j++)
+                {
+                    if (!WalkabilityMap[i, j]) continue;
+
+                    walkable++;
+                    if (ExplorationMap[i, j] == 0)
+                    {
+                        visited++;
+                    }
+                }
+            }
+            return (double) visited / walkable;
+        }
+
+        public Coord Nearest(Coord current, List<Coord> coords)
+        {
+            Coord nearest = null;
+            var distance = double.MaxValue;
+            foreach (var coord in coords)
+            {
+                var d = Distance.EUCLIDEAN.Calculate(current, coord);
+                if (d >= distance) continue;
+                distance = d;
+                nearest = coord;
+            }
+            return nearest;
         }
     }
 
