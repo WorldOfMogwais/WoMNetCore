@@ -191,7 +191,12 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         private void ExplorationRound()
         {
-            //throw new System.NotImplementedException();
+            var mogwais = Map.GetEntities().OfType<Mogwai>().Where(p => p.HealthState > 0);
+            var monsters = Map.GetEntities().OfType<Monster>().Where(p => p.HealthState > 0);
+            foreach (var entity in Map.GetEntities().OfType<Entity>())
+            {
+
+            }
         }
 
         private void CombatRound()

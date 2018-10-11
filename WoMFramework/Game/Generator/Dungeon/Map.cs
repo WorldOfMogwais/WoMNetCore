@@ -27,6 +27,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         public Adventure Adventure { get; set; }
 
         public ArrayMap<bool> WalkabilityMap { get; }
+        public ArrayMap<int> ExplorationMap { get; }
         public ArrayMap<IAdventureEntity> EntityMap { get; }
         public ArrayMap<Tile> TileMap { get; }
         public FOV FovMap { get; }
@@ -49,6 +50,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             CellularAutomataGenerator.Generate(wMap, dungeonRandom);
 
             WalkabilityMap = wMap;
+            ExplorationMap = new ArrayMap<int>(width, height);
             EntityMap = new ArrayMap<IAdventureEntity>(width, height);
             TileMap = new ArrayMap<Tile>(width, height);
             var resMap = new ArrayMap<double>(width, height);
@@ -56,6 +58,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 for (var j = 0; j < height; j++)
                 {
+                    ExplorationMap[i, j] = 1;
                     if (wMap[i, j])
                     {
                         resMap[i, j] = 0;
@@ -83,6 +86,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             TestMap(wMap);
 
             WalkabilityMap = wMap;
+            ExplorationMap = new ArrayMap<int>(width, height);
             EntityMap = new ArrayMap<IAdventureEntity>(width, height);
             TileMap = new ArrayMap<Tile>(width, height);
             var resMap = new ArrayMap<double>(width, height);
@@ -90,6 +94,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 for (var j = 0; j < height; j++)
                 {
+                    ExplorationMap[i, j] = 1;
                     if (wMap[i, j])
                     {
                         resMap[i, j] = 0;
@@ -151,8 +156,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             EntityCount++;
 
             // calculate fov
-            FovMap.Calculate(entity.Coordinate.X, entity.Coordinate.Y, 5, Radius.CIRCLE);
-            entity.FovCoords = new HashSet<Coord>(FovMap.CurrentFOV);
+            entity.FovCoords = CalculateFoV(entity.Coordinate);
 
             Adventure.AdventureLogs.Enqueue(AdventureLog.EntityCreated(entity));
         }
@@ -177,11 +181,38 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             entity.Coordinate = destination;
 
-            // calculate fov
-            FovMap.Calculate(entity.Coordinate.X, entity.Coordinate.Y, 5, Radius.CIRCLE);
-            entity.FovCoords = new HashSet<Coord>(FovMap.CurrentFOV);
+            entity.FovCoords = CalculateFoV(entity.Coordinate);
+
 
             Adventure.AdventureLogs.Enqueue(AdventureLog.EntityMoved(entity, destination));
+        }
+
+        private HashSet<Coord> CalculateFoV(Coord coords)
+        {
+            // exploration fov 1. part
+            FovMap.Calculate(coords.X, coords.Y, 4, Radius.CIRCLE);
+            foreach (var coord in FovMap.CurrentFOV)
+            {
+                ExplorationMap[coord.X, coord.Y] = WalkabilityMap[coord.X, coord.Y] ? 0 : -1;
+            }
+
+            // calculate fov
+            FovMap.Calculate(coords.X, coords.Y, 5, Radius.CIRCLE);
+
+            // exploration fov 2. part
+            foreach (var coord in FovMap.CurrentFOV)
+            {
+                if (!WalkabilityMap[coord.X, coord.Y])
+                {
+                    ExplorationMap[coord.X, coord.Y] = -1;
+                }
+                else if (ExplorationMap[coord.X, coord.Y] > 0)
+                {
+                    ExplorationMap[coord.X, coord.Y] += 1;
+                }
+            }
+
+            return new HashSet<Coord>(FovMap.CurrentFOV);
         }
 
         public void RemoveEntity(ICombatant entity)

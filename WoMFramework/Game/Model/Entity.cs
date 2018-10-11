@@ -466,7 +466,7 @@ namespace WoMFramework.Game.Model
         /// </summary>
         /// <param name="destination"></param>
         /// <returns></returns>
-        private bool Move(Coord destination)
+        private bool Move(Coord destination, bool checkForEnemies = false)
         {
             var moveRange = Speed / 5;
 
@@ -493,12 +493,21 @@ namespace WoMFramework.Game.Model
             // TODO: Implement the exact movement rule in the manual
             while (moveRange > 0)
             {
+                if (checkForEnemies && CombatState == CombatState.None)
+                {
+
+                }
+
                 if (path.Length <= i)
+                {
                     break;
+                }
 
                 var next = path.GetStep(i++);
                 if (next == path.End && !Map.WalkabilityMap[next])
+                {
                     break;
+                }
 
                 if (Distance.EUCLIDEAN.Calculate(Coordinate, next) > 1)
                 {
@@ -512,16 +521,22 @@ namespace WoMFramework.Game.Model
                     {
                         if (moveRange == 1)
                         {
-                            var newNext = next.Translate(0, -(next - Coordinate).Y);  // Prefer X direction for now; can be randomised
+                            var newNext = next.Translate(0, - (next - Coordinate).Y);  // Prefer X direction for now; can be randomised
                             if (Map.WalkabilityMap[newNext])
+                            {
                                 Map.MoveEntity(this, newNext);
+                            }
                             else
                             {
                                 newNext = next.Translate(-(next - Coordinate).X, 0);
                                 if (Map.WalkabilityMap[newNext])
+                                {
                                     Map.MoveEntity(this, newNext);
+                                }
                                 else
+                                {
                                     throw new Exception();
+                                }
                             }
                             break;
                         }
