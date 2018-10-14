@@ -10,7 +10,7 @@ namespace WoMFramework.Game.Generator
 {
     public enum AdventureState
     {
-        Preparation, Running, Failed, Completed
+        Preparation, Running, Failed, Extended, Completed
     }
 
     public enum AdventureStats
@@ -31,6 +31,7 @@ namespace WoMFramework.Game.Generator
         public Dictionary<AdventureStats, double> AdventureStats { get; }
 
         public bool IsActive => AdventureState == AdventureState.Preparation
+                             || AdventureState == AdventureState.Extended
                              || AdventureState == AdventureState.Running;
 
         public int NextId => _nextId++;
@@ -43,13 +44,23 @@ namespace WoMFramework.Game.Generator
                 [Generator.AdventureStats.Explore] = 0,
                 [Generator.AdventureStats.Monster] = 0,
                 [Generator.AdventureStats.Boss] = 0,
+                [Generator.AdventureStats.Treasure] = 0,
                 [Generator.AdventureStats.Portal] = 0
             };
         }
 
         public abstract void EvaluateAdventureState();
 
-        public abstract void NextStep(Mogwai mogwai, Shift shift);
+        public abstract void Enter(Mogwai mogwai, Shift shift);
+
+        public abstract void Prepare(Mogwai mogwai, Shift shift);
+
+        public abstract bool HasNextFrame();
+
+        public abstract void NextFrame();
+
+        public abstract bool Run(Mogwai mogwai);
+
     }
 
     public class AdventureLog
@@ -135,6 +146,8 @@ namespace WoMFramework.Game.Generator
         List<Entity> EngagedEnemies { get; set; }
 
         HashSet<Coord> FovCoords { get; set; }
+
+        bool CanSee(IAdventureEntity combatant);
 
         void MoveArbitrary();
     }

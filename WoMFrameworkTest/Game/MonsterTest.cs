@@ -1,11 +1,4 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Equipment;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Game.Model.Monster;
-using WoMFramework.Tool;
+﻿using WoMFramework.Game.Model.Monster;
 using Xunit;
 
 namespace WoMFrameworkTest.Game

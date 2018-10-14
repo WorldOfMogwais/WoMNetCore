@@ -23,7 +23,6 @@ namespace WoMSadGui
         private static SplashScreen _splashScreen;
         private static SelectionScreen _selectionScreen;
         private static PlayScreen _playScreen;
-        private static AdventureScreen _adventureScreen;
 
         private static LogoConsole _logoConsole;
 
@@ -117,10 +116,6 @@ namespace WoMSadGui
                     break;
                 case SadGuiState.Quit:
                     Game.Instance.Exit();
-                    break;
-
-                case SadGuiState.Test:
-                    _adventureScreen.UpdateGame();
                     break;
             }
 
@@ -254,10 +249,6 @@ namespace WoMSadGui
 
             _state = SadGuiState.Play;
             PlayScreen();
-
-
-            //_state = SadGuiState.Test;
-            //_adventureScreen = AdventureScreen.Test(_controller);
         }
 
         private static void SplashScreenCompleted()
@@ -279,7 +270,5 @@ namespace WoMSadGui
         Play,
         Fatalerror,
         Quit,
-        
-        Test
     }
 }

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using WoMFramework.Game.Combat;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model.Monster;
 
 namespace WoMFramework.Game.Generator
 {
@@ -30,8 +27,7 @@ namespace WoMFramework.Game.Generator
 
         private static TestRoom CreateTestRoom(int challengeRatingt)
         {
-            var simpleFight = new SimpleCombat(new List<Monster> { Monsters.Rat, Monsters.Rat });
-            var testRoom = new TestRoom(simpleFight);
+            var testRoom = new TestRoom();
             return testRoom;
         }
     }

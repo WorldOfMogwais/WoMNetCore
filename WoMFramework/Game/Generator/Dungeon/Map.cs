@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using GoRogue;
 using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
 using Troschuetz.Random;
-using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Mogwai;
 
 namespace WoMFramework.Game.Generator.Dungeon
@@ -38,6 +36,8 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public int EntityCount { get; private set; }
 
+        public int _walkableTiles = 0;
+
         public Map(IGenerator dungeonRandom, int width, int height, Adventure adventure)
         {
             Width = width;
@@ -47,8 +47,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             var wMap = new ArrayMap<bool>(width, height);
 
             // creating map here
-            RandomRoomsGenerator.Generate(wMap, dungeonRandom, 12, 5, 9, 20);
-            //CellularAutomataGenerator.Generate(wMap, dungeonRandom);
+            //RandomRoomsGenerator.Generate(wMap, dungeonRandom, 15, 5, 15, 50);
+            CellularAutomataGenerator.Generate(wMap, dungeonRandom);
 
             WalkabilityMap = wMap;
             ExplorationMap = new ArrayMap<int>(width, height);
@@ -63,11 +63,12 @@ namespace WoMFramework.Game.Generator.Dungeon
                     {
                         ExplorationMap[i, j] = 1;
                         resMap[i, j] = 0;
+                        _walkableTiles++;
                         TileMap[i, j] = new StoneTile(this, Coord.Get(i, j));
                     }
                     else
                     {
-                        ExplorationMap[i, j] = 0;
+                        ExplorationMap[i, j] = -2;
                         resMap[i, j] = 1;
                         TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
                     }
@@ -100,11 +101,12 @@ namespace WoMFramework.Game.Generator.Dungeon
                     {
                         ExplorationMap[i, j] = 1;
                         resMap[i, j] = 0;
+                        _walkableTiles++;
                         TileMap[i, j] = new StoneTile(this, Coord.Get(i, j));
                     }
                     else
                     {
-                        ExplorationMap[i, j] = 0;
+                        ExplorationMap[i, j] = -2;
                         resMap[i, j] = 1;
                         TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
                     }
@@ -273,22 +275,18 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public double GetExplorationState()
         {
-            int walkable = 0;
             int visited = 0;
             for (var i = 0; i < WalkabilityMap.Width; i++)
             {
                 for (var j = 0; j < WalkabilityMap.Height; j++)
                 {
-                    if (!WalkabilityMap[i, j]) continue;
-
-                    walkable++;
                     if (ExplorationMap[i, j] == 0)
                     {
                         visited++;
                     }
                 }
             }
-            return (double) visited / walkable;
+            return (double) visited / _walkableTiles;
         }
 
         public Coord Nearest(Coord current, List<Coord> coords)

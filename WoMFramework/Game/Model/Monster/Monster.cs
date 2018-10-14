@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;

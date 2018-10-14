@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using GoRogue;
-using GoRogue.MapViews;
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Surfaces;
-using SadConsole.Themes;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Generator.Dungeon;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Actions;
 using WoMWallet.Node;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Model.Monster;
@@ -21,23 +16,27 @@ namespace WoMSadGui.Consoles
 {
     public class AdventureConsole : MogwaiConsole
     {
+        private static readonly Cell UnknownAppearance = new Cell(new Color(25,25,25), Color.Black, 219);
+        private static readonly Cell UnclearAppearance = new Cell(new Color(50,150,0,100), Color.Black, 219);
         private static readonly Cell StoneTileAppearance = new Cell(Color.DarkGray, Color.Black, 46);
         private static readonly Cell StoneWallAppearance = new Cell(Color.DarkGray, Color.Black, 35);
+
+        private readonly Font AdventureFont;
 
         private readonly MogwaiController _controller;
         private readonly MogwaiKeys _mogwaiKeys;
         private readonly Mogwai _mogwai;
 
-        private Console _mapConsole;
+        private readonly Console _mapConsole;
+
+        private readonly Console _statsConsole;
 
         private readonly Dictionary<int, ConsoleEntity> _entities = new Dictionary<int, ConsoleEntity>();
 
-        public static TimeSpan GameSpeed = TimeSpan.FromSeconds(0.5);
+        public static TimeSpan GameSpeed = TimeSpan.FromSeconds(0.1);
         public DateTime LastUpdate;
 
         public Adventure Adventure { get; private set; }
-
-        public Dictionary<string, int> WallTypeGlyph = new Dictionary<string, int>();
 
         public AdventureConsole(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base("Custom", "", width, height)
         {
@@ -45,60 +44,60 @@ namespace WoMSadGui.Consoles
             _mogwaiKeys = mogwaiKeys;
             _mogwai = _mogwaiKeys.Mogwai;
 
-            _mapConsole = new Console(Width-2, Height) { Position = new Point(1, 0) };
+            AdventureFont = Global.LoadFont("Cheepicus12.font").GetFont(Font.FontSizes.Half);
+
+            _mapConsole = new Console(75, 75) { Position = new Point(17, 2) };
+            _mapConsole.Font = AdventureFont;
             Children.Add(_mapConsole);
 
-            FillWallTypeGlyph();
+            _statsConsole = new MogwaiConsole("stats", "", 21, 5) { Position = new Point(70, 17) };
+            Children.Add(_statsConsole);
+
+            _mapConsole.IsVisible = false;
+
+            _statsConsole.Print(7, 0, "Exploration", Color.Gainsboro);
+            _statsConsole.Print(7, 1, "Monster", Color.Gainsboro);
+            _statsConsole.Print(7, 2, "Boss", Color.Gainsboro);
+            _statsConsole.Print(7, 3, "Treasure", Color.Gainsboro);
+            _statsConsole.Print(7, 4, "Portal", Color.Gainsboro);
         }
 
-        private void FillWallTypeGlyph()
+
+        public bool IsStarted()
         {
-            WallTypeGlyph.Add("111" + "111" + "111", 219);
-            WallTypeGlyph.Add("000" + "010" + "000", 219);
-            WallTypeGlyph.Add("010" + "010" + "010", 179);
-            WallTypeGlyph.Add("111" + "110" + "110", 179);
-            WallTypeGlyph.Add("110" + "110" + "110", 179);
-            WallTypeGlyph.Add("110" + "110" + "111", 179);
-            WallTypeGlyph.Add("111" + "011" + "011", 179);
-            WallTypeGlyph.Add("011" + "011" + "011", 179);
-            WallTypeGlyph.Add("011" + "011" + "111", 179);
-            WallTypeGlyph.Add("000" + "111" + "000", 196);
-            WallTypeGlyph.Add("111" + "111" + "000", 196);
-            WallTypeGlyph.Add("111" + "111" + "100", 196);
-            WallTypeGlyph.Add("111" + "111" + "001", 196);
-            WallTypeGlyph.Add("000" + "111" + "111", 196);
-            WallTypeGlyph.Add("100" + "111" + "111", 196);
-            WallTypeGlyph.Add("001" + "111" + "111", 196);
-            WallTypeGlyph.Add("010" + "110" + "010", 180);
-            WallTypeGlyph.Add("010" + "010" + "111", 193);
-            WallTypeGlyph.Add("111" + "010" + "010", 194);
-            WallTypeGlyph.Add("010" + "011" + "010", 195);
-            WallTypeGlyph.Add("010" + "111" + "010", 197);
-            WallTypeGlyph.Add("000" + "011" + "010", 218);
-            WallTypeGlyph.Add("111" + "111" + "110", 218);
-            WallTypeGlyph.Add("011" + "111" + "111", 217);
-            WallTypeGlyph.Add("010" + "110" + "000", 217);
-            WallTypeGlyph.Add("010" + "011" + "000", 192);
-            WallTypeGlyph.Add("110" + "111" + "111", 192);
-            WallTypeGlyph.Add("000" + "110" + "010", 191);
-            WallTypeGlyph.Add("111" + "111" + "011", 191);
+            return _mapConsole.IsVisible;
         }
 
         public void Start(Adventure adventure)
         {
+            _mapConsole.IsVisible = true;
+
             _mapConsole.Children.Clear();
             _entities.Clear();
 
             Adventure = adventure;
 
-            DrawMap();
+            DrawExploMap();
+            //DrawMap();
 
             // Draw entities (Mogwais, Monsters, etc.)
             foreach (var entity in Adventure.Map.GetEntities())
+            {
                 if (!entity.IsStatic)
+                {
                     DrawEntity(entity);
+                }
+            }
 
             LastUpdate = DateTime.Now;
+        }
+
+        public void Stop()
+        {
+            _mapConsole.IsVisible = false;
+
+            _mapConsole.Children.Clear();
+            _entities.Clear();
         }
 
         public void DrawMap()
@@ -108,6 +107,7 @@ namespace WoMSadGui.Consoles
 
             var wMap = Adventure.Map.TileMap;
             for (var i = 0; i < wMap.Width; i++)
+            {
                 for (var j = 0; j < wMap.Height; j++)
                 {
                     switch (wMap[i, j])
@@ -118,7 +118,6 @@ namespace WoMSadGui.Consoles
                             break;
                         case StoneWall _:
                             _mapConsole[i, j].CopyAppearanceFrom(StoneWallAppearance);
-                            //SetGlyph(i, j, GetGlyphFromSurrounding(i,j, wMap));
                             _mapConsole.SetGlyph(i, j, 35);
                             break;
                         default:
@@ -126,21 +125,53 @@ namespace WoMSadGui.Consoles
 
                     }
                 }
+            }
         }
 
-        private int GetGlyphFromSurrounding(int x, int y, ArrayMap<Tile> map)
+        public void DrawExploMap()
         {
-            if (map[x, y].IsSolid)
+            var wMap = Adventure.Map.ExplorationMap;
+            for (var i = 0; i < wMap.Width; i++)
             {
-                string solidMap = string.Empty;
-                for (int yr = y - 1; yr <= y + 1; yr++)
-                    for (int xr = x - 1; xr <= x + 1; xr++)
-                        try { solidMap += !map[xr, yr].IsReachable ? "1" : "0";}
-                            catch (Exception) { solidMap += "1"; }
-                return WallTypeGlyph[solidMap];
+                for (var j = 0; j < wMap.Height; j++)
+                {
+                    switch (wMap[i, j])
+                    {
+                        case 0:
+                        case -1:
+                            DrawMapPoint(i, j);
+                            break;
+                        case -2:
+                        case 1:
+                            _mapConsole[i, j].CopyAppearanceFrom(UnknownAppearance);
+                            _mapConsole.SetGlyph(i, j, 219);
+                            break;
+                        default:
+                            _mapConsole[i, j].CopyAppearanceFrom(UnclearAppearance);
+                            _mapConsole.SetGlyph(i, j, 219);
+                            break;
+                    }
+                }
             }
+        }
 
-            return 46;
+        public void DrawMapPoint(int x, int y)
+        {
+            var wMap = Adventure.Map.TileMap;
+            switch (wMap[x, y])
+            {
+                case StoneTile _:
+                    _mapConsole[x, y].CopyAppearanceFrom(StoneTileAppearance);
+                    _mapConsole.SetGlyph(x, y, 46);
+                    break;
+                case StoneWall _:
+                    _mapConsole[x, y].CopyAppearanceFrom(StoneWallAppearance);
+                    _mapConsole.SetGlyph(x, y, 35);
+                    break;
+                default:
+                    break;
+
+            }
         }
 
         public void DrawEntity(IAdventureEntity adventureEntity)
@@ -163,13 +194,16 @@ namespace WoMSadGui.Consoles
             }
 
             // TODO: rotating symbols for multiple mogwais
-            var animated = new Animated("default", 1, 1);
+            var animated = new Animated("default", 1, 1, AdventureFont);
             var frame = animated.CreateFrame();
             frame[0].Glyph = glyph;
             frame[0].Foreground = colour;
 
             var pos = adventureEntity.Coordinate;
-            var entity = new ConsoleEntity(animated) { Position = new Point(pos.X, pos.Y) };
+            var entity = new ConsoleEntity(animated)
+            {
+                Position = new Point(pos.X, pos.Y)
+            };
 
             _mapConsole.Children.Add(entity);
             _entities.Add(adventureEntity.AdventureEntityId, entity);
@@ -177,16 +211,31 @@ namespace WoMSadGui.Consoles
 
         public void UpdateGame()
         {
-            if (LastUpdate.Add(GameSpeed) >= DateTime.Now) return;
+            if (!_mapConsole.IsVisible || LastUpdate.Add(GameSpeed) >= DateTime.Now)
+                return;
 
             LastUpdate = DateTime.Now;
+
+            // next frame
+            if (Adventure.AdventureLogs.Count == 0 && Adventure.HasNextFrame())
+            {
+                Adventure.NextFrame();
+            }
 
             if (!Adventure.AdventureLogs.TryDequeue(out var log))
                 return;
 
             // redraw map
-            DrawMap();
+            DrawExploMap();
+            //DrawMap();
             DrawFoV(log.SourceFovCoords);
+
+            // stats
+            _statsConsole.Print(2, 0, Adventure.AdventureStats[AdventureStats.Explore].ToString("0%").PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 1, Adventure.AdventureStats[AdventureStats.Monster].ToString("0%").PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 2, Adventure.AdventureStats[AdventureStats.Boss].ToString("0%").PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 3, Adventure.AdventureStats[AdventureStats.Treasure].ToString("0%").PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 4, Adventure.AdventureStats[AdventureStats.Portal].ToString("0%").PadLeft(4), Color.Gold);
 
             switch (log.Type)
             {
@@ -220,7 +269,7 @@ namespace WoMSadGui.Consoles
 
         private void AttackEntity(Coord targetCoord)
         {
-            var effect = new Animated("default", 1, 1);
+            var effect = new Animated("default", 1, 1, AdventureFont);
 
             var frame = effect.CreateFrame();
             effect.CreateFrame();

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.WebSockets;
 using GoRogue;
 using GoRogue.Pathing;
 using WoMFramework.Game.Enums;
@@ -363,6 +362,11 @@ namespace WoMFramework.Game.Model
 
         public HashSet<Coord> FovCoords { get; set; }
 
+        public bool CanSee(IAdventureEntity entity)
+        {
+            return FovCoords.Any(p => entity.Coordinate.X == p.X);
+        }
+
         void ICombatant.MoveArbitrary()
         {
             Coord destination;
@@ -535,7 +539,8 @@ namespace WoMFramework.Game.Model
                                 }
                                 else
                                 {
-                                    throw new Exception();
+                                    // we dismiss the last point, as probably it's a diag
+                                    return true;
                                 }
                             }
                             break;

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using log4net;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
-using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;
@@ -177,10 +175,20 @@ namespace WoMFramework.Game.Model.Mogwai
                 }
             }
 
+            // finish un-animated adventures
+            if (Adventure != null && Adventure.AdventureState == AdventureState.Running)
+            {
+                while (Adventure.HasNextFrame())
+                {
+                    Adventure.NextFrame();
+                }
+                return true;
+            }
+
             // we go for the adventure if there is one up
             if (Adventure != null && Adventure.IsActive)
             {
-                Adventure.NextStep(this, _currentShift);
+                Adventure.Enter(this, _currentShift);
                 return true;
             }
 

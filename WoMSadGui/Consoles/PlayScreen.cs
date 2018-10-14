@@ -245,6 +245,11 @@ namespace WoMSadGui.Consoles
 
         public void Evolve(bool fast = false)
         {
+            if (_custom.IsStarted())
+            {
+                _custom.Stop();
+            }
+
             if (!fast)
             {
                 if (_mogwai.Evolve(out _))
@@ -255,7 +260,7 @@ namespace WoMSadGui.Consoles
                     }
                     else
                     {
-
+                        
                     }
                     UpdateLog();
                 }
