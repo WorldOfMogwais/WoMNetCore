@@ -17,7 +17,7 @@ namespace WoMSadGui.Consoles
     public class AdventureConsole : MogwaiConsole
     {
         private static readonly Cell UnknownAppearance = new Cell(new Color(25,25,25), Color.Black, 219);
-        private static readonly Cell UnclearAppearance = new Cell(new Color(50,150,0,100), Color.Black, 219);
+        private static readonly Cell UnclearAppearance = new Cell(new Color(50,205,50), new Color(50,205,50,150), 219);
         private static readonly Cell StoneTileAppearance = new Cell(Color.DarkGray, Color.Black, 46);
         private static readonly Cell StoneWallAppearance = new Cell(Color.DarkGray, Color.Black, 35);
 
@@ -139,7 +139,7 @@ namespace WoMSadGui.Consoles
                     {
                         case 0:
                         case -1:
-                            DrawMapPoint(i, j);
+                            DrawMapPoint(i, j, false);
                             break;
                         case -2:
                         case 1:
@@ -147,25 +147,26 @@ namespace WoMSadGui.Consoles
                             _mapConsole.SetGlyph(i, j, 219);
                             break;
                         default:
-                            _mapConsole[i, j].CopyAppearanceFrom(UnclearAppearance);
-                            _mapConsole.SetGlyph(i, j, 219);
+                            //_mapConsole[i, j].CopyAppearanceFrom(UnclearAppearance);
+                            //_mapConsole.SetGlyph(i, j, 219);
+                            DrawMapPoint(i, j, true);
                             break;
                     }
                 }
             }
         }
 
-        public void DrawMapPoint(int x, int y)
+        public void DrawMapPoint(int x, int y, bool isUnclear)
         {
             var wMap = Adventure.Map.TileMap;
             switch (wMap[x, y])
             {
                 case StoneTile _:
-                    _mapConsole[x, y].CopyAppearanceFrom(StoneTileAppearance);
+                    _mapConsole[x, y].CopyAppearanceFrom(isUnclear ? UnclearAppearance : StoneTileAppearance);
                     _mapConsole.SetGlyph(x, y, 46);
                     break;
                 case StoneWall _:
-                    _mapConsole[x, y].CopyAppearanceFrom(StoneWallAppearance);
+                    _mapConsole[x, y].CopyAppearanceFrom(isUnclear ? UnclearAppearance : StoneWallAppearance);
                     _mapConsole.SetGlyph(x, y, 35);
                     break;
                 default:
@@ -229,7 +230,7 @@ namespace WoMSadGui.Consoles
             DrawExploMap();
             //DrawMap();
             DrawFoV(log.SourceFovCoords);
-
+            
             // stats
             _statsConsole.Print(2, 0, Adventure.AdventureStats[AdventureStats.Explore].ToString("0%").PadLeft(4), Color.Gold);
             _statsConsole.Print(2, 1, Adventure.AdventureStats[AdventureStats.Monster].ToString("0%").PadLeft(4), Color.Gold);
@@ -251,6 +252,16 @@ namespace WoMSadGui.Consoles
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+
+            foreach (var entity in Adventure.Map.GetEntities())
+            {
+                if (entity.IsStatic)
+                {
+                    continue;
+                }
+
+                _entities[entity.AdventureEntityId].IsVisible = _mogwai.CanSee(entity);
             }
         }
 

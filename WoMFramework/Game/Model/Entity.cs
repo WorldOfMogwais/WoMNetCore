@@ -364,7 +364,7 @@ namespace WoMFramework.Game.Model
 
         public bool CanSee(IAdventureEntity entity)
         {
-            return FovCoords.Any(p => entity.Coordinate.X == p.X);
+            return FovCoords.Any(p => entity.Coordinate == p);
         }
 
         void ICombatant.MoveArbitrary()

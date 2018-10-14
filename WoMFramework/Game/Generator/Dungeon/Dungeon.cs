@@ -15,8 +15,6 @@ namespace WoMFramework.Game.Generator.Dungeon
 {
     public abstract class Dungeon : Adventure
     {
-
-
         protected readonly Shift Shift;
 
         public override Map Map { get; set; }
