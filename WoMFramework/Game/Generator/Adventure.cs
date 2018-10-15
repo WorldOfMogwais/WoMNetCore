@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using GoRogue;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
@@ -28,6 +30,8 @@ namespace WoMFramework.Game.Generator
 
         public Queue<AdventureLog> AdventureLogs { get; set; } = new Queue<AdventureLog>();
 
+        public Queue<LogEntry> LogEntries { get; set; } = new Queue<LogEntry>();
+
         public Dictionary<AdventureStats, double> AdventureStats { get; }
 
         public bool IsActive => AdventureState == AdventureState.Preparation
@@ -35,6 +39,8 @@ namespace WoMFramework.Game.Generator
                              || AdventureState == AdventureState.Running;
 
         public int NextId => _nextId++;
+
+        public abstract int GetRound { get; }
 
         protected Adventure()
         {
@@ -59,8 +65,11 @@ namespace WoMFramework.Game.Generator
 
         public abstract void NextFrame();
 
-        public abstract bool Run(Mogwai mogwai);
-
+        public void Enqueue(AdventureLog entityCreated)
+        {
+            LogEntries.Enqueue(new LogEntry(LogType.AdventureLog, entityCreated.AdventureLogId.ToString()));
+            AdventureLogs.Enqueue(entityCreated);
+        }
     }
 
     public class AdventureLog
@@ -70,9 +79,13 @@ namespace WoMFramework.Game.Generator
             Info,
             Move,
             Attack,
+            Died,
             Entity
         }
 
+        public static int _index = 0;
+
+        public int AdventureLogId { get; }
         public LogType Type { get; }
         public Coord SourceCoord { get; }
         public HashSet<Coord> SourceFovCoords { get; }
@@ -83,6 +96,7 @@ namespace WoMFramework.Game.Generator
 
         public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords = null, int target = 0, Coord targetCoord = null, bool flag = true)
         {
+            AdventureLogId = _index++;
             Type = type;
             Source = source;
             Target = target;
@@ -110,6 +124,11 @@ namespace WoMFramework.Game.Generator
         public static AdventureLog Attacked(ICombatant entity, IAdventureEntity target)
         {
             return new AdventureLog(LogType.Attack, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords, target.AdventureEntityId, target.Coordinate);
+        }
+
+        public static AdventureLog Died(ICombatant entity)
+        {
+            return new AdventureLog(LogType.Died, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords);
         }
     }
 
@@ -139,6 +158,8 @@ namespace WoMFramework.Game.Generator
 
     public interface ICombatant : IAdventureEntity
     {
+        Faction Faction { get; set; }
+
         int CurrentInitiative { get; set; }
 
         CombatState CombatState { get; set; }
@@ -148,6 +169,12 @@ namespace WoMFramework.Game.Generator
         HashSet<Coord> FovCoords { get; set; }
 
         bool CanSee(IAdventureEntity combatant);
+
+        bool CanAct { get; }
+
+        bool IsAlive { get; }
+
+        bool IsDead { get; }
 
         void MoveArbitrary();
     }

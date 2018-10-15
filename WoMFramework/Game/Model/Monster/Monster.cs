@@ -176,6 +176,7 @@ namespace WoMFramework.Game.Model.Monster
             ChallengeRating = challengeRating;
             MonsterType = monsterType;
             Experience = experience;
+            Faction = Faction.Monster;
         }
 
         public void Initialize(Dice dice)

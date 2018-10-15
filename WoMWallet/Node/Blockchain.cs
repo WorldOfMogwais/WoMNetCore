@@ -17,7 +17,8 @@ namespace WoMWallet.Node
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private const string ApiUrl = @"https://cristof.crabdance.com/mogwai/";
+        //private const string ApiUrl = @"https://cristof.crabdance.com/mogwai/";
+        private const string ApiUrl = @"https://rest.worldofmogwais.com/";
 
         private const string BlockhashesFile = "blockhashes.db";
 

@@ -92,6 +92,8 @@ namespace WoMFramework.Game.Model.Mogwai
 
             BaseAttackBonus = new[] { 0 };
 
+            Faction = Faction.Hero;
+
             // create experience
             Experience = new Experience(_currentShift);
 

@@ -16,6 +16,17 @@ namespace WoMFramework.Game.Model.Monster
              .SetDescription("Fecund and secretive, rats are omnivorous rodents that particularly thrive in urban areas.")
              .Build();
 
+        public static Monster DireRat =>
+            MonsterBuilder.Create("Dire Rat", 0.33, MonsterType.Animal, 135)
+                .SetSizeType(SizeType.Small)
+                .SetAbilities(10, 17, 13, 2, 13, 4)
+                .SetBaseSpeed(40)
+                .SetHitPointDiceRollEvent(new[] { 1, 8 , 0, 1 })
+                .SetBaseAttackBonus(0)
+                .SetWeaponSlot(NaturalWeapon.Bite(SizeType.Small))
+                .SetDescription("This filthy rat is the size of a small dog. It has a coat of coarse fur, a long and scabby tail, and two glittering eyes.")
+                .Build();
+
         public static Monster Wolf =>
             MonsterBuilder.Create("Wolf", 1, MonsterType.Animal, 400)
             .SetSizeType(SizeType.Medium)

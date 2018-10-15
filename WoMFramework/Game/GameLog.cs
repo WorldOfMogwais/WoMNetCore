@@ -26,7 +26,9 @@ namespace WoMFramework.Game
 
     }
 
-    public enum LogType { Info, Damg, Heal, Evnt, Comb }
+    public enum LogType { Info, Damg, Heal, Evnt, Comb,
+        AdventureLog
+    }
 
     public class LogEntry
     {

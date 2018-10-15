@@ -4,6 +4,7 @@ using GoRogue;
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Surfaces;
+using WoMFramework.Game;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Generator.Dungeon;
 using WoMWallet.Node;
@@ -50,16 +51,11 @@ namespace WoMSadGui.Consoles
             _mapConsole.Font = AdventureFont;
             Children.Add(_mapConsole);
 
-            _statsConsole = new MogwaiConsole("stats", "", 21, 5) { Position = new Point(70, 17) };
+            _statsConsole = new MogwaiConsole("stats", "", 21, 6) { Position = new Point(70, 16) };
             Children.Add(_statsConsole);
 
             _mapConsole.IsVisible = false;
 
-            _statsConsole.Print(7, 0, "Exploration", Color.Gainsboro);
-            _statsConsole.Print(7, 1, "Monster", Color.Gainsboro);
-            _statsConsole.Print(7, 2, "Boss", Color.Gainsboro);
-            _statsConsole.Print(7, 3, "Treasure", Color.Gainsboro);
-            _statsConsole.Print(7, 4, "Portal", Color.Gainsboro);
         }
 
 
@@ -80,6 +76,13 @@ namespace WoMSadGui.Consoles
             DrawExploMap();
             //DrawMap();
 
+            _statsConsole.Print(7, 0, "Rounds", Color.MonoGameOrange);
+            _statsConsole.Print(7, 1, "Exploration", Color.Gainsboro);
+            _statsConsole.Print(7, 2, "Monster", Color.Gainsboro);
+            _statsConsole.Print(7, 3, "Boss", Color.Gainsboro);
+            _statsConsole.Print(7, 4, "Treasure", Color.Gainsboro);
+            _statsConsole.Print(7, 5, "Portal", Color.Gainsboro);
+
             // Draw entities (Mogwais, Monsters, etc.)
             foreach (var entity in Adventure.Map.GetEntities())
             {
@@ -98,6 +101,7 @@ namespace WoMSadGui.Consoles
 
             _mapConsole.Children.Clear();
             _entities.Clear();
+            _statsConsole.Clear();
         }
 
         public void DrawMap()
@@ -141,9 +145,24 @@ namespace WoMSadGui.Consoles
                         case -1:
                             DrawMapPoint(i, j, false);
                             break;
-                        case -2:
+                        case -9:
+                            // unwalkable tiles
                         case 1:
-                            _mapConsole[i, j].CopyAppearanceFrom(UnknownAppearance);
+                            var cell = UnknownAppearance;
+                            // colorized locations ...
+                            //foreach (var location in Adventure.Map.Locations)
+                            //{
+                            //    if (!location.Contains(i, j)) continue;
+                            //    var index = Adventure.Map.Locations.IndexOf(location);
+                            //    if (index == 0)
+                            //    {
+                            //        cell = new Cell(Color.Crimson);
+                            //        break;
+                            //    }
+                            //    cell = new Cell(new Color(index * 25 % 256,0,index * 50 % 256), Color.Black, 219);
+                            //    break;
+                            //}
+                            _mapConsole[i, j].CopyAppearanceFrom(cell);
                             _mapConsole.SetGlyph(i, j, 219);
                             break;
                         default:
@@ -206,6 +225,8 @@ namespace WoMSadGui.Consoles
                 Position = new Point(pos.X, pos.Y)
             };
 
+            entity.IsVisible = false;
+
             _mapConsole.Children.Add(entity);
             _entities.Add(adventureEntity.AdventureEntityId, entity);
         }
@@ -226,17 +247,25 @@ namespace WoMSadGui.Consoles
             if (!Adventure.AdventureLogs.TryDequeue(out var log))
                 return;
 
+            while (Adventure.LogEntries.TryDequeue(out var logEntry))
+            {
+                if (logEntry.LogType != LogType.AdventureLog)
+                    ((PlayScreen) Parent).PushLog(logEntry);
+            }
+
             // redraw map
             DrawExploMap();
+
             //DrawMap();
             DrawFoV(log.SourceFovCoords);
             
             // stats
-            _statsConsole.Print(2, 0, Adventure.AdventureStats[AdventureStats.Explore].ToString("0%").PadLeft(4), Color.Gold);
-            _statsConsole.Print(2, 1, Adventure.AdventureStats[AdventureStats.Monster].ToString("0%").PadLeft(4), Color.Gold);
-            _statsConsole.Print(2, 2, Adventure.AdventureStats[AdventureStats.Boss].ToString("0%").PadLeft(4), Color.Gold);
-            _statsConsole.Print(2, 3, Adventure.AdventureStats[AdventureStats.Treasure].ToString("0%").PadLeft(4), Color.Gold);
-            _statsConsole.Print(2, 4, Adventure.AdventureStats[AdventureStats.Portal].ToString("0%").PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 0, Adventure.GetRound.ToString().PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 1, Adventure.AdventureStats[AdventureStats.Explore].ToString("0%").PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 2, Adventure.AdventureStats[AdventureStats.Monster].ToString("0%").PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 3, Adventure.AdventureStats[AdventureStats.Boss].ToString("0%").PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 4, Adventure.AdventureStats[AdventureStats.Treasure].ToString("0%").PadLeft(4), Color.Gold);
+            _statsConsole.Print(2, 5, Adventure.AdventureStats[AdventureStats.Portal].ToString("0%").PadLeft(4), Color.Gold);
 
             switch (log.Type)
             {
@@ -247,6 +276,9 @@ namespace WoMSadGui.Consoles
                     break;
                 case AdventureLog.LogType.Attack:
                     AttackEntity(log.TargetCoord);
+                    break;
+                case AdventureLog.LogType.Died:
+                    DiedEntity(_entities[log.Source]);
                     break;
                 case AdventureLog.LogType.Entity:
                     break;
@@ -261,7 +293,7 @@ namespace WoMSadGui.Consoles
                     continue;
                 }
 
-                _entities[entity.AdventureEntityId].IsVisible = _mogwai.CanSee(entity);
+                _entities[entity.AdventureEntityId].IsVisible = _mogwai.CanSee(entity) || entity is ICombatant combatant && combatant.IsDead;
             }
         }
 
@@ -292,6 +324,15 @@ namespace WoMSadGui.Consoles
             var entity = new ConsoleEntity(effect) { Position = new Point(targetCoord.X, targetCoord.Y) };
             _mapConsole.Children.Add(entity);
             
+        }
+
+        private void DiedEntity(ConsoleEntity entity)
+        {
+            var animated = new Animated("default", 1, 1, AdventureFont);
+            var frame = animated.CreateFrame();
+            frame[0].Glyph = 206;
+            frame[0].Foreground = Color.Gold;
+            entity.Animation = animated;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
+using GoRogue.MapGeneration;
 using Troschuetz.Random;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
@@ -19,14 +20,13 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public override Map Map { get; set; }
 
-        public const int MaxRoundsPerBlock = 100;
+        public const int MaxRoundsPerBlock = 1000;
 
         public IGenerator DungeonRandom { get; }
 
         protected Dungeon(Shift shift)
         {
             Shift = shift;
-
             DungeonRandom = new Dice(shift).GetRandomGenerator();
         }
 
@@ -56,20 +56,43 @@ namespace WoMFramework.Game.Generator.Dungeon
     /// </summary>
     public class SimpleDungeon : Dungeon
     {
-        private List<Mogwai> _heroes;
+        private enum Mode
+        {
+            Exploration,
+            Combat
+        };
+
+        private readonly List<Mogwai> _heroes;
 
         private readonly List<Monster> _monsters;
 
+        private List<Entity> _allEntities;
+
+        private List<Entity> _explorationOrder;
+
+        private int _explorationTurn;
+
+        private List<Entity> _initiativeOrder;
+
+        private int _initiativeTurn;
+
+        // every 10 combat rounds there is a exploration round
+        private int _combatExploFactor = 10;
+
         private int _currentRound;
 
-        private int _turn;
+        private Mode _roundMode;
+
+        public override int GetRound => _currentRound;
 
         public SimpleDungeon(Shift shift) : base(shift)
         {
             _heroes = new List<Mogwai>();
             _monsters = new List<Monster>();
             _currentRound = 0;
-            _turn = 0;
+            _explorationTurn = 0;
+            _initiativeTurn = 0;
+            _roundMode = Mode.Exploration;
 
             Map = new Map(DungeonRandom, 58, 58, this);
         }
@@ -81,7 +104,6 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// <param name="shift"></param>
         public override void Prepare(Mogwai mogwai, Shift shift)
         {
-
             // deploy monster, monster packs
             DeployMonsters(shift);
 
@@ -94,6 +116,13 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             // deploy mogwai
             DeployMogwai(mogwai);
+
+            
+            _allEntities = Map.GetEntities().OfType<Entity>().ToList();
+
+            // TODO add this to constructor once all entities are generated from shift
+            //_explorationOrder = Map.GetEntities().OfType<Entity>().OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
+            _explorationOrder = new List<Entity> {mogwai};
         }
 
         /// <summary>
@@ -103,35 +132,40 @@ namespace WoMFramework.Game.Generator.Dungeon
         private void DeployMonsters(Shift shift)
         {
             // TODO generate monsters from shift here
-            _monsters.Add(Monsters.Rat);
+            var bossRoom = Map.Locations[0];
+            var bosses = new List<Monster> {Monsters.DireRat, Monsters.DireRat};
+            var mobs = new List<Monster> {Monsters.Rat, Monsters.Rat,Monsters.Rat, Monsters.Rat, Monsters.Rat, Monsters.Rat};
+
+            _monsters.AddRange(bosses);
+            _monsters.AddRange(mobs);
 
             const int mDeriv = 1000;
-            for (var i = 0; i < _monsters.Count; i++)
+
+            // deploy bosses
+            foreach (var monster in bosses)
             {
-                // initialize monster
-                _monsters[i].Initialize(new Dice(shift, mDeriv + i));
-                _monsters[i].Adventure = this;
-
-                // TODO: Positioning monsters
-                var monsterCoord = Coord.Get(0, 0);
-
-                for (var x = Map.Width - 1; x >= 0; x--)
+                var coord = bossRoom.RandomPosition(DungeonRandom);
+                while (Map.EntityMap[coord] != null)
                 {
-                    var found = false;
-                    for (var y = Map.Height - 1; y >= 0; y--)
-                    {
-                        if (Map.WalkabilityMap[x, y])
-                        {
-                            monsterCoord = Coord.Get(x, y);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found)
-                        break;
+                    coord = bossRoom.RandomPosition(DungeonRandom);
                 }
+                monster.Initialize(new Dice(shift, mDeriv + _monsters.IndexOf(monster)));
+                monster.Adventure = this;
+                Map.AddEntity(monster, coord);
+            }
 
-                Map.AddEntity(_monsters[i], monsterCoord);
+            // deploy mobs
+            foreach (var monster in mobs)
+            {
+                Coord coord = null;
+                while (coord == null || Map.EntityMap[coord] != null)
+                {
+                    var location = Map.Locations[DungeonRandom.Next(Map.Locations.Count)];
+                    coord = location.RandomPosition(DungeonRandom);
+                }
+                monster.Initialize(new Dice(shift, mDeriv + _monsters.IndexOf(monster)));
+                monster.Adventure = this;
+                Map.AddEntity(monster, coord);
             }
         }
 
@@ -177,48 +211,124 @@ namespace WoMFramework.Game.Generator.Dungeon
                 throw new Exception("There is no next frame possible.");
             }
 
+            var initiationEntities = _allEntities.Where(p => p.CombatState == CombatState.Initiation).ToList();
             // check if we switch to combat mode and calculate initiative
-            if (_heroes.Any(p => p.CombatState == CombatState.Initiation))
+            if (initiationEntities.Any())
             {
-                foreach (var entity in Map.GetEntities().OfType<Entity>())
+                foreach (var entity in initiationEntities)
                 {
                     entity.CurrentInitiative = entity.InitiativeRoll(entity.Dice);
                     entity.CombatState = CombatState.Engaged;
-                    switch (entity)
-                    {
-                        case Mogwai _:
-                            entity.EngagedEnemies = Map.GetEntities().OfType<Monster>().Select(p => p as Entity).ToList();
-                            break;
-                        case Monster _:
-                            entity.EngagedEnemies = Map.GetEntities().OfType<Mogwai>().Select(p => p as Entity).ToList();
-                            break;
-                    }
+                    entity.EngagedEnemies = initiationEntities.Where(p => p.Faction != entity.Faction).ToList();
                 }
+                _initiativeTurn = 0;
+                _initiativeOrder = initiationEntities.OrderBy(p => p.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
             }
 
-            // combat mode
-            if (_heroes.Any(p => p.CombatState == CombatState.Engaged))
+            if (_initiativeTurn == 0)
             {
-                CombatRound();
+                _currentRound++;
+            }
+
+            if (_initiativeOrder == null || _initiativeOrder.Count == 0)
+            {
+                _roundMode = Mode.Exploration;
+            }
+            else if (_roundMode == Mode.Exploration && _explorationTurn == 0)
+            {
+                _roundMode = Mode.Combat;
+            }
+            else if (_initiativeTurn == 0 && _currentRound % _combatExploFactor == 0)
+            {
+                _roundMode = Mode.Exploration;
+            }
+
+            switch (_roundMode)
+            {
+                case Mode.Exploration:
+                    ExplorationAtom();
+                    break;
+                case Mode.Combat:
+                    CombatAtom();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+        }
+
+        private void CombatAtom()
+        {
+            // get current combatant
+            var entity = _initiativeOrder[_initiativeTurn];
+
+            // increase turn to next initiatives turn
+            _initiativeTurn = ++_initiativeTurn % _initiativeOrder.Count;
+
+            // dead or not engaged entities don't fight
+            if (!entity.CanAct || entity.CombatState != CombatState.Engaged)
+            {
                 return;
             }
 
-            // exploration mode
-            ExplorationAtom();
+            var combatActionQueue = new Queue<CombatAction>();
+
+            // get a target
+            var target = GetNearestOrWeakestEnemy(entity);
+
+            // try to attack target
+            TryEnqueueAttack(entity, target, ref combatActionQueue);
+
+            // need to move to target
+            if (combatActionQueue.Count == 0)
+            {
+                var intersects = GetIntersections(entity, target);
+                var nearestCoord = Map.Nearest(entity.Coordinate, intersects) ?? target.Coordinate;
+
+                // enqueue move
+                TryEnqueueMove(entity, nearestCoord, ref combatActionQueue);
+
+                if (intersects.Any())
+                {
+                    // try to attack target
+                    TryEnqueueAttack(entity, target, ref combatActionQueue);
+                }
+            }
+
+            // dequeue all actions
+            while (combatActionQueue.TryDequeue(out var combatAction))
+            {
+                entity.TakeAction(combatAction);
+            }
+
+            // reward xp for killed monsters                
+            if (target.IsDead && target is Monster killedMonster && entity is Mogwai)
+            {
+                var expReward = killedMonster.Experience;
+                entity.AddExp(expReward, killedMonster);
+            }
+
+            // no more combat
+            if (entity.EngagedEnemies.All(p => p.IsDead))
+            {
+                entity.CombatState = CombatState.None;
+                
+                // reset combat stuff
+                _initiativeOrder.Clear();
+                _initiativeTurn = 0;
+            }
         }
 
         private void ExplorationAtom()
         {
-            var _explorationOrder = Map.GetEntities().OfType<Entity>().OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
-
             // get current combatant
-            var entity = _explorationOrder[_turn];
+            var entity = _explorationOrder[_explorationTurn];
 
-            // increase turn to next initiatives turn
-            _turn = ++_turn % _explorationOrder.Count;
+            // increase turn to next exploration turn
+            _explorationTurn = ++_explorationTurn % _explorationOrder.Count;
 
-            // dead entities don't explore
-            if (entity.HealthState < 0)
+            // dead or engaged entities don't explore
+            if (!entity.CanAct || entity.CombatState != CombatState.None)
             {
                 return;
             }
@@ -235,6 +345,9 @@ namespace WoMFramework.Game.Generator.Dungeon
                     }
                     var poi = Map.Nearest(entity.Coordinate, pois);
                     TryEnqueueMove(entity, poi, ref entityActionQueue);
+                    break;
+
+                case Monster _:
 
                     break;
             }
@@ -243,133 +356,6 @@ namespace WoMFramework.Game.Generator.Dungeon
             while (entityActionQueue.TryDequeue(out var combatAction))
             {
                 entity.TakeAction(combatAction);
-            }
-        }
-
-        public override bool Run(Mogwai mogwai)
-        {
-            //foreach (var entity in Map.GetEntities().OfType<Entity>())
-            //{
-            //    entity.CombatState = CombatState.Initiation;
-            //}
-
-            for (var _currentRound = 0; _currentRound < MaxRoundsPerBlock && AdventureState == AdventureState.Running; _currentRound++)
-            {
-                if (mogwai.CombatState == CombatState.Initiation)
-                {
-                    foreach (var entity in Map.GetEntities().OfType<Entity>())
-                    {
-                        entity.CurrentInitiative = entity.InitiativeRoll(entity.Dice);
-                        entity.CombatState = CombatState.Engaged;
-                        switch (entity)
-                        {
-                            case Mogwai _:
-                                entity.EngagedEnemies = Map.GetEntities().OfType<Monster>().Select(p => p as Entity).ToList();
-                                break;
-                            case Monster _:
-                                entity.EngagedEnemies = Map.GetEntities().OfType<Mogwai>().Select(p => p as Entity).ToList();
-                                break;
-                        }
-                    }
-                }
-
-                if (mogwai.CombatState == CombatState.Engaged)
-                {
-                    CombatRound();
-                }
-                else
-                {
-                    ExplorationRound();
-                }
-
-                // set adventurestate
-                EvaluateAdventureState();
-            }
-            return true;
-        }
-
-        private void ExplorationRound()
-        {
-            var mogwais = Map.GetEntities().OfType<Mogwai>().Where(p => p.HealthState > 0);
-            foreach (var entity in mogwais)
-            {
-                var pois = Map.GetCoords<int>(Map.ExplorationMap, i => i > 0).Where(p => Map.WalkabilityMap[p.X, p.Y]).ToList();
-                if (pois.Count == 0)
-                {
-                    continue;
-                }
-                var combatActionQueue = new Queue<CombatAction>();
-                var poi = Map.Nearest(entity.Coordinate, pois);
-                TryEnqueueMove(entity, poi, ref combatActionQueue);
-
-                // dequeue all actions
-                while (combatActionQueue.TryDequeue(out var combatAction))
-                {
-                    entity.TakeAction(combatAction);
-                }
-
-            }
-
-            var monsters = Map.GetEntities().OfType<Monster>().Where(p => p.HealthState > 0);
-            foreach (var entity in monsters)
-            {
-
-            }
-        }
-
-        private void CombatRound()
-        {
-            var inititiveOrdredEntities = Map.GetEntities().OfType<Entity>().Where(p => p.CombatState == CombatState.Engaged).OrderBy(p => p.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
-            foreach (var entity in inititiveOrdredEntities)
-            {
-                var combatActionQueue = new Queue<CombatAction>();
-
-                // dead targets can't attack any more
-                if (entity.CurrentHitPoints < 0)
-                {
-                    continue;
-                }
-
-                // get a target
-                var target = GetNearestOrWeakestEnemy(entity);
-
-                // try to attack target
-                TryEnqueueAttack(entity, target, ref combatActionQueue);
-
-                // need to move to target
-                if (combatActionQueue.Count == 0)
-                {
-                    var intersects = GetIntersections(entity, target);
-                    var nearestCoord = Map.Nearest(entity.Coordinate, intersects) ?? target.Coordinate;
-
-                    // enqueue move
-                    TryEnqueueMove(entity, nearestCoord, ref combatActionQueue);
-
-                    if (intersects.Any())
-                    {
-                        // try to attack target
-                        TryEnqueueAttack(entity, target, ref combatActionQueue);
-                    }
-                }
-
-                // dequeue all actions
-                while (combatActionQueue.TryDequeue(out var combatAction))
-                {
-                    entity.TakeAction(combatAction);
-                }
-
-                // reward xp for killed monsters                
-                if (target?.CurrentHitPoints < 0 && target is Monster killedMonster && entity is Mogwai)
-                {
-                    var expReward = killedMonster.Experience;
-                    entity.AddExp(expReward, killedMonster);
-                }
-
-                // no more combat
-                if (!entity.EngagedEnemies.Exists(p => p.CurrentHitPoints > -1))
-                {
-                    entity.CombatState = CombatState.None;
-                }
             }
         }
 
@@ -409,7 +395,11 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         private Entity GetNearestOrWeakestEnemy(ICombatant entity)
         {
-            return entity.EngagedEnemies.FirstOrDefault();
+            // we hit monsters till they are dead
+            var ordredEnemiesList = entity.EngagedEnemies.Where(p => p.HealthState != HealthState.Dead)
+                .OrderBy(p => Distance.EUCLIDEAN.Calculate(entity.Coordinate, p.Coordinate));
+
+            return ordredEnemiesList.FirstOrDefault();
         }
 
         public override void EvaluateAdventureState()
@@ -417,7 +407,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             UpdateAdventureStats();
 
             if (AdventureStats[Generator.AdventureStats.Monster] >= 1
-             || AdventureStats[Generator.AdventureStats.Explore] >= 1)
+             && AdventureStats[Generator.AdventureStats.Explore] >= 1)
             {
                 AdventureState = AdventureState.Completed;
 
@@ -430,11 +420,9 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         private void UpdateAdventureStats()
         {
-            var monsters = Map.GetEntities().OfType<Monster>().ToList();
-            if (monsters.Count > 0)
+            if (_monsters.Count > 0)
             {
-                var value = monsters.Count(p => p.HealthState == HealthState.Dead) / monsters.Count;
-                AdventureStats[Generator.AdventureStats.Monster] = value;
+                AdventureStats[Generator.AdventureStats.Monster] = (double) _monsters.Count(p => p.IsDead) / _monsters.Count;
             }
             else
             {

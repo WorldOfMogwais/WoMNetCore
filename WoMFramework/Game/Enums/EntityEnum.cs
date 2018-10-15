@@ -82,6 +82,14 @@ namespace WoMFramework.Game.Enums
         ChaoticEvil
     }
 
+    public enum Faction
+    {
+        None,
+        Hero,
+        Monster,
+        NPC
+    }
+
     public enum SkillType
     {
         Acrobatics,

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using GoRogue;
+using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
 using Troschuetz.Random;
@@ -31,14 +34,16 @@ namespace WoMFramework.Game.Generator.Dungeon
         public ArrayMap<Tile> TileMap { get; }
         public FOV FovMap { get; }
 
+        public List<Rectangle> Locations { get; }
+
         public int Width { get; }
         public int Height { get; }
 
         public int EntityCount { get; private set; }
 
-        public int _walkableTiles = 0;
+        private readonly int _walkableTiles;
 
-        public Map(IGenerator dungeonRandom, int width, int height, Adventure adventure)
+        public Map(IGenerator dungeonRandom, int width, int height, Adventure adventure, bool useTestMap = false)
         {
             Width = width;
             Height = height;
@@ -47,8 +52,15 @@ namespace WoMFramework.Game.Generator.Dungeon
             var wMap = new ArrayMap<bool>(width, height);
 
             // creating map here
-            //RandomRoomsGenerator.Generate(wMap, dungeonRandom, 15, 5, 15, 50);
-            CellularAutomataGenerator.Generate(wMap, dungeonRandom);
+            if (useTestMap)
+            {
+                TestMap(wMap);
+            }
+            else
+            {
+                //RandomRoomsGenerator.Generate(wMap, dungeonRandom, 15, 5, 15, 50);
+                CellularAutomataGenerator.Generate(wMap, dungeonRandom);
+            }
 
             WalkabilityMap = wMap;
             ExplorationMap = new ArrayMap<int>(width, height);
@@ -68,82 +80,67 @@ namespace WoMFramework.Game.Generator.Dungeon
                     }
                     else
                     {
-                        ExplorationMap[i, j] = -2;
+                        ExplorationMap[i, j] = -9;
                         resMap[i, j] = 1;
                         TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
                     }
                 }
             }
             FovMap = new FOV(resMap);
+
+            Locations = CreateMapLocations(wMap, 9);
         }
 
-        public Map(int width, int height, Adventure adventure)
+        private List<Rectangle> CreateMapLocations(ArrayMap<bool> wMap, int minLocationSize)
         {
-            Width = width;
-            Height = height;
-            Adventure = adventure;
-
-            var wMap = new ArrayMap<bool>(width, height);
-
-            // creating map here
-            TestMap(wMap);
-
-            WalkabilityMap = wMap;
-            ExplorationMap = new ArrayMap<int>(width, height);
-            EntityMap = new ArrayMap<IAdventureEntity>(width, height);
-            TileMap = new ArrayMap<Tile>(width, height);
-            var resMap = new ArrayMap<double>(width, height);
-            for (var i = 0; i < width; i++)
+            var rectangles = new List<Rectangle>();
+            for (var i = 0; i < wMap.Width; i++)
             {
-                for (var j = 0; j < height; j++)
+                for (var j = 0; j < wMap.Height; j++)
                 {
-                    if (wMap[i, j])
+                    if (!wMap[i, j]) continue;
+
+                    var width = 2;
+                    var height = 2;
+                    var rectangle = new Rectangle(i, j, width, height);
+                    while (rectangle.Positions().All(p => wMap[p.X, p.Y]))
                     {
-                        ExplorationMap[i, j] = 1;
-                        resMap[i, j] = 0;
-                        _walkableTiles++;
-                        TileMap[i, j] = new StoneTile(this, Coord.Get(i, j));
+                        rectangle = rectangle.SetWidth(++width).SetHeight(++height);
                     }
-                    else
+                    rectangles.Add(rectangle);
+                }
+            }
+
+            var ordredRectangles = rectangles.Where(p => p.Positions().Count() >= minLocationSize).OrderByDescending(p => p.Positions().Count()).ToList();
+
+            for (var i = 0; i < ordredRectangles.Count - 1; i++)
+            {
+                for (var j = i + 1; j < ordredRectangles.Count; j++)
+                {
+                    if (Rectangle.GetUnion(ordredRectangles[i], ordredRectangles[j]) == ordredRectangles[i] || !Rectangle.GetIntersection(ordredRectangles[i], ordredRectangles[j]).IsEmpty)
                     {
-                        ExplorationMap[i, j] = -2;
-                        resMap[i, j] = 1;
-                        TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
+                        ordredRectangles[j] = Rectangle.EMPTY;
                     }
                 }
             }
-            FovMap = new FOV(resMap);
+
+            return ordredRectangles.Where(p => !p.IsEmpty).Take(20).ToList();
         }
 
-        private void TestMap(ArrayMap<bool> wMap)
+        private void TestMap(ISettableMapView<bool> wMap)
         {
-            //int minWidth = 3;
-            //for (int x = 1; x < wMap.Width - 1; x++)
-            //{
-            //    double g = Math.Pow(x - (wMap.Width / 2), 2 );
-            //    for (int y = 1; y < wMap.Height - 1; y++)
-            //    {
-            //        if (g > wMap.Height - 2)
-            //        {
-            //            wMap[x, y] = true;
-            //            continue;
-            //        }
-            //        var halfWidth = (g < minWidth ? minWidth : g) / 2;
-            //        var middle = (double) wMap.Height / 2;
-
-            //        if (y < middle  + halfWidth && y > middle - halfWidth)
-            //        {
-            //            wMap[x, y] = true;
-            //        }
-            //    }
-            //}
-
             // Rectangle
             for (var x = 1; x < wMap.Width - 1; x++)
                 for (var y = 1; y < wMap.Height - 1; y++)
                     wMap[x, y] = true;
         }
 
+        /// <summary>
+        /// Add entity to the map
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void AddEntity(ICombatant entity, int x, int y)
         {
             // can't add an entity to invalid position
@@ -163,14 +160,24 @@ namespace WoMFramework.Game.Generator.Dungeon
             // calculate fov
             entity.FovCoords = CalculateFoV(entity.Coordinate);
             //entity.ExploredCoords = GetCoords<int>(ExplorationMap, i => i < 1).ToHashSet();
-            Adventure.AdventureLogs.Enqueue(AdventureLog.EntityCreated(entity));
+            Adventure.Enqueue(AdventureLog.EntityCreated(entity));
         }
 
+        /// <summary>
+        /// Add entity to the map
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="pos"></param>
         public void AddEntity(ICombatant entity, Coord pos)
         {
             AddEntity(entity, pos.X, pos.Y);
         }
 
+        /// <summary>
+        /// Move an entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="destination"></param>
         public void MoveEntity(ICombatant entity, Coord destination)
         {
             if (EntityMap[entity.Coordinate] == null)
@@ -188,9 +195,15 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             entity.FovCoords = CalculateFoV(entity.Coordinate, entity is Mogwai);
 
-            Adventure.AdventureLogs.Enqueue(AdventureLog.EntityMoved(entity, destination));
+            Adventure.Enqueue(AdventureLog.EntityMoved(entity, destination));
         }
 
+        /// <summary>
+        /// Calculate FoV
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="isExploring"></param>
+        /// <returns></returns>
         private HashSet<Coord> CalculateFoV(Coord coords, bool isExploring = false)
         {
             if (isExploring)
@@ -211,11 +224,14 @@ namespace WoMFramework.Game.Generator.Dungeon
                 // exploration fov 2. part
                 foreach (var coord in FovMap.CurrentFOV)
                 {
+                    if (ExplorationMap[coord.X, coord.Y] == 0)
+                        continue;
+
                     if (!WalkabilityMap[coord.X, coord.Y])
                     {
                         ExplorationMap[coord.X, coord.Y] = -1;
                     }
-                    else if (ExplorationMap[coord.X, coord.Y] > 0)
+                    else
                     {
                         ExplorationMap[coord.X, coord.Y] += 1;
                     }
@@ -225,6 +241,25 @@ namespace WoMFramework.Game.Generator.Dungeon
             return new HashSet<Coord>(FovMap.CurrentFOV);
         }
 
+        public List<ICombatant> EntitiesOnCoords(HashSet<Coord> coords)
+        {
+            var combatants = new List<ICombatant>();
+            foreach (var coord in coords)
+            {
+                var entity = EntityMap[coord];
+                if (entity != null && entity is ICombatant combatant)
+                {
+                    combatants.Add(combatant);
+                }
+            }
+
+            return combatants;
+        }
+
+        /// <summary>
+        /// Remove entity from the map
+        /// </summary>
+        /// <param name="entity"></param>
         public void RemoveEntity(ICombatant entity)
         {
             if (EntityMap[entity.Coordinate] == null)
@@ -237,7 +272,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             EntityCount--;
 
-            Adventure.AdventureLogs.Enqueue(AdventureLog.EntityRemoved(entity));
+            Adventure.Enqueue(AdventureLog.EntityRemoved(entity));
         }
 
         public IAdventureEntity[] GetEntities()
@@ -264,7 +299,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 for (var j = 0; j < map.Height; j++)
                 {
-                    if (validate(map[i,j]))
+                    if (validate(map[i, j]))
                     {
                         corrds.Add(Coord.Get(i, j));
                     }
@@ -275,7 +310,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public double GetExplorationState()
         {
-            int visited = 0;
+            var visited = 0;
             for (var i = 0; i < WalkabilityMap.Width; i++)
             {
                 for (var j = 0; j < WalkabilityMap.Height; j++)
@@ -286,7 +321,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                     }
                 }
             }
-            return (double) visited / _walkableTiles;
+            return (double)visited / _walkableTiles;
         }
 
         public Coord Nearest(Coord current, List<Coord> coords)

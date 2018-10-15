@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
@@ -30,6 +31,8 @@ namespace WoMFramework.Game.Generator
 
         public List<Entity> Monsters => _inititiveOrder.Where(p => p is Monster).ToList();
 
+        public override int GetRound => _currentRound;
+
         public TestRoom()
         {
             _winner = null;
@@ -37,7 +40,7 @@ namespace WoMFramework.Game.Generator
             _currentRound = 0;
             _turn = 0;
             _inititiveOrder = new List<Entity>();
-            Map = new Map(10, 10, this);
+            Map = new Map(null, 10, 10, this, true);
         }
 
         public override Map Map { get; set; }
@@ -114,12 +117,12 @@ namespace WoMFramework.Game.Generator
             _turn = ++_turn % _inititiveOrder.Count;
 
             // dead targets can't attack any more
-            if (combatant.CurrentHitPoints < 0)
+            if (!combatant.CanAct)
             {
                 return;
             }
 
-            var target = combatant.EngagedEnemies.FirstOrDefault(p => p.CurrentHitPoints > -1);
+            var target = combatant.EngagedEnemies.FirstOrDefault(p => p.IsAlive);
             var exCombatActions = combatant.CombatActions.Select(p => p.Executable(target)).Where(p => p != null);
 
             // choose just one action here no AI ....
@@ -132,28 +135,16 @@ namespace WoMFramework.Game.Generator
             // attack
             combatant.TakeAction(combatActionExec);
 
-            if (target?.CurrentHitPoints < 0 && target is Monster killedMonster)
+            if (target != null && target.IsDead && target is Monster killedMonster)
             {
                 var expReward = killedMonster.Experience / Heroes.Count;
                 Heroes.ForEach(p => p.AddExp(expReward, killedMonster));
             }
 
-            if (!combatant.EngagedEnemies.Exists(p => p.CurrentHitPoints > -1))
+            if (!combatant.EngagedEnemies.Exists(p => p.IsAlive))
             {
                 _winner = combatant;
             }
         }
-
-        public override bool Run(Mogwai mogwai)
-        {
-            if (HasNextFrame())
-            {
-                NextFrame();
-                return true;
-            }
-
-            return false;
-        }
-
     }
 }

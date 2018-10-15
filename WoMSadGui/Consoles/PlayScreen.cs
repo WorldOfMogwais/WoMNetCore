@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using SadConsole;
 using SadConsole.Controls;
 using SadConsole.Surfaces;
+using WoMFramework.Game;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model.Mogwai;
@@ -289,6 +290,12 @@ namespace WoMSadGui.Consoles
                 _log.MainCursor.Print(entry.ToString());
                 _log.MainCursor.NewLine();
             }
+        }
+
+        public void PushLog(LogEntry logEntry)
+        {
+            _log.MainCursor.Print(logEntry.ToString());
+            _log.MainCursor.NewLine();
         }
 
         internal SadGuiState GetState()

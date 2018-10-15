@@ -166,7 +166,15 @@ namespace WoMSadGui.Consoles
         {
             Print(x, y + 1, $"{current}/{max}".PadLeft(9), Color.Orange);
             Print(x + 10, y + 1, "HP", Color.Gainsboro);
-            CreateBar(x, y + 2, low, full, (float)current / max);
+            if (current >= 0)
+            {
+                CreateBar(x, y + 2, low, full, (float) current / max);
+            }
+            else
+            {
+                CreateBar(x, y + 2, Color.DarkRed, Color.Red, (float) Math.Abs(current < -10 ? -10 : current)  / 10);
+            }
+
             SetGlyph(x + 13, y + 1, 186, Color.DarkCyan);
             SetGlyph(x + 13, y + 2, 186, Color.DarkCyan);
         }

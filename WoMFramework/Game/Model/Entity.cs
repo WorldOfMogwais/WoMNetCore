@@ -111,6 +111,12 @@ namespace WoMFramework.Game.Model
             return damage < 1 ? 1 : damage;
         }
 
+        public bool CanAct => HealthState >= 0;
+
+        public bool IsDead => HealthState == HealthState.Dead;
+
+        public bool IsAlive => HealthState != HealthState.Dead;
+
         // injury and death
         public HealthState HealthState
         {
@@ -292,6 +298,7 @@ namespace WoMFramework.Game.Model
             }
 
             Mogwai.Mogwai.History.Add(LogType.Heal, $"{Coloring.Name(Name)} restores {Coloring.GetHeal(healAmount)} HP from {healType.ToString()} healing.");
+            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Heal, $"{Coloring.Name(Name)} restores {Coloring.GetHeal(healAmount)} HP from {healType.ToString()} healing."));
             CurrentHitPoints += healAmount;
         }
 
@@ -308,11 +315,20 @@ namespace WoMFramework.Game.Model
             }
 
             Mogwai.Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage.");
+            Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damg, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage."));
             CurrentHitPoints -= damageAmount;
 
-            if (CurrentHitPoints < 1)
+            if (!CanAct)
             {
                 Mogwai.Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}.");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damg, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}."));
+            }
+
+            if (IsDead)
+            {
+                Mogwai.Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}.");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damg, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}."));
+                Adventure.Enqueue(AdventureLog.Died(this));
             }
         }
 
@@ -321,8 +337,11 @@ namespace WoMFramework.Game.Model
 
         public Adventure Adventure { get; set; }
         public Map Map { get; set; }
+
         int IAdventureEntity.AdventureEntityId { get; set; }
+
         public int Size { get; }
+
         bool IAdventureEntity.IsStatic => false;
         bool IAdventureEntity.IsPassable => false;
 
@@ -343,7 +362,7 @@ namespace WoMFramework.Game.Model
 
             if (entityAction is MoveAction moveAction)
             {
-                return Move(moveAction.Destination);
+                return Move(moveAction.Destination, true);
             }
 
             return false;
@@ -353,6 +372,8 @@ namespace WoMFramework.Game.Model
 
 
         #region ICombatant
+
+        public Faction Faction { get; set; }
 
         public int CurrentInitiative { get; set; }
 
@@ -413,14 +434,17 @@ namespace WoMFramework.Game.Model
                 }
                 var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
                 Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
                 target.Damage(damage + criticalDamage, DamageType.Weapon);
             }
             else
             {
                 Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
+
             }
 
-            Adventure.AdventureLogs.Enqueue(AdventureLog.Attacked(this, target));
+            Adventure.Enqueue(AdventureLog.Attacked(this, target));
         }
 
         /// <summary>
@@ -499,8 +523,26 @@ namespace WoMFramework.Game.Model
             {
                 if (checkForEnemies && CombatState == CombatState.None)
                 {
+                    // check field of view positions for enemies
+                    foreach (var entity in Map.EntitiesOnCoords(FovCoords).Where(p => p.IsAlive))
+                    {
+                        if (entity.Faction == Faction.None) continue;
 
+                        if (Faction != entity.Faction)
+                        {
+                            CombatState = CombatState.Initiation;
+                            entity.CombatState = CombatState.Initiation;
+                        }                           
+                    }
+
+                    // break if we have found an enemy
+                    if (CombatState == CombatState.Initiation)
+                    {
+                        break;
+                    }
                 }
+
+
 
                 if (path.Length <= i)
                 {
