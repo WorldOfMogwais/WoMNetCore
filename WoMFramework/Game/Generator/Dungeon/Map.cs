@@ -21,10 +21,14 @@ namespace WoMFramework.Game.Generator.Dungeon
     {
         public static readonly Coord[] Directions =
         {
-            Coord.Get(1, 0),
-            Coord.Get(0, -1),
-            Coord.Get(-1, 0),
-            Coord.Get(0, 1)
+            Coord.Get(1, 0),    // E
+            Coord.Get(1, -1),   // SE
+            Coord.Get(0, -1),   // S
+            Coord.Get(-1, -1),  // SW
+            Coord.Get(-1, 0),   // W
+            Coord.Get(-1, 1),   // NW
+            Coord.Get(0, 1),    // N
+            Coord.Get(1, 1)     // NE
         };
 
         public Adventure Adventure { get; set; }
@@ -178,6 +182,9 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// <param name="destination"></param>
         public void MoveEntity(ICombatant entity, Coord destination)
         {
+            if (!WalkabilityMap[destination])
+                throw new Exception();
+
             if (EntityMap[entity.Coordinate] == null)
                 throw new Exception();
 

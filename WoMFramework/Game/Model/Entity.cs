@@ -508,7 +508,8 @@ namespace WoMFramework.Game.Model
             //if (!walkableTilesInRange.Contains(destination))
             //    return false;
 
-            var path = new AStar(Map.WalkabilityMap, Distance.EUCLIDEAN).ShortestPath(Coordinate, destination, true);
+            //var path = new AStar(Map.WalkabilityMap, Distance.EUCLIDEAN).ShortestPath(Coordinate, destination, true);
+            var path = Algorithms.AStar(Coordinate, destination, Map.WalkabilityMap);
 
             if (path == null)
                 return false;
@@ -516,7 +517,7 @@ namespace WoMFramework.Game.Model
             //for (int i = 0; i < moveRange; i++)
             //    Map.MoveEntity(this, path.GetStep(i));
 
-            var i = 0;
+            var i = 1;
             var diagonalCount = 0;
 
             // TODO: Implement the exact movement rule in the manual
@@ -547,8 +548,8 @@ namespace WoMFramework.Game.Model
                     break;
                 }
 
-                var next = path.GetStep(i++);
-                if (next == path.End && !Map.WalkabilityMap[next])
+                var next = path[i++];
+                if (next == destination && !Map.WalkabilityMap[next])
                 {
                     break;
                 }

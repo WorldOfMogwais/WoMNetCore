@@ -39,6 +39,7 @@ namespace WoMSadGui.Consoles
 
         public static TimeSpan ActionDelay = TimeSpan.FromSeconds(0.05);
 
+        private readonly SadConsole.Entities.EntityManager _entityManager;
         public DateTime LastUpdate;
 
         public Adventure Adventure { get; private set; }
@@ -49,11 +50,13 @@ namespace WoMSadGui.Consoles
             _mogwaiKeys = mogwaiKeys;
             _mogwai = _mogwaiKeys.Mogwai;
 
-            AdventureFont = Global.LoadFont("Cheepicus12.font").GetFont(Font.FontSizes.Half);
+            AdventureFont = Global.LoadFont("Cheepicus12.font").GetFont(Font.FontSizes.One);
 
-            _mapConsole = new Console(75, 75) { Position = new Point(17, 2) };
+            //_mapConsole = new Console(75, 75) { Position = new Point(17, 2) };
+            _mapConsole = new Console(70, 70) {Position = new Point(-16, 0)};
             _mapConsole.Font = AdventureFont;
             Children.Add(_mapConsole);
+            _entityManager = new SadConsole.Entities.EntityManager {Parent = _mapConsole};
 
             _statsConsole = new MogwaiConsole("stats", "", 21, 6) { Position = new Point(70, 16) };
             Children.Add(_statsConsole);
@@ -235,8 +238,9 @@ namespace WoMSadGui.Consoles
 
             entity.IsVisible = false;
 
-            _mapConsole.Children.Add(entity);
+            //_mapConsole.Children.Add(entity);
             _entities.Add(adventureEntity.AdventureEntityId, entity);
+            _entityManager.Entities.Add(entity);
         }
 
         public void UpdateGame()
@@ -321,6 +325,8 @@ namespace WoMSadGui.Consoles
         private void MoveEntity(ConsoleEntity entity, Coord destination)
         {
             entity.Position = new Point(destination.X, destination.Y);
+            _mapConsole.ViewPort = new Microsoft.Xna.Framework.Rectangle(destination.X - 25, destination.Y - 15, 50, 30);
+            _entityManager.Sync();
         }
 
         private void AttackEntity(Coord targetCoord)
