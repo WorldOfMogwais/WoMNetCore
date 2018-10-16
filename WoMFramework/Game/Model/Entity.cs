@@ -388,18 +388,6 @@ namespace WoMFramework.Game.Model
             return FovCoords.Any(p => entity.Coordinate == p);
         }
 
-        void ICombatant.MoveArbitrary()
-        {
-            Coord destination;
-            do
-            {
-                var roll = Dice.Roll(4, -1);
-                destination = Coordinate + Map.Directions[roll];
-            } while (!Map.WalkabilityMap[destination]);
-
-            Map.MoveEntity(this, destination);
-        }
-
         #endregion
 
         /// <summary>
@@ -493,6 +481,7 @@ namespace WoMFramework.Game.Model
         /// 
         /// </summary>
         /// <param name="destination"></param>
+        /// <param name="checkForEnemies"></param>
         /// <returns></returns>
         private bool Move(Coord destination, bool checkForEnemies = false)
         {
@@ -521,28 +510,25 @@ namespace WoMFramework.Game.Model
             // TODO: Implement the exact movement rule in the manual
             while (moveRange > 0)
             {
+                // check if we have an enemy in fov
                 if (checkForEnemies && CombatState == CombatState.None)
                 {
                     // check field of view positions for enemies
                     foreach (var entity in Map.EntitiesOnCoords(FovCoords).Where(p => p.IsAlive))
                     {
                         if (entity.Faction == Faction.None) continue;
-
                         if (Faction != entity.Faction)
                         {
                             CombatState = CombatState.Initiation;
                             entity.CombatState = CombatState.Initiation;
                         }                           
                     }
-
                     // break if we have found an enemy
                     if (CombatState == CombatState.Initiation)
                     {
                         break;
                     }
                 }
-
-
 
                 if (path.Length <= i)
                 {
@@ -604,64 +590,5 @@ namespace WoMFramework.Game.Model
             return true;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="attackAction"></param>
-        public void TryMoveAndAttack(CombatAction attackAction)
-        {
-            var target = attackAction.Target;
-
-            var weaponAttack = attackAction as WeaponAttack;
-
-            var attackRange = weaponAttack.GetRange();
-            var moveRange = Speed / 5;
-
-            // If the target is in attackable range
-            if (Distance.EUCLIDEAN.Calculate(target.Coordinate - Coordinate) <= attackRange)
-            {
-                Attack(weaponAttack);
-                return;
-            }
-
-            // Calculate the nearest location 
-            var attackRadius = new RadiusAreaProvider(target.Coordinate, attackRange, Radius.CIRCLE)
-                .CalculatePositions().ToArray();
-            var moveRadius = new RadiusAreaProvider(Coordinate, moveRange, Radius.CIRCLE).CalculatePositions()
-                .ToArray();
-            var intersects = new List<Coord>();
-            var map = Map.WalkabilityMap;
-            for (var i = 0; i < attackRadius.Length; i++)
-            {
-                for (var j = 0; j < moveRadius.Length; j++)
-                {
-                    var coord = moveRadius[j];
-                    if (coord.X < 0 || coord.X >= map.Width || coord.Y < 0 || coord.Y >= map.Height || !map[coord] || coord != attackRadius[i])
-                        continue;
-
-                    intersects.Add(coord);
-                }
-            }
-
-            if (intersects.Count == 0)
-            {
-                Move(target.Coordinate);
-                return;
-            }
-
-            var nearest = Map.Nearest(Coordinate, intersects);
-            //var nearest = Coord.Get(0, 0);
-            //var distance = double.MaxValue;
-            //foreach (var i in intersects)
-            //{
-            //    var d = Distance.EUCLIDEAN.Calculate(Coordinate, i);
-            //    if (d >= distance) continue;
-            //    distance = d;
-            //    nearest = i;
-            //}
-
-            Move(nearest);
-            Attack(weaponAttack);
-        }
     }
 }

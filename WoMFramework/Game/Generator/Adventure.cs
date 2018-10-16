@@ -175,7 +175,5 @@ namespace WoMFramework.Game.Generator
         bool IsAlive { get; }
 
         bool IsDead { get; }
-
-        void MoveArbitrary();
     }
 }

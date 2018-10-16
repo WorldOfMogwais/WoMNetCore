@@ -20,7 +20,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public override Map Map { get; set; }
 
-        public const int MaxRoundsPerBlock = 1000;
+        public const int MaxRoundsPerBlock = 250;
 
         public IGenerator DungeonRandom { get; }
 
@@ -121,8 +121,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             _allEntities = Map.GetEntities().OfType<Entity>().ToList();
 
             // TODO add this to constructor once all entities are generated from shift
-            //_explorationOrder = Map.GetEntities().OfType<Entity>().OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
-            _explorationOrder = new List<Entity> {mogwai};
+            _explorationOrder = Map.GetEntities().OfType<Entity>().OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
+            //_explorationOrder = new List<Entity> {mogwai};
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         {
             // TODO generate monsters from shift here
             var bossRoom = Map.Locations[0];
-            var bosses = new List<Monster> {Monsters.DireRat, Monsters.DireRat};
+            var bosses = new List<Monster> {Monsters.DireRat};
             var mobs = new List<Monster> {Monsters.Rat, Monsters.Rat,Monsters.Rat, Monsters.Rat, Monsters.Rat, Monsters.Rat};
 
             _monsters.AddRange(bosses);
@@ -225,7 +225,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 _initiativeOrder = initiationEntities.OrderBy(p => p.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
             }
 
-            if (_initiativeTurn == 0)
+            if (_initiativeTurn == 0 && _roundMode == Mode.Combat || _explorationTurn == 0 && _roundMode == Mode.Exploration)
             {
                 _currentRound++;
             }
@@ -248,9 +248,11 @@ namespace WoMFramework.Game.Generator.Dungeon
                 case Mode.Exploration:
                     ExplorationAtom();
                     break;
+
                 case Mode.Combat:
                     CombatAtom();
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -348,7 +350,13 @@ namespace WoMFramework.Game.Generator.Dungeon
                     break;
 
                 case Monster _:
-
+                    //Coord destination;
+                    //do
+                    //{
+                    //    var roll = entity.Dice.Roll(4, -1);
+                    //    destination = entity.Coordinate + Map.Directions[roll];
+                    //} while (!Map.WalkabilityMap[destination]);
+                    //TryEnqueueMove(entity, destination, ref entityActionQueue);
                     break;
             }
 

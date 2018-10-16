@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GoRogue;
 using Microsoft.Xna.Framework;
 using SadConsole;
@@ -34,7 +35,10 @@ namespace WoMSadGui.Consoles
 
         private readonly Dictionary<int, ConsoleEntity> _entities = new Dictionary<int, ConsoleEntity>();
 
-        public static TimeSpan GameSpeed = TimeSpan.FromSeconds(0.1);
+        public static TimeSpan GameSpeed = TimeSpan.Zero;
+
+        public static TimeSpan ActionDelay = TimeSpan.FromSeconds(0.1);
+
         public DateTime LastUpdate;
 
         public Adventure Adventure { get; private set; }
@@ -244,8 +248,13 @@ namespace WoMSadGui.Consoles
                 Adventure.NextFrame();
             }
 
-            if (!Adventure.AdventureLogs.TryDequeue(out var log))
+            if (!Adventure.AdventureLogs.TryDequeue(out var adventureLog))
+            {
+                GameSpeed = TimeSpan.Zero;
                 return;
+            }
+            
+            GameSpeed = _mogwai.CanSee(Adventure.Map.GetEntities().First(p => p.AdventureEntityId == adventureLog.Source)) ? ActionDelay : TimeSpan.Zero;
 
             while (Adventure.LogEntries.TryDequeue(out var logEntry))
             {
@@ -257,7 +266,7 @@ namespace WoMSadGui.Consoles
             DrawExploMap();
 
             //DrawMap();
-            DrawFoV(log.SourceFovCoords);
+            DrawFoV(adventureLog.SourceFovCoords);
             
             // stats
             _statsConsole.Print(2, 0, Adventure.GetRound.ToString().PadLeft(4), Color.Gold);
@@ -267,18 +276,18 @@ namespace WoMSadGui.Consoles
             _statsConsole.Print(2, 4, Adventure.AdventureStats[AdventureStats.Treasure].ToString("0%").PadLeft(4), Color.Gold);
             _statsConsole.Print(2, 5, Adventure.AdventureStats[AdventureStats.Portal].ToString("0%").PadLeft(4), Color.Gold);
 
-            switch (log.Type)
+            switch (adventureLog.Type)
             {
                 case AdventureLog.LogType.Info:
                     break;
                 case AdventureLog.LogType.Move:
-                    MoveEntity(_entities[log.Source], log.TargetCoord);
+                    MoveEntity(_entities[adventureLog.Source], adventureLog.TargetCoord);
                     break;
                 case AdventureLog.LogType.Attack:
-                    AttackEntity(log.TargetCoord);
+                    AttackEntity(adventureLog.TargetCoord);
                     break;
                 case AdventureLog.LogType.Died:
-                    DiedEntity(_entities[log.Source]);
+                    DiedEntity(_entities[adventureLog.Source]);
                     break;
                 case AdventureLog.LogType.Entity:
                     break;
