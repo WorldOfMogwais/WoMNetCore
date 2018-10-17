@@ -34,7 +34,10 @@ namespace WoMFramework.Game.Generator.Dungeon
         {
             if (AdventureState == AdventureState.Preparation)
             {
+                CreateEntities(mogwai, shift);
+
                 Prepare(mogwai, shift);
+
                 AdventureState = AdventureState.Running;
             }
 
@@ -62,12 +65,6 @@ namespace WoMFramework.Game.Generator.Dungeon
             Combat
         };
 
-        private readonly List<Mogwai> _heroes;
-
-        private readonly List<Monster> _monsters;
-
-        private List<Entity> _allEntities;
-
         private List<Entity> _explorationOrder;
 
         private int _explorationTurn;
@@ -87,14 +84,31 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public SimpleDungeon(Shift shift) : base(shift)
         {
-            _heroes = new List<Mogwai>();
-            _monsters = new List<Monster>();
             _currentRound = 0;
             _explorationTurn = 0;
             _initiativeTurn = 0;
             _roundMode = Mode.Exploration;
 
             Map = new Map(DungeonRandom, 58, 58, this);
+        }
+
+        public override void CreateEntities(Mogwai mogwai, Shift shift)
+        {
+            mogwai.AdventureEntityId = NextId;
+            Entities.Add(mogwai.AdventureEntityId, mogwai);
+
+            var boss = Monsters.DireRat;
+            boss.AdventureEntityId = NextId;
+            boss.Initialize(new Dice(shift, 1));
+            Entities.Add(boss.AdventureEntityId, boss);
+
+            for (var i = 0; i < 6; i++)
+            {
+                var mob = Monsters.Rat;
+                mob.AdventureEntityId = NextId;
+                mob.Initialize(new Dice(shift, i + 99));
+                Entities.Add(mob.AdventureEntityId, mob);
+            }
         }
 
         /// <summary>
@@ -117,11 +131,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             // deploy mogwai
             DeployMogwai(mogwai);
 
-            
-            _allEntities = Map.GetEntities().OfType<Entity>().ToList();
-
             // TODO add this to constructor once all entities are generated from shift
-            _explorationOrder = Map.GetEntities().OfType<Entity>().OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
+            _explorationOrder = EntitiesList.OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
             //_explorationOrder = new List<Entity> {mogwai};
         }
 
@@ -133,39 +144,29 @@ namespace WoMFramework.Game.Generator.Dungeon
         {
             // TODO generate monsters from shift here
             var bossRoom = Map.Locations[0];
-            var bosses = new List<Monster> {Monsters.DireRat};
-            var mobs = new List<Monster> {Monsters.Rat, Monsters.Rat,Monsters.Rat, Monsters.Rat, Monsters.Rat, Monsters.Rat};
-
-            _monsters.AddRange(bosses);
-            _monsters.AddRange(mobs);
-
-            const int mDeriv = 1000;
 
             // deploy bosses
-            foreach (var monster in bosses)
+            var boss = MonstersList.OrderByDescending(p => p.ChallengeRating).First();
+
+            var coord = bossRoom.RandomPosition(DungeonRandom);
+            while (Map.EntityMap[coord] != null)
             {
-                var coord = bossRoom.RandomPosition(DungeonRandom);
-                while (Map.EntityMap[coord] != null)
-                {
-                    coord = bossRoom.RandomPosition(DungeonRandom);
-                }
-                monster.Initialize(new Dice(shift, mDeriv + _monsters.IndexOf(monster)));
-                monster.Adventure = this;
-                Map.AddEntity(monster, coord);
+                coord = bossRoom.RandomPosition(DungeonRandom);
             }
+            boss.Adventure = this;
+            Map.AddEntity(boss, coord.X, coord.Y);
 
             // deploy mobs
-            foreach (var monster in mobs)
+            foreach (var monster in MonstersList.Where(p => p != boss))
             {
-                Coord coord = null;
+                coord = null;
                 while (coord == null || Map.EntityMap[coord] != null)
                 {
                     var location = Map.Locations[DungeonRandom.Next(Map.Locations.Count)];
                     coord = location.RandomPosition(DungeonRandom);
                 }
-                monster.Initialize(new Dice(shift, mDeriv + _monsters.IndexOf(monster)));
                 monster.Adventure = this;
-                Map.AddEntity(monster, coord);
+                Map.AddEntity(monster, coord.X, coord.Y);
             }
         }
 
@@ -176,8 +177,6 @@ namespace WoMFramework.Game.Generator.Dungeon
         private void DeployMogwai(Mogwai mogwai)
         {
             // TODO generate monsters from shift here
-            _heroes.Add(mogwai);
-
             var mogCoord = Coord.Get(0, 0);
             for (var x = 0; x < Map.Width; x++)
             {
@@ -194,7 +193,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 if (found)
                     break;
             }
-            Map.AddEntity(mogwai, mogCoord);
+            Map.AddEntity(mogwai, mogCoord.X, mogCoord.Y);
         }
 
         public override bool HasNextFrame()
@@ -211,7 +210,8 @@ namespace WoMFramework.Game.Generator.Dungeon
                 throw new Exception("There is no next frame possible.");
             }
 
-            var initiationEntities = _allEntities.Where(p => p.CombatState == CombatState.Initiation).ToList();
+            var initiationEntities = Entities.Values.Where(p => p.CombatState == CombatState.Initiation).ToList();
+            
             // check if we switch to combat mode and calculate initiative
             if (initiationEntities.Any())
             {
@@ -314,7 +314,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             if (entity.EngagedEnemies.All(p => p.IsDead))
             {
                 entity.CombatState = CombatState.None;
-                
+
                 // reset combat stuff
                 _initiativeOrder.Clear();
                 _initiativeTurn = 0;
@@ -428,9 +428,9 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         private void UpdateAdventureStats()
         {
-            if (_monsters.Count > 0)
+            if (MonstersList.Any())
             {
-                AdventureStats[Generator.AdventureStats.Monster] = (double) _monsters.Count(p => p.IsDead) / _monsters.Count;
+                AdventureStats[Generator.AdventureStats.Monster] = (double)MonstersList.Count(p => p.IsDead) / MonstersList.Count;
             }
             else
             {

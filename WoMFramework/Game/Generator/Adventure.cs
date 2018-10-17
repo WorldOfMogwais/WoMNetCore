@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using GoRogue;
 using WoMFramework.Game.Enums;
@@ -7,6 +8,7 @@ using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Actions;
 using WoMFramework.Game.Model.Mogwai;
+using WoMFramework.Game.Model.Monster;
 
 namespace WoMFramework.Game.Generator
 {
@@ -22,9 +24,15 @@ namespace WoMFramework.Game.Generator
 
     public abstract class Adventure
     {
-        private int _nextId;
-
         public abstract Map Map { get; set; }
+
+        public Dictionary<int, Entity> Entities { get; } = new Dictionary<int, Entity>();
+
+        public List<Entity> EntitiesList => Entities.Values.ToList();
+
+        public List<Monster> MonstersList => Entities.Values.OfType<Monster>().ToList();
+
+        public List<Mogwai> HeroesList => Entities.Values.OfType<Mogwai>().ToList();
 
         public AdventureState AdventureState { get; set; }
 
@@ -38,6 +46,7 @@ namespace WoMFramework.Game.Generator
                              || AdventureState == AdventureState.Extended
                              || AdventureState == AdventureState.Running;
 
+        private int _nextId;
         public int NextId => _nextId++;
 
         public abstract int GetRound { get; }
@@ -56,6 +65,8 @@ namespace WoMFramework.Game.Generator
         }
 
         public abstract void EvaluateAdventureState();
+
+        public abstract void CreateEntities(Mogwai mogwai, Shift shift);
 
         public abstract void Enter(Mogwai mogwai, Shift shift);
 

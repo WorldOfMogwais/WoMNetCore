@@ -19,24 +19,17 @@ namespace WoMFramework.Game.Generator
 
         private List<Entity> _inititiveOrder;
 
-        private readonly List<Monster> _monsters;
-
         private Entity _winner;
 
         private int _currentRound;
 
         private int _turn;
 
-        public List<Entity> Heroes => _inititiveOrder.Where(p => p is Mogwai).ToList();
-
-        public List<Entity> Monsters => _inititiveOrder.Where(p => p is Monster).ToList();
-
         public override int GetRound => _currentRound;
 
         public TestRoom()
         {
             _winner = null;
-            _monsters = new List<Monster> {Model.Monster.Monsters.Rat, Model.Monster.Monsters.Rat};
             _currentRound = 0;
             _turn = 0;
             _inititiveOrder = new List<Entity>();
@@ -52,11 +45,30 @@ namespace WoMFramework.Game.Generator
                 : AdventureState.Completed;
         }
 
+        public override void CreateEntities(Mogwai mogwai, Shift shift)
+        {
+            mogwai.AdventureEntityId = NextId;
+            Entities.Add(mogwai.AdventureEntityId, mogwai);
+
+            var rat1 = Monsters.Rat;
+            rat1.AdventureEntityId = NextId;
+            rat1.Initialize(new Dice(shift, 1));
+            Entities.Add(rat1.AdventureEntityId, rat1);
+
+            var rat2 = Monsters.Rat;
+            rat2.AdventureEntityId = NextId;
+            rat2.Initialize(new Dice(shift, 2));
+            Entities.Add(rat2.AdventureEntityId, rat2);
+        }
+
         public override void Enter(Mogwai mogwai, Shift shift)
         {
             if (AdventureState == AdventureState.Preparation)
             {
+                CreateEntities(mogwai, shift);
+
                 Prepare(mogwai, shift);
+
                 AdventureState = AdventureState.Running;
             }
 
@@ -69,26 +81,22 @@ namespace WoMFramework.Game.Generator
             Map.AddEntity(mogwai, 4, 4);
             mogwai.CurrentInitiative = mogwai.InitiativeRoll(mogwai.Dice);
             mogwai.EngagedEnemies = new List<Entity>();
-            mogwai.EngagedEnemies.AddRange(_monsters);
-            _inititiveOrder.Add(mogwai);
+            mogwai.EngagedEnemies.AddRange(MonstersList);
 
             coords.AddRange(new RadiusAreaProvider(mogwai.Coordinate, 1, Radius.CIRCLE).CalculatePositions().ToList());
-            var m = 1;
-            foreach (var monster in _monsters)
+            foreach (var monster in MonstersList)
             {
-                var dice = new Dice(shift, m++);
-                monster.Initialize(dice);
-                monster.CurrentInitiative = monster.InitiativeRoll(dice);
-                monster.EngagedEnemies = new List<Entity> { mogwai };
+                monster.CurrentInitiative = monster.InitiativeRoll(monster.Dice);
+                monster.EngagedEnemies =new List<Entity>();
+                monster.EngagedEnemies.AddRange(HeroesList);
                 monster.Adventure = mogwai.Adventure;
-                _inititiveOrder.Add(monster);
 
                 var getAPlace = coords[1];
                 Map.AddEntity(monster, getAPlace.X, getAPlace.Y);
                 coords.Remove(getAPlace);
             }
 
-            _inititiveOrder = _inititiveOrder.OrderBy(s => s.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
+            _inititiveOrder = EntitiesList.OrderBy(s => s.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
         }
 
         public override bool HasNextFrame()
@@ -137,8 +145,8 @@ namespace WoMFramework.Game.Generator
 
             if (target != null && target.IsDead && target is Monster killedMonster)
             {
-                var expReward = killedMonster.Experience / Heroes.Count;
-                Heroes.ForEach(p => p.AddExp(expReward, killedMonster));
+                var expReward = killedMonster.Experience / HeroesList.Count;
+                HeroesList.ForEach(p => p.AddExp(expReward, killedMonster));
             }
 
             if (!combatant.EngagedEnemies.Exists(p => p.IsAlive))

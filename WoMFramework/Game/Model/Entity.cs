@@ -314,20 +314,22 @@ namespace WoMFramework.Game.Model
                 return;
             }
 
-            Mogwai.Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage.");
-            Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damg, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage."));
+
+            Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage.");
+            LogEntry logEntry = LogEntry.Damage(this, damageAmount, damageType);
+            Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage."));
             CurrentHitPoints -= damageAmount;
 
             if (!CanAct)
             {
-                Mogwai.Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}.");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damg, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}."));
+                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}.");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}."));
             }
 
             if (IsDead)
             {
-                Mogwai.Mogwai.History.Add(LogType.Damg, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}.");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damg, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}."));
+                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}.");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}."));
                 Adventure.Enqueue(AdventureLog.Died(this));
             }
         }
@@ -338,7 +340,7 @@ namespace WoMFramework.Game.Model
         public Adventure Adventure { get; set; }
         public Map Map { get; set; }
 
-        int IAdventureEntity.AdventureEntityId { get; set; }
+        public int AdventureEntityId { get; set; }
 
         public int Size { get; }
 

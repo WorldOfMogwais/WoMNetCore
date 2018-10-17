@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using WoMFramework.Game.Enums;
+using WoMFramework.Game.Generator;
+using WoMFramework.Game.Model;
 
 namespace WoMFramework.Game
 {
@@ -26,19 +29,27 @@ namespace WoMFramework.Game
 
     }
 
-    public enum LogType { Info, Damg, Heal, Evnt, Comb,
-        AdventureLog
+    public enum LogType { Info, Damage, Heal, Event, Comb, AdventureLog
     }
 
     public class LogEntry
     {
         public LogType LogType { get; }
+        public int Source { get; set; }
+        public int Target { get; set; }
+        public DamageType damageType { get; set; }
+        public HealType healType { get; set; }
         public string Message { get; }
 
         public LogEntry(LogType logType, string message)
         {
             LogType = logType;
             Message = message;
+        }
+
+        private LogEntry(LogType logType, int source, params object[] list)
+        {
+            Source = source;
         }
 
         public override string ToString()
@@ -52,11 +63,11 @@ namespace WoMFramework.Game
             {
                 case LogType.Info:
                     return "[INFO]";
-                case LogType.Damg:
+                case LogType.Damage:
                     return "[DAMG]";
                 case LogType.Heal:
                     return "[HEAL]";
-                case LogType.Evnt:
+                case LogType.Event:
                     return "[EVNT]";
                 case LogType.Comb:
                     return "[COMB]";
@@ -65,6 +76,13 @@ namespace WoMFramework.Game
             }
         }
 
+        public static LogEntry Damage(ICombatant entity, int damageAmount, DamageType damageType)
+        {
+            return new LogEntry(LogType.Damage, 
+                entity.Adventure != null ? entity.AdventureEntityId : 0,
+                damageAmount,
+                damageType);
+        }
     }
 
 }

@@ -7,6 +7,7 @@ using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
 using Troschuetz.Random;
+using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Mogwai;
 
 namespace WoMFramework.Game.Generator.Dungeon
@@ -152,25 +153,14 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             entity.Map = this;
             entity.Coordinate = Coord.Get(x, y);
-            entity.AdventureEntityId = Adventure.NextId;
+            //entity.AdventureEntityId = Adventure.NextId;
             EntityMap[x, y] = entity;
-
             EntityCount++;
 
             // calculate fov
             entity.FovCoords = CalculateFoV(entity.Coordinate);
             //entity.ExploredCoords = GetCoords<int>(ExplorationMap, i => i < 1).ToHashSet();
             Adventure.Enqueue(AdventureLog.EntityCreated(entity));
-        }
-
-        /// <summary>
-        /// Add entity to the map
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="pos"></param>
-        public void AddEntity(ICombatant entity, Coord pos)
-        {
-            AddEntity(entity, pos.X, pos.Y);
         }
 
         /// <summary>
