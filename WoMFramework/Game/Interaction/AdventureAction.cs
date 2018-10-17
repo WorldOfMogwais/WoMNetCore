@@ -33,7 +33,7 @@ namespace WoMFramework.Game.Interaction
                  + AveragePartyLevel;
         }
 
-        public static bool TryGetAdventure(int paramAdd1, int paramAdd2, out AdventureAction adventure)
+        public static bool TryGetInteraction(int paramAdd1, int paramAdd2, out AdventureAction adventure)
         {
             if (Enum.IsDefined(typeof(AdventureType), int.Parse(paramAdd1.ToString("0000").Substring(0, 1)))
              && Enum.IsDefined(typeof(DifficultyType), int.Parse(paramAdd2.ToString("0000").Substring(0, 1))))

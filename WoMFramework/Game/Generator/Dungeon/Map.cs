@@ -104,11 +104,19 @@ namespace WoMFramework.Game.Generator.Dungeon
                     var width = 2;
                     var height = 2;
                     var rectangle = new Rectangle(i, j, width, height);
+                    var legitRectangle = rectangle;
                     while (rectangle.Positions().All(p => wMap[p.X, p.Y]))
                     {
+                        legitRectangle = rectangle;
                         rectangle = rectangle.SetWidth(++width).SetHeight(++height);
                     }
-                    rectangles.Add(rectangle);
+
+                    if (legitRectangle.Positions().All(p => wMap[p.X, p.Y]))
+                    {
+                        rectangles.Add(legitRectangle);
+                    }
+                    
+                    
                 }
             }
 
@@ -301,17 +309,22 @@ namespace WoMFramework.Game.Generator.Dungeon
         public double GetExplorationState()
         {
             var visited = 0;
-            for (var i = 0; i < WalkabilityMap.Width; i++)
+            var unexplored = 0;
+            for (var i = 0; i < ExplorationMap.Width; i++)
             {
-                for (var j = 0; j < WalkabilityMap.Height; j++)
+                for (var j = 0; j < ExplorationMap.Height; j++)
                 {
-                    if (ExplorationMap[i, j] == 0)
+                    if (ExplorationMap[i, j] > 0)
+                    {
+                        unexplored++;
+                    }
+                    else if (ExplorationMap[i, j] == 0)
                     {
                         visited++;
                     }
                 }
             }
-            return (double)visited / _walkableTiles;
+            return (double) visited / (visited + unexplored);
         }
 
         public Coord Nearest(Coord current, List<Coord> coords)

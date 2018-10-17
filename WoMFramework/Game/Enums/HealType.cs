@@ -2,6 +2,8 @@
 {
     public enum HealType
     {
-        Rest
+        Rest,
+        DivineHeal,
+        DivineRevive
     }
 }

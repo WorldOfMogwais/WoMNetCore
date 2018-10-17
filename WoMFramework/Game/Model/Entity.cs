@@ -111,11 +111,12 @@ namespace WoMFramework.Game.Model
             return damage < 1 ? 1 : damage;
         }
 
-        public bool CanAct => HealthState >= 0;
-
-        public bool IsDead => HealthState == HealthState.Dead;
-
+        public bool CanAct => (int) HealthState >= 0;
         public bool IsAlive => HealthState != HealthState.Dead;
+        public bool IsDisabled => HealthState == HealthState.Disabled;
+        public bool IsInjured => HealthState == HealthState.Injured;
+        public bool IsDying => HealthState == HealthState.Dying;
+        public bool IsDead => HealthState == HealthState.Dead;
 
         // injury and death
         public HealthState HealthState

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using log4net;
+using Troschuetz.Random;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Interaction;
@@ -118,18 +120,44 @@ namespace WoMFramework.Game.Model.Mogwai
 
         }
 
+        public bool EvolveAdventure()
+        {
+            // finish un-animated adventures
+            if (Adventure != null && Adventure.AdventureState == AdventureState.Running)
+            {
+                while (Adventure.HasNextFrame())
+                {
+                    Adventure.NextFrame();
+                }
+
+                if (!Adventure.IsActive)
+                {
+                    Adventure = null;
+                }
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="history"></param>
         /// <returns></returns>
         public bool Evolve(out GameLog history)
-        {
+        {        
             // any shift left?
             if (!CanEvolve)
             {
                 history = null;
                 return false;
+            }
+
+            if (EvolveAdventure())
+            {
+                history = null;
+                return true;
             }
 
             // increase pointer to next block height
@@ -140,6 +168,16 @@ namespace WoMFramework.Game.Model.Mogwai
 
             // assign game log for this shift
             history = _currentShift.History;
+
+            // we go for the adventure if there is one up
+            if (Adventure != null && Adventure.IsActive)
+            {
+                history = _currentShift.History;
+                Adventure.Enter(this, _currentShift);
+                return true;
+            }
+
+            Adventure = null;
 
             // first we always calculated current lazy experience
             var lazyExp = Experience.GetExp(CurrentLevel, _currentShift);
@@ -158,6 +196,8 @@ namespace WoMFramework.Game.Model.Mogwai
                         {
                             Adventure = AdventureGenerator.Create(_currentShift,
                                 (AdventureAction)_currentShift.Interaction);
+                            Adventure.Enter(this, _currentShift);
+                            return true;
                         }
                         break;
 
@@ -174,30 +214,32 @@ namespace WoMFramework.Game.Model.Mogwai
                                 break;
                         }
                         break;
+
+                    case InteractionType.Special:
+                        var specialAction = (SpecialAction)_currentShift.Interaction;
+                        switch (specialAction.SpecialType)
+                        {
+                            case SpecialType.Heal:
+                                if (IsInjured || IsDisabled)
+                                {
+                                    Heal(int.MaxValue, HealType.DivineHeal);
+                                }
+                                return true;
+                            case SpecialType.Reviving:
+                                // TODO check if costtype is correct otherwise prune action
+                                if (IsDying || IsDead)
+                                {
+                                    Heal(CurrentHitPoints > 0 ? 0 : Math.Abs(CurrentHitPoints), HealType.DivineRevive);
+                                }
+                                return true;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                 }
             }
 
-            // finish un-animated adventures
-            if (Adventure != null && Adventure.AdventureState == AdventureState.Running)
-            {
-                while (Adventure.HasNextFrame())
-                {
-                    Adventure.NextFrame();
-                }
-                return true;
-            }
-
-            // we go for the adventure if there is one up
-            if (Adventure != null && Adventure.IsActive)
-            {
-                Adventure.Enter(this, _currentShift);
-                return true;
-            }
-
-            Adventure = null;
-
-            // lazy health regeneration
-            if (MogwaiState == MogwaiState.None)
+            // lazy health regeneration, only rest healing if he is not dieing TODO check MogwaiState?
+            if (MogwaiState == MogwaiState.None && !IsDying)
             {
                 Heal(_currentShift.IsSmallShift ? 2 * CurrentLevel : CurrentLevel, HealType.Rest);
             }

@@ -9,12 +9,15 @@
         Adventure = 4,
         Duell = 5,
         Breeding = 6,
-        Inventory = 7
+        Inventory = 7,
+        Special = 8
     }
 
     public enum CostType
     {
-        Standard = 1
+        Standard = 1,
+        Medium = 5,
+        High = 9
     }
 
     public enum LevelingType

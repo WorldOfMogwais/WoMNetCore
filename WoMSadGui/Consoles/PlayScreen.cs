@@ -93,9 +93,10 @@ namespace WoMSadGui.Consoles
             MenuButton(0, "level", DoAction);
             MenuButton(1, "inven", DoAction);
             MenuButton(2, "adven", DoAction);
-            MenuButton(3, "modif", DoAction);
-            MenuButton(4, "breed", DoAction);
-            MenuButton(5, "shop", DoAction);
+            MenuButton(3, "heal", DoAction);
+            MenuButton(4, "modif", DoAction);
+            MenuButton(5, "breed", DoAction);
+            MenuButton(6, "shop", DoAction);
 
             var btnNext = new MogwaiButton(8, 1)
             {
@@ -151,7 +152,7 @@ namespace WoMSadGui.Consoles
                     break;
 
                 case "adven":
-                    dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", DoAdventureAction, 40, 12);
+                    dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", DoInteraction, 40, 12);
                     dialog.AddRadioButtons("adventureAction", new List<string[]> {
                             new[] {"testroom", "Test Room"},
                             new[] {"chamber", "Chamber"},
@@ -162,10 +163,18 @@ namespace WoMSadGui.Consoles
                     dialog.Show(true);
                     break;
                 case "level":
-                    dialog = new MogwaiOptionDialog("Leveling", "Currently up for leveling?", DoAdventureAction, 40, 12);
+                    dialog = new MogwaiOptionDialog("Leveling", "Currently up for leveling?", DoInteraction, 40, 12);
                     dialog.AddRadioButtons("levelingAction", new List<string[]> {
                         new[] {"levelclass", "Class levels."},
                         new[] {"levelability", "Ability levels."}
+                    });
+                    dialog.Show(true);
+                    break;
+                case "heal":
+                    dialog = new MogwaiOptionDialog("Healing", "Choose Divine prayer?", DoInteraction, 40, 12);
+                    dialog.AddRadioButtons("levelingAction", new List<string[]> {
+                        new[] {"heal", "Heal Injuries"},
+                        new[] {"reviving", "Reviving"}
                     });
                     dialog.Show(true);
                     break;
@@ -173,7 +182,7 @@ namespace WoMSadGui.Consoles
 
         }
 
-        private void DoAdventureAction(string actionStr)
+        private void DoInteraction(string actionStr)
         {
             switch (actionStr)
             {
@@ -182,6 +191,13 @@ namespace WoMSadGui.Consoles
                         _controller.Interaction(new AdventureAction(AdventureType.TestRoom, DifficultyType.Average,
                             _mogwai.CurrentLevel))
                             ? "Successful sent mogwai to test room! Wait for interaction locks."
+                            : "Failed to send mogwai to test room!");
+                    break;
+                case "dungeon":
+                    LogInConsole(
+                        _controller.Interaction(new AdventureAction(AdventureType.Dungeon, DifficultyType.Average,
+                            _mogwai.CurrentLevel))
+                            ? "Successful sent mogwai to dungeon! Wait for interaction locks."
                             : "Failed to send mogwai to test room!");
                     break;
                 case "levelclass":
@@ -201,8 +217,20 @@ namespace WoMSadGui.Consoles
                     });
                     dialog.Show(true);
                     break;
+                case "heal":
+                    LogInConsole(
+                        _controller.Interaction(new SpecialAction(SpecialType.Heal, SpecialSubType.None, CostType.Medium))
+                            ? "Successful made prayer for divine healing! Wait for interaction locks."
+                            : "Failed to pray for mogwai divine heal!");
+                    break;
+                case "reviving":
+                    LogInConsole(
+                        _controller.Interaction(new SpecialAction(SpecialType.Reviving, SpecialSubType.None, CostType.High))
+                            ? "Successful made prayer for divine reviving! Wait for interaction locks."
+                            : "Failed to pray for mogwai divine reviving!");
+                    break;
                 default:
-                    var warning = new MogwaiDialog("NotImplemented", $"DoAdventureAction {actionStr}!", 40, 6);
+                    var warning = new MogwaiDialog("NotImplemented", $"DoInteraction {actionStr}!", 40, 6);
                     warning.AddButton("ok");
                     warning.Button.Click += (btn, args) =>
                     {
@@ -246,11 +274,6 @@ namespace WoMSadGui.Consoles
 
         public void Evolve(bool fast = false)
         {
-            if (_custom.IsStarted())
-            {
-                _custom.Stop();
-            }
-
             if (!fast)
             {
                 if (_mogwai.Evolve(out _))
@@ -261,7 +284,7 @@ namespace WoMSadGui.Consoles
                     }
                     else
                     {
-                        
+                        _custom.Stop();
                     }
                     UpdateLog();
                 }

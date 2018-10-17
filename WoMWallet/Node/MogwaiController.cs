@@ -246,6 +246,8 @@ namespace WoMWallet.Node
 
             var lvlAction = new LevelingAction(LevelingType.Class, ClassType.Barbarian, 0, 1);
             var dungAction = new AdventureAction(AdventureType.Dungeon, DifficultyType.Average, 2);
+            var healAction = new SpecialAction(SpecialType.Heal, SpecialSubType.None, CostType.Medium);
+            var revivingAction = new SpecialAction(SpecialType.Reviving, SpecialSubType.None, CostType.High);
 
             var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i"));
             var shifts = new Dictionary<double, Shift>
@@ -309,7 +311,22 @@ namespace WoMWallet.Node
                         1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bcf29",
                         dungAction.GetValue1(),
                         dungAction.GetValue2())
+                },
+                {
+                    1013, new Shift(12, 1555309745, pubMogAddressHex,
+                        1013, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bdf29",
+                        revivingAction.GetValue1(),
+                        revivingAction.GetValue2())
+                },
+                {
+                    1014, new Shift(13, 1555329745, pubMogAddressHex,
+                        1014, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bff29",
+                        healAction.GetValue1(),
+                        healAction.GetValue2())
                 }
+
 
         };
 

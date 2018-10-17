@@ -20,6 +20,12 @@ namespace WoMFramework.Game.Interaction
             InteractionType = interactionType;
         }
 
+        protected Interaction(InteractionType interactionType, CostType costType)
+        {
+            CostType = costType;
+            InteractionType = interactionType;
+        }
+
         public virtual string GetInfo()
         {
             return InteractionType.ToString();
@@ -61,15 +67,23 @@ namespace WoMFramework.Game.Interaction
                 switch (interactionType)
                 {
                     case InteractionType.Adventure:
-                        if (AdventureAction.TryGetAdventure(addParam1, addParam2, out var adventure))
+                        if (AdventureAction.TryGetInteraction(addParam1, addParam2, out var adventure))
                         {
                             return adventure;
                         }
                         break;
+
                     case InteractionType.Leveling:
-                        if (LevelingAction.TryGetAdventure(addParam1, addParam2, out var leveling))
+                        if (LevelingAction.TryGetInteraction(addParam1, addParam2, out var leveling))
                         {
                             return leveling;
+                        }
+                        break;
+
+                    case InteractionType.Special:
+                        if (SpecialAction.TryGetInteraction(addParam1, addParam2, out var special))
+                        {
+                            return special;
                         }
                         break;
                 }

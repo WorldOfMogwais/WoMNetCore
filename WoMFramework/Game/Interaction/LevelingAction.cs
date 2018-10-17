@@ -23,7 +23,16 @@ namespace WoMFramework.Game.Interaction
             ParamAdd2 = currentLevel * 100 + classLevel;
         }
 
-        public static bool TryGetAdventure(int paramAdd1, int paramAdd2, out LevelingAction leveling)
+        public override string GetInfo()
+        {
+            return InteractionType + ", "
+                 + LevelingType + ", "
+                 + ClassType + ", "
+                 + CurrentLevel + ", "
+                 + ClassLevel;
+        }
+
+        public static bool TryGetInteraction(int paramAdd1, int paramAdd2, out LevelingAction leveling)
         {
             if (Enum.IsDefined(typeof(LevelingType), int.Parse(paramAdd1.ToString("0000").Substring(0, 2)))
              && Enum.IsDefined(typeof(ClassType), int.Parse(paramAdd1.ToString("0000").Substring(2, 2))))

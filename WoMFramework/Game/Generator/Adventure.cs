@@ -43,8 +43,7 @@ namespace WoMFramework.Game.Generator
         public Dictionary<AdventureStats, double> AdventureStats { get; }
 
         public bool IsActive => AdventureState == AdventureState.Preparation
-                             || AdventureState == AdventureState.Extended
-                             || AdventureState == AdventureState.Running;
+                             || AdventureState == AdventureState.Extended;
 
         private int _nextId;
         public int NextId => _nextId++;

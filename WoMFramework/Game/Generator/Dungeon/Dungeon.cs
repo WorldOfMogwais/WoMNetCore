@@ -97,16 +97,16 @@ namespace WoMFramework.Game.Generator.Dungeon
             mogwai.AdventureEntityId = NextId;
             Entities.Add(mogwai.AdventureEntityId, mogwai);
 
-            var boss = Monsters.DireRat;
+            var boss = Monsters.Wolf;
             boss.AdventureEntityId = NextId;
             boss.Initialize(new Dice(shift, 1));
             Entities.Add(boss.AdventureEntityId, boss);
 
             for (var i = 0; i < 6; i++)
             {
-                var mob = Monsters.Rat;
+                var mob = Monsters.DireRat;
                 mob.AdventureEntityId = NextId;
-                mob.Initialize(new Dice(shift, i + 99));
+                mob.Initialize(new Dice(shift, i + 100));
                 Entities.Add(mob.AdventureEntityId, mob);
             }
         }
@@ -340,9 +340,12 @@ namespace WoMFramework.Game.Generator.Dungeon
             switch (entity)
             {
                 case Mogwai _:
-                    var pois = Map.GetCoords(Map.ExplorationMap, i => i > 0).Where(p => Map.WalkabilityMap[p.X, p.Y]).ToList();
+                    var pois = Map.GetCoords(Map.ExplorationMap, i => i > 0)
+                        //.Where(p => Map.WalkabilityMap[p.X, p.Y])
+                        .ToList();
                     if (pois.Count == 0)
                     {
+
                         return;
                     }
                     var poi = Map.Nearest(entity.Coordinate, pois);
@@ -414,11 +417,13 @@ namespace WoMFramework.Game.Generator.Dungeon
         {
             UpdateAdventureStats();
 
-            if (AdventureStats[Generator.AdventureStats.Monster] >= 1
-             && AdventureStats[Generator.AdventureStats.Explore] >= 1)
+            if (HeroesList.All(p => p.IsDead))
+            {
+                AdventureState = AdventureState.Failed;
+            }
+            else if (AdventureStats[Generator.AdventureStats.Explore] >= 1)
             {
                 AdventureState = AdventureState.Completed;
-
             }
             else if (_currentRound >= MaxRoundsPerBlock)
             {

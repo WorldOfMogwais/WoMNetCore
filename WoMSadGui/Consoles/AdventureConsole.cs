@@ -37,7 +37,7 @@ namespace WoMSadGui.Consoles
 
         public static TimeSpan GameSpeed = TimeSpan.Zero;
 
-        public static TimeSpan ActionDelay = TimeSpan.FromSeconds(0.1);
+        public static TimeSpan ActionDelay = TimeSpan.FromSeconds(0.05);
 
         public DateTime LastUpdate;
 
@@ -150,7 +150,9 @@ namespace WoMSadGui.Consoles
                             DrawMapPoint(i, j, false);
                             break;
                         case -9:
-                            // unwalkable tiles
+                            _mapConsole[i, j].CopyAppearanceFrom(UnknownAppearance);
+                            _mapConsole.SetGlyph(i, j, 219);
+                            break;
                         case 1:
                             var cell = UnknownAppearance;
                             // colorized locations ...
@@ -167,7 +169,7 @@ namespace WoMSadGui.Consoles
                             //    break;
                             //}
                             _mapConsole[i, j].CopyAppearanceFrom(cell);
-                            _mapConsole.SetGlyph(i, j, 219);
+                            _mapConsole.SetGlyph(i, j, 176);
                             break;
                         default:
                             //_mapConsole[i, j].CopyAppearanceFrom(UnclearAppearance);
@@ -188,10 +190,12 @@ namespace WoMSadGui.Consoles
                     _mapConsole[x, y].CopyAppearanceFrom(isUnclear ? UnclearAppearance : StoneTileAppearance);
                     _mapConsole.SetGlyph(x, y, 46);
                     break;
+
                 case StoneWall _:
                     _mapConsole[x, y].CopyAppearanceFrom(isUnclear ? UnclearAppearance : StoneWallAppearance);
                     _mapConsole.SetGlyph(x, y, 35);
                     break;
+
                 default:
                     break;
 
