@@ -13,104 +13,83 @@ environment:
 build_script:
 - cmd: >-
     dotnet build --configuration %TARGET_CONFIGURATION%
-
+    
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/win-x64 -r win-x64
+   
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-win-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/win-x64/*
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/win-x64/
-
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-win-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-win-x64.zip
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/linux-x64 -r linux-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/linux-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-linux-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/linux-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-linux-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-linux-x64.zip 
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/alpine-x64 -r alpine-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/alpine-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-alpine-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/alpine-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-alpine-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-alpine-x64.zip
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/centos-x64 -r centos-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/centos-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-centos-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/centos-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-centos-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-centos-x64.zip
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/debian-x64 -r debian-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/debian-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-debian-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/debian-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-debian-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-debian-x64.zip
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/fedora-x64 -r fedora-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/fedora-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-fedora-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/fedora-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-fedora-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-fedora-x64.zip
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/gentoo-x64 -r gentoo-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/gentoo-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-gentoo-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/gentoo-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-gentoo-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-gentoo-x64.zip
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/opensuse-x64 -r opensuse-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/opensuse-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-opensuse-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/opensuse-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-opensuse-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-opensuse-x64.zip
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/rhel-x64 -r rhel-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/rhel-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-rhel-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/rhel-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-rhel-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-rhel-x64.zip
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/ubuntu-x64 -r ubuntu-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/ubuntu-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-ubuntu-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/ubuntu-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-ubuntu-x64.zip *
-
-    cd %APPVEYOR_BUILD_FOLDER%
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-ubuntu-x64.zip
 
 
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/osx-x64 -r osx-x64
 
-    cd %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/osx-x64/
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-osx-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/osx-x64/*
 
-    7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-osx-x64.zip *
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-osx-x64.zip
 
-    cd %APPVEYOR_BUILD_FOLDER%
 test_script:
 - cmd: >-
     dotnet test --configuration Release ./WoMFrameworkTest
