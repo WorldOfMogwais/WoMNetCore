@@ -69,4 +69,4 @@ test_script:
     
 artifacts:
 - path: *.zip
-- name: WoMNetCore
+  name: WoMNetCore
