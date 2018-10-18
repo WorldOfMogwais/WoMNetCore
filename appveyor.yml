@@ -68,5 +68,5 @@ test_script:
     dotnet test --configuration Release ./WoMWalletTest
     
 artifacts:
-- path: *.zip
+- path: ./*.zip
   name: WoMNetCore
