@@ -20,6 +20,8 @@ build_script:
 
     7z a %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-win-x64.zip *
 
+    appveyor PushArtifact %APPVEYOR_BUILD_FOLDER%/artifacts/WoM-%APPVEYOR_BUILD_VERSION%-win-x64.zip
+
     cd %APPVEYOR_BUILD_FOLDER%
 
 
