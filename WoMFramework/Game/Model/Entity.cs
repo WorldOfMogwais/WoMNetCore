@@ -174,6 +174,8 @@ namespace WoMFramework.Game.Model
             Wealth = new Wealth();
             Classes = new List<Classes.Classes>();
 
+            EngagedEnemies = new List<Entity>();
+
             // add basic actions
             CombatActions.Add(CombatAction.CreateMove(this));
 

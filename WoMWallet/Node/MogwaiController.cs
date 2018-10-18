@@ -260,83 +260,97 @@ namespace WoMWallet.Node
                         0.0001m)
                 },
                 {
-                    1002, new Shift(1, 1535295740, pubMogAddressHex,
-                        1002, "0000000033dbfc3cc9f3671ba28b41ecab6f547219bb43174cc97bf23269fa88",
-                        1, "db5639553f9727c42f80c22311bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
-                        0.01040003m,
-                        0.00001002m)
-                },
-                {
-                    1003, new Shift(2, pubMogAddressHex,
-                        1003, "0000000033dbfc3cc9f3671ba28b41ecab6f547219bb43174cc97bf2163d2e38")
-                },
-                {
-                    1004, new Shift(3, pubMogAddressHex,
-                        1004, "0000000033dbfc163df3671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
-                },
-                {
-                    1005, new Shift(4, pubMogAddressHex,
-                        1005, "0000000033dbfc163de3671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
-                },
-                {
-                    1006, new Shift(5, pubMogAddressHex,
-                        1006, "0000000033dbfc163dc3671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
-                },
-                {
-                    1007, new Shift(6, pubMogAddressHex,
-                        1007, "0000000033dbfc163db3671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
-                },
-                {
-                    1008, new Shift(7, pubMogAddressHex,
-                        1008, "0000000033dbfc163def671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
-                },
-                {
-                    1009, new Shift(8, pubMogAddressHex,
-                        1009, "0000000033dbfc163dff671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
-                },
-                {
-                    1010, new Shift(9, 1555295740, pubMogAddressHex,
-                        1010, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
-                        1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
-                        lvlAction.GetValue1(),
-                        lvlAction.GetValue2())
-                },
-                {
-                    1011, new Shift(10, pubMogAddressHex,
-                        1011, "0000000033dbfc163dff671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
-                },
-                {
-                    1012, new Shift(11, 1555299745, pubMogAddressHex,
-                        1012, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
-                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bcf29",
-                        dungAction.GetValue1(),
-                        dungAction.GetValue2())
-                },
-                {
-                    1013, new Shift(12, 1555309745, pubMogAddressHex,
-                        1013, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
-                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bdf29",
-                        revivingAction.GetValue1(),
-                        revivingAction.GetValue2())
-                },
-                {
-                    1014, new Shift(13, 1555329745, pubMogAddressHex,
-                        1014, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
-                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bff29",
-                        healAction.GetValue1(),
-                        healAction.GetValue2())
-                },
-                {
-                    1015, new Shift(14, 1539810141, "328b742623b139b29553d0c2cc2c785ed8feff324a37a6bc41",
-                        75422, "000000004eb637ffbdb8674dbe5ff5c339a50b0dac1723f1df44b7b790746a6e",
+                    1002, new Shift(1, 1539810141, "328b742623b139b29553d0c2cc2c785ed8feff324a37a6bc41",
+                        1002, "000000004eb637ffbdb8674dbe5ff5c339a50b0dac1723f1df44b7b790746a6e",
                         1, "7876fde772cae5684ad133a007c92f5f209cc91fdc1814fe3dab2c6174557ea7",
                         0.01042002m,
                         0.00020002m)
                 }
-
-
-
         };
+        //    var shifts = new Dictionary<double, Shift>
+        //    {
+        //        {
+        //            1001, new Shift(0, 1530914381, pubMogAddressHex,
+        //                1001, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
+        //                2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
+        //                1.00m,
+        //                0.0001m)
+        //        },
+        //        {
+        //            1002, new Shift(1, 1535295740, pubMogAddressHex,
+        //                1002, "0000000033dbfc3cc9f3671ba28b41ecab6f547219bb43174cc97bf23269fa88",
+        //                1, "db5639553f9727c42f80c22311bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
+        //                0.01040003m,
+        //                0.00001002m)
+        //        },
+        //        {
+        //            1003, new Shift(2, pubMogAddressHex,
+        //                1003, "0000000033dbfc3cc9f3671ba28b41ecab6f547219bb43174cc97bf2163d2e38")
+        //        },
+        //        {
+        //            1004, new Shift(3, pubMogAddressHex,
+        //                1004, "0000000033dbfc163df3671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
+        //        },
+        //        {
+        //            1005, new Shift(4, pubMogAddressHex,
+        //                1005, "0000000033dbfc163de3671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
+        //        },
+        //        {
+        //            1006, new Shift(5, pubMogAddressHex,
+        //                1006, "0000000033dbfc163dc3671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
+        //        },
+        //        {
+        //            1007, new Shift(6, pubMogAddressHex,
+        //                1007, "0000000033dbfc163db3671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
+        //        },
+        //        {
+        //            1008, new Shift(7, pubMogAddressHex,
+        //                1008, "0000000033dbfc163def671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
+        //        },
+        //        {
+        //            1009, new Shift(8, pubMogAddressHex,
+        //                1009, "0000000033dbfc163dff671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
+        //        },
+        //        {
+        //            1010, new Shift(9, 1555295740, pubMogAddressHex,
+        //                1010, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+        //                1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
+        //                lvlAction.GetValue1(),
+        //                lvlAction.GetValue2())
+        //        },
+        //        {
+        //            1011, new Shift(10, pubMogAddressHex,
+        //                1011, "0000000033dbfc163dff671ba28b41ecab6f547219bb43174cc97bf2164d2e38")
+        //        },
+        //        {
+        //            1012, new Shift(11, 1555299745, pubMogAddressHex,
+        //                1012, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+        //                1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bcf29",
+        //                dungAction.GetValue1(),
+        //                dungAction.GetValue2())
+        //        },
+        //        {
+        //            1013, new Shift(12, 1555309745, pubMogAddressHex,
+        //                1013, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+        //                1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bdf29",
+        //                revivingAction.GetValue1(),
+        //                revivingAction.GetValue2())
+        //        },
+        //        {
+        //            1014, new Shift(13, 1555329745, pubMogAddressHex,
+        //                1014, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+        //                1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bff29",
+        //                healAction.GetValue1(),
+        //                healAction.GetValue2())
+        //        },
+        //        {
+        //            1015, new Shift(14, 1539810141, "328b742623b139b29553d0c2cc2c785ed8feff324a37a6bc41",
+        //                75422, "000000004eb637ffbdb8674dbe5ff5c339a50b0dac1723f1df44b7b790746a6e",
+        //                1, "7876fde772cae5684ad133a007c92f5f209cc91fdc1814fe3dab2c6174557ea7",
+        //                0.01042002m,
+        //                0.00020002m)
+        //        }
+        //};
 
             var mogwai = new Mogwai("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i", shifts);
 

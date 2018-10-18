@@ -89,7 +89,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             _initiativeTurn = 0;
             _roundMode = Mode.Exploration;
 
-            Map = new Map(DungeonRandom, 58, 58, this);
+            Map = new Map(DungeonRandom, 150, 150, this);
         }
 
         public override void CreateEntities(Mogwai mogwai, Shift shift)
@@ -309,11 +309,17 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 var expReward = killedMonster.Experience;
                 entity.AddExp(expReward, killedMonster);
+                if (entity.EngagedEnemies.Contains(target))
+                {
+                    target.CombatState = CombatState.None;
+                    entity.EngagedEnemies.Remove(target);
+                }
             }
 
             // no more combat
-            if (entity.EngagedEnemies.All(p => p.IsDead))
+            if (entity.EngagedEnemies.Count == 0 || entity.EngagedEnemies.All(p => p.IsDead))
             {
+                entity.EngagedEnemies.Clear();
                 entity.CombatState = CombatState.None;
 
                 // reset combat stuff

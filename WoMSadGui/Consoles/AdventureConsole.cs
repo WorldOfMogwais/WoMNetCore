@@ -30,6 +30,9 @@ namespace WoMSadGui.Consoles
         private readonly Mogwai _mogwai;
 
         private readonly Console _mapConsole;
+        private readonly int mapViewWidth = 60;
+        private readonly int mapViewHeight = 30;
+
 
         private readonly Console _statsConsole;
 
@@ -53,18 +56,19 @@ namespace WoMSadGui.Consoles
             AdventureFont = Global.LoadFont("Cheepicus12.font").GetFont(Font.FontSizes.One);
 
             //_mapConsole = new Console(75, 75) { Position = new Point(17, 2) };
-            _mapConsole = new Console(70, 70) {Position = new Point(-16, 0)};
+            _mapConsole = new Console(150, 150) {Position = new Point(-16, 0)};
             _mapConsole.Font = AdventureFont;
+            
             Children.Add(_mapConsole);
             _entityManager = new SadConsole.Entities.EntityManager {Parent = _mapConsole};
 
             _statsConsole = new MogwaiConsole("stats", "", 21, 6) { Position = new Point(70, 16) };
+            _statsConsole.Fill(DefaultForeground, new Color(100,0,200,150), null);
             Children.Add(_statsConsole);
 
             _mapConsole.IsVisible = false;
 
         }
-
 
         public bool IsStarted()
         {
@@ -73,8 +77,7 @@ namespace WoMSadGui.Consoles
 
         public void Start(Adventure adventure)
         {
-            _mapConsole.IsVisible = true;
-
+            _mapConsole.ViewPort = new Microsoft.Xna.Framework.Rectangle(0, 0, mapViewWidth, mapViewHeight);
             _mapConsole.Children.Clear();
             _entities.Clear();
 
@@ -99,6 +102,7 @@ namespace WoMSadGui.Consoles
                 }
             }
 
+            _mapConsole.IsVisible = true;
             LastUpdate = DateTime.Now;
         }
 
@@ -243,6 +247,9 @@ namespace WoMSadGui.Consoles
             _entityManager.Entities.Add(entity);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void UpdateGame()
         {
             if (!_mapConsole.IsVisible || LastUpdate.Add(GameSpeed) >= DateTime.Now)
@@ -274,7 +281,7 @@ namespace WoMSadGui.Consoles
             DrawExploMap();
 
             //DrawMap();
-            DrawFoV(adventureLog.SourceFovCoords);
+            adventureLog.SourceFovCoords.ToList().ForEach(p => _mapConsole[p.X, p.Y].Background = Color.Lerp(Color.DarkGray, Color.Black, 0.75f));
             
             // stats
             _statsConsole.Print(2, 0, Adventure.GetRound.ToString().PadLeft(4), Color.Gold);
@@ -314,18 +321,10 @@ namespace WoMSadGui.Consoles
             }
         }
 
-        private void DrawFoV(HashSet<Coord> fovCoords)
-        {
-            foreach (var fovCoord in fovCoords)
-            {
-                _mapConsole[fovCoord.X, fovCoord.Y].Background = Color.Lerp(Color.DarkGray, Color.Black, 0.75f);
-            }
-        }
-
         private void MoveEntity(ConsoleEntity entity, Coord destination)
         {
             entity.Position = new Point(destination.X, destination.Y);
-            _mapConsole.ViewPort = new Microsoft.Xna.Framework.Rectangle(destination.X - 25, destination.Y - 15, 50, 30);
+            _mapConsole.ViewPort = new Microsoft.Xna.Framework.Rectangle(destination.X - mapViewWidth/2, destination.Y - mapViewHeight/2, mapViewWidth, mapViewHeight);
             _entityManager.Sync();
         }
 
