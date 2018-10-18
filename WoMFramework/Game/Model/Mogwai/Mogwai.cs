@@ -166,6 +166,8 @@ namespace WoMFramework.Game.Model.Mogwai
             // set current shift to the actual shift we process
             _currentShift = Shifts[Pointer];
 
+            //Log.Info(_currentShift.ToString());
+
             // assign game log for this shift
             history = _currentShift.History;
 
@@ -188,6 +190,9 @@ namespace WoMFramework.Game.Model.Mogwai
 
             if (!_currentShift.IsSmallShift)
             {
+                // TODO remove this is only for debug
+                Log.Info(_currentShift.ToString());
+
                 switch (_currentShift.Interaction.InteractionType)
                 {
                     case InteractionType.Adventure:

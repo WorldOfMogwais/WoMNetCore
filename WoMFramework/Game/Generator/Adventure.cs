@@ -184,6 +184,14 @@ namespace WoMFramework.Game.Generator
 
         bool IsAlive { get; }
 
+        bool IsDisabled { get; }
+
+        bool IsInjured { get; }
+
+        bool IsDying { get; }
+
         bool IsDead { get; }
+
+        void Reset();
     }
 }

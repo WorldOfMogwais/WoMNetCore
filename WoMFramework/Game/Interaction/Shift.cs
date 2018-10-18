@@ -62,9 +62,15 @@ namespace WoMFramework.Game.Interaction
 
         public override string ToString()
         {
-            return $"Interaction[{Interaction.InteractionType}]\n" +
-                   $"Time = {Time}, BkIndex = {BkIndex}, Amount = {Amount}m, Fee = {Fee}m, Height = {Height}," +
-                   $" AdHex = \"{AdHex}\", BkHex = \"{BkHex}\", TxHex = \"{TxHex}\"";
+            return $"Interaction[{Interaction?.InteractionType}]\n" +
+                   $"Time = {Time}, " +
+                   $"BkIndex = {BkIndex}, " +
+                   $"Amount = {Amount}m, " +
+                   $"Fee = {Fee}m, " +
+                   $"Height = {Height}, " +
+                   $"AdHex = \"{AdHex}\", " +
+                   $"BkHex = \"{BkHex}\", " +
+                   $"TxHex = \"{TxHex}\"";
         }
 
     }

@@ -325,7 +325,15 @@ namespace WoMWallet.Node
                         1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bff29",
                         healAction.GetValue1(),
                         healAction.GetValue2())
+                },
+                {
+                    1015, new Shift(14, 1539810141, "328b742623b139b29553d0c2cc2c785ed8feff324a37a6bc41",
+                        75422, "000000004eb637ffbdb8674dbe5ff5c339a50b0dac1723f1df44b7b790746a6e",
+                        1, "7876fde772cae5684ad133a007c92f5f209cc91fdc1814fe3dab2c6174557ea7",
+                        0.01042002m,
+                        0.00020002m)
                 }
+
 
 
         };

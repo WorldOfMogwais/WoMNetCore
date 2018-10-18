@@ -94,6 +94,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public override void CreateEntities(Mogwai mogwai, Shift shift)
         {
+            mogwai.Reset();
             mogwai.AdventureEntityId = NextId;
             Entities.Add(mogwai.AdventureEntityId, mogwai);
 
@@ -340,7 +341,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             switch (entity)
             {
                 case Mogwai _:
-                    var pois = Map.GetCoords(Map.ExplorationMap, i => i > 0)
+                    var pois = Map.GetCoords(Map.ExplorationMap, entity.Coordinate, i => i > 0)
                         //.Where(p => Map.WalkabilityMap[p.X, p.Y])
                         .ToList();
                     if (pois.Count == 0)

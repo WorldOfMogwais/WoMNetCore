@@ -290,14 +290,14 @@ namespace WoMFramework.Game.Generator.Dungeon
             return Directions[(int)direction];
         }
 
-        public List<Coord> GetCoords<T>(ArrayMap<T> map, Func<T, bool> validate)
+        public List<Coord> GetCoords<T>(ArrayMap<T> map, Coord coord, Func<T, bool> validate)
         {
             var corrds = new List<Coord>();
             for (var i = 0; i < map.Width; i++)
             {
                 for (var j = 0; j < map.Height; j++)
                 {
-                    if (validate(map[i, j]))
+                    if (validate(map[i, j]) && (coord.X != i || coord.Y != j))
                     {
                         corrds.Add(Coord.Get(i, j));
                     }

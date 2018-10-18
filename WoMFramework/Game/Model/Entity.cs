@@ -391,6 +391,15 @@ namespace WoMFramework.Game.Model
             return FovCoords.Any(p => entity.Coordinate == p);
         }
 
+        /// <summary>
+        /// Reset all adventure and combat stats
+        /// </summary>
+        public void Reset()
+        {
+            CombatState = CombatState.None;
+            EngagedEnemies.Clear();
+        }
+
         #endregion
 
         /// <summary>
