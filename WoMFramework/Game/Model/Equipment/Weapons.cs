@@ -8,7 +8,7 @@ namespace WoMFramework.Game.Model
 {
     public class Weapons
     {
-        private const string DefaultWeaponFile = "weapons.json";
+        private const string DefaultWeaponFile = "Weapons.json";
 
         private static Weapons _instance;
 

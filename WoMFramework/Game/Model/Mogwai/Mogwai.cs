@@ -105,8 +105,9 @@ namespace WoMFramework.Game.Model.Mogwai
             // add simple rapier as weapon
             EquipWeapon(Weapons.Instance.ByName("Warhammer"));
 
-            // add simple rapier as weapon
-            Equipment.Armor = Armors.StuddedLeather;
+            // add simple studded leather as armor
+            //Equipment.Armor = Armors.StuddedLeather;
+            Equipment.Armor = Armors.Instance.ByName("StuddedLeather");
 
             // create slot types
             Equipment.CreateEquipmentSlots(new SlotType[] 
