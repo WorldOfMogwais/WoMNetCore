@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using GoRogue;
 using GoRogue.MapViews;
-using GoRogue.Pathing;
 using Priority_Queue;
-using WoMFramework.Game.Generator.Dungeon;
-using Direction = GoRogue.Direction;
 
 namespace WoMFramework.Game
 {

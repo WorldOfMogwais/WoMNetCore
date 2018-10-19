@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
-using GoRogue.MapGeneration;
 using Troschuetz.Random;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;

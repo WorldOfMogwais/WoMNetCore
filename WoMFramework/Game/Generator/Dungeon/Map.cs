@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using GoRogue;
-using GoRogue.MapGeneration;
 using GoRogue.MapGeneration.Generators;
 using GoRogue.MapViews;
 using Troschuetz.Random;
-using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Mogwai;
 
 namespace WoMFramework.Game.Generator.Dungeon

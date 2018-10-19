@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using log4net;
-using Troschuetz.Random;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model.Mogwai
 {
-    public class Mogwai : Entity
+    public sealed class Mogwai : Entity
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -102,7 +100,7 @@ namespace WoMFramework.Game.Model.Mogwai
             // add weaponslot
             Equipment.WeaponSlots.Add(new WeaponSlot());
             // add simple rapier as weapon
-            EquipWeapon(Weapons.Rapier);
+            EquipWeapon(Weapons.Instance.ByName("Warhammer"));
 
             // add simple rapier as weapon
             Equipment.Armor = Armors.StuddedLeather;
