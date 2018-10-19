@@ -5,6 +5,7 @@ using System.Reflection;
 using log4net;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
+using WoMFramework.Game.Home;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Random;
 
@@ -56,6 +57,8 @@ namespace WoMFramework.Game.Model.Mogwai
         public override Dice Dice => _currentShift.MogwaiDice;
 
         public double Rating => (double)(Strength * 3 + Dexterity * 2 + Constitution * 2 + Inteligence * 3 + Wisdom + Charisma) / 12;
+
+        public HomeTown HomeTown { get; }
 
         public Mogwai(string key, Dictionary<double, Shift> shifts)
         {
@@ -116,6 +119,8 @@ namespace WoMFramework.Game.Model.Mogwai
 
             EnvironmentTypes = new[] { EnvironmentType.Any };
 
+            // create home town
+            HomeTown = new HomeTown(_currentShift);
         }
 
         public bool EvolveAdventure()
@@ -163,6 +168,11 @@ namespace WoMFramework.Game.Model.Mogwai
 
             // set current shift to the actual shift we process
             _currentShift = Shifts[Pointer];
+
+            if (Pointer % 180 == 0)
+            {
+                HomeTown.Shop.Resupply(_currentShift);
+            }
 
             //Log.Info(_currentShift.ToString());
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using log4net;
 using NBitcoin;
 using NBitcoin.Altcoins;
+using WoMFramework.Tool;
 using WoMWallet.Tool;
 
 namespace WoMWallet.Node
