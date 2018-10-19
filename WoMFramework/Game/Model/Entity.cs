@@ -331,6 +331,7 @@ namespace WoMFramework.Game.Model
 
             if (IsDead)
             {
+                Map.RemoveEntity(this);
                 Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}.");
                 Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}."));
                 Adventure.Enqueue(AdventureLog.Died(this));
@@ -390,7 +391,7 @@ namespace WoMFramework.Game.Model
 
         public bool CanSee(IAdventureEntity entity)
         {
-            return FovCoords.Any(p => entity.Coordinate == p);
+            return entity != null && FovCoords.Any(p => entity.Coordinate == p);
         }
 
         /// <summary>

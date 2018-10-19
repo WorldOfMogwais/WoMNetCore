@@ -269,7 +269,7 @@ namespace WoMSadGui.Consoles
                 return;
             }
             
-            GameSpeed = _mogwai.CanSee(Adventure.Map.GetEntities().First(p => p.AdventureEntityId == adventureLog.Source)) ? ActionDelay : TimeSpan.Zero;
+            GameSpeed = _mogwai.CanSee(Adventure.Map.GetEntities().FirstOrDefault(p => p.AdventureEntityId == adventureLog.Source)) ? ActionDelay : TimeSpan.Zero;
 
             while (Adventure.LogEntries.TryDequeue(out var logEntry))
             {
@@ -281,7 +281,7 @@ namespace WoMSadGui.Consoles
             DrawExploMap();
 
             //DrawMap();
-            adventureLog.SourceFovCoords.ToList().ForEach(p => _mapConsole[p.X, p.Y].Background = Color.Lerp(Color.DarkGray, Color.Black, 0.75f));
+            adventureLog.SourceFovCoords?.ToList().ForEach(p => _mapConsole[p.X, p.Y].Background = Color.Lerp(Color.DarkGray, Color.Black, 0.75f));
             
             // stats
             _statsConsole.Print(2, 0, Adventure.GetRound.ToString().PadLeft(4), Color.Gold);
