@@ -317,7 +317,11 @@ namespace WoMSadGui.Consoles
                     continue;
                 }
 
-                _entities[entity.AdventureEntityId].IsVisible = _mogwai.CanSee(entity) || entity is ICombatant combatant && combatant.IsDead;
+                ConsoleEntity consoleEntity = _entities[entity.AdventureEntityId];
+
+                consoleEntity.IsVisible =
+                    (_mogwai.CanSee(entity) || entity is ICombatant combatant && combatant.IsDead) &&
+                    _mapConsole.ViewPort.Contains(consoleEntity.Position);
             }
         }
 
