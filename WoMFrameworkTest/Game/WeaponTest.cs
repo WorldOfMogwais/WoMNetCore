@@ -12,7 +12,7 @@ namespace WoMFrameworkTest.Game
         {
             Assert.Equal(1, Monsters.Rat.Equipment.WeaponSlots[0].PrimaryWeapon.DamageRoll[0]);
             Assert.Equal(3, Monsters.Rat.Equipment.WeaponSlots[0].PrimaryWeapon.DamageRoll[1]);
-            var rapier = Weapons.Rapier;
+            var rapier = Weapons.Instance.ByName("Rapier");
             Assert.Equal(1, rapier.DamageRoll[0]);
             Assert.Equal(6, rapier.DamageRoll[1]);
             rapier.SetSize(SizeType.Tiny);

@@ -29,30 +29,5 @@ namespace WoMFramework.Game.Model
         {
             return _weaponsFile.FirstOrDefault(p => p.Name == weaponName);
         } 
-
-        /***
-         *
-         */
-        public static Weapon UnarmedStrike =>
-            WeaponBuilder.Create("Unarmed Strike", WeaponBaseType.UnarmedStrike, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 3 })
-                .SetCriticalMinRoll(20)
-                .SetCriticalMultiplier(2)
-                .SetDamageType(WeaponDamageType.Bludgeoning)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("An unarmed strike is the default attack a character makes when not equipped with weapons.")
-                .Build();
-        /***
-         * One-Handed Melee Weapons
-         */
-        public static Weapon Rapier =>
-            WeaponBuilder.Create("Rapier",  WeaponBaseType.Rapier, WeaponProficiencyType.Martial, WeaponEffortType.OneHanded, new[] { 1, 6 })
-            .SetCriticalMinRoll(18)
-            .SetCriticalMultiplier(2)
-            .SetDamageType(WeaponDamageType.Piercing)
-            .SetCost(20)
-            .SetWeight(2)
-            .SetDescription("Just a rapier.")
-            .Build();
     }
 }
