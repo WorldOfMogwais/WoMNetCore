@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model.Monster

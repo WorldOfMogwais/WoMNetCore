@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using log4net;
-using Troschuetz.Random;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
+using WoMFramework.Game.Home;
 using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model.Mogwai
 {
-    public class Mogwai : Entity
+    public sealed class Mogwai : Entity
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -59,6 +58,8 @@ namespace WoMFramework.Game.Model.Mogwai
 
         public double Rating => (double)(Strength * 3 + Dexterity * 2 + Constitution * 2 + Inteligence * 3 + Wisdom + Charisma) / 12;
 
+        public HomeTown HomeTown { get; }
+
         public Mogwai(string key, Dictionary<double, Shift> shifts)
         {
             Key = key;
@@ -102,10 +103,11 @@ namespace WoMFramework.Game.Model.Mogwai
             // add weaponslot
             Equipment.WeaponSlots.Add(new WeaponSlot());
             // add simple rapier as weapon
-            EquipWeapon(Weapons.Rapier);
+            EquipWeapon(Weapons.Instance.ByName("Warhammer"));
 
-            // add simple rapier as weapon
-            Equipment.Armor = Armors.StuddedLeather;
+            // add simple studded leather as armor
+            //Equipment.Armor = Armors.StuddedLeather;
+            Equipment.Armor = Armors.Instance.ByName("StuddedLeather");
 
             // create slot types
             Equipment.CreateEquipmentSlots(new SlotType[] 
@@ -118,6 +120,8 @@ namespace WoMFramework.Game.Model.Mogwai
 
             EnvironmentTypes = new[] { EnvironmentType.Any };
 
+            // create home town
+            HomeTown = new HomeTown(_currentShift);
         }
 
         public bool EvolveAdventure()
@@ -165,6 +169,11 @@ namespace WoMFramework.Game.Model.Mogwai
 
             // set current shift to the actual shift we process
             _currentShift = Shifts[Pointer];
+
+            if (Pointer % 180 == 0)
+            {
+                HomeTown.Shop.Resupply(_currentShift);
+            }
 
             //Log.Info(_currentShift.ToString());
 

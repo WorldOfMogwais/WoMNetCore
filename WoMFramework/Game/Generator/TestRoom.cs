@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
-using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;

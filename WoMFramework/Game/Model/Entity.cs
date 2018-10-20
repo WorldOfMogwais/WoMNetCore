@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
-using GoRogue.Pathing;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Model.Actions;
-using WoMFramework.Game.Model.Equipment;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Random;
 
@@ -145,7 +143,7 @@ namespace WoMFramework.Game.Model
         }
 
         // equipment
-        public Equipment.Equipment Equipment { get; }
+        public Equipment Equipment { get; }
 
         // wealth
         public Wealth Wealth { get; set; }
@@ -170,7 +168,7 @@ namespace WoMFramework.Game.Model
         {
             // initialize
             HitPointLevelRolls = new List<int>();
-            Equipment = new Equipment.Equipment();
+            Equipment = new Equipment();
             Wealth = new Wealth();
             Classes = new List<Classes.Classes>();
 
@@ -181,6 +179,10 @@ namespace WoMFramework.Game.Model
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dice"></param>
         public void LevelClass(Dice dice)
         {
             BaseAttackBonus = CalculateBaseAttackBonus(Classes.Sum(p => p.ClassAttackBonus));
@@ -191,6 +193,11 @@ namespace WoMFramework.Game.Model
             HitPointLevelRolls.Add(dice.Roll(HitPointDiceRollEvent));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attackBonus"></param>
+        /// <returns></returns>
         private int[] CalculateBaseAttackBonus(int attackBonus)
         {
             var currentBaseAttackBonus = attackBonus;

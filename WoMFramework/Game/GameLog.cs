@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
-using WoMFramework.Game.Model;
 
 namespace WoMFramework.Game
 {

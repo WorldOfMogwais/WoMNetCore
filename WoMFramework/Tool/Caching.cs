@@ -4,9 +4,9 @@ using System.Reflection;
 using log4net;
 using Newtonsoft.Json;
 
-namespace WoMWallet.Tool
+namespace WoMFramework.Tool
 {
-    internal class Caching
+    public class Caching
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 

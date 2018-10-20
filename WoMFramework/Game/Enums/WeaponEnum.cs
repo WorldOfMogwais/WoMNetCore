@@ -90,6 +90,7 @@
 
     public enum WeaponBaseType
     {
+        None,
         Aklys,
         Ammentum,
         Ankus,
@@ -252,7 +253,20 @@
         Waveblade,
         Whip,
         WoodenStake,
-        WristLauncher
+        WristLauncher,
+
+        // natural weapons
+        Bite,
+        Claw,
+        Gore,
+        Hoof,
+        Tentacle,
+        Wing,
+        Pincer,
+        TailSlap,
+        Slam,
+        Sting,
+        Talons
     }
 
     public enum WeaponAttackType

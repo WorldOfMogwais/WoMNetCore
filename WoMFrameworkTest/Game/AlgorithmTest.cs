@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GoRogue;
+﻿using GoRogue;
 using GoRogue.MapViews;
 using Xunit;
 

@@ -2,7 +2,7 @@
 using System.Linq;
 using WoMFramework.Game.Enums;
 
-namespace WoMFramework.Game.Model.Equipment
+namespace WoMFramework.Game.Model
 {
     public class EquipmentSlot
     {
