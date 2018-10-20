@@ -28,6 +28,11 @@ namespace WoMFramework.Game.Model
         public Weapon ByName(string weaponName)
         {
             return _weaponsFile.FirstOrDefault(p => p.Name == weaponName);
-        } 
+        }
+
+        public List<Weapon> All()
+        {
+            return _weaponsFile;
+        }
     }
 }

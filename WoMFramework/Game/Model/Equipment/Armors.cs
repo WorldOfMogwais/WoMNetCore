@@ -28,7 +28,12 @@ namespace WoMFramework.Game.Model
         public Armor ByName(string armorName)
         {
             return _armorsFile.FirstOrDefault(p => p.Name == armorName);
-        } 
+        }
+
+        public List<Armor> All()
+        {
+            return _armorsFile;
+        }
 
     }
 }

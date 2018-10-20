@@ -31,6 +31,11 @@ namespace WoMSadGui.Consoles
     }
     public class PlayScreen : Console
     {
+        enum CustomWindowState
+        {
+            Welcome, Shop, Adventure
+        }
+
         private readonly MogwaiController _controller;
 
         private int _glyphX;
@@ -40,7 +45,14 @@ namespace WoMSadGui.Consoles
 
         public SadGuiState State { get; set; }
 
-        private readonly AdventureConsole _custom;
+        private CustomWindowState _customWindowState;
+
+        private Console _custom;
+
+        private readonly MogwaiConsole _welcome;
+        private readonly MogwaiConsole _shop;
+        private readonly AdventureConsole _adventure;
+
 
         private readonly ScrollingConsole _log;
 
@@ -58,9 +70,11 @@ namespace WoMSadGui.Consoles
             var playStatsConsole = new PlayStatsConsole(_mogwai, 44, 22) { Position = new Point(0, 0) };
             Children.Add(playStatsConsole);
 
-            _custom = new AdventureConsole(mogwaiController, mogwaiKeys, 91, 22) { Position = new Point(46, 0) };
-            Children.Add(_custom);
+            _welcome = new MogwaiConsole("Welcome", "to the World of Mogwais", 91, 22) { Position = new Point(46, 0) };
+            _shop = new ShopConsole(_mogwai, 91, 22) { Position = new Point(46, 0) };
+            _adventure = new AdventureConsole(mogwaiController, mogwaiKeys, 91, 22) { Position = new Point(46, 0) };
 
+            
             _log = new ScrollingConsole(85, 13, 100) { Position = new Point(0, 25) };
             Children.Add(_log);
 
@@ -76,6 +90,8 @@ namespace WoMSadGui.Consoles
             playInfoConsole.Children.Add(_command2);
 
             State = SadGuiState.Play;
+
+            SetCustomWindowState(CustomWindowState.Welcome);
 
             Init();
         }
@@ -116,6 +132,24 @@ namespace WoMSadGui.Consoles
 
         }
 
+        private void SetCustomWindowState(CustomWindowState newCustomWindowState)
+        {
+            Children.Remove(_custom);
+            switch (newCustomWindowState)
+            {
+                case CustomWindowState.Welcome:
+                    _custom = _welcome;
+                    break;
+                case CustomWindowState.Shop:
+                    _custom = _shop;
+                    break;
+                case CustomWindowState.Adventure:
+                    _custom = _adventure;
+                    break;
+            }
+            Children.Add(_custom);
+        }
+
         private void MenuButton(int buttonPosition, string buttonText, Action<string> buttonClicked)
         {
             var xBtn = 0;
@@ -150,7 +184,9 @@ namespace WoMSadGui.Consoles
                 case "evol++":
                     Evolve(true);
                     break;
-
+                case "shop":
+                    SetCustomWindowState(CustomWindowState.Shop);
+                    break;
                 case "adven":
                     dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", DoInteraction, 40, 12);
                     dialog.AddRadioButtons("adventureAction", new List<string[]> {
@@ -280,11 +316,16 @@ namespace WoMSadGui.Consoles
                 {
                     if (_mogwai.Adventure != null)
                     {
-                        _custom.Start(_mogwai.Adventure);
+                        if (!(_custom is AdventureConsole))
+                        {
+                            SetCustomWindowState(CustomWindowState.Adventure);
+                        }
+
+                        _adventure.Start(_mogwai.Adventure);
                     }
                     else
                     {
-                        _custom.Stop();
+                        _adventure.Stop();
                     }
                     UpdateLog();
                 }
@@ -394,10 +435,17 @@ namespace WoMSadGui.Consoles
         {
             if (IsVisible)
             {
-                if (_custom.Adventure != null)
+                switch (_custom)
                 {
-                    _custom.UpdateGame();
+                    case AdventureConsole _:
+                        if (_adventure.Adventure != null)
+                        {
+                            _adventure.UpdateGame();
+                        }
+                        break;
                 }
+
+
             }
 
             base.Update(delta);
