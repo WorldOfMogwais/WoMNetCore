@@ -3,6 +3,27 @@ using SadConsole.Controls;
 
 namespace WoMSadGui.Dialogs
 {
+    public class MogwaiListBox : ListBox
+    {
+        public MogwaiListBox(int width, int height) : base(width, height)
+        {
+            Theme.Normal.Background = Color.Black;
+            Theme.Normal.Foreground = Color.Cyan;
+
+            Theme.MouseDown.Background = Color.Yellow;
+            Theme.MouseDown.Foreground = Color.Black;
+
+            Theme.MouseOver.Background = Color.Cyan;
+            Theme.MouseOver.Foreground = Color.Black;
+
+            Theme.Selected.Background = Color.Black;
+            Theme.Selected.Foreground = Color.Cyan;
+
+            Theme.Focused.Background = Color.Black;
+            Theme.Focused.Foreground = Color.Cyan;
+        }
+    }
+
     public class MogwaiRadioButton : RadioButton
     {
         public MogwaiRadioButton(int width, int height) : base(width, height)
