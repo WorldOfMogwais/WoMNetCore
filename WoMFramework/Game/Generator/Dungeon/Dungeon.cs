@@ -21,6 +21,8 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public const int MaxRoundsPerBlock = 250;
 
+        public int CurrentBlockRound;
+
         public IGenerator DungeonRandom { get; }
 
         protected Dungeon(Shift shift)
@@ -43,6 +45,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             // TODO implement dungeons to go over multiple blocks
             if (AdventureState == AdventureState.Extended)
             {
+                CurrentBlockRound = 0;
                 //Prepare(mogwai, shift);
                 AdventureState = AdventureState.Running;
             }
@@ -83,6 +86,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public SimpleDungeon(Shift shift) : base(shift)
         {
+            CurrentBlockRound = 0;
             _currentRound = 0;
             _explorationTurn = 0;
             _initiativeTurn = 0;
@@ -227,6 +231,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             if (_initiativeTurn == 0 && _roundMode == Mode.Combat || _explorationTurn == 0 && _roundMode == Mode.Exploration)
             {
+                CurrentBlockRound++;
                 _currentRound++;
             }
 
@@ -431,7 +436,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 AdventureState = AdventureState.Completed;
             }
-            else if (_currentRound >= MaxRoundsPerBlock)
+            else if (CurrentBlockRound >= MaxRoundsPerBlock)
             {
                 AdventureState = AdventureState.Extended;
             }

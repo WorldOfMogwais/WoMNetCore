@@ -33,7 +33,7 @@ namespace WoMSadGui.Consoles
     {
         enum CustomWindowState
         {
-            Welcome, Shop, Adventure
+            Welcome, Shop, Adventure, AdventureStats
         }
 
         private readonly MogwaiController _controller;
@@ -50,6 +50,7 @@ namespace WoMSadGui.Consoles
         private Console _custom;
 
         private readonly MogwaiConsole _welcome;
+        private readonly AdventureStatsConsole _adventureStats;
         private readonly MogwaiConsole _shop;
         private readonly AdventureConsole _adventure;
 
@@ -71,9 +72,10 @@ namespace WoMSadGui.Consoles
             Children.Add(playStatsConsole);
 
             _welcome = new MogwaiConsole("Welcome", "to the World of Mogwais", 91, 22) { Position = new Point(46, 0) };
+
             _shop = new ShopConsole(_mogwai, 91, 22) { Position = new Point(46, 0) };
             _adventure = new AdventureConsole(mogwaiController, mogwaiKeys, 91, 22) { Position = new Point(46, 0) };
-
+            _adventureStats = new AdventureStatsConsole(_mogwai, 91, 22) { Position = new Point(46, 0) };
             
             _log = new ScrollingConsole(85, 13, 100) { Position = new Point(0, 25) };
             Children.Add(_log);
@@ -145,6 +147,10 @@ namespace WoMSadGui.Consoles
                     break;
                 case CustomWindowState.Adventure:
                     _custom = _adventure;
+                    break;
+                case CustomWindowState.AdventureStats:
+                    _adventureStats.Update();
+                    _custom = _adventureStats;
                     break;
             }
             Children.Add(_custom);
@@ -310,6 +316,11 @@ namespace WoMSadGui.Consoles
 
         public void Evolve(bool fast = false)
         {
+            if (_adventure != null && _adventure.IsStarted())
+            {
+                _adventure.Stop();
+            }
+
             if (!fast)
             {
                 if (_mogwai.Evolve(out _))
@@ -328,6 +339,11 @@ namespace WoMSadGui.Consoles
                         _adventure.Stop();
                     }
                     UpdateLog();
+                }
+                else if (_mogwai.Adventure != null) 
+                {
+                    // we just pushed the adventure forward
+                    SetCustomWindowState(CustomWindowState.AdventureStats);
                 }
             }
             else if (_mogwai.PeekNextShift != null)

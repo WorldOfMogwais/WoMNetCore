@@ -13,7 +13,9 @@ namespace WoMFramework.Game.Generator
 {
     public enum AdventureState
     {
-        Preparation, Running, Failed, Extended, Completed
+        Preparation, Running, Failed, Extended, Completed,
+        Won,
+        Lost
     }
 
     public enum AdventureStats

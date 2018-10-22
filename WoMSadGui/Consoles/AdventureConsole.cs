@@ -58,16 +58,14 @@ namespace WoMSadGui.Consoles
             //_mapConsole = new Console(75, 75) { Position = new Point(17, 2) };
             _mapConsole = new Console(150, 150) {Position = new Point(-16, 0)};
             _mapConsole.Font = AdventureFont;
-            
+            _mapConsole.IsVisible = false;
             Children.Add(_mapConsole);
+
             _entityManager = new SadConsole.Entities.EntityManager {Parent = _mapConsole};
 
             _statsConsole = new MogwaiConsole("stats", "", 21, 6) { Position = new Point(70, 16) };
             _statsConsole.Fill(DefaultForeground, new Color(100,0,200,150), null);
             Children.Add(_statsConsole);
-
-            _mapConsole.IsVisible = false;
-
         }
 
         public bool IsStarted()
@@ -84,7 +82,6 @@ namespace WoMSadGui.Consoles
             Adventure = adventure;
 
             DrawExploMap();
-            //DrawMap();
 
             _statsConsole.Print(7, 0, "Rounds", Color.MonoGameOrange);
             _statsConsole.Print(7, 1, "Exploration", Color.Gainsboro);
@@ -113,34 +110,6 @@ namespace WoMSadGui.Consoles
             _mapConsole.Children.Clear();
             _entities.Clear();
             _statsConsole.Clear();
-        }
-
-        public void DrawMap()
-        {
-            // TODO: Viewport
-            //Resize(Adventure.Map.Width, Adventure.Map.Height, true);
-
-            var wMap = Adventure.Map.TileMap;
-            for (var i = 0; i < wMap.Width; i++)
-            {
-                for (var j = 0; j < wMap.Height; j++)
-                {
-                    switch (wMap[i, j])
-                    {
-                        case StoneTile _:
-                            _mapConsole[i, j].CopyAppearanceFrom(StoneTileAppearance);
-                            _mapConsole.SetGlyph(i, j, 46);
-                            break;
-                        case StoneWall _:
-                            _mapConsole[i, j].CopyAppearanceFrom(StoneWallAppearance);
-                            _mapConsole.SetGlyph(i, j, 35);
-                            break;
-                        default:
-                            break;
-
-                    }
-                }
-            }
         }
 
         public void DrawExploMap()
