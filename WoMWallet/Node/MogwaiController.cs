@@ -265,6 +265,10 @@ namespace WoMWallet.Node
                         1, "7876fde772cae5684ad133a007c92f5f209cc91fdc1814fe3dab2c6174557ea7",
                         0.01042002m,
                         0.00020002m)
+                },
+                {
+                    1003, new Shift(2, pubMogAddressHex,
+                        1003, "0000000033dbfc3cc9f3671ba28b41ecab6f547219bb43174cc97bf2163d2e38")
                 }
         };
         //    var shifts = new Dictionary<double, Shift>

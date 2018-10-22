@@ -127,21 +127,35 @@ namespace WoMFramework.Game.Model.Mogwai
         public bool EvolveAdventure()
         {
             // finish un-animated adventures
-            if (Adventure != null && Adventure.AdventureState == AdventureState.Running)
+            if (Adventure == null || Adventure.AdventureState != AdventureState.Running)
+            {
+                return false;
+            }
+
+            if (Adventure.AdventureState == AdventureState.Running)
             {
                 while (Adventure.HasNextFrame())
                 {
                     Adventure.NextFrame();
                 }
-
-                if (!Adventure.IsActive)
-                {
-                    Adventure = null;
-                }
-                return true;
+                Adventure.AdventureLogs.Clear();
             }
 
-            return false;
+            switch (Adventure.AdventureState)
+            {
+                case AdventureState.Running:
+                    return true;
+                case AdventureState.Failed:
+                    Adventure.AdventureState = AdventureState.Lost;
+                    return true;
+                case AdventureState.Completed:
+                    Adventure.AdventureState = AdventureState.Won;
+                    return true;
+                case AdventureState.Extended:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         /// <summary>
@@ -151,17 +165,17 @@ namespace WoMFramework.Game.Model.Mogwai
         /// <returns></returns>
         public bool Evolve(out GameLog history)
         {        
+            if (EvolveAdventure())
+            {
+                history = null;
+                return false;
+            }
+            
             // any shift left?
             if (!CanEvolve)
             {
                 history = null;
                 return false;
-            }
-
-            if (EvolveAdventure())
-            {
-                history = null;
-                return true;
             }
 
             // increase pointer to next block height
