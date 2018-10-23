@@ -36,7 +36,7 @@ namespace WoMSadGui.Consoles
                     _statsConsole.Print(15, 5, $"Stay save {Coloring.Name(_mogwai.Name)} may your soul survive!");
                     break;
 
-                case AdventureState.Won:
+                case AdventureState.Completed:
                     _statsConsole.Print(15, 1, $"Gratulations {Coloring.Name(_mogwai.Name)} you're a true hero!");
                     _statsConsole.Print(15, 2, $"You killed {Coloring.DoDmg(_mogwai.Adventure.MonstersList.Count(p => p.IsDead))} monsters and explored");
                     _statsConsole.Print(15, 3, $"this dungeon, no monster was able to take it up with your power!");
@@ -44,7 +44,7 @@ namespace WoMSadGui.Consoles
                     _statsConsole.Print(15, 5, $"   {Coloring.Green("HURRAY HURRAY")}!");
                     break;
 
-                case AdventureState.Lost:
+                case AdventureState.Failed:
                     _statsConsole.Print(15, 1, $"You where not able to finish this dungeon, {Coloring.Name(_mogwai.Name)}!");
                     _statsConsole.Print(15, 2, $"You killed {Coloring.DoDmg(_mogwai.Adventure.MonstersList.Count(p => p.IsDead))} monsters,");
                     _statsConsole.Print(15, 3, $"but {Coloring.DoDmg(_mogwai.Adventure.MonstersList.Count(p => p.IsAlive))} monsters where to much for you.");

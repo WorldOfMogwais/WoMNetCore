@@ -62,6 +62,8 @@ namespace WoMSadGui.Consoles
         private readonly TestControls _command1;
         private readonly ControlsConsole _command2;
 
+        private MogwaiButton _btnEvolve;
+
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
             _controller = mogwaiController;
@@ -76,7 +78,7 @@ namespace WoMSadGui.Consoles
             _shop = new ShopConsole(_mogwai, 91, 22) { Position = new Point(46, 0) };
             _adventure = new AdventureConsole(mogwaiController, mogwaiKeys, 91, 22) { Position = new Point(46, 0) };
             _adventureStats = new AdventureStatsConsole(_mogwai, 91, 22) { Position = new Point(46, 0) };
-            
+
             _log = new ScrollingConsole(85, 13, 100) { Position = new Point(0, 25) };
             Children.Add(_log);
 
@@ -116,13 +118,13 @@ namespace WoMSadGui.Consoles
             MenuButton(5, "breed", DoAction);
             MenuButton(6, "shop", DoAction);
 
-            var btnNext = new MogwaiButton(8, 1)
+            _btnEvolve = new MogwaiButton(8, 1)
             {
                 Position = new Point(0, 0),
                 Text = "evolve"
             };
-            btnNext.Click += (btn, args) => { DoAction(((Button)btn).Text); };
-            _command2.Add(btnNext);
+            _btnEvolve.Click += (btn, args) => { DoAction(((Button)btn).Text); };
+            _command2.Add(_btnEvolve);
 
             var btnFast = new MogwaiButton(8, 1)
             {
@@ -147,10 +149,14 @@ namespace WoMSadGui.Consoles
                     break;
                 case CustomWindowState.Adventure:
                     _custom = _adventure;
+                    _btnEvolve.Text = "next";
+                    _btnEvolve.SetColor(Color.DarkOrange);
                     break;
                 case CustomWindowState.AdventureStats:
                     _adventureStats.Update();
                     _custom = _adventureStats;
+                    _btnEvolve.Text = "evolve";
+                    _btnEvolve.ResetColor();
                     break;
             }
             Children.Add(_custom);
@@ -186,7 +192,9 @@ namespace WoMSadGui.Consoles
                 case "evolve":
                     Evolve();
                     break;
-
+                case "next":
+                    EvolveAdventure();
+                    break;
                 case "evol++":
                     Evolve(true);
                     break;
@@ -314,13 +322,24 @@ namespace WoMSadGui.Consoles
             LogInConsole("Successful sent mogwai out for class leveling.");
         }
 
-        public void Evolve(bool fast = false)
+        private void EvolveAdventure()
         {
-            if (_adventure != null && _adventure.IsStarted())
+            _adventure.Stop();
+
+            if (_mogwai.CanEvolveAdventure)
             {
-                _adventure.Stop();
+                _mogwai.EvolveAdventure();
             }
 
+            if (_adventure != null)
+            {
+                SetCustomWindowState(CustomWindowState.AdventureStats);
+                return;
+            }
+        }
+
+        public void Evolve(bool fast = false)
+        {
             if (!fast)
             {
                 if (_mogwai.Evolve(out _))
@@ -336,29 +355,17 @@ namespace WoMSadGui.Consoles
                     }
                     else
                     {
-                        _adventure.Stop();
+                        SetCustomWindowState(CustomWindowState.Welcome);
                     }
                     UpdateLog();
-                }
-                else if (_mogwai.Adventure != null) 
-                {
-                    // we just pushed the adventure forward
-                    SetCustomWindowState(CustomWindowState.AdventureStats);
                 }
             }
             else if (_mogwai.PeekNextShift != null)
             {
                 _log.Reset();
-                for (var i = 0; i < 500; i++)
+                while (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve(out _))
                 {
-                    if (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve(out _))
-                    {
-                        UpdateLog();
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    UpdateLog();
                 }
             }
         }
@@ -382,7 +389,6 @@ namespace WoMSadGui.Consoles
         {
             return State;
         }
-
 
         public override bool ProcessKeyboard(Keyboard state)
         {
@@ -460,8 +466,6 @@ namespace WoMSadGui.Consoles
                         }
                         break;
                 }
-
-
             }
 
             base.Update(delta);

@@ -2,6 +2,6 @@
 {
     public enum MogwaiState
     {
-        None
+        HomeTown, Adventure
     }
 }

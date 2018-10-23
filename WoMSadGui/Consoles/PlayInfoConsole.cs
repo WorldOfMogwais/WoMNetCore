@@ -47,18 +47,23 @@ namespace WoMSadGui.Consoles
         public void UpdateScreen()
         {
 
-            Print(1, 2, "Shift: ", Color.Gainsboro);
+            Print(1, 2, $"[{_mogwai.Pointer.ToString().PadLeft(7, '.')}]", Color.Gainsboro);
+            Print(11, 2, $"{_mogwai.CurrentShift.InteractionType}".PadRight(20), Color.Lime);
 
-            Print(8, 2, _mogwai.CurrentShift.InteractionType.ToString().PadRight(20), Color.Orange);
-            Print(1, 3, "Next: ", Color.Gainsboro);
-            if (_mogwai.Shifts.TryGetValue(_mogwai.Pointer + 1, out var shift))
+            for (int i = 1; i < 3; i++)
             {
-                Print(8, 3, shift.InteractionType.ToString().PadRight(20), Color.LimeGreen);
+                if (_mogwai.Shifts.TryGetValue(_mogwai.Pointer + i, out var shift))
+                {
+                    Print(1, 2 + i, $"[{(_mogwai.Pointer + i).ToString().PadLeft(7, '.')}]", Color.Gainsboro);
+                    Print(11, 2 + i, $"{shift.InteractionType}".PadRight(20), Color.LimeGreen);
+                }
+                else
+                {
+                    Print(1, 2 + i, $"[{"".ToString().PadLeft(7, '.')}]", Color.Red);
+                    Print(11, 2 + i, $"None".PadRight(20), Color.Red);
+                }
             }
-            else
-            {
-                Print(8, 3, "...".PadRight(20), Color.Red);
-            }
+ 
             Print(31, 2, _mogwai.Pointer.ToString().PadLeft(8, '.'));
             Print(31, 3, _mogwai.Shifts.Keys.Max().ToString(CultureInfo.InvariantCulture).PadLeft(8, '.'));
 

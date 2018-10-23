@@ -21,7 +21,9 @@ namespace WoMFramework.Game.Model.Mogwai
 
         public Shift CurrentShift => Shifts[Pointer];
 
-        public bool CanEvolve => Shifts.ContainsKey(Pointer + 1);
+        public bool CanEvolve => Shifts.ContainsKey(Pointer + 1) && !CanEvolveAdventure;
+
+        public bool CanEvolveAdventure => Adventure != null && Adventure.AdventureState == AdventureState.Running;
 
         public Shift PeekNextShift => CanEvolve ? Shifts[Pointer + 1] : null;
 
@@ -110,7 +112,7 @@ namespace WoMFramework.Game.Model.Mogwai
             Equipment.Armor = Armors.Instance.ByName("StuddedLeather");
 
             // create slot types
-            Equipment.CreateEquipmentSlots(new SlotType[] 
+            Equipment.CreateEquipmentSlots(new SlotType[]
                 {SlotType.Head, SlotType.Shoulders, SlotType.Neck,
                  SlotType.Chest,SlotType.Body, SlotType.Belt,SlotType.Wrists,
                  SlotType.Hands,SlotType.Ring1,SlotType.Ring2,SlotType.Feet});
@@ -127,35 +129,18 @@ namespace WoMFramework.Game.Model.Mogwai
         public bool EvolveAdventure()
         {
             // finish un-animated adventures
-            if (Adventure == null || Adventure.AdventureState != AdventureState.Running)
+            if (!CanEvolveAdventure)
             {
                 return false;
             }
 
-            if (Adventure.AdventureState == AdventureState.Running)
+            while (Adventure.HasNextFrame())
             {
-                while (Adventure.HasNextFrame())
-                {
-                    Adventure.NextFrame();
-                }
-                Adventure.AdventureLogs.Clear();
+                Adventure.NextFrame();
             }
+            Adventure.AdventureLogs.Clear();
 
-            switch (Adventure.AdventureState)
-            {
-                case AdventureState.Running:
-                    return true;
-                case AdventureState.Failed:
-                    Adventure.AdventureState = AdventureState.Lost;
-                    return true;
-                case AdventureState.Completed:
-                    Adventure.AdventureState = AdventureState.Won;
-                    return true;
-                case AdventureState.Extended:
-                    return true;
-                default:
-                    return false;
-            }
+            return true;
         }
 
         /// <summary>
@@ -164,13 +149,7 @@ namespace WoMFramework.Game.Model.Mogwai
         /// <param name="history"></param>
         /// <returns></returns>
         public bool Evolve(out GameLog history)
-        {        
-            if (EvolveAdventure())
-            {
-                history = null;
-                return false;
-            }
-            
+        {
             // any shift left?
             if (!CanEvolve)
             {
@@ -203,6 +182,7 @@ namespace WoMFramework.Game.Model.Mogwai
             }
 
             Adventure = null;
+            MogwaiState = MogwaiState.HomeTown;
 
             // first we always calculated current lazy experience
             var lazyExp = Experience.GetExp(CurrentLevel, _currentShift);
@@ -225,6 +205,7 @@ namespace WoMFramework.Game.Model.Mogwai
                             Adventure = AdventureGenerator.Create(_currentShift,
                                 (AdventureAction)_currentShift.Interaction);
                             Adventure.Enter(this, _currentShift);
+                            MogwaiState = MogwaiState.Adventure;
                             return true;
                         }
                         break;
@@ -267,7 +248,7 @@ namespace WoMFramework.Game.Model.Mogwai
             }
 
             // lazy health regeneration, only rest healing if he is not dieing TODO check MogwaiState?
-            if (MogwaiState == MogwaiState.None && !IsDying)
+            if (MogwaiState == MogwaiState.HomeTown && !IsDying)
             {
                 Heal(_currentShift.IsSmallShift ? 2 * CurrentLevel : CurrentLevel, HealType.Rest);
             }
