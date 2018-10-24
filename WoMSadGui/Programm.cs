@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using SadConsole;
 using WoMSadGui.Consoles;
-using WoMSadGui.Dialogs;
+using WoMSadGui.Specific;
 using WoMWallet.Node;
 using Game = SadConsole.Game;
 
@@ -244,11 +244,11 @@ namespace WoMSadGui
         private static void Init()
         {
             _controller = new MogwaiController();
-            SplashScreen();
-            _state = SadGuiState.Start;
+            //SplashScreen();
+            //_state = SadGuiState.Start;
 
-            //_state = SadGuiState.Play;
-            //PlayScreen();
+            _state = SadGuiState.Play;
+            PlayScreen();
         }
 
         private static void SplashScreenCompleted()

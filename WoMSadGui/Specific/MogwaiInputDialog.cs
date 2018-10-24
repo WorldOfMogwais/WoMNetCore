@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using SadConsole.Controls;
 
-namespace WoMSadGui.Dialogs
+namespace WoMSadGui.Specific
 {
     public class MogwaiInputDialog : MogwaiDialog
     {

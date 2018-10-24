@@ -4,7 +4,7 @@ using SadConsole;
 using SadConsole.Controls;
 using WoMWallet.Node;
 
-namespace WoMSadGui.Dialogs
+namespace WoMSadGui.Specific
 {
     internal class MogwaiProgressDialog : MogwaiDialog
     {

@@ -9,7 +9,7 @@ using WoMFramework.Game;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model.Mogwai;
-using WoMSadGui.Dialogs;
+using WoMSadGui.Specific;
 using WoMWallet.Node;
 using Console = SadConsole.Console;
 using Keyboard = SadConsole.Input.Keyboard;

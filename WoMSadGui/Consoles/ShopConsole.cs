@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Controls;
 using WoMFramework.Game.Model.Mogwai;
-using WoMSadGui.Dialogs;
+using WoMSadGui.Specific;
 
 namespace WoMSadGui.Consoles
 {

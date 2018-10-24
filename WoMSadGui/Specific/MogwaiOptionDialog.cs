@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using SadConsole.Input;
 
-namespace WoMSadGui.Dialogs
+namespace WoMSadGui.Specific
 {
     public class MogwaiOptionDialog : MogwaiDialog
     {

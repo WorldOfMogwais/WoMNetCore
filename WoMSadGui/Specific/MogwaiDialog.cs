@@ -3,7 +3,7 @@ using SadConsole;
 using SadConsole.Controls;
 using WoMSadGui.Consoles;
 
-namespace WoMSadGui.Dialogs
+namespace WoMSadGui.Specific
 {
     public class MogwaiDialog : Window
     {
