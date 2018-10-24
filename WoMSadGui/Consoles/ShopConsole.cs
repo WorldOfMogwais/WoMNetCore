@@ -73,7 +73,15 @@ namespace WoMSadGui.Consoles
                 _itemConsole.Print(1, 8, $"{Coloring.DarkGrey("Damage:")}   {string.Join(",",weapon.WeaponDamageTypes)}", Color.Gainsboro);
                 _itemConsole.Print(1, 9, $"{Coloring.DarkGrey("Effort:")}   {weapon.WeaponEffortType}", Color.Gainsboro);
             }
-            _itemConsole.Print(1, 15, $"{baseItem.Description}", Color.Gainsboro);
+            else if (baseItem is Armor armor)
+            {
+                _itemConsole.Print(1, 5, $"{Coloring.DarkGrey("Armor:")}    {Coloring.Green(armor.ArmorBonus.ToString())}", Color.Gainsboro);
+                _itemConsole.Print(1, 6, $"{Coloring.DarkGrey("Penaltiy:")} {Coloring.Red(armor.ArmorCheckPenalty.ToString())}", Color.Gainsboro);
+                _itemConsole.Print(1, 7, $"{Coloring.DarkGrey("Max Dex:")}  {armor.MaxDexterityBonus}", Color.Gainsboro);
+                _itemConsole.Print(1, 8, $"{Coloring.DarkGrey("Spellf.:")}  {armor.ArcaneSpellFailureChance}", Color.Gainsboro);
+                _itemConsole.Print(1, 9, $"{Coloring.DarkGrey("Effort:")}   {armor.ArmorEffortType}", Color.Gainsboro);
+            }
+            //_itemConsole.Print(1, 15, $"{baseItem.Description}", Color.Gainsboro);
         }
 
         private void DoAction(string actionStr)
