@@ -1,4 +1,6 @@
-﻿namespace WoMFramework.Game.Model
+﻿using System;
+
+namespace WoMFramework.Game.Model
 {
     public static class Coloring
     {
@@ -73,6 +75,31 @@
         public static string Gold(int value)
         {
             return $"[c:r f:gold]{value}[c:u]";
+        }
+
+        public static string Gold(string value)
+        {
+            return $"[c:r f:gold]{value}[c:u]";
+        }
+
+        public static object DarkGrey(string name)
+        {
+            return $"[c:r f:DarkGray]{name}[c:u]";
+        }
+
+        public static object Gainsboro(string name)
+        {
+            return $"[c:r f:Gainsboro]{name}[c:u]";
+        }
+
+        public static string Gold(double value)
+        {
+            return $"[c:r f:gold]{value}[c:u]";
+        }
+
+        public static object Yellow(int value)
+        {
+            return $"[c:r f:Yellow]{value}[c:u]";
         }
     }
 }

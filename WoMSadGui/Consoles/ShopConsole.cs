@@ -3,8 +3,11 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Controls;
+using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Mogwai;
 using WoMSadGui.Specific;
+
+using Console = SadConsole.Console;
 
 namespace WoMSadGui.Consoles
 {
@@ -14,58 +17,63 @@ namespace WoMSadGui.Consoles
 
         private readonly ControlsConsole _controlsConsole;
 
+        private readonly Console _itemConsole;
+
+        private MogwaiListBox _listBox;
+
         public ShopConsole(Mogwai mogwai, int width, int height) : base("Home Town Shop", "", width, height)
         {
-            _controlsConsole = new ControlsConsole(50, 15) { Position = new Point(1, 1) };
-            _controlsConsole.Fill(Color.DarkCyan, Color.Black, null);
+            _mogwai = mogwai;
+            Fill(DefaultForeground, new Color(100,0,200,150), null);
+
+            _controlsConsole = new ControlsConsole(26, 20) { Position = new Point(1, 1) };
+            _controlsConsole.Fill(Color.Transparent, new Color(100,0,200,150), null);
             Children.Add(_controlsConsole);
 
-            _mogwai = mogwai;
+            _itemConsole = new MogwaiConsole("Item", "", 50, 20) { Position = new Point(30, 1) };
+            //_itemConsole.Fill(Color.Transparent, Color.DarkKhaki, null);
+            Children.Add(_itemConsole);
+
             Init();
         }
 
         public void Init()
         {
-            var str = string.Join(';',_mogwai.HomeTown.Shop.Inventory.Select(p => p.Name).ToArray());
-
-            var listbox = new MogwaiListBox(25, 10)
+            _listBox = new MogwaiListBox(26, 12)
             {
-                Position = new Point(0, 5),
+                Position = new Point(0, 0),
                 HideBorder = false
             };
             foreach (var baseItem in _mogwai.HomeTown.Shop.Inventory)
             {
-                listbox.Items.Add(baseItem.Name);
+                _listBox.Items.Add(baseItem);
             }
-            _controlsConsole.Add(listbox);
+            _controlsConsole.Add(_listBox);
+            _listBox.SelectedItemChanged += _listBox_SelectedItemChanged;
 
-            AddRadioButton(28, 11, "All", DoAction);
-            AddRadioButton(28, 12, "Armor", DoAction);
-            AddRadioButton(28, 13, "Weapon", DoAction);
-            AddRadioButton(28, 14, "Potion", DoAction);
+            var _btnBuy = new Button(8, 1) {Text = "BUY", Position = new Point(1, 15)};
+
+            _controlsConsole.Add(_btnBuy);
         }
 
-        private void AddRadioButton(int x, int y, string text, Action<string> buttonClicked)
+        private void _listBox_SelectedItemChanged(object sender, ListBox.SelectedItemEventArgs e)
         {
-            var radioButton = new MogwaiRadioButton(20, 1);
-            radioButton.Text = text;
-            radioButton.Position = new Point(x, y);
-            _controlsConsole.Add(radioButton);
-        }
+            var baseItem = e.Item as BaseItem;
 
-        private void AddButton(int x, int y, string text, Action<string> buttonClicked)
-        {
-            var txt = text;
-            var button = new MogwaiButton(6, 1)
+            _itemConsole.Clear();
+            
+            _itemConsole.Print(1, 1, $"{Coloring.Orange(baseItem.Name)} [{Coloring.DarkGrey(baseItem.GetType().Name)}]");
+            _itemConsole.Print(1, 2, $"Weigth: {Coloring.Gainsboro(baseItem.Weight.ToString("######0.00").PadLeft(10))} lbs.", Color.Gainsboro);
+            _itemConsole.Print(1, 3, $"Cost:   {Coloring.Gold(baseItem.Cost.ToString("######0.00").PadLeft(10))} Gold", Color.Gainsboro);
+            if (baseItem is Weapon weapon)
             {
-                Position = new Point(x, y),
-                Text = txt
-            };
-            button.Click += (btn, args) =>
-            {
-                buttonClicked(((MogwaiButton)btn).Text);
-            };
-            _controlsConsole.Add(button);
+                _itemConsole.Print(1, 5, $"{Coloring.DarkGrey("Damage:")}   {Coloring.Green(weapon.MinDmg.ToString())} - {Coloring.Green(weapon.MaxDmg.ToString())}", Color.Gainsboro);
+                _itemConsole.Print(1, 6, $"{Coloring.DarkGrey("Critical:")} {Coloring.Yellow(weapon.CriticalMinRoll)} / {Coloring.Yellow(weapon.CriticalMultiplier)}x ", Color.Gainsboro);
+                _itemConsole.Print(1, 7, $"{Coloring.DarkGrey("Range:")}    {weapon.Range}", Color.Gainsboro);
+                _itemConsole.Print(1, 8, $"{Coloring.DarkGrey("Damage:")}   {string.Join(",",weapon.WeaponDamageTypes)}", Color.Gainsboro);
+                _itemConsole.Print(1, 9, $"{Coloring.DarkGrey("Effort:")}   {weapon.WeaponEffortType}", Color.Gainsboro);
+            }
+            _itemConsole.Print(1, 15, $"{baseItem.Description}", Color.Gainsboro);
         }
 
         private void DoAction(string actionStr)

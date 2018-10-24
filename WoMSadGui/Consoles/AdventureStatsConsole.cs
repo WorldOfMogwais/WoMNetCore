@@ -51,6 +51,7 @@ namespace WoMSadGui.Consoles
                     _statsConsole.Print(15, 4, $"May your soul be free now, {Coloring.Name(_mogwai.Name)}!");
                     _statsConsole.Print(15, 5, $"   {Coloring.Red("GAME OVER")}!");
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

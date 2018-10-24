@@ -25,14 +25,14 @@ namespace WoMSadGui.Consoles
             Theme.ItemTheme.Normal.Background = Color.DarkSlateGray;
             Theme.ItemTheme.Normal.Foreground = Color.Cyan;
 
-            //Theme.ItemTheme.MouseDown.Background = Color.Yellow;
-            //Theme.ItemTheme.MouseDown.Foreground = Color.Black;
+            Theme.ItemTheme.MouseDown.Background = Color.DarkSlateGray;
+            Theme.ItemTheme.MouseDown.Foreground = Color.Cyan;
 
-            //Theme.ItemTheme.MouseOver.Background = Color.Cyan;
-            //Theme.ItemTheme.MouseOver.Foreground = Color.Black;
+            Theme.ItemTheme.MouseOver.Background = Color.Cyan;
+            Theme.ItemTheme.MouseOver.Foreground = Color.Black;
 
             Theme.ItemTheme.Selected.Background = Color.DarkSlateGray;
-            Theme.ItemTheme.Selected.Foreground = Color.Cyan;
+            Theme.ItemTheme.Selected.Foreground =  Color.Yellow;
 
             Theme.ItemTheme.Focused.Background = Color.DarkSlateGray;
             Theme.ItemTheme.Focused.Foreground = Color.Cyan;
@@ -51,6 +51,22 @@ namespace WoMSadGui.Consoles
 
             Theme.Focused.Background = Color.DarkSlateGray;
             Theme.Focused.Foreground = Color.Cyan;
+
+
+            Theme.ScrollBarTheme.Normal.Background = Color.DarkSlateGray;
+            Theme.ScrollBarTheme.Normal.Foreground = Color.Cyan;
+
+            Theme.ScrollBarTheme.MouseDown.Background = Color.DarkSlateGray;
+            Theme.ScrollBarTheme.MouseDown.Foreground = Color.Cyan;
+
+            Theme.ScrollBarTheme.MouseOver.Background = Color.DarkSlateGray;
+            Theme.ScrollBarTheme.MouseOver.Foreground = Color.Cyan;
+
+            Theme.ScrollBarTheme.Selected.Background = Color.DarkSlateGray;
+            Theme.ScrollBarTheme.Selected.Foreground =  Color.Cyan;
+
+            Theme.ScrollBarTheme.Focused.Background = Color.DarkSlateGray;
+            Theme.ScrollBarTheme.Focused.Foreground = Color.Cyan;
         }
     }
 }

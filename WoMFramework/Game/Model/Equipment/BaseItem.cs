@@ -26,5 +26,10 @@ namespace WoMFramework.Game.Model
             Weight = weight;
             Description = description;
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
