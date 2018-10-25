@@ -75,7 +75,7 @@ namespace WoMSadGui.Consoles
                 var localTime = DateUtil.GetBlockLocalDateTime(_controller.WalletLastBlock.Time);
                 var localtimeStr = localTime.ToString(CultureInfo.InvariantCulture);
                 var t = DateTime.Now.Subtract(localTime);
-                var timeStr = $"[c:r f:springgreen]{string.Format("{0:hh\\:mm\\:ss}", t)}[c:u]";
+                var timeStr = $"[c:r f:springgreen]{t:hh\\:mm\\:ss}[c:u]";
                 Print(16, 0, localtimeStr + " " + timeStr, Color.Gainsboro);
             }
 
