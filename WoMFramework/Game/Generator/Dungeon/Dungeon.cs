@@ -284,7 +284,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             var target = GetNearestOrWeakestEnemy(entity);
 
             // try to attack target
-            TryEnqueueAttack(entity, target, ref combatActionQueue);
+            TryEnqueueAttack(entity, target, ref combatActionQueue, ActionType.Full);
 
             // need to move to target
             if (combatActionQueue.Count == 0)
@@ -298,7 +298,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 if (intersects.Any())
                 {
                     // try to attack target
-                    TryEnqueueAttack(entity, target, ref combatActionQueue);
+                    TryEnqueueAttack(entity, target, ref combatActionQueue, ActionType.Standard);
                 }
             }
 
@@ -390,10 +390,17 @@ namespace WoMFramework.Game.Generator.Dungeon
             }
         }
 
-        private void TryEnqueueAttack(Entity entity, Entity target, ref Queue<CombatAction> combatActionQueue)
+        private void TryEnqueueAttack(Entity entity, Entity target, ref Queue<CombatAction> combatActionQueue, ActionType actionType)
         {
-            var exCombatActions = entity.CombatActions.Select(p => p.Executable(target)).Where(p => p != null);
-            var combatActionExec = exCombatActions.FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack);
+            var exCombatActions = entity.CombatActions
+                .Where(p => p.ActionType <= actionType) // only actionTypes that are allowed in this round
+                .Select(p => p.Executable(target))
+                .Where(p => p != null);
+
+            var combatActionExec = exCombatActions
+                .OrderByDescending(p => p.ActionType) // choose full attacks over standard attacks
+                .FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack);
+
             if (combatActionExec != null)
             {
                 combatActionQueue.Enqueue(combatActionExec);
