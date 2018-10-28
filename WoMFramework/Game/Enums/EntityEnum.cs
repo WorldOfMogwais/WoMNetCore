@@ -235,4 +235,15 @@ namespace WoMFramework.Game.Enums
         Ring2,
         Feet
     }
+
+    public enum ModifierType
+    {
+        Speed,
+        Initiative,
+        Fortitude,
+        Reflex,
+        Will,
+        AttackBonus,
+        ArmorClass
+    } 
 }
