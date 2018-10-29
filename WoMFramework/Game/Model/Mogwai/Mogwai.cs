@@ -112,7 +112,7 @@ namespace WoMFramework.Game.Model.Mogwai
 
             // add simple studded leather as armor
             //Equipment.Armor = Armors.StuddedLeather;
-            Equipment.Armor = Armors.Instance.ByName("StuddedLeather");
+            Equipment.Armor = Armors.Instance.ByName("Studded Leather");
 
             // create slot types
             Equipment.CreateEquipmentSlots(new SlotType[]

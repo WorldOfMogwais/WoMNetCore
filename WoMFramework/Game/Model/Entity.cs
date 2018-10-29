@@ -13,6 +13,10 @@ namespace WoMFramework.Game.Model
 {
     public abstract class Entity : ICombatant
     {
+        public readonly Dictionary<ModifierType, int> MiscMod;
+
+        public readonly Dictionary<ModifierType, int> TempMod;
+
         public string Name { get; set; }
 
         public int Gender { get; set; }
@@ -51,11 +55,11 @@ namespace WoMFramework.Game.Model
         public int BaseSpeed { get; set; }
 
         // calculate encumbarance and stuff like that ...
-        public int Speed => BaseSpeed;
+        public int Speed => BaseSpeed + MiscMod[ModifierType.Speed] + TempMod[ModifierType.Speed];
 
         public int NaturalArmor { get; set; }
         // armorclass = 10 + armor bonus + shield bonus + dex modifier + size modifier + natural armor + deflection + misc modifier
-        public int ArmorClass => 10 + Equipment.ArmorBonus + Equipment.ShieldBonus + DexterityMod + SizeType.Modifier() + NaturalArmor;
+        public int ArmorClass => 10 + Equipment.ArmorBonus + Equipment.ShieldBonus + DexterityMod + SizeType.Modifier() + NaturalArmor + MiscMod[ModifierType.ArmorClass] + TempMod[ModifierType.ArmorClass];
 
         // hitpoints
         public int HitPointDice { get; set; }
@@ -65,17 +69,17 @@ namespace WoMFramework.Game.Model
         public int CurrentHitPoints { get; set; }
 
         // initiative = dex modifier + misc modifier
-        public int Initiative => DexterityMod;
+        public int Initiative => DexterityMod + MiscMod[ModifierType.Initiative] + TempMod[ModifierType.Initiative];
 
         #region saving throws
 
         //saving throw = basesave + abilitymod + misc modifier + magic modifier + temp modifier
         public int FortitudeBaseSave { get; set; }
-        public int Fortitude => FortitudeBaseSave + ConstitutionMod;
+        public int Fortitude => FortitudeBaseSave + ConstitutionMod + MiscMod[ModifierType.Fortitude] + TempMod[ModifierType.Fortitude];
         public int ReflexBaseSave { get; set; }
-        public int Reflex => ReflexBaseSave + DexterityMod;
+        public int Reflex => ReflexBaseSave + DexterityMod + MiscMod[ModifierType.Reflex] + TempMod[ModifierType.Reflex];
         public int WillBaseSave { get; set; }
-        public int Will => WillBaseSave + WisdomMod;
+        public int Will => WillBaseSave + WisdomMod + MiscMod[ModifierType.Will] + TempMod[ModifierType.Will];
 
         #endregion
 
@@ -83,7 +87,7 @@ namespace WoMFramework.Game.Model
         public int[] BaseAttackBonus { get; set; }
 
         // attackbonus = base attack bonus + strength modifier + size modifier
-        public int AttackBonus(int attackIndex) => BaseAttackBonus[attackIndex] + StrengthMod + (int)SizeType;
+        public int AttackBonus(int attackIndex) => BaseAttackBonus[attackIndex] + StrengthMod + (int)SizeType + MiscMod[ModifierType.AttackBonus] + TempMod[ModifierType.AttackBonus];
 
         // attack roll
         public int[] AttackRolls(Dice dice, int attackIndex, int criticalMinRoll = 21)
@@ -161,11 +165,22 @@ namespace WoMFramework.Game.Model
 
         public EnvironmentType[] EnvironmentTypes { get; set; }
 
+        public List<Feat> Skills { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
         protected Entity()
         {
+            // modifiers
+            MiscMod = new Dictionary<ModifierType, int>();
+            TempMod = new Dictionary<ModifierType, int>();
+            foreach (ModifierType modifierType in Enum.GetValues(typeof(ModifierType)))
+            {
+                TempMod[modifierType] = 0;
+                MiscMod[modifierType] = 0;
+            }
+
             // initialize
             HitPointLevelRolls = new List<int>();
             Equipment = new Equipment();
@@ -177,6 +192,8 @@ namespace WoMFramework.Game.Model
             // add basic actions
             CombatActions.Add(CombatAction.CreateMove(this));
 
+            // initialize skills list
+            Skills = new List<Feat>();
         }
 
         /// <summary>
@@ -191,6 +208,18 @@ namespace WoMFramework.Game.Model
             WillBaseSave = Classes.Sum(p => p.WillBaseSave);
             HitPointDiceRollEvent = Classes[0].HitPointDiceRollEvent;
             HitPointLevelRolls.Add(dice.Roll(HitPointDiceRollEvent));
+        }
+
+        public bool LearnSkill(Feat feat)
+        {
+            if (!feat.CanLearn(this))
+            {
+                return false;
+            }
+
+            feat.Learn(this);
+
+            return true;
         }
 
         /// <summary>

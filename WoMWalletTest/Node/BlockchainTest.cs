@@ -40,23 +40,23 @@ namespace WoMWalletTest.Node
         [Fact]
         public void GetBalance()
         {
-            var blockResponse1 = Blockchain.Instance.GetBalance("MPVwCL3zHhyarsU6M68zqyKFm1Ky7cLkc9");
-            Assert.Equal(8.96847793m, blockResponse1);
+            var blockResponse1 = Blockchain.Instance.GetBalance("MMo7QQkJcZV6ZzC6Vs9tTph3LddwceoxHP");
+            Assert.Equal(1.96807372m, blockResponse1);
 
-            var blockResponse2 = Blockchain.Instance.GetBalance("MHmFrV2t1Gd4739pyNzKu7cV2tpbgachjv");
-            Assert.Equal(8.9999m, blockResponse2);
+            var blockResponse2 = Blockchain.Instance.GetBalance("MKV7YPRfB7PZd2gZ7nZfthT6fXLU6Mnv9L");
+            Assert.Equal(0.97816968m, blockResponse2);
         }
 
         [Fact]
         public void GetUnspent()
         {
-            var blockResponse1 = Blockchain.Instance.GetUnspent(0, 999999, "MHmFrV2t1Gd4739pyNzKu7cV2tpbgachjv");
+            var blockResponse1 = Blockchain.Instance.GetUnspent(0, 999999, "MMo7QQkJcZV6ZzC6Vs9tTph3LddwceoxHP");
             Assert.Single(blockResponse1);
-            Assert.Equal(8.9999m, blockResponse1[0].Amount);
+            Assert.Equal(1.96807372m, blockResponse1[0].Amount);
 
-            var blockResponse2 = Blockchain.Instance.GetUnspent(0, 999999, "MWG1HtzRAjZMxQDzeoFoHQbzDygGR13aWG");
+            var blockResponse2 = Blockchain.Instance.GetUnspent(0, 999999, "MKV7YPRfB7PZd2gZ7nZfthT6fXLU6Mnv9L");
             Assert.Single(blockResponse2);
-            Assert.Equal(8.99999m, blockResponse2[0].Amount);
+            Assert.Equal(0.97816968m, blockResponse2[0].Amount);
         }
 
         [Fact]
