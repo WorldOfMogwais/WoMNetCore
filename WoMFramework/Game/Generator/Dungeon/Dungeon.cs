@@ -19,7 +19,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public override Map Map { get; set; }
 
-        public const int MaxRoundsPerBlock = 250;
+        public const int MaxRoundsPerBlock = 1000;
 
         public int CurrentBlockRound;
 
@@ -350,17 +350,18 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             switch (entity)
             {
-                case Mogwai _:
-                    var pois = Map.GetCoords(Map.ExplorationMap, entity.Coordinate, i => i > 0)
-                        //.Where(p => Map.WalkabilityMap[p.X, p.Y])
-                        .ToList();
-                    if (pois.Count == 0)
-                    {
+                case Mogwai mog:
+                    //var pois = Map.GetCoords(Map.ExplorationMap, entity.Coordinate, i => i > 0)
+                    //    //.Where(p => Map.WalkabilityMap[p.X, p.Y])
+                    //    .ToList();
+                    //if (pois.Count == 0)
+                    //{
 
-                        return;
-                    }
-                    var poi = Map.Nearest(entity.Coordinate, pois);
-                    TryEnqueueMove(entity, poi, ref entityActionQueue);
+                    //    return;
+                    //}
+                    //var poi = Map.Nearest(entity.Coordinate, pois);
+                    //TryEnqueueMove(entity, poi, ref entityActionQueue);
+                    mog.ExploreDungeon(true);
                     break;
 
                 case Monster _:
@@ -375,10 +376,10 @@ namespace WoMFramework.Game.Generator.Dungeon
             }
 
             // dequeue all actions
-            while (entityActionQueue.TryDequeue(out var combatAction))
-            {
-                entity.TakeAction(combatAction);
-            }
+            //while (entityActionQueue.TryDequeue(out var combatAction))
+            //{
+            //    entity.TakeAction(combatAction);
+            //}
         }
 
         private void TryEnqueueMove(Entity entity, Coord nearestCoord, ref Queue<CombatAction> combatActionQueue)

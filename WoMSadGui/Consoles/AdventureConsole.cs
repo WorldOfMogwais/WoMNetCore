@@ -121,15 +121,39 @@ namespace WoMSadGui.Consoles
                 {
                     switch (wMap[i, j])
                     {
+                        //case 0:
+                        //case -1:
+                        //    DrawMapPoint(i, j, false);
+                        //    break;
+                        //case -9:
+                        //    _mapConsole[i, j].CopyAppearanceFrom(UnknownAppearance);
+                        //    _mapConsole.SetGlyph(i, j, 219);
+                        //    break;
+                        //case 1:
+                        //    var cell = UnknownAppearance;
+                        //    // colorized locations ...
+                        //    //foreach (var location in Adventure.Map.Locations)
+                        //    //{
+                        //    //    if (!location.Contains(i, j)) continue;
+                        //    //    var index = Adventure.Map.Locations.IndexOf(location);
+                        //    //    if (index == 0)
+                        //    //    {
+                        //    //        cell = new Cell(Color.Crimson);
+                        //    //        break;
+                        //    //    }
+                        //    //    cell = new Cell(new Color(index * 25 % 256,0,index * 50 % 256), Color.Black, 219);
+                        //    //    break;
+                        //    //}
+                        //    _mapConsole[i, j].CopyAppearanceFrom(cell);
+                        //    _mapConsole.SetGlyph(i, j, 176);
+                        //    break;
+                        //default:
+                        //    //_mapConsole[i, j].CopyAppearanceFrom(UnclearAppearance);
+                        //    //_mapConsole.SetGlyph(i, j, 219);
+                        //    DrawMapPoint(i, j, true);
+                        //    break;
+
                         case 0:
-                        case -1:
-                            DrawMapPoint(i, j, false);
-                            break;
-                        case -9:
-                            _mapConsole[i, j].CopyAppearanceFrom(UnknownAppearance);
-                            _mapConsole.SetGlyph(i, j, 219);
-                            break;
-                        case 1:
                             var cell = UnknownAppearance;
                             // colorized locations ...
                             //foreach (var location in Adventure.Map.Locations)
@@ -147,10 +171,12 @@ namespace WoMSadGui.Consoles
                             _mapConsole[i, j].CopyAppearanceFrom(cell);
                             _mapConsole.SetGlyph(i, j, 176);
                             break;
+                        case 1:
+                        case 2:
+                        case -1:
+                            DrawMapPoint(i, j, false);
+                            break;
                         default:
-                            //_mapConsole[i, j].CopyAppearanceFrom(UnclearAppearance);
-                            //_mapConsole.SetGlyph(i, j, 219);
-                            DrawMapPoint(i, j, true);
                             break;
                     }
                 }
@@ -314,7 +340,6 @@ namespace WoMSadGui.Consoles
 
             var entity = new ConsoleEntity(effect) { Position = new Point(targetCoord.X, targetCoord.Y) };
             _mapConsole.Children.Add(entity);
-            
         }
 
         private void DiedEntity(ConsoleEntity entity)

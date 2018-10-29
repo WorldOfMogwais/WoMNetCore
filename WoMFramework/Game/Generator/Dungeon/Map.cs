@@ -28,6 +28,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             Coord.Get(1, 1)     // NE
         };
 
+        public Guid Guid = Guid.NewGuid();
+
         public Adventure Adventure { get; set; }
 
         public ArrayMap<bool> WalkabilityMap { get; }
@@ -35,6 +37,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         public ArrayMap<IAdventureEntity> EntityMap { get; }
         public ArrayMap<Tile> TileMap { get; }
         public FOV FovMap { get; }
+        public int[,] ExpectedFovNum { get; }
 
         public List<Rectangle> Locations { get; }
 
@@ -75,14 +78,13 @@ namespace WoMFramework.Game.Generator.Dungeon
                 {
                     if (wMap[i, j])
                     {
-                        ExplorationMap[i, j] = 1;
-                        resMap[i, j] = 0;
+                        //ExplorationMap[i, j] = 1;
                         _walkableTiles++;
                         TileMap[i, j] = new StoneTile(this, Coord.Get(i, j));
                     }
                     else
                     {
-                        ExplorationMap[i, j] = -9;
+                        //ExplorationMap[i, j] = -9;
                         resMap[i, j] = 1;
                         TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
                     }
@@ -91,6 +93,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             FovMap = new FOV(resMap);
 
             Locations = CreateMapLocations(wMap, 9);
+
+            ExpectedFovNum = new int[width, height];
         }
 
         private List<Rectangle> CreateMapLocations(ArrayMap<bool> wMap, int minLocationSize)
@@ -167,7 +171,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             EntityCount++;
 
             // calculate fov
-            entity.FovCoords = CalculateFoV(entity.Coordinate);
+            entity.FovCoords = CalculateFoV(entity.Coordinate, entity is Mogwai);
             //entity.ExploredCoords = GetCoords<int>(ExplorationMap, i => i < 1).ToHashSet();
             Adventure.Enqueue(AdventureLog.EntityCreated(entity));
         }
@@ -208,35 +212,98 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// <returns></returns>
         private HashSet<Coord> CalculateFoV(Coord coords, bool isExploring = false)
         {
-            if (isExploring)
-            {
-                // exploration fov 1. part
-                FovMap.Calculate(coords.X, coords.Y, 4, Radius.CIRCLE);
-                foreach (var coord in FovMap.CurrentFOV)
-                {
-                    ExplorationMap[coord.X, coord.Y] = WalkabilityMap[coord.X, coord.Y] ? 0 : -1;
-                }
-            }
+            const int FOVRANGE = 5;
+
+            //if (isExploring)
+            //{
+            //    // exploration fov 1. part
+            //    FovMap.Calculate(coords.X, coords.Y, 4, Radius.CIRCLE);
+            //    foreach (var coord in FovMap.CurrentFOV)
+            //    {
+            //        ExplorationMap[coord.X, coord.Y] = WalkabilityMap[coord.X, coord.Y] ? 0 : -1;
+            //    }
+            //}
 
             // calculate fov
-            FovMap.Calculate(coords.X, coords.Y, 5, Radius.CIRCLE);
+            FovMap.Calculate(coords.X, coords.Y, FOVRANGE, Radius.CIRCLE);
+
+            //if (isExploring)
+            //{
+            //    // exploration fov 2. part
+            //    foreach (var coord in FovMap.CurrentFOV)
+            //    {
+            //        if (ExplorationMap[coord.X, coord.Y] == 0)
+            //            continue;
+
+            //        if (!WalkabilityMap[coord.X, coord.Y])
+            //        {
+            //            ExplorationMap[coord.X, coord.Y] = -1;
+            //        }
+            //        else
+            //        {
+            //            ExplorationMap[coord.X, coord.Y] += 1;
+            //        }
+            //    }
+            //}
 
             if (isExploring)
             {
-                // exploration fov 2. part
-                foreach (var coord in FovMap.CurrentFOV)
-                {
-                    if (ExplorationMap[coord.X, coord.Y] == 0)
-                        continue;
+                // Visited tile = 2
+                ExplorationMap[coords] = 2;
 
-                    if (!WalkabilityMap[coord.X, coord.Y])
+                // Observed reachable tiles = 1
+                // Observed impassable tiles = -1 
+                foreach (Coord fovCoord in FovMap.CurrentFOV)
+                {
+                    if (ExplorationMap[fovCoord] != 0) continue;
+
+                    ExplorationMap[fovCoord] = WalkabilityMap[fovCoord] ? 1 : -1;
+
+                }
+
+                // Temporary cropped resistance map.
+                // Use exploration map instead of actual walkability map
+                // to prevent cheating.
+
+                // Only use local part of the map to reduce memory allocation
+                var xMin = coords.X - FOVRANGE - 1;
+                if (xMin < 0) xMin = 0;
+                var xMax = coords.X + FOVRANGE + 1;
+                if (xMax >= Width) xMax = Width - 1;
+                var yMin = coords.Y - FOVRANGE - 1;
+                if (yMin < 0) yMin = 0;
+                var yMax = coords.Y + FOVRANGE + 1;
+                if (yMax >= Height) yMax = Height - 1;
+                var tempResMap = new ArrayMap<double>(xMax - xMin + 1, yMax - yMin + 1);
+
+                for (int x = xMin; x <= xMax; x++)
+                for (int y = yMin; y <= yMax; y++)
+                    tempResMap[x - xMin, y - yMin] = ExplorationMap[x, y] < 0 ? 1 : 0;
+    
+                var tempFOV = new FOV(tempResMap);
+
+                // Calculate expected fov gain for each current fov tiles
+                foreach (Coord fovCoord in FovMap.CurrentFOV)
+                {
+                    // Use translated coordinate instead because tempFOV is viewport.
+                    Coord translated = fovCoord.Translate(-xMin, -yMin);
+
+                    tempFOV.Calculate(translated, 5, Radius.CIRCLE);
+
+                    int c = 0;
+                    foreach (Coord tempFovCoord in tempFOV.CurrentFOV)
                     {
-                        ExplorationMap[coord.X, coord.Y] = -1;
+                        // Don't need to consider already observed tiles
+                        if (ExplorationMap[tempFovCoord.Translate(xMin, yMin)] != 0) continue;
+                        c++;
                     }
-                    else
-                    {
-                        ExplorationMap[coord.X, coord.Y] += 1;
-                    }
+
+                    // Store expected Number of fov gain
+                    ExpectedFovNum[fovCoord.X, fovCoord.Y] = c;
+
+                    // Tiles that don't need to visit = 2
+                    if (c == 0)
+                        ExplorationMap[fovCoord] = 2;
                 }
             }
 
@@ -313,22 +380,24 @@ namespace WoMFramework.Game.Generator.Dungeon
         public double GetExplorationState()
         {
             var visited = 0;
-            var unexplored = 0;
+            //var unexplored = 0;
             for (var i = 0; i < ExplorationMap.Width; i++)
             {
                 for (var j = 0; j < ExplorationMap.Height; j++)
                 {
-                    if (ExplorationMap[i, j] > 0)
-                    {
-                        unexplored++;
-                    }
-                    else if (ExplorationMap[i, j] == 0)
+                    ////if (ExplorationMap[i, j] > 0)
+                    //{
+                    //    unexplored++;
+                    //}
+                    //else if (ExplorationMap[i, j] == 0)
+                    if (ExplorationMap[i, j] == 2)
                     {
                         visited++;
                     }
                 }
             }
-            return (double) visited / (visited + unexplored);
+            //return (double) visited / (visited + unexplored);
+            return (double)visited / _walkableTiles;
         }
 
         public Coord Nearest(Coord current, List<Coord> coords)

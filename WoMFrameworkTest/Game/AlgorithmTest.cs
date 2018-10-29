@@ -1,4 +1,5 @@
-﻿using GoRogue;
+﻿using System.Linq;
+using GoRogue;
 using GoRogue.MapViews;
 using Xunit;
 
@@ -25,6 +26,32 @@ namespace WoMFrameworkTest.Game
             Assert.DoesNotContain(Coord.Get(2, 2), neighbours);
             Assert.DoesNotContain(Coord.Get(1, 2), neighbours);
             Assert.DoesNotContain(Coord.Get(0, 2), neighbours);
+        }
+
+        [Fact]
+        public void FOVTest()
+        {
+            var testMap = new ArrayMap<bool>(5, 5);
+            foreach (var coord in testMap.Positions())
+                testMap[coord] = true;
+
+            var centre = Coord.Get(2, 2);
+            foreach (var coord in new RadiusAreaProvider(centre, 2, Radius.CIRCLE).CalculatePositions())
+                testMap[coord] = false;
+            foreach (var coord in new RadiusAreaProvider(centre, 1, Distance.EUCLIDEAN).CalculatePositions())
+                testMap[coord] = true;
+
+            var resMap = new ArrayMap<double>(5, 5);
+            foreach (var coord in testMap.Positions())
+                resMap[coord] = testMap[coord] ? 0 : 1.0;
+
+            var FOV = new FOV(resMap);
+
+            FOV.Calculate(centre, 1, Distance.EUCLIDEAN);
+
+            var calculated = FOV.CurrentFOV.OrderBy(p => p.X).ThenBy(p => p.Y).ToArray();
+            Assert.True(calculated.SequenceEqual(new []
+                {Coord.Get(1, 2), Coord.Get(2, 1), Coord.Get(2, 2), Coord.Get(2, 3), Coord.Get(3, 2)}));
         }
     }
 }
