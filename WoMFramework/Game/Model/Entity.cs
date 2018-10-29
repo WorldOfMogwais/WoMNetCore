@@ -540,7 +540,7 @@ namespace WoMFramework.Game.Model
             // initialise 
             var moveRange = Speed / 5;
 
-            var path = Algorithms.AStar(Coordinate, destination, Map.WalkabilityMap);
+            var path = Algorithms.AStar(Coordinate, destination, Map);
 
             if (path == null)
                 return false;

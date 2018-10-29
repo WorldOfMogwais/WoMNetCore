@@ -28,6 +28,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             Coord.Get(1, 1)     // NE
         };
 
+        public Guid Guid = Guid.NewGuid();
+
         public Adventure Adventure { get; set; }
 
         public ArrayMap<bool> WalkabilityMap { get; }

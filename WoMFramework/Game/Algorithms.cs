@@ -2,11 +2,16 @@
 using GoRogue;
 using GoRogue.MapViews;
 using Priority_Queue;
+using WoMFramework.Game.Generator.Dungeon;
 
 namespace WoMFramework.Game
 {
     public static class Algorithms
     {
+        private static FastPriorityQueue<AStarNode> _cachedQueue;
+        private static AStarNode[] _cache;
+        private static Map _cachedMap;
+
         private class AStarNode : FastPriorityQueueNode
         {
             public readonly Coord Position;
@@ -28,23 +33,45 @@ namespace WoMFramework.Game
                 Closed = false;
                 F = G = float.MaxValue;
             }
+
+            public void Clear()
+            {
+                Parent = null;
+                Closed = false;
+                F = G = float.MaxValue;
+            }
         }
 
-        public static Coord[] AStar(Coord start, Coord goal, IMapView<bool> walkabilityMap)
+        public static Coord[] AStar(Coord start, Coord goal, Map map)
         {
+            AStarNode[] nodes;
+            FastPriorityQueue<AStarNode> open;  // Currently discovered nodes that are not evaluated yet
+            Distance euclidiean = Distance.EUCLIDEAN;
+            ArrayMap<bool> walkabilityMap = map.WalkabilityMap;
+
+            if (_cachedMap?.Guid == map.Guid)
+            {
+                nodes = _cache;
+                for (int i = 0; i < nodes.Length; i++)
+                    nodes[i].Clear();
+                open = _cachedQueue;
+            }
+            else
+            {
+                int length = walkabilityMap.Width * walkabilityMap.Height;
+                nodes = new AStarNode[length];
+                for (int i = 0; i < nodes.Length; i++)
+                    nodes[i] = new AStarNode(Coord.ToCoord(i, walkabilityMap.Width));
+                _cache = nodes;
+                _cachedMap = map;
+                open = new FastPriorityQueue<AStarNode>(length);
+                _cachedQueue = open;
+            }
+
             if (start == goal)
                 return new[] { goal };
             if (!walkabilityMap[goal])
                 return null;
-
-            Distance euclidiean = Distance.EUCLIDEAN;
-            int length = walkabilityMap.Width * walkabilityMap.Height;
-            AStarNode[] nodes = new AStarNode[length];
-            for (int i = 0; i < nodes.Length; i++)
-                nodes[i] = new AStarNode(Coord.ToCoord(i, walkabilityMap.Width));
-
-            FastPriorityQueue<AStarNode> open =         // Currently discovered nodes that are not evaluated yet
-                new FastPriorityQueue<AStarNode>(length);
 
             var result = new Stack<Coord>();
             int startIndex = start.ToIndex(walkabilityMap.Width);

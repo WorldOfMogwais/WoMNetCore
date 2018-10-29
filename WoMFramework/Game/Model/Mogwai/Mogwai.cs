@@ -457,7 +457,7 @@ namespace WoMFramework.Game.Model.Mogwai
 
                     if (inFov.Length > 0)
                         nearest = inFov
-                            .Select(c => Algorithms.AStar(Coordinate, c, Map.WalkabilityMap))
+                            .Select(c => Algorithms.AStar(Coordinate, c, Map))
                             .OrderBy(p => p.Length)
                             .First();
                     else
@@ -466,7 +466,7 @@ namespace WoMFramework.Game.Model.Mogwai
                             .OrderBy(p => Distance.EUCLIDEAN.Calculate(Coordinate, p))
                             .Take(5)
                             .Where(p => p != null)
-                            .Select(p => Algorithms.AStar(Coordinate, p, Map.WalkabilityMap))
+                            .Select(p => Algorithms.AStar(Coordinate, p, Map))
                             .OrderBy(p => p.Length)
                             .First();
 
