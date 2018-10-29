@@ -70,11 +70,13 @@ namespace WoMSadGui.Consoles
 
             PrintWeapons(16, 10, _mogwai);
 
+            PrintArmor(16, 13, _mogwai);
+
             PrintStat(1, 10, "FOR", _mogwai.Fortitude, 0, 0);
             PrintStat(1, 11, "REF", _mogwai.Reflex, 0, 0);
             PrintStat(1, 12, "WIL", _mogwai.Will, 0, 0);
 
-            PrintWealth(31, 13, _mogwai);
+            PrintWealth(31, 17, _mogwai);
 
         }
 
@@ -95,22 +97,32 @@ namespace WoMSadGui.Consoles
             Print(0, 9, "[c:sg 205:44]" + "".PadRight(44), Color.DarkCyan);
 
             _borderSurface.Print(0, 14, "[c:sg 204:1] ", Color.DarkCyan);
-            _borderSurface.Print(30, 14, "[c:sg 185:1] ", Color.DarkCyan);
-            Print(0, 13, "[c:sg 205:30]" + "".PadRight(30), Color.DarkCyan);
+            Print(0, 13, "[c:sg 205:14]" + "".PadRight(30), Color.DarkCyan);
+            _borderSurface.Print(45, 13, "[c:sg 185:1] ", Color.DarkCyan);
+            Print(15, 12, "[c:sg 205:30]" + "".PadRight(30), Color.DarkCyan);
+
 
             Print(15, 5, "[c:sg 205:14]" + "".PadRight(14), Color.DarkCyan);
             Print(30, 6, "[c:sg 205:14]" + "".PadRight(14), Color.DarkCyan);
 
             _borderSurface.Print(45, 0, "[c:sg 203:1] ", Color.DarkCyan);
 
-            Print(30, 12, "[c:sg 205:14]" + "".PadRight(14), Color.DarkCyan);
-            _borderSurface.SetGlyph(45, 13, 185, Color.DarkCyan);
-            Print(30, 14, "[c:sg 205:14]" + "".PadRight(14), Color.DarkCyan);
-            _borderSurface.SetGlyph(45, 15, 185, Color.DarkCyan);
+            Print(30, 16, "[c:sg 205:14]" + "".PadRight(14), Color.DarkCyan);
+            _borderSurface.SetGlyph(45, 17, 185, Color.DarkCyan);
+            Print(30, 18, "[c:sg 205:14]" + "".PadRight(14), Color.DarkCyan);
+            _borderSurface.SetGlyph(45, 19, 185, Color.DarkCyan);
+            Print(15, 17, "[c:sg 205:15]" + "".PadRight(30), Color.DarkCyan);
+            _borderSurface.Print(30, 18, "[c:sg 185:1] ", Color.DarkCyan);
 
-            SetGlyph(29, 14, 200, Color.DarkCyan);
-            SetGlyph(29, 13, 186, Color.DarkCyan);
-            SetGlyph(29, 12, 201, Color.DarkCyan);
+            SetGlyph(14, 13, 185, Color.DarkCyan);
+            SetGlyph(14, 14, 186, Color.DarkCyan);
+            SetGlyph(14, 15, 186, Color.DarkCyan);
+            SetGlyph(14, 16, 186, Color.DarkCyan);
+            SetGlyph(14, 17, 200, Color.DarkCyan);
+
+            SetGlyph(29, 18, 200, Color.DarkCyan);
+            SetGlyph(29, 17, 186, Color.DarkCyan);
+            SetGlyph(29, 16, 201, Color.DarkCyan);
 
             SetGlyph(14, 2, 203, Color.DarkCyan);
             SetGlyph(14, 9, 206, Color.DarkCyan);
@@ -120,8 +132,15 @@ namespace WoMSadGui.Consoles
             SetGlyph(29, 6, 204, Color.DarkCyan);
             SetGlyph(44, 6, 185, Color.DarkCyan);
 
+            //SetGlyph(14, 12, 204, Color.DarkCyan);
+
+
             SetGlyph(29, 9, 202, Color.DarkCyan);
-            SetGlyph(14, 13, 202, Color.DarkCyan);
+            //SetGlyph(14, 13, 202, Color.DarkCyan);
+
+            //Print(16, 9, "Weapon");
+
+            //Print(16, 12, "Armor");
 
         }
 
@@ -144,6 +163,7 @@ namespace WoMSadGui.Consoles
             Print(x + 18, y, new ColoredString($"[c:r f:limegreen]{primary.MinDmg} [c:r f:gainsboro]- [c:r f:limegreen]{primary.MaxDmg} [c:r f:gainsboro]DMG".PadLeft(11)));
             if (mogwai.Equipment.WeaponSlots[0].SecondaryWeapon == null)
             {
+                Print(x, y+1, "S:", Color.Gainsboro);
                 Print(x + 3, y + 1, "None", Color.Gray);
                 return;
             }
@@ -151,6 +171,20 @@ namespace WoMSadGui.Consoles
             Print(x, y + 1, "S:", Color.Gainsboro);
             Print(x + 3, y + 1, secondary.Name, Color.Orange);
             Print(x + 18, y + 1, new ColoredString($"[c:r f:limegreen]{secondary.MinDmg} [c:r f:gainsboro]- [c:r f:limegreen]{secondary.MaxDmg} [c:r f:gainsboro]DMG".PadLeft(11)));
+        }
+
+        private void PrintArmor(int x, int y, Mogwai mogwai)
+        {
+            if (mogwai.Equipment.Armor == null)
+            {
+                return;
+            }
+
+            var armor = mogwai.Equipment.Armor;
+
+            Print(x, y, "A:", Color.Gainsboro);
+            Print(x + 3, y, armor.Name.Substring(0, 15), Color.Orange);
+            Print(x + 20, y, new ColoredString($"[c:r f:limegreen]{armor.ArmorBonus} [c:r f:gainsboro]AC [c:r f:red]{armor.ArmorCheckPenalty}".PadLeft(11)));
         }
 
         public void CreateExperienceBar(int x, int y, Color low, Color full, double current, double max)
