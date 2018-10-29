@@ -97,7 +97,7 @@ namespace WoMFramework.Game
 
         public static Coord[] GetReachableNeighbours(IMapView<bool> walkabilityMap, Coord current)
         {
-            var result = new List<Coord>();
+            var result = new List<Coord>(8);
 
             int x = current.X;
             int y = current.Y;
@@ -156,11 +156,20 @@ namespace WoMFramework.Game
         //public static Coord DepthFirstExplore(Coord start, ISettableMapView<int> explorationMap,
         //    IMapView<bool> walkabilityMap, FOV fov)
         //{
+        //    // exploration map
+        //    // 0 : not visited;
+        //    // 1 : observed;
+        //    // 2 : visited node;
+        //    // -1 : grey node;
+
+
+
+
         //    fov.Calculate(start, 5);
 
         //    foreach (var coordInSight in fov.CurrentFOV)
         //    {
-                
+
         //    }
         //}
     }

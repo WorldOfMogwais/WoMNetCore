@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using GoRogue;
+using GoRogue.MapViews;
 using log4net;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
+using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Home;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Random;
@@ -364,6 +367,122 @@ namespace WoMFramework.Game.Model.Mogwai
                 {
                     Shifts.Add(shift.Key, shift.Value);
                 }
+            }
+        }
+
+        public FOV privateFOV;
+        private Coord[] _lastPath;
+        private int _pathIndex = -1;
+
+        public void ExploreDungeon(bool checkForEnemies)
+        {
+            // expMap
+            // -1 : impassable
+            //  0 : uncharted   (WHITE)
+            //  1 : observed through FOV (GREY)
+            //  2 : Visited or having no explorable tiles (BLACK)
+
+            const int FOVRANGE = 5;
+
+            var expMap = Map.ExplorationMap;
+
+            var moveRange = Speed / 5;
+            var diagonalCount = 0;
+
+            while (moveRange > 0)
+            {
+                // check if we have an enemy in fov
+                if (checkForEnemies && CombatState == CombatState.None)
+                {
+                    // check field of view positions for enemies
+                    foreach (var entity in Map.EntitiesOnCoords(FovCoords).Where(p => p.IsAlive))
+                    {
+                        if (entity.Faction == Faction.None) continue;
+                        if (Faction != entity.Faction)
+                        {
+                            CombatState = CombatState.Initiation;
+                            entity.CombatState = CombatState.Initiation;
+                        }
+                    }
+                    // break if we have found an enemy
+                    if (CombatState == CombatState.Initiation)
+                    {
+                        break;
+                    }
+                }
+
+                // check if already have a path
+                if (_pathIndex > 0 && _pathIndex != _lastPath.Length)
+                {
+                    if (Coordinate != _lastPath[_pathIndex - 1])
+                    {
+                        if (!MoveAtomic(_lastPath[_pathIndex++], ref moveRange, ref diagonalCount))
+                            return;
+                        continue;
+                    }
+                }
+
+                _pathIndex = -1;
+
+                // Atomic movement; consider adjacent tiles first
+                var adjs = Algorithms.GetReachableNeighbours(Map.WalkabilityMap, Coordinate);
+                var max = 0;
+                var maxIndex = -1;
+                for (var i = 0; i < adjs.Length; i++)
+                {
+                    // Not consider Black tiles
+                    if (expMap[adjs[i]] == 2) continue;
+
+                    var c = Map.ExpectedFovNum[adjs[i].X, adjs[i].Y];
+                    // Calculate which adjacent tile has the greatest number of expected FOV tiles
+                    if (max < c)
+                    {
+                        max = c;
+                        maxIndex = i;
+                    }
+                }
+
+                Coord next;
+
+                // If all adjacent tiles are Black, explorer have to find the nearest grey tile.
+                if (maxIndex < 0)
+                {
+                    var minLength = int.MaxValue;
+                    Coord[] nearest = null;
+
+                    // Consider grey tiles in FOV first. If not any, check the whole map
+                    Coord[] inFov = FovCoords
+                        .Where(c => expMap[c] == 1)
+                        .ToArray();
+
+                    if (inFov.Length > 0)
+                        nearest = inFov
+                            .Select(c => Algorithms.AStar(Coordinate, c, Map.WalkabilityMap))
+                            .OrderBy(p => p.Length)
+                            .First();
+                    else
+                        nearest = expMap.Positions()
+                            .Where(c => expMap[c] == 1)
+                            .OrderBy(p => Distance.EUCLIDEAN.Calculate(Coordinate, p))
+                            .Take(5)
+                            .Where(p => p != null)
+                            .Select(p => Algorithms.AStar(Coordinate, p, Map.WalkabilityMap))
+                            .OrderBy(p => p.Length)
+                            .First();
+
+                    next = nearest[1];
+
+                    // Save the path
+                    _lastPath = nearest;
+                    _pathIndex = 2;
+                }
+                else
+                {
+                    next = adjs[maxIndex];
+                }
+
+                if (!MoveAtomic(next, ref moveRange, ref diagonalCount))
+                    return;
             }
         }
     }

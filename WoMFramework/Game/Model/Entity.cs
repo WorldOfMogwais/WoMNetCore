@@ -508,25 +508,13 @@ namespace WoMFramework.Game.Model
         /// <returns></returns>
         private bool Move(Coord destination, bool checkForEnemies = false)
         {
+            // initialise 
             var moveRange = Speed / 5;
 
-            //var map = Map.WalkabilityMap;
-            //var radius = new RadiusAreaProvider(Coordinate, moveRange, Distance.EUCLIDEAN);
-            //Coord[] walkableTilesInRange = radius.CalculatePositions()
-            //    .Where(pos => pos.X < map.Width && pos.Y < map.Height && map[pos])
-            //    .ToArray();
-
-            //if (!walkableTilesInRange.Contains(destination))
-            //    return false;
-
-            //var path = new AStar(Map.WalkabilityMap, Distance.EUCLIDEAN).ShortestPath(Coordinate, destination, true);
             var path = Algorithms.AStar(Coordinate, destination, Map.WalkabilityMap);
 
             if (path == null)
                 return false;
-
-            //for (int i = 0; i < moveRange; i++)
-            //    Map.MoveEntity(this, path.GetStep(i));
 
             var i = 1;
             var diagonalCount = 0;
@@ -565,52 +553,61 @@ namespace WoMFramework.Game.Model
                     break;
                 }
 
-                if (Distance.EUCLIDEAN.Calculate(Coordinate, next) > 1)
+                MoveAtomic(next, ref moveRange, ref diagonalCount);
+            }
+
+            return true;
+        }
+
+        protected bool MoveAtomic(Coord next, ref int moveRange, ref int diagonalCount)
+        {
+            // Should check the destination is adjacent tile
+
+            // Check it is diagonal or cardinal
+            if (Distance.EUCLIDEAN.Calculate(Coordinate, next) > 1)
+            {
+                diagonalCount++;
+                if (diagonalCount % 2 == 1)
                 {
-                    diagonalCount++;
-                    if (diagonalCount % 2 == 1)
+                    Map.MoveEntity(this, next);
+                    moveRange--;
+                }
+                else
+                {
+                    if (moveRange == 1)
                     {
-                        Map.MoveEntity(this, next);
-                        moveRange--;
-                    }
-                    else
-                    {
-                        if (moveRange == 1)
+                        var newNext = next.Translate(0, -(next - Coordinate).Y);  // Prefer X direction for now; can be randomised
+                        if (Map.WalkabilityMap[newNext])
                         {
-                            var newNext = next.Translate(0, - (next - Coordinate).Y);  // Prefer X direction for now; can be randomised
+                            Map.MoveEntity(this, newNext);
+                        }
+                        else
+                        {
+                            newNext = next.Translate(-(next - Coordinate).X, 0);
                             if (Map.WalkabilityMap[newNext])
                             {
                                 Map.MoveEntity(this, newNext);
                             }
                             else
                             {
-                                newNext = next.Translate(-(next - Coordinate).X, 0);
-                                if (Map.WalkabilityMap[newNext])
-                                {
-                                    Map.MoveEntity(this, newNext);
-                                }
-                                else
-                                {
-                                    // we dismiss the last point, as probably it's a diag
-                                    return true;
-                                }
+                                // we dismiss the last point, as probably it's a diag
+                                return true;
                             }
-                            break;
                         }
-                        else
-                        {
-                            Map.MoveEntity(this, next);
-                            moveRange -= 2;
-                        }
+                        return false;
+                    }
+                    else
+                    {
+                        Map.MoveEntity(this, next);
+                        moveRange -= 2;
                     }
                 }
-                else
-                {
-                    Map.MoveEntity(this, next);
-                    moveRange--;
-                }
             }
-
+            else
+            {
+                Map.MoveEntity(this, next);
+                moveRange--;
+            }
             return true;
         }
 
