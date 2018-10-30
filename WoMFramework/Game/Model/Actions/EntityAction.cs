@@ -20,12 +20,12 @@ namespace WoMFramework.Game.Model.Actions
     public enum ActionType
     {
         None,
-        Standard,
-        Move,
-        Full,
-        Swift,
+        Immediate,
         Free,
-        Immediate
+        Swift,
+        Move,
+        Standard,
+        Full
     }
 
     public abstract class CombatAction : EntityAction
@@ -43,20 +43,20 @@ namespace WoMFramework.Game.Model.Actions
             Target = target;
         }
 
-        public static CombatAction CreateWeaponAttack(Entity owner, Weapon weapon)
+        public static CombatAction CreateWeaponAttack(Entity owner, Weapon weapon, bool fullRound)
         {
             switch (weapon.WeaponEffortType)
             {
                 case WeaponEffortType.Unarmed:
-                    return new UnarmedAttack(owner, weapon);
+                    return new UnarmedAttack(owner, weapon, fullRound);
                 case WeaponEffortType.Light:
-                    return new MeleeAttack(owner, weapon);
+                    return new MeleeAttack(owner, weapon, fullRound);
                 case WeaponEffortType.OneHanded:
-                    return new MeleeAttack(owner, weapon);
+                    return new MeleeAttack(owner, weapon, fullRound);
                 case WeaponEffortType.TwoHanded:
-                    return new MeleeAttack(owner, weapon);
+                    return new MeleeAttack(owner, weapon, fullRound);
                 case WeaponEffortType.Ranged:
-                    return new RangedAttack(owner, weapon);
+                    return new RangedAttack(owner, weapon, fullRound);
                 case WeaponEffortType.Ammunition:
                 case WeaponEffortType.None:
                 default:
@@ -100,11 +100,11 @@ namespace WoMFramework.Game.Model.Actions
 
     public class UnarmedAttack : WeaponAttack
     {
-        public UnarmedAttack(Entity owner, Weapon weapon) : base(ActionType.Standard, owner, null, weapon, true)
+        public UnarmedAttack(Entity owner, Weapon weapon, bool fullRound) : base(fullRound ? ActionType.Full : ActionType.Standard, owner, null, weapon, true)
         {
             IsExecutable = false;
         }
-        private UnarmedAttack(Entity owner, Weapon weapon, IAdventureEntity target) : base(ActionType.Standard, owner, target, weapon, true)
+        private UnarmedAttack(Entity owner, Weapon weapon, IAdventureEntity target, bool fullRound) : base(fullRound ? ActionType.Full : ActionType.Standard, owner, target, weapon, true)
         {
             IsExecutable = true;
         }
@@ -114,17 +114,17 @@ namespace WoMFramework.Game.Model.Actions
             {
                 return null;
             }
-            return new UnarmedAttack(Owner, Weapon, target);
+            return new UnarmedAttack(Owner, Weapon, target, ActionType == ActionType.Full);
         }
     }
 
     public class MeleeAttack : WeaponAttack
     {
-        public MeleeAttack(Entity owner, Weapon weapon) : base(ActionType.Standard, owner, null, weapon, false)
+        public MeleeAttack(Entity owner, Weapon weapon, bool fullRound) : base(fullRound ? ActionType.Full : ActionType.Standard, owner, null, weapon, false)
         {
             IsExecutable = false;
         }
-        private MeleeAttack(Entity owner, Weapon weapon, IAdventureEntity target) : base(ActionType.Standard, owner, target, weapon, false)
+        private MeleeAttack(Entity owner, Weapon weapon, IAdventureEntity target, bool fullRound) : base(fullRound ? ActionType.Full : ActionType.Standard, owner, target, weapon, false)
         {
             IsExecutable = true;
         }
@@ -134,17 +134,17 @@ namespace WoMFramework.Game.Model.Actions
             {
                 return null;
             }
-            return new MeleeAttack(Owner, Weapon, target);
+            return new MeleeAttack(Owner, Weapon, target, ActionType == ActionType.Full);
         }
     }
 
     public class RangedAttack : WeaponAttack
     {
-        public RangedAttack(Entity owner, Weapon weapon) : base(ActionType.Standard, owner, null, weapon, true)
+        public RangedAttack(Entity owner, Weapon weapon, bool fullRound) : base(fullRound ? ActionType.Full : ActionType.Standard, owner, null, weapon, true)
         {
             IsExecutable = false;
         }
-        private RangedAttack(Entity owner, Weapon weapon, IAdventureEntity target) : base(ActionType.Standard, owner, target, weapon, true)
+        private RangedAttack(Entity owner, Weapon weapon, IAdventureEntity target, bool fullRound) : base(fullRound ? ActionType.Full : ActionType.Standard, owner, target, weapon, true)
         {
             IsExecutable = true;
         }
@@ -154,7 +154,7 @@ namespace WoMFramework.Game.Model.Actions
             {
                 return null;
             }
-            return new RangedAttack(Owner, Weapon, target);
+            return new RangedAttack(Owner, Weapon, target, ActionType == ActionType.Full);
         }
     }
 
@@ -195,27 +195,6 @@ namespace WoMFramework.Game.Model.Actions
         public override CombatAction Executable(IAdventureEntity target)
         {
             return new Move(Owner, target);
-        }
-    }
-
-
-    public class FullMeleeAttack : WeaponAttack
-    {
-        public FullMeleeAttack(Entity owner, Weapon weapon) : base(ActionType.Full, owner, null, weapon, false)
-        {
-            IsExecutable = false;
-        }
-        private FullMeleeAttack(Entity owner, Weapon weapon, IAdventureEntity target) : base(ActionType.Full, owner, target, weapon, false)
-        {
-            IsExecutable = true;
-        }
-        public override CombatAction Executable(IAdventureEntity target)
-        {
-            if (!InWeaponRange(target))
-            {
-                return null;
-            }
-            return new FullMeleeAttack(Owner, Weapon, target);
         }
     }
 

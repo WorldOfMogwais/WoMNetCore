@@ -14,6 +14,13 @@ build_script:
 - cmd: >-
     dotnet build --configuration %TARGET_CONFIGURATION%
     
+    dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/win-x86 -r win-x86
+   
+    7z a WoM-%APPVEYOR_BUILD_VERSION%-win-x86.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/win-x86/*
+
+    appveyor PushArtifact WoM-%APPVEYOR_BUILD_VERSION%-win-x86.zip -DeploymentName WoMNetCore
+    
+
     dotnet publish --configuration %TARGET_CONFIGURATION% -o ./publish/win-x64 -r win-x64
    
     7z a WoM-%APPVEYOR_BUILD_VERSION%-win-x64.zip %APPVEYOR_BUILD_FOLDER%/WoMSadGui/publish/win-x64/*

@@ -269,8 +269,12 @@ namespace WoMFramework.Game.Model
 
             // TODO implement remove weapon on slot index
 
-            var action = CombatAction.CreateWeaponAttack(this, primaryWeapon);
-            CombatActions.Add(action);
+            // standard attack
+            CombatActions.Add(CombatAction.CreateWeaponAttack(this, primaryWeapon, false));
+
+            // full attack
+            CombatActions.Add(CombatAction.CreateWeaponAttack(this, primaryWeapon, true));
+
             emptyWeaponSlot.PrimaryWeapon = primaryWeapon;
 
             if (secondaryWeapon != null)
