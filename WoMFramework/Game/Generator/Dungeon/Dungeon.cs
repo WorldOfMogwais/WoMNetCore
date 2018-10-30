@@ -19,7 +19,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public override Map Map { get; set; }
 
-        public const int MaxRoundsPerBlock = 1000;
+        public const int MaxRoundsPerBlock = 250;
 
         public int CurrentBlockRound;
 
@@ -351,35 +351,13 @@ namespace WoMFramework.Game.Generator.Dungeon
             switch (entity)
             {
                 case Mogwai mog:
-                    //var pois = Map.GetCoords(Map.ExplorationMap, entity.Coordinate, i => i > 0)
-                    //    //.Where(p => Map.WalkabilityMap[p.X, p.Y])
-                    //    .ToList();
-                    //if (pois.Count == 0)
-                    //{
-
-                    //    return;
-                    //}
-                    //var poi = Map.Nearest(entity.Coordinate, pois);
-                    //TryEnqueueMove(entity, poi, ref entityActionQueue);
                     mog.ExploreDungeon(true);
                     break;
 
                 case Monster _:
-                    //Coord destination;
-                    //do
-                    //{
-                    //    var roll = entity.Dice.Roll(4, -1);
-                    //    destination = entity.Coordinate + Map.Directions[roll];
-                    //} while (!Map.WalkabilityMap[destination]);
-                    //TryEnqueueMove(entity, destination, ref entityActionQueue);
+
                     break;
             }
-
-            // dequeue all actions
-            //while (entityActionQueue.TryDequeue(out var combatAction))
-            //{
-            //    entity.TakeAction(combatAction);
-            //}
         }
 
         private void TryEnqueueMove(Entity entity, Coord nearestCoord, ref Queue<CombatAction> combatActionQueue)

@@ -214,37 +214,8 @@ namespace WoMFramework.Game.Generator.Dungeon
         {
             const int FOVRANGE = 5;
 
-            //if (isExploring)
-            //{
-            //    // exploration fov 1. part
-            //    FovMap.Calculate(coords.X, coords.Y, 4, Radius.CIRCLE);
-            //    foreach (var coord in FovMap.CurrentFOV)
-            //    {
-            //        ExplorationMap[coord.X, coord.Y] = WalkabilityMap[coord.X, coord.Y] ? 0 : -1;
-            //    }
-            //}
-
             // calculate fov
             FovMap.Calculate(coords.X, coords.Y, FOVRANGE, Radius.CIRCLE);
-
-            //if (isExploring)
-            //{
-            //    // exploration fov 2. part
-            //    foreach (var coord in FovMap.CurrentFOV)
-            //    {
-            //        if (ExplorationMap[coord.X, coord.Y] == 0)
-            //            continue;
-
-            //        if (!WalkabilityMap[coord.X, coord.Y])
-            //        {
-            //            ExplorationMap[coord.X, coord.Y] = -1;
-            //        }
-            //        else
-            //        {
-            //            ExplorationMap[coord.X, coord.Y] += 1;
-            //        }
-            //    }
-            //}
 
             if (isExploring)
             {
@@ -380,23 +351,16 @@ namespace WoMFramework.Game.Generator.Dungeon
         public double GetExplorationState()
         {
             var visited = 0;
-            //var unexplored = 0;
             for (var i = 0; i < ExplorationMap.Width; i++)
             {
                 for (var j = 0; j < ExplorationMap.Height; j++)
                 {
-                    ////if (ExplorationMap[i, j] > 0)
-                    //{
-                    //    unexplored++;
-                    //}
-                    //else if (ExplorationMap[i, j] == 0)
                     if (ExplorationMap[i, j] == 2)
                     {
                         visited++;
                     }
                 }
             }
-            //return (double) visited / (visited + unexplored);
             return (double)visited / _walkableTiles;
         }
 
