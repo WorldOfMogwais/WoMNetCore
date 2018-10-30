@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Timers;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
@@ -89,26 +92,56 @@ namespace WoMWallet.Node
             Update();
         }
 
+        private const int _parallelRestCalls = 3;
+        public async void Refresher()
+        {
+            await Task.Run(() =>
+            {
+                while (!MogwaiKeysUpdateQueue.IsEmpty)
+                {
+                    List<MogwaiKeys> mogwaiKeysList = new List<MogwaiKeys>();
+                    for (int i = 0; i < _parallelRestCalls; i++)
+                    {
+                        if (MogwaiKeysUpdateQueue.TryDequeue(out var nextMogwaiKeys))
+                        {
+                            mogwaiKeysList.Add(nextMogwaiKeys);
+                        }
+                    }
+                    // wait untill all are finished
+                    Task.WaitAll(mogwaiKeysList.Select(p => p.Update()).ToArray());
+                }
+            });
+        }
+
+        private ConcurrentQueue<MogwaiKeys> MogwaiKeysUpdateQueue = new ConcurrentQueue<MogwaiKeys>();
         private void Update(bool all = true)
         {
-            Wallet.Update();
-
-            if (all)
+            if (MogwaiKeysUpdateQueue.IsEmpty)
             {
-                Wallet.Deposit.Update();
-
-                foreach (var mogwaiKey in Wallet.MogwaiKeyDict.Values)
+                if (all)
                 {
-                    if (!mogwaiKey.IsUnwatched)
+                    // deposit address
+                    MogwaiKeysUpdateQueue.Enqueue(Wallet.Deposit);
+
+                    // add mogwaikeys
+                    foreach (var mogwaiKey in Wallet.MogwaiKeyDict.Values)
                     {
-                        mogwaiKey.Update();
+                        if (!mogwaiKey.IsUnwatched)
+                        {
+                            MogwaiKeysUpdateQueue.Enqueue(mogwaiKey);
+                        }
                     }
                 }
+                else
+                {
+                    MogwaiKeysUpdateQueue.Enqueue(CurrentMogwaiKeys); 
+                }
+
+                Refresher();
             }
-            else
-            {
-                CurrentMogwaiKeys.Update();
-            }
+
+            // update wallet
+            Wallet.Update();
         }
 
         public void Next()

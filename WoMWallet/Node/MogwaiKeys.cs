@@ -100,12 +100,12 @@ namespace WoMWallet.Node
         /// <summary>
         /// 
         /// </summary>
-        public async void Update()
+        public async Task Update()
         {
             await Task.Run(() =>
             {
                 Balance = Blockchain.Instance.GetBalance(Address);
-                if (HasMirrorAddress)
+                 if (HasMirrorAddress)
                 {
                     Shifts = Blockchain.Instance.GetShifts(MirrorAddress);
                     if (Shifts.Count > 0)
@@ -142,9 +142,10 @@ namespace WoMWallet.Node
                 {
                     MogwaiKeysState = MogwaiKeysState.None;
                 }
+
+                LastUpdated = DateTime.Now;
             });
 
-            LastUpdated = DateTime.Now;
         }
 
 

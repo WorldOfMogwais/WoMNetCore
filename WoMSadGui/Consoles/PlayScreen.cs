@@ -63,6 +63,7 @@ namespace WoMSadGui.Consoles
         private readonly ControlsConsole _command2;
 
         private MogwaiButton _btnEvolve;
+        private MogwaiButton _btnFast;
 
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
@@ -126,13 +127,13 @@ namespace WoMSadGui.Consoles
             _btnEvolve.Click += (btn, args) => { DoAction(((Button)btn).Text); };
             _command2.Add(_btnEvolve);
 
-            var btnFast = new MogwaiButton(8, 1)
+            _btnFast = new MogwaiButton(8, 1)
             {
                 Position = new Point(0, 1),
                 Text = "evol++"
             };
-            btnFast.Click += (btn, args) => { DoAction(((Button)btn).Text); };
-            _command2.Add(btnFast);
+            _btnFast.Click += (btn, args) => { DoAction(((Button)btn).Text); };
+            _command2.Add(_btnFast);
 
         }
 
@@ -151,12 +152,16 @@ namespace WoMSadGui.Consoles
                     _custom = _adventure;
                     _btnEvolve.Text = "next";
                     _btnEvolve.SetColor(Color.DarkOrange);
+                    _btnFast.Text = "fini";
+                    _btnFast.SetColor(Color.Black);
                     break;
                 case CustomWindowState.AdventureStats:
                     _adventureStats.Update();
                     _custom = _adventureStats;
                     _btnEvolve.Text = "evolve";
                     _btnEvolve.ResetColor();
+                    _btnFast.Text = "evol++";
+                    _btnFast.ResetColor();
                     break;
             }
             Children.Add(_custom);

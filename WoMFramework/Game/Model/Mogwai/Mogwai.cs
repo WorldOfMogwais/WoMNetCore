@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -30,7 +31,7 @@ namespace WoMFramework.Game.Model.Mogwai
 
         public Shift PeekNextShift => CanEvolve ? Shifts[Pointer + 1] : null;
 
-        public Dictionary<double, Shift> Shifts { get; }
+        public ConcurrentDictionary<double, Shift> Shifts { get; }
 
         public MogwaiState MogwaiState { get; set; }
 
@@ -68,7 +69,7 @@ namespace WoMFramework.Game.Model.Mogwai
         public Mogwai(string key, Dictionary<double, Shift> shifts)
         {
             Key = key;
-            Shifts = shifts;
+            Shifts = new ConcurrentDictionary<double, Shift>(shifts);
 
             _currentShift = shifts.Values.First();
 
@@ -365,7 +366,11 @@ namespace WoMFramework.Game.Model.Mogwai
             {
                 if (!Shifts.ContainsKey(shift.Key))
                 {
-                    Shifts.Add(shift.Key, shift.Value);
+                    if (!Shifts.TryAdd(shift.Key, shift.Value))
+                    {
+                        // leave loop here as we couldn't add
+                        break;
+                    }
                 }
             }
         }

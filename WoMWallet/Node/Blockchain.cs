@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -233,7 +234,8 @@ namespace WoMWallet.Node
 
             var allTxs = ListMirrorTransactions(mirroraddress);
 
-            var validTx = allTxs.Where(p => p.Confirmations > 0).OrderBy(p => p.Blocktime).ThenBy(p => p.Blockindex).ToList();
+            var validTx = allTxs.Where(p => p.Confirmations > 0).OrderBy(p => p.Blocktime).ThenBy(p => p.Blockindex)
+                .ToList();
 
             // stop if there aren't any valid transactions ...
             if (!validTx.Any())
@@ -263,28 +265,32 @@ namespace WoMWallet.Node
                         // blockhashes aren't updated need to wait ...
                         if (!_blockHashDict.ContainsKey(i))
                         {
-                            Log.Warn($"blockhashes aren't updated to the current block we got {block.Height} and our hashes are at {_blockHashDict.Keys.Max()}!");
+                            Log.Warn(
+                                $"blockhashes aren't updated to the current block we got {block.Height} and our hashes are at {_blockHashDict.Keys.Max()}!");
                             return result;
                         }
+
                         result.Add(i, new Shift(result.Count, pubMogAddressHex, i, _blockHashDict[i]));
                     }
                 }
 
                 lastBlockHeight = block.Height;
 
-                result.Add(block.Height, new Shift(result.Count, tx.Blocktime, pubMogAddressHex, block.Height, tx.Blockhash, tx.Blockindex, tx.Txid, amount, Math.Abs(tx.Fee + TxFee)));
+                result.Add(block.Height,
+                    new Shift(result.Count, tx.Blocktime, pubMogAddressHex, block.Height, tx.Blockhash, tx.Blockindex,
+                        tx.Txid, amount, Math.Abs(tx.Fee + TxFee)));
             }
 
             // add small shifts
             if (creation)
             {
-                for (var i = lastBlockHeight + 1; i < _blockHashDict.Keys.Max(); i++)
+                int max = _blockHashDict.Keys.Max();
+                for (var i = lastBlockHeight + 1; i < max; i++)
                 {
                     result.Add(i, new Shift(result.Count, pubMogAddressHex, i, _blockHashDict[i]));
                 }
             }
 
-            //result.ForEach(p => Console.WriteLine(p.ToString()));
             return result;
         }
 
