@@ -203,7 +203,7 @@ namespace WoMFramework.Game.Model.Mogwai
                 {
                     case InteractionType.Adventure:
                         // finish adventure before starting a new one ...
-                        if (Adventure == null || !Adventure.IsActive)
+                        if (Adventure == null || !Adventure.IsActive || IsAlive)
                         {
                             Adventure = AdventureGenerator.Create(_currentShift,
                                 (AdventureAction)_currentShift.Interaction);
