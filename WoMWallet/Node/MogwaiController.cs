@@ -113,6 +113,7 @@ namespace WoMWallet.Node
             });
         }
 
+        public int QueueSize => MogwaiKeysUpdateQueue.Count;
         private ConcurrentQueue<MogwaiKeys> MogwaiKeysUpdateQueue = new ConcurrentQueue<MogwaiKeys>();
         private void Update(bool all = true)
         {

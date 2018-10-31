@@ -49,12 +49,12 @@ namespace WoMFramework.Game.Generator
             mogwai.AdventureEntityId = NextId;
             Entities.Add(mogwai.AdventureEntityId, mogwai);
 
-            var rat1 = Monsters.Rat;
+            var rat1 = Monsters.Instance.ByName("Rat");
             rat1.AdventureEntityId = NextId;
             rat1.Initialize(new Dice(shift, 1));
             Entities.Add(rat1.AdventureEntityId, rat1);
 
-            var rat2 = Monsters.Rat;
+            var rat2 = Monsters.Instance.ByName("Rat");
             rat2.AdventureEntityId = NextId;
             rat2.Initialize(new Dice(shift, 2));
             Entities.Add(rat2.AdventureEntityId, rat2);

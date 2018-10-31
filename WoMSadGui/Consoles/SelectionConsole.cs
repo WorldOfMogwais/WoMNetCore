@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using SadConsole;
 using SadConsole.Surfaces;
+using WoMFramework.Game.Model;
+using WoMFramework.Game.Model.Monster;
 using WoMWallet.Node;
 using WoMWallet.Tool;
 using Console = SadConsole.Console;
@@ -22,6 +24,7 @@ namespace WoMSadGui.Consoles
         private readonly ControlsConsole _controlsConsole;
         private readonly MogwaiConsole _infoConsole;
         private readonly MogwaiConsole _logConsole;
+        private readonly Console _debugConsole;
 
         public int HeaderPosition;
         public int TrailerPosition;
@@ -47,6 +50,15 @@ namespace WoMSadGui.Consoles
 
             _infoConsole = new MogwaiConsole("Info", "", 24, 38) { Position = new Point(113, -8) };
             Children.Add(_infoConsole);
+
+            _debugConsole = new Console(24, 38) { Position = new Point(113, 22) };
+            _debugConsole.Fill(Color.Beige, Color.TransparentBlack, null);
+            _debugConsole.Print(1,1, $"Debug Console [{Coloring.Gold("     ")}]:");
+            _debugConsole.Print(1,2, $"..armors: {Armors.Instance.AllArmorBuilders().Count}");
+            _debugConsole.Print(1,3, $"..weapns: {Weapons.Instance.AllWeaponBuilder().Count}");
+            _debugConsole.Print(1,4, $"..mnstrs: {Monsters.Instance.AllMonsterBuilders().Count}");
+            Children.Add(_debugConsole);
+
 
             _logConsole = new MogwaiConsole("Log", "", 110, 3) { Position = new Point(0, 27) };
             Children.Add(_logConsole);
@@ -319,6 +331,9 @@ namespace WoMSadGui.Consoles
         {
             if (IsVisible)
             {
+                var specColor = new Color((40 * _controller.QueueSize) % 256,
+                    (255 - (_controller.QueueSize * 10)) % 256, (25 * _controller.QueueSize) % 256);
+                _debugConsole.Print(16,1, "ALPHA", specColor);
                 var deposit = _controller.GetDepositFunds();
                 var depositStr = deposit < 10000 ? deposit.ToString("###0.0000").PadLeft(9) : "TYCOON".PadRight(9);
                 var lastBlock = _controller.WalletLastBlock;
@@ -329,7 +344,7 @@ namespace WoMSadGui.Consoles
                     var localTime = DateUtil.GetBlockLocalDateTime(_controller.WalletLastBlock.Time);
                     var localtimeStr = localTime.ToString(CultureInfo.InvariantCulture);
                     var t = DateTime.Now.Subtract(localTime);
-                    var timeStr = $"[c:r f:springgreen]{string.Format("{0:hh\\:mm\\:ss}", t)}[c:u]";
+                    var timeStr = $"[c:r f:springgreen]{t:hh\\:mm\\:ss}[c:u]";
                     Print(16, 0, localtimeStr + " " + timeStr, Color.Gainsboro);
                 }
                 Print(62, 0, "+" + _transferFunds, Color.LimeGreen);

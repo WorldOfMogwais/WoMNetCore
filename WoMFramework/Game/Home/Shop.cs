@@ -37,9 +37,9 @@ namespace WoMFramework.Game.Home
             _currentShift = shift;
             _randomGenerator = new Dice(shift, 5804).GetRandomGenerator();
 
-            List<BaseItem> allItems = new List<BaseItem>();
-            allItems.AddRange(Weapons.Instance.All());
-            allItems.AddRange(Armors.Instance.All());
+            var allItems = new List<BaseItem>();
+            allItems.AddRange(Weapons.Instance.AllWeaponBuilder().Select(p => p.Build()));
+            allItems.AddRange(Armors.Instance.AllArmorBuilders().Select(p => p.Build()));
 
             var potentialShopItems = allItems.Where(p => p.Cost < (_gold / 2)).ToList();
 

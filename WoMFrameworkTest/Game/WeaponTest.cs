@@ -10,8 +10,8 @@ namespace WoMFrameworkTest.Game
         [Fact]
         public void WeaponTestSizeType()
         {
-            Assert.Equal(1, Monsters.Rat.Equipment.WeaponSlots[0].PrimaryWeapon.DamageRoll[0]);
-            Assert.Equal(3, Monsters.Rat.Equipment.WeaponSlots[0].PrimaryWeapon.DamageRoll[1]);
+            Assert.Equal(1, Monsters.Instance.ByName("Rat").Equipment.WeaponSlots[0].PrimaryWeapon.DamageRoll[0]);
+            Assert.Equal(3, Monsters.Instance.ByName("Rat").Equipment.WeaponSlots[0].PrimaryWeapon.DamageRoll[1]);
             var rapier = Weapons.Instance.ByName("Rapier");
             Assert.Equal(1, rapier.DamageRoll[0]);
             Assert.Equal(6, rapier.DamageRoll[1]);

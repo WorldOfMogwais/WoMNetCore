@@ -8,18 +8,18 @@ namespace WoMFramework.Game.Model
 {
     public class Weapons
     {
-        private const string DefaultWeaponFile = "Weapons.json";
+        private const string DefaultWeaponFile = "WeaponBuilders.json";
 
         private static Weapons _instance;
 
-        private readonly List<Weapon> _weaponsFile;
+        private readonly List<WeaponBuilder> _weaponBuilders;
 
         private Weapons(string path = DefaultWeaponFile)
         {
             // load weapons file
-            if (!Caching.TryReadFile(path, out _weaponsFile))
+            if (!Caching.TryReadFile(path, out _weaponBuilders))
             {
-                throw new Exception("couldn't find the weapons database file.");
+                throw new Exception("couldn't find the weaponbuilders database file.");
             }
         }
 
@@ -27,12 +27,17 @@ namespace WoMFramework.Game.Model
 
         public Weapon ByName(string weaponName)
         {
-            return _weaponsFile.FirstOrDefault(p => p.Name == weaponName);
+            var weaponBuilder = _weaponBuilders.FirstOrDefault(p => p.Name == weaponName);
+            if (weaponBuilder == null)
+            {
+                throw new Exception($"Unknown weapon please check database '{weaponName}'");
+            }
+            return weaponBuilder.Build();
         }
 
-        public List<Weapon> All()
+        public List<WeaponBuilder> AllWeaponBuilder()
         {
-            return _weaponsFile;
+            return _weaponBuilders;
         }
     }
 }

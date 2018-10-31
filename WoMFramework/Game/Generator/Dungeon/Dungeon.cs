@@ -101,14 +101,14 @@ namespace WoMFramework.Game.Generator.Dungeon
             mogwai.AdventureEntityId = NextId;
             Entities.Add(mogwai.AdventureEntityId, mogwai);
 
-            var boss = Monsters.Wolf;
+            var boss = Monsters.Instance.ByName("Wolf");
             boss.AdventureEntityId = NextId;
             boss.Initialize(new Dice(shift, 1));
             Entities.Add(boss.AdventureEntityId, boss);
 
             for (var i = 0; i < 6; i++)
             {
-                var mob = Monsters.DireRat;
+                var mob = Monsters.Instance.ByName("Dire Rat");
                 mob.AdventureEntityId = NextId;
                 mob.Initialize(new Dice(shift, i + 100));
                 Entities.Add(mob.AdventureEntityId, mob);

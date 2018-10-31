@@ -5,64 +5,22 @@ namespace WoMFramework.Game.Model
     public sealed class ArmorBuilder
     {
         // description
-        private int _armorCheckPenalty;
-        private double _arcaneSpellFailureChance;
-        private double _cost = 1;
-        private double _weight = 1;
-        private string _description = string.Empty;
-        private int? _speedReduction30Ft = null;
-        private int? _speedReduction20Ft = null;
+        public int ArmorCheckPenalty { get; set; }
+        public double ArcaneSpellFailureChance { get; set; }
+        public double Cost { get; set; }
+        public double Weight { get; set; }
+        public string Description = string.Empty;
+        public int? SpeedReduction30Ft = null;
+        public int? SpeedReduction20Ft = null;
 
-        public string Name;
-        public ArmorEffortType ArmorEffortType;
-        public int ArmorBonus;
-        public int? MaxDexterityBonus;
+        public string Name  { get; set; }
+        public ArmorEffortType ArmorEffortType { get; set; }
+        public int ArmorBonus { get; set; }
+        public int? MaxDexterityBonus { get; set; }
 
-        private ArmorBuilder(string name, ArmorEffortType armorEffortType, int armorBonus, int? maxDexterityBonus)
-        {
-            Name = name;
-            ArmorEffortType = armorEffortType;
-            ArmorBonus = armorBonus;
-            MaxDexterityBonus = maxDexterityBonus;
-        }
-        public static ArmorBuilder Create(string name, ArmorEffortType armorEffortType, int armorBonus, int? maxDexterityBonus)
-        {
-            return new ArmorBuilder(name, armorEffortType, armorBonus, maxDexterityBonus);
-        }
-        public ArmorBuilder SetArmorCheckPenalty(int armorCheckPenalty)
-        {
-            _armorCheckPenalty = armorCheckPenalty;
-            return this;
-        }
-        public ArmorBuilder SetArcaneSpellFailureChance(double arcaneSpellFailureChance)
-        {
-            _arcaneSpellFailureChance = arcaneSpellFailureChance;
-            return this;
-        }
-        public ArmorBuilder SetSpeedReductions(int? speedReduction30Ft, int? speedReduction20Ft)
-        {
-            _speedReduction30Ft = speedReduction30Ft;
-            _speedReduction30Ft = speedReduction20Ft;
-            return this;
-        }
-        public ArmorBuilder SetCost(double cost)
-        {
-            _cost = cost;
-            return this;
-        }
-        public ArmorBuilder SetWeight(double weight)
-        {
-            _weight = weight;
-            return this;
-        }
-        public ArmorBuilder SetDescription(string description)
-        {
-            _description = description;
-            return this;
-        }
         public Armor Build()
         {
-            return new Armor(Name, ArmorEffortType, ArmorBonus, MaxDexterityBonus, _armorCheckPenalty, _arcaneSpellFailureChance, _speedReduction30Ft, _speedReduction20Ft, _cost, _weight, _description);
+            return new Armor(Name, ArmorEffortType, ArmorBonus, MaxDexterityBonus, ArmorCheckPenalty, ArcaneSpellFailureChance, SpeedReduction30Ft, SpeedReduction20Ft, Cost, Weight, Description);
         }
     }
 

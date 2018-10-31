@@ -6,207 +6,206 @@ namespace WoMFramework.Game.Model
 {
     public sealed class WeaponBuilder
     {
-        // description
-        private WeaponSubType _weaponSubType = WeaponSubType.None;
-        private WeaponAttackType _weaponAttackType = WeaponAttackType.Primary;
-        private int _criticalMinRoll = 20;
-        private int _criticalMultiplier = 2;
-        private WeaponDamageType[] _weaponDamageTypes = { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing };
-        private int _range = 1;
-        private SizeType _sizeType = SizeType.Medium;
-        private double _cost = 1;
-        private double _weight = 1;
-        private string _description = string.Empty;
+        public string Name{ get; set; }
+        public WeaponBaseType WeaponBaseType{ get; set; }
+        public WeaponProficiencyType WeaponProficiencyType{ get; set; }
+        public WeaponEffortType WeaponEffortType{ get; set; }
+        public int[] DamageMediumRollEvent{ get; set; }
 
-        public string Name;
-        public WeaponBaseType WeaponBaseType;
-        public WeaponProficiencyType WeaponProficiencyType;
-        public WeaponEffortType WeaponEffortType;
-        public int[] DamageMediumRollEvent;
+        public WeaponSubType WeaponSubType { get; set; }
+        public WeaponAttackType WeaponAttackType { get; set; }
+        public int CriticalMinRoll { get; set; }
+        public int CriticalMultiplier{ get; set; }
+        public WeaponDamageType[] WeaponDamageTypes { get; set; }
+        public int Range { get; set; }
+        public SizeType SizeType { get; set; }
+        public double Cost { get; set; }
+        public double Weight { get; set; }
+        public string Description { get; set; }
 
-        private WeaponBuilder(string name, WeaponBaseType weaponBaseType,WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] damageMediumRollEvent)
-        {
-            Name = name;
-            WeaponBaseType = weaponBaseType;
-            WeaponProficiencyType = weaponProficiencyType;
-            WeaponEffortType = weaponEffortType;
-            DamageMediumRollEvent = damageMediumRollEvent;
-        }
-        public static WeaponBuilder Create(string name, WeaponBaseType weaponBaseType, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] damageMediumRollEvent)
-        {
-            return new WeaponBuilder(name, weaponBaseType, weaponProficiencyType, weaponEffortType, damageMediumRollEvent);
-        }
-        public WeaponBuilder SetWeaponSubType(WeaponSubType weaponSubType)
-        {
-            _weaponSubType = weaponSubType;
-            return this;
-        }
-        public WeaponBuilder SetWeaponAttackType(WeaponAttackType weaponAttackType)
-        {
-            _weaponAttackType = weaponAttackType;
-            return this;
-        }
-        public WeaponBuilder SetCriticalMinRoll(int criticalMinRoll)
-        {
-            _criticalMinRoll = criticalMinRoll;
-            return this;
-        }
-        public WeaponBuilder SetCriticalMultiplier(int criticalMultiplier)
-        {
-            _criticalMultiplier = criticalMultiplier;
-            return this;
-        }
-        public WeaponBuilder SetDamageType(WeaponDamageType weaponDamageType)
-        {
-            _weaponDamageTypes = new[] { weaponDamageType };
-            return this;
-        }
-        public WeaponBuilder SetDamageTypes(WeaponDamageType[] weaponDamageTypes)
-        {
-            _weaponDamageTypes = weaponDamageTypes;
-            return this;
-        }
-        public WeaponBuilder SetRange(int range)
-        {
-            _range = range;
-            return this;
-        }
-        public WeaponBuilder SetSizeType(SizeType sizeType)
-        {
-            _sizeType = sizeType;
-            return this;
-        }
-        public WeaponBuilder SetCost(double cost)
-        {
-            _cost = cost;
-            return this;
-        }
-        public WeaponBuilder SetWeight(double weight)
-        {
-            _weight = weight;
-            return this;
-        }
-        public WeaponBuilder SetDescription(string description)
-        {
-            _description = description;
-            return this;
-        }
         public Weapon Build()
         {
-            return new Weapon(Name, WeaponBaseType, _weaponSubType, WeaponProficiencyType, WeaponEffortType, DamageMediumRollEvent,  _weaponAttackType, _criticalMinRoll, _criticalMultiplier, _weaponDamageTypes, _range, _sizeType, _cost, _weight, _description);
+            return new Weapon(Name, WeaponBaseType, WeaponSubType, WeaponProficiencyType, WeaponEffortType, DamageMediumRollEvent,  WeaponAttackType, CriticalMinRoll, CriticalMultiplier, WeaponDamageTypes, Range, SizeType, Cost, Weight, Description);
         }
     }
     public class NaturalWeapon
     {
         public static Weapon Bite(SizeType sizeType) => 
-            WeaponBuilder.Create("Bite", WeaponBaseType.Bite, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 6 })
-                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing })
-                .SetWeaponAttackType(WeaponAttackType.Primary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Bite",
+                WeaponBaseType = WeaponBaseType.Bite,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Primary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 6 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
 
         public static Weapon Claw(SizeType sizeType) => 
-            WeaponBuilder.Create("Claw", WeaponBaseType.Claw, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 4 })
-                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Slashing })
-                .SetWeaponAttackType(WeaponAttackType.Primary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Claw",
+                WeaponBaseType = WeaponBaseType.Claw,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Primary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 4 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Slashing },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
 
         public static Weapon Gore(SizeType sizeType) => 
-            WeaponBuilder.Create("Gore", WeaponBaseType.Gore, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 6 })
-                .SetDamageTypes(new[] { WeaponDamageType.Piercing })
-                .SetWeaponAttackType(WeaponAttackType.Primary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Gore",
+                WeaponBaseType = WeaponBaseType.Gore,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Primary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 6 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Piercing },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
 
         public static Weapon Hoof(SizeType sizeType) => 
-            WeaponBuilder.Create("Hoof", WeaponBaseType.Hoof, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 4 })
-                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
-                .SetWeaponAttackType(WeaponAttackType.Secondary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
-
+            new WeaponBuilder { 
+                Name = "Hoof",
+                WeaponBaseType = WeaponBaseType.Hoof,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Secondary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 4 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
+        
         public static Weapon Tentacle(SizeType sizeType) => 
-            WeaponBuilder.Create("Tentacle", WeaponBaseType.Tentacle, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 4 })
-                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
-                .SetWeaponAttackType(WeaponAttackType.Secondary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Tentacle",
+                WeaponBaseType = WeaponBaseType.Tentacle,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Secondary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 4 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
 
         public static Weapon Wing(SizeType sizeType) => 
-            WeaponBuilder.Create("Wing", WeaponBaseType.Wing, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 4 })
-                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
-                .SetWeaponAttackType(WeaponAttackType.Secondary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Wing",
+                WeaponBaseType = WeaponBaseType.Wing,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Secondary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 4 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
 
         public static Weapon Pincer(SizeType sizeType) => 
-            WeaponBuilder.Create("Pincer", WeaponBaseType.Pincer, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 6 })
-                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
-                .SetWeaponAttackType(WeaponAttackType.Secondary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Pincer",
+                WeaponBaseType = WeaponBaseType.Pincer,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Secondary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 6 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
 
         public static Weapon TailSlap(SizeType sizeType) => 
-            WeaponBuilder.Create("Tail Slap", WeaponBaseType.TailSlap, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 6 })
-                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
-                .SetWeaponAttackType(WeaponAttackType.Secondary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Tail Slap",
+                WeaponBaseType = WeaponBaseType.TailSlap,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Secondary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 6 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
 
         public static Weapon Slam(SizeType sizeType) => 
-            WeaponBuilder.Create("Slam", WeaponBaseType.Slam, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 4 })
-                .SetDamageTypes(new[] { WeaponDamageType.Bludgeoning })
-                .SetWeaponAttackType(WeaponAttackType.Primary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Slam",
+                WeaponBaseType = WeaponBaseType.Slam,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Primary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 4 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
 
         public static Weapon Sting(SizeType sizeType) => 
-            WeaponBuilder.Create("Sting",  WeaponBaseType.Sting, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 4 })
-                .SetDamageTypes(new[] { WeaponDamageType.Piercing })
-                .SetWeaponAttackType(WeaponAttackType.Primary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Sting",
+                WeaponBaseType = WeaponBaseType.Sting,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Primary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 4 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Piercing },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
 
         public static Weapon Talons(SizeType sizeType) => 
-            WeaponBuilder.Create("Talons",  WeaponBaseType.Talons, WeaponProficiencyType.Simple, WeaponEffortType.Unarmed, new[] { 1, 4 })
-                .SetDamageTypes(new[] { WeaponDamageType.Slashing })
-                .SetWeaponAttackType(WeaponAttackType.Primary)
-                .SetSizeType(sizeType)
-                .SetCost(0)
-                .SetWeight(0)
-                .SetDescription("")
-                .Build();
+            new WeaponBuilder { 
+                Name = "Talons",
+                WeaponBaseType = WeaponBaseType.Talons,
+                WeaponSubType =  WeaponSubType.None,
+                WeaponAttackType = WeaponAttackType.Primary,
+                WeaponProficiencyType = WeaponProficiencyType.Simple,
+                WeaponEffortType = WeaponEffortType.Unarmed,
+                DamageMediumRollEvent = new[] { 1, 4 },
+                WeaponDamageTypes = new[] { WeaponDamageType.Slashing },
+                SizeType = sizeType,
+                Cost = 0,
+                Weight = 0,
+                Description = string.Empty
+            }.Build();
+
     }
 
     public class Weapon : BaseItem
@@ -256,17 +255,17 @@ namespace WoMFramework.Game.Model
 
         public static Dictionary<string, List<int[]>> MediumDamageSizeConversionDict = new Dictionary<string, List<int[]>>
         {
-            {"1d2",  new List<int[]> {new[] {0, 0},new[] {1, 1},new[] {1, 2},new[] {1, 3},new[] {1, 4}}},
-            {"1d3",  new List<int[]> {new[] {1, 1},new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6}}},
-            {"1d4",  new List<int[]> {new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {2, 8}}},
-            {"1d6",  new List<int[]> {new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {2, 8},new[] {4, 6}}},
-            {"1d8",  new List<int[]> {new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {3, 6}}},
-            {"1d10", new List<int[]> {new[] {1, 6},new[] {1, 8},new[] {1,10},new[] {2, 8},new[] {3, 8}}},
-            {"1d12", new List<int[]> {new[] {1, 8},new[] {1,10},new[] {1,12},new[] {3, 6},new[] {4, 6}}},
-            {"2d4",  new List<int[]> {new[] {1, 4},new[] {1, 6},new[] {2, 4},new[] {2, 6},new[] {3, 6}}},
-            {"2d6",  new List<int[]> {new[] {1, 8},new[] {1,10},new[] {2, 6},new[] {3, 6},new[] {4, 6}}},
-            {"2d8",  new List<int[]> {new[] {1,10},new[] {2, 6},new[] {2, 8},new[] {3, 8},new[] {4, 8}}},
-            {"2d10", new List<int[]> {new[] {2, 6},new[] {2, 8},new[] {2,10},new[] {4, 8},new[] {6, 8}}},
+            {"1d2",  new List<int[]> {new[] {0, 0},new[] {0, 0},new[] {1, 1},new[] {1, 2},new[] {1, 3},new[] {1, 4}}},
+            {"1d3",  new List<int[]> {new[] {0, 0},new[] {1, 1},new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6}}},
+            {"1d4",  new List<int[]> {new[] {1, 1},new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {2, 8}}},
+            {"1d6",  new List<int[]> {new[] {1, 2},new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {2, 8},new[] {4, 6}}},
+            {"1d8",  new List<int[]> {new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {2, 6},new[] {3, 6}}},
+            {"1d10", new List<int[]> {new[] {1, 4},new[] {1, 6},new[] {1, 8},new[] {1,10},new[] {2, 8},new[] {3, 8}}},
+            {"1d12", new List<int[]> {new[] {1, 6},new[] {1, 8},new[] {1,10},new[] {1,12},new[] {3, 6},new[] {4, 6}}},
+            {"2d4",  new List<int[]> {new[] {1, 3},new[] {1, 4},new[] {1, 6},new[] {2, 4},new[] {2, 6},new[] {3, 6}}},
+            {"2d6",  new List<int[]> {new[] {1, 6},new[] {1, 8},new[] {1,10},new[] {2, 6},new[] {3, 6},new[] {4, 6}}},
+            {"2d8",  new List<int[]> {new[] {1, 8},new[] {1,10},new[] {2, 6},new[] {2, 8},new[] {3, 8},new[] {4, 8}}},
+            {"2d10", new List<int[]> {new[] {1,10},new[] {2, 6},new[] {2, 8},new[] {2,10},new[] {4, 8},new[] {6, 8}}},
         };
 
         public static int[] WeaponDamageSizeConversion(SizeType sizeType, int[] currentDamage)
@@ -277,12 +276,13 @@ namespace WoMFramework.Game.Model
                 throw new Exception($"Unknown key '{key}', for MediumDamageSizeConversionDict!");
             }
 
-            if (sizeType == SizeType.Diminutive || sizeType == SizeType.Fine || (sizeType == SizeType.Colossal ||
-                sizeType == SizeType.Gargantuan) && list.Count < 7)
+            if (sizeType == SizeType.Fine || (sizeType == SizeType.Colossal ||
+                sizeType == SizeType.Gargantuan) && list.Count < 8)
             {
                 throw new Exception($"Not supported sizetype for weapon damage conversion '{sizeType}'.");
             }
-            return list[(int)sizeType - 2];
+
+            return list[(int)sizeType - 1];
         }
 
     }

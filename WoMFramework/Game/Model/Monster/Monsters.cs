@@ -1,19 +1,45 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using WoMFramework.Tool;
 
 namespace WoMFramework.Game.Model.Monster
 {
-    public partial class Monsters
+    public class Monsters
     {
+        private const string DefaultMonsterFile = "MonsterBuilders.json";
 
-        public static List<Monster> Animals { get; set; }
+        private static Monsters _instance;
 
-        public Monsters()
+        private readonly List<MonsterBuilder> _monsterBuilders;
+
+        private Monsters(string path = DefaultMonsterFile)
         {
-            Animals = new List<Monster>
+            // load monsters file
+            if (!Caching.TryReadFile(path, out _monsterBuilders))
             {
-                Rat,
-                Wolf
-            };
+                throw new Exception("couldn't find the monsterbuilders database file.");
+            }
+
+            // only  for testing purpose
+            //var _monstersFile = monsterBuilders.Select(p => p.Build()).ToList();
+        }
+
+        public static Monsters Instance => _instance ?? (_instance = new Monsters());
+
+        public Monster ByName(string monsterName)
+        {
+            var monsterBuilder = _monsterBuilders.FirstOrDefault(p => p.Name == monsterName);
+            if (monsterBuilder == null)
+            {
+                throw new Exception($"Unknown monster please check database '{monsterName}'");
+            }
+            return monsterBuilder.Build();
+        }
+
+        public List<MonsterBuilder> AllMonsterBuilders()
+        {
+            return _monsterBuilders;
         }
     }
 }
