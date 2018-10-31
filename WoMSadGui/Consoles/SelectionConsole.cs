@@ -89,7 +89,7 @@ namespace WoMSadGui.Consoles
             _infoConsole.Cursor.NewLine();
             _infoConsole.Cursor.NewLine();
             InfoPrint(".C.", "create mogwai key");
-            InfoPrint(".S.", "send 5 mog to addr");
+            InfoPrint(".S.", "send x mog to addr");
             InfoPrint(".B.", "bind mogwai 1 mog");
             InfoPrint(".W.", "(un)watch toggle");
             InfoPrint(".P.", "play mogwai");
