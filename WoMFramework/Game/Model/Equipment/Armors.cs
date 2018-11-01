@@ -38,7 +38,7 @@ namespace WoMFramework.Game.Model
             return armorBuilder.Build();
         }
 
-        public List<ArmorBuilder> AllArmorBuilders()
+        public List<ArmorBuilder> AllBuilders()
         {
             return _armorBuilders;
         }

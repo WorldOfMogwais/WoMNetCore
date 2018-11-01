@@ -38,8 +38,8 @@ namespace WoMFramework.Game.Home
             _randomGenerator = new Dice(shift, 5804).GetRandomGenerator();
 
             var allItems = new List<BaseItem>();
-            allItems.AddRange(Weapons.Instance.AllWeaponBuilder().Select(p => p.Build()));
-            allItems.AddRange(Armors.Instance.AllArmorBuilders().Select(p => p.Build()));
+            allItems.AddRange(Weapons.Instance.AllBuilders().Select(p => p.Build()));
+            allItems.AddRange(Armors.Instance.AllBuilders().Select(p => p.Build()));
 
             var potentialShopItems = allItems.Where(p => p.Cost < (_gold / 2)).ToList();
 

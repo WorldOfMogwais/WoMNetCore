@@ -35,7 +35,7 @@ namespace WoMFramework.Game.Model
             return weaponBuilder.Build();
         }
 
-        public List<WeaponBuilder> AllWeaponBuilder()
+        public List<WeaponBuilder> AllBuilders()
         {
             return _weaponBuilders;
         }

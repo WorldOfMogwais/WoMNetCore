@@ -37,7 +37,7 @@ namespace WoMFramework.Game.Model.Monster
             return monsterBuilder.Build();
         }
 
-        public List<MonsterBuilder> AllMonsterBuilders()
+        public List<MonsterBuilder> AllBuilders()
         {
             return _monsterBuilders;
         }
