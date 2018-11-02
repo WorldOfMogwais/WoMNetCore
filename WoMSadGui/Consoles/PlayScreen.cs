@@ -33,7 +33,8 @@ namespace WoMSadGui.Consoles
     {
         enum CustomWindowState
         {
-            Welcome, Shop, Adventure, AdventureStats
+            Welcome, Shop, Adventure, AdventureStats,
+            AdventureChoose
         }
 
         private readonly MogwaiController _controller;
@@ -50,10 +51,10 @@ namespace WoMSadGui.Consoles
         private Console _custom;
 
         private readonly MogwaiConsole _welcome;
-        private readonly AdventureStatsConsole _adventureStats;
+        private readonly CustomAdventureStats _adventureStats;
         private readonly MogwaiConsole _shop;
-        private readonly AdventureConsole _adventure;
-
+        private readonly CustomAdventure _adventure;
+        private readonly CustomAdventureChoose _adventureChoose;
 
         private readonly ScrollingConsole _log;
 
@@ -76,9 +77,12 @@ namespace WoMSadGui.Consoles
 
             _welcome = new MogwaiConsole("Welcome", "to the World of Mogwais", 91, 22) { Position = new Point(46, 0) };
 
-            _shop = new ShopConsole(_mogwai, 91, 22) { Position = new Point(46, 0) };
-            _adventure = new AdventureConsole(mogwaiController, mogwaiKeys, 91, 22) { Position = new Point(46, 0) };
-            _adventureStats = new AdventureStatsConsole(_mogwai, 91, 22) { Position = new Point(46, 0) };
+            _adventureChoose = new CustomAdventureChoose(91, 22) { Position = new Point(46, 0) };
+
+
+            _shop = new CustomShop(_mogwai, 91, 22) { Position = new Point(46, 0) };
+            _adventure = new CustomAdventure(mogwaiController, mogwaiKeys, 91, 22) { Position = new Point(46, 0) };
+            _adventureStats = new CustomAdventureStats(_mogwai, 91, 22) { Position = new Point(46, 0) };
 
             _log = new ScrollingConsole(85, 13, 100) { Position = new Point(0, 25) };
             Children.Add(_log);
@@ -148,6 +152,9 @@ namespace WoMSadGui.Consoles
                 case CustomWindowState.Shop:
                     _custom = _shop;
                     break;
+                case CustomWindowState.AdventureChoose:
+                    _custom = _adventureChoose;
+                    break;
                 case CustomWindowState.Adventure:
                     _custom = _adventure;
                     _btnEvolve.Text = "next";
@@ -207,15 +214,16 @@ namespace WoMSadGui.Consoles
                     SetCustomWindowState(CustomWindowState.Shop);
                     break;
                 case "adven":
-                    dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", DoInteraction, 40, 12);
-                    dialog.AddRadioButtons("adventureAction", new List<string[]> {
-                            new[] {"testroom", "Test Room"},
-                            new[] {"chamber", "Chamber"},
-                            new[] {"dungeon", "Dungeon"},
-                            new[] {"battle", "Battle"},
-                            new[] {"quest", "Quest"}
-                        });
-                    dialog.Show(true);
+                    //dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", DoInteraction, 40, 12);
+                    //dialog.AddRadioButtons("adventureAction", new List<string[]> {
+                    //        new[] {"testroom", "Test Room"},
+                    //        new[] {"chamber", "Chamber"},
+                    //        new[] {"dungeon", "Dungeon"},
+                    //        new[] {"battle", "Battle"},
+                    //        new[] {"quest", "Quest"}
+                    //    });
+                    //dialog.Show(true);
+                    SetCustomWindowState(CustomWindowState.AdventureChoose);
                     break;
                 case "level":
                     dialog = new MogwaiOptionDialog("Leveling", "Currently up for leveling?", DoInteraction, 40, 12);
@@ -351,7 +359,7 @@ namespace WoMSadGui.Consoles
                 {
                     if (_mogwai.Adventure != null)
                     {
-                        if (!(_custom is AdventureConsole))
+                        if (!(_custom is CustomAdventure))
                         {
                             SetCustomWindowState(CustomWindowState.Adventure);
                         }
@@ -464,7 +472,7 @@ namespace WoMSadGui.Consoles
             {
                 switch (_custom)
                 {
-                    case AdventureConsole _:
+                    case CustomAdventure _:
                         if (_adventure.Adventure != null)
                         {
                             _adventure.UpdateGame();

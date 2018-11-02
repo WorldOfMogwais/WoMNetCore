@@ -8,18 +8,16 @@ using Console = SadConsole.Console;
 
 namespace WoMSadGui.Consoles
 {
-    internal class AdventureStatsConsole : MogwaiConsole
+    internal class CustomAdventureStats : MogwaiConsole
     {
         private readonly Mogwai _mogwai;
         private Console _statsConsole;
 
-        public AdventureStatsConsole(Mogwai mogwai, int width, int height) : base("Adventure Extension", "This is a temp. summary expect more here", width, height)
+        public CustomAdventureStats(Mogwai mogwai, int width, int height) : base("Adventure Extension", "This is a temp. summary expect more here", width, height)
         {
             _statsConsole = new Console(width, height)  {Position = new Point(0, 0)};
             Children.Add(_statsConsole);
             _mogwai = mogwai;
-
-
         }
 
         public void Update()

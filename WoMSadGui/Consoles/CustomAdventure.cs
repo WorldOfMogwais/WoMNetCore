@@ -16,7 +16,7 @@ using ConsoleEntity = SadConsole.Entities.Entity;
 
 namespace WoMSadGui.Consoles
 {
-    public class AdventureConsole : MogwaiConsole
+    public class CustomAdventure : MogwaiConsole
     {
         private static readonly Cell UnknownAppearance = new Cell(new Color(25,25,25), Color.Black, 219);
         private static readonly Cell UnclearAppearance = new Cell(new Color(50,205,50), new Color(50,205,50,150), 219);
@@ -47,7 +47,7 @@ namespace WoMSadGui.Consoles
 
         public Adventure Adventure { get; private set; }
 
-        public AdventureConsole(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base("Custom", "", width, height)
+        public CustomAdventure(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base("Custom", "", width, height)
         {
             _controller = mogwaiController;
             _mogwaiKeys = mogwaiKeys;

@@ -243,7 +243,7 @@ namespace WoMSadGui
 
         private static void Init()
         {
-            bool debug = false;
+            bool debug = true;
 
             _controller = new MogwaiController();
             if (!debug)

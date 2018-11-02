@@ -11,7 +11,7 @@ using Console = SadConsole.Console;
 
 namespace WoMSadGui.Consoles
 {
-    internal class ShopConsole : MogwaiConsole
+    internal class CustomShop : MogwaiConsole
     {
         private readonly Mogwai _mogwai;
 
@@ -21,7 +21,7 @@ namespace WoMSadGui.Consoles
 
         private MogwaiListBox _listBox;
 
-        public ShopConsole(Mogwai mogwai, int width, int height) : base("Home Town Shop", "", width, height)
+        public CustomShop(Mogwai mogwai, int width, int height) : base("Home Town Shop", "", width, height)
         {
             _mogwai = mogwai;
             Fill(DefaultForeground, new Color(100,0,200,150), null);

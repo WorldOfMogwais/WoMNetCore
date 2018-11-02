@@ -11,12 +11,12 @@ using Console = SadConsole.Console;
 
 namespace WoMSadGui.Consoles
 {
-    internal class WelcomeConsole : MogwaiConsole
+    internal class CustomWelcome : MogwaiConsole
     {
         private readonly Basic _consoleImage;
         private readonly Point _consoleImagePosition;
 
-        public WelcomeConsole(int width, int height) : base("Welcome", "to the World of Mogwais", width, height)
+        public CustomWelcome(int width, int height) : base("Welcome", "to the World of Mogwais", width, height)
         {
 
             Init();

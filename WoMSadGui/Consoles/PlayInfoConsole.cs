@@ -18,7 +18,6 @@ namespace WoMSadGui.Consoles
         private readonly MogwaiKeys _mogwaiKeys;
         private readonly Mogwai _mogwai;
 
-
         public PlayInfoConsole(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base(width, height)
         {
             _controller = mogwaiController;
