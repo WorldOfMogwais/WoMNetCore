@@ -25,9 +25,12 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public IGenerator DungeonRandom { get; }
 
-        protected Dungeon(Shift shift)
+        public int ChallengeRating { get; }
+
+        protected Dungeon(Shift shift, int challengeRating)
         {
             Shift = shift;
+            ChallengeRating = challengeRating;
             DungeonRandom = new Dice(shift).GetRandomGenerator();
         }
 
@@ -84,7 +87,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public override int GetRound => _currentRound;
 
-        public SimpleDungeon(Shift shift) : base(shift)
+        public SimpleDungeon(Shift shift, int challengeRating) : base(shift, challengeRating)
         {
             CurrentBlockRound = 0;
             _currentRound = 0;
@@ -101,16 +104,48 @@ namespace WoMFramework.Game.Generator.Dungeon
             mogwai.AdventureEntityId = NextId;
             Entities.Add(mogwai.AdventureEntityId, mogwai);
 
-            var boss = Monsters.Instance.ByName("Wolf");
+            var adjCr = ChallengeRating == 0 ? 0.5: ChallengeRating;
+
+            var monsterSet = Monsters.Instance.AllBuilders()
+                .Where(p => (p.EnvironmentTypes.Contains(EnvironmentType.Any)
+                          || p.EnvironmentTypes.Contains(EnvironmentType.Undergrounds))
+                            && p.ChallengeRating <= adjCr).ToList();
+            var totXpAmount = 500 * Math.Pow(adjCr, 2);
+
+            var allMonsters = new List<MonsterBuilder>();
+
+            for (int i = 0; i < 100 && totXpAmount > 0; i++)
+            {
+                var mob = monsterSet[DungeonRandom.Next(monsterSet.Count)];
+                allMonsters.Add(mob);
+                totXpAmount -= mob.Experience;
+            }
+
+            // make sure there are at least 7 mobs in the dungeon
+            if (Entities.Count < 7)
+            {
+                var subMonsterSet = monsterSet.Where(p => p.ChallengeRating <= 0.5).ToList();
+                for (var i = 0; i < 10; i++)
+                {
+                    var mob = monsterSet[DungeonRandom.Next(monsterSet.Count)];
+                    allMonsters.Add(mob);
+                }
+            }
+
+            var maxCr = allMonsters.Max(p => p.ChallengeRating);
+            var potentialBosses = allMonsters.Where(p => p.ChallengeRating == maxCr).ToList();
+
+            var boss = potentialBosses[DungeonRandom.Next(potentialBosses.Count)].Build();
             boss.AdventureEntityId = NextId;
             boss.Initialize(new Dice(shift, 1));
             Entities.Add(boss.AdventureEntityId, boss);
 
-            for (var i = 0; i < 6; i++)
+            int monsterMod = 100;
+            foreach(var monsterBuilder in allMonsters)
             {
-                var mob = Monsters.Instance.ByName("Dire Rat");
+                var mob = monsterBuilder.Build();
                 mob.AdventureEntityId = NextId;
-                mob.Initialize(new Dice(shift, i + 100));
+                mob.Initialize(new Dice(shift, monsterMod++));
                 Entities.Add(mob.AdventureEntityId, mob);
             }
         }

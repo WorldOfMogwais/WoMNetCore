@@ -54,9 +54,9 @@ namespace WoMSadGui.Consoles
             _debugConsole = new Console(24, 38) { Position = new Point(113, 22) };
             _debugConsole.Fill(Color.Beige, Color.TransparentBlack, null);
             _debugConsole.Print(1,1, $"Debug Console [{Coloring.Gold("     ")}]:");
-            _debugConsole.Print(1,2, $"..armors: {Armors.Instance.AllArmorBuilders().Count}");
-            _debugConsole.Print(1,3, $"..weapns: {Weapons.Instance.AllWeaponBuilder().Count}");
-            _debugConsole.Print(1,4, $"..mnstrs: {Monsters.Instance.AllMonsterBuilders().Count}");
+            _debugConsole.Print(1,2, $"..armors: {Armors.Instance.AllBuilders().Count}");
+            _debugConsole.Print(1,3, $"..weapns: {Weapons.Instance.AllBuilders().Count}");
+            _debugConsole.Print(1,4, $"..mnstrs: {Monsters.Instance.AllBuilders().Count}");
             Children.Add(_debugConsole);
 
 

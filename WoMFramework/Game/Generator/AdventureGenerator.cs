@@ -20,12 +20,12 @@ namespace WoMFramework.Game.Generator
             }
         }
 
-        private static SimpleDungeon CreateDungeon(Shift generatorShift, int adventureActionChallengeRating)
+        private static SimpleDungeon CreateDungeon(Shift generatorShift, int challengeRating)
         {
-            return new SimpleDungeon(generatorShift);
+            return new SimpleDungeon(generatorShift, challengeRating);
         }
 
-        private static TestRoom CreateTestRoom(int challengeRatingt)
+        private static TestRoom CreateTestRoom(int challengeRating)
         {
             var testRoom = new TestRoom();
             return testRoom;
