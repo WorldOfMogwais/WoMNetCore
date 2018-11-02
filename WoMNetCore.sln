@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2047
@@ -12,8 +12,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WoMWalletTest", "WoMWalletTest\WoMWalletTest.csproj", "{DFDDD284-FAF1-4B2D-8C66-5B8FFC171CBC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WoMSadGui", "WoMSadGui\WoMSadGui.csproj", "{8DDA2A27-FF79-4FDB-8BAA-403FED0B8E0C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WoMDatabase", "WoMDatabase\WoMDatabase.csproj", "{DE94F83E-E534-48A5-8ED4-671AC3143ED7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{8DDA2A27-FF79-4FDB-8BAA-403FED0B8E0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DDA2A27-FF79-4FDB-8BAA-403FED0B8E0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DDA2A27-FF79-4FDB-8BAA-403FED0B8E0C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE94F83E-E534-48A5-8ED4-671AC3143ED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE94F83E-E534-48A5-8ED4-671AC3143ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE94F83E-E534-48A5-8ED4-671AC3143ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE94F83E-E534-48A5-8ED4-671AC3143ED7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
