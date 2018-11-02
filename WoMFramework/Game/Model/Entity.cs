@@ -689,7 +689,7 @@ namespace WoMFramework.Game.Model
                 // check if already have a path
                 if (_pathIndex > 0 && _pathIndex != _lastPath.Length)
                 {
-                    if (Coordinate != _lastPath[_pathIndex - 1])
+                    if (Coordinate == _lastPath[_pathIndex - 1])
                     {
                         if (!MoveAtomic(_lastPath[_pathIndex++], ref moveRange, ref diagonalCount))
                             return;
