@@ -168,8 +168,11 @@ namespace WoMSadGui.Consoles
                     _custom = _adventureStats;
                     _btnEvolve.Text = "evolve";
                     _btnEvolve.ResetColor();
-                    _btnFast.Text = "evol++";
-                    _btnFast.ResetColor();
+                    if (_mogwai.Adventure == null || !_mogwai.Adventure.IsActive)
+                    {
+                        _btnFast.Text = "evol++";
+                        _btnFast.ResetColor();
+                    }
                     break;
             }
             Children.Add(_custom);
@@ -376,6 +379,8 @@ namespace WoMSadGui.Consoles
             }
             else if (_mogwai.PeekNextShift != null)
             {
+                SetCustomWindowState(CustomWindowState.Welcome);
+
                 _log.Reset();
                 while (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve(out _))
                 {

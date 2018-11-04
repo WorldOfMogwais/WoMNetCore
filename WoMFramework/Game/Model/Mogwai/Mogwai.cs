@@ -230,24 +230,12 @@ namespace WoMFramework.Game.Model.Mogwai
 
                     case InteractionType.Special:
                         var specialAction = (SpecialAction)_currentShift.Interaction;
-                        switch (specialAction.SpecialType)
+
+                        if (SpecialAction(specialAction.SpecialType))
                         {
-                            case SpecialType.Heal:
-                                if (IsInjured || IsDisabled)
-                                {
-                                    Heal(int.MaxValue, HealType.DivineHeal);
-                                }
-                                return true;
-                            case SpecialType.Reviving:
-                                // TODO check if costtype is correct otherwise prune action
-                                if (IsDying || IsDead)
-                                {
-                                    Heal(CurrentHitPoints > 0 ? 0 : Math.Abs(CurrentHitPoints), HealType.DivineRevive);
-                                }
-                                return true;
-                            default:
-                                throw new ArgumentOutOfRangeException();
+                            return true;
                         }
+                        break;
                 }
             }
 
@@ -263,6 +251,39 @@ namespace WoMFramework.Game.Model.Mogwai
             _currentShift = null;
 
             return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="specialType"></param>
+        /// <returns></returns>
+        private bool SpecialAction(SpecialType specialType)
+        {
+            switch (specialType)
+            {
+                case SpecialType.Heal:
+                    if (IsInjured || IsDisabled)
+                    {
+                        Heal(int.MaxValue, HealType.DivineHeal);
+                        return true;
+                    }
+                    break;
+
+                case SpecialType.Reviving:
+                    // TODO check if costtype is correct otherwise prune action
+                    if (IsDying || IsDead)
+                    {
+                        Heal(CurrentHitPoints > 0 ? 0 : Math.Abs(CurrentHitPoints), HealType.DivineRevive);
+                        return true;
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -352,8 +373,11 @@ namespace WoMFramework.Game.Model.Mogwai
             History.Add(LogType.Info, Coloring.LevelUp("You're mogwai suddenly feels an ancient power around him."));
             History.Add(LogType.Info, $"{Coloring.LevelUp("Congratulations he just made the")} {Coloring.Green(CurrentLevel.ToString())} {Coloring.LevelUp("th level!")}");
 
-            // leveling up will heal you to max hitpoints
-            CurrentHitPoints = MaxHitPoints;
+            // level up garant free revive
+            SpecialAction(SpecialType.Reviving);
+
+            // level up garant free heal
+            SpecialAction(SpecialType.Heal);
         }
 
         /// <summary>

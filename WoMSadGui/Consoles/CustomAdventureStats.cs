@@ -31,7 +31,7 @@ namespace WoMSadGui.Consoles
                     _statsConsole.Print(15, 2, $"Be prepared {Coloring.Name(_mogwai.Name)} for the stage,");
                     _statsConsole.Print(15, 3, $"you killed {Coloring.DoDmg(_mogwai.Adventure.MonstersList.Count(p => p.IsDead))} monsters so far,");
                     _statsConsole.Print(15, 4, $"but {Coloring.DoDmg(_mogwai.Adventure.MonstersList.Count(p => p.IsAlive))} monsters still waiting for you.");
-                    _statsConsole.Print(15, 5, $"Stay save {Coloring.Name(_mogwai.Name)} may your soul survive!");
+                    _statsConsole.Print(15, 5, $"Stay save {Coloring.Name(_mogwai.Name)}. May your soul survive!");
                     break;
 
                 case AdventureState.Completed:

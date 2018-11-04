@@ -28,10 +28,6 @@ namespace WoMSadGui.Specific
                     doAdventureAction(str);
                 }
             };
-            ButtonCancel.Click += (btn, args) =>
-            {
-                Hide();
-            };
         }
 
         private void ClickedRadioButton(object sender, MouseEventArgs e)

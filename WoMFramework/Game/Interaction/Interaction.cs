@@ -26,6 +26,16 @@ namespace WoMFramework.Game.Interaction
             InteractionType = interactionType;
         }
 
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        public decimal Cost()
+        {
+            return GetValue1() + GetValue2();
+        }
+
         public virtual string GetInfo()
         {
             return InteractionType.ToString();

@@ -345,8 +345,8 @@ namespace WoMWallet.Node
                     84669, new Shift(index++, 1540417599, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
                         84669, "00000000b552e9c7c51ed793f87c51b2cc945fbb222efd6cec17666a5ecd18a5",
                         1, "cb03db5029f426ed517fdfffd6a90c99a3111f2254f41f9a8f56320076b1f0e3",
-                        0.01042002m,
-                        0.00020002m)
+                        dungAction.GetValue1(),
+                        dungAction.GetValue2())
                 },
                 {
                     84670, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
@@ -381,8 +381,8 @@ namespace WoMWallet.Node
                     84675, new Shift(index++, 1540985507, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
                         84675, "00000000b2204f48bb8d48542a6ada13bc86dde4d2909563fdb8f46389d1a1d2",
                         1, "01d8c163c4f034f7d1f8d7e94fc9fc9a30bbef1aa41c2e03dab29787588c60c4",
-                        0.01042002m,
-                        0.00020002m)
+                        dungAction.GetValue1(),
+                        dungAction.GetValue2())
                 },
                 {
                     84676, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
@@ -417,9 +417,14 @@ namespace WoMWallet.Node
                         lvlPaladin.GetValue1(),
                         lvlPaladin.GetValue2())
                 },
+                {
+                    84682, new Shift(index++, 1541350482, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        84682, "00000000341eea3f27e4ddaf72253cd6a35f54ece70fdeee0906a663f8403a60",
+                        1, "302e37f0c69b1b037bc178fce6f8493a76a4c844df5391a0a46e81fcad8657c8",
+                        0.01042002m,
+                        0.00019003m)
+                }
             };
-
-
 
             //    var shifts = new Dictionary<double, Shift>
             //    {

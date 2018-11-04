@@ -38,6 +38,10 @@ namespace WoMSadGui.Specific
                     Position = new Point(Width - textCancel.Length - 4, Height - 2),
                     Text = textCancel
                 };
+                ButtonCancel.Click += (btn, args) =>
+                {
+                    Hide();
+                };
                 Add(ButtonCancel);
                 button = 2;
             }

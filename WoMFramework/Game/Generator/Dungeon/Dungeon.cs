@@ -30,7 +30,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         protected Dungeon(Shift shift, int challengeRating)
         {
             Shift = shift;
-            ChallengeRating = challengeRating;
+            ChallengeRating = challengeRating - 1; // challenge rating correction
             DungeonRandom = new Dice(shift).GetRandomGenerator();
         }
 
@@ -457,7 +457,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 AdventureState = AdventureState.Completed;
             }
-            else if (CurrentBlockRound >= MaxRoundsPerBlock)
+            else if (CurrentBlockRound >= MaxRoundsPerBlock && _roundMode != Mode.Combat)
             {
                 AdventureState = AdventureState.Extended;
             }

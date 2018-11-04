@@ -4,6 +4,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Surfaces;
+using WoMFramework.Game.Enums;
+using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model.Mogwai;
 using WoMWallet.Node;
 using WoMWallet.Tool;
@@ -54,7 +56,7 @@ namespace WoMSadGui.Consoles
                 if (_mogwai.Shifts.TryGetValue(_mogwai.Pointer + i, out var shift))
                 {
                     Print(1, 2 + i, $"[{(_mogwai.Pointer + i).ToString().PadLeft(7, '.')}]", Color.Gainsboro);
-                    Print(11, 2 + i, $"{shift.InteractionType}".PadRight(20), Color.LimeGreen);
+                    Print(11, 2 + i, $"{shift.InteractionType}".PadRight(20), Color.DarkGreen);
                 }
                 else
                 {
@@ -65,6 +67,15 @@ namespace WoMSadGui.Consoles
  
             Print(31, 2, _mogwai.Pointer.ToString().PadLeft(8, '.'));
             Print(31, 3, _mogwai.Shifts.Keys.Max().ToString(CultureInfo.InvariantCulture).PadLeft(8, '.'));
+
+            Print(1, 6, $"[{_mogwai.Pointer.ToString().PadLeft(7, '.')}]", Color.Gainsboro);
+            Print(11, 6, $"{_mogwai.CurrentShift.InteractionType}".PadRight(20), Color.Lime);
+            Print(31, 6, $" <==".PadRight(20), Color.Gainsboro);
+
+            Print(1, 7,
+                _mogwai.CurrentShift.InteractionType != InteractionType.None
+                    ? $"{_mogwai.CurrentShift.Interaction.GetInfo()}".PadRight(50)
+                    : $"SmallShift".PadRight(50), Color.DarkGray);
 
             var lastBlock = _controller.WalletLastBlock;
             if (lastBlock != null)

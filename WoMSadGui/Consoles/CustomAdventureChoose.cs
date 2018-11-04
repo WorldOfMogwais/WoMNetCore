@@ -14,6 +14,7 @@ using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Mogwai;
+using WoMSadGui.Specific;
 using WoMWallet.Node;
 using Console = SadConsole.Console;
 
@@ -27,11 +28,15 @@ namespace WoMSadGui.Consoles
 
         private MogwaiChooseButton _current = null;
 
-        private DifficultyType _currentDifficultyType;
-
         private readonly MogwaiController _controller;
         
         private readonly Mogwai _mogwai;
+
+        private AdventureType _currentAdventureType;
+
+        private DifficultyType _currentDifficultyType;
+
+        private decimal _currentCost;
 
         public CustomAdventureChoose(MogwaiController mogwaiController, int width, int height) : base("Adventure", "select your adventure", width, height)
         {
@@ -40,7 +45,10 @@ namespace WoMSadGui.Consoles
             _mogwai = mogwaiKeys.Mogwai;
 
             _consoleList = new List<MogwaiChooseButton>();
+
+            _currentAdventureType = AdventureType.Dungeon;
             _currentDifficultyType = DifficultyType.Easy;
+            _currentCost = 0;
 
             Init();
         }
@@ -66,10 +74,11 @@ namespace WoMSadGui.Consoles
 
             _travelControl.Print(1, 1, "Adventure: ", Color.Gainsboro);
             _travelControl.Print(1, 2, "Difficulty:", Color.Gainsboro);
+            _travelControl.Print(1, 4, "Cost:", Color.Gainsboro);
 
             var button = new MogwaiButton(10, 1)
             {
-                Position = new Point(4, 6),
+                Position = new Point(33, 6),
                 Text = "TRAVEL"
             };
             button.Click += (btn, args) => { DoAdventure(); };
@@ -92,7 +101,14 @@ namespace WoMSadGui.Consoles
             _travelControl.Add(bInc);
 
             DoDifficulty(false);
-            DoAction(AdventureType.Dungeon);
+            DoAction(_currentAdventureType);
+        }
+
+        private void UpdateCost()
+        {
+            _currentCost = new AdventureAction(_currentAdventureType, _currentDifficultyType, _mogwai.CurrentLevel).Cost();
+            _travelControl.Print(13, 4, _currentCost.ToString("0.00000000"), Color.Gainsboro);
+            _travelControl.Print(24, 4, "MOG", Color.Gold);
         }
 
         private void DoDifficulty(bool b)
@@ -100,19 +116,19 @@ namespace WoMSadGui.Consoles
             if (b)
             {
                 _currentDifficultyType =
-                    (int) _currentDifficultyType < Enum.GetValues(typeof(DifficultyType)).Length - 2
+                    (int) _currentDifficultyType < Enum.GetValues(typeof(DifficultyType)).Length - 1
                         ? (DifficultyType) _currentDifficultyType + 1
                         : _currentDifficultyType;
             }
             else
             {
                 _currentDifficultyType =
-                    (int)_currentDifficultyType > -1 ? _currentDifficultyType - 1
+                    (int)_currentDifficultyType > 0 ? _currentDifficultyType - 1
                         : _currentDifficultyType;
             }
 
             _travelControl.Print(13, 2, _currentDifficultyType.ToString().PadRight(20), GetDifficultyColor(_currentDifficultyType));
-           
+            UpdateCost();
         }
 
         private Color GetDifficultyColor(DifficultyType currentDifficultyType)
@@ -136,16 +152,24 @@ namespace WoMSadGui.Consoles
 
         private void DoAdventure()
         {
-            if (_current == null)
+            // TODO remove dungeon restriction when more is implemented
+            if (_current == null || _currentAdventureType != AdventureType.Dungeon)
             {
                 return;
             }
-
-            (this.Parent as PlayScreen)?.LogInConsole(
-                _controller.Interaction(new AdventureAction(AdventureType.Dungeon, _currentDifficultyType,
-                    _mogwai.CurrentLevel))
-                    ? "Successful sent mogwai to dungeon! Wait for interaction locks."
-                    : "Failed to send mogwai to test room!");
+            var str = $"{_mogwai.Name} be prepared to travel into a '{_currentAdventureType}' adventure, it might be '{_currentDifficultyType}' for you?";
+            var dialog = new MogwaiDialog("Adventure", $"[c:g b:darkred:black:darkred:black:darkred:{str.Length}]" + str, 40, 8);
+            dialog.AddButton("ok", true);
+            dialog.Button.Click += (btn, args) =>
+            {
+                (Parent as PlayScreen)?.LogInConsole(
+                    _controller.Interaction(new AdventureAction(_currentAdventureType, _currentDifficultyType,
+                        _mogwai.CurrentLevel))
+                        ? $"Successful sent mogwai to {_currentAdventureType}! Wait for interaction locks."
+                        : $"Failed to send mogwai to {_currentAdventureType}!");
+                dialog.Hide();
+            };
+            dialog.Show(true);
         }
 
         private MogwaiChooseButton CreateChoice(int index, int row, string name, string description, string pathIcon, AdventureType adventureType)
@@ -195,7 +219,9 @@ namespace WoMSadGui.Consoles
             var str = $"{adventureType} {(b ? $"[LOCKED]" : "")}";
             _travelControl.Print(13, 1, str.PadRight(30), b ? Color.Red : Color.Orange);
 
-            //Children.Add();
+            _currentAdventureType = adventureType;
+
+            UpdateCost();
         }
     }
 }
