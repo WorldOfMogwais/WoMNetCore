@@ -42,6 +42,8 @@ namespace WoMSadGui.Consoles
 
         public static TimeSpan ActionDelay = TimeSpan.FromSeconds(0.05);
 
+        public static TimeSpan CombatActionDelay = TimeSpan.FromSeconds(0.5);
+
         private readonly SadConsole.Entities.EntityManager _entityManager;
         public DateTime LastUpdate;
 
@@ -64,7 +66,7 @@ namespace WoMSadGui.Consoles
             _entityManager = new SadConsole.Entities.EntityManager {Parent = _mapConsole};
 
             _statsConsole = new MogwaiConsole("stats", "", 21, 6) { Position = new Point(70, 16) };
-            _statsConsole.Fill(DefaultForeground, new Color(100,0,200,225), null);
+            _statsConsole.Fill(DefaultForeground, new Color(10,10,10,230), null);
             Children.Add(_statsConsole);
         }
 
@@ -219,7 +221,17 @@ namespace WoMSadGui.Consoles
                 return;
             }
             
-            GameSpeed = _mogwai.CanSee(Adventure.Map.GetEntities().FirstOrDefault(p => p.AdventureEntityId == adventureLog.Source)) ? ActionDelay : TimeSpan.Zero;
+            if (_mogwai.CombatState != CombatState.None)
+            {
+                // combat gamespeed 
+                GameSpeed = CombatActionDelay;
+            }
+            else
+            {
+                // gamespeed of unseen entities have no delay
+                GameSpeed = _mogwai.CanSee(Adventure.Map.GetEntities().FirstOrDefault(p => p.AdventureEntityId == adventureLog.Source)) ? ActionDelay : TimeSpan.Zero;
+
+            }
 
             while (Adventure.LogEntries.TryDequeue(out var logEntry))
             {
