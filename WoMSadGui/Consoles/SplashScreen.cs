@@ -28,13 +28,15 @@ namespace WoMSadGui.Consoles
             IsVisible = false;
 
             // Load the logo
-            var imageStream = TitleContainer.OpenStream("sad.png");
+            var imageStream = TitleContainer.OpenStream("wom.png");
             var image = Texture2D.FromStream(Global.GraphicsDevice, imageStream);
             imageStream.Dispose();
 
+            var pictureFont = Global.LoadFont("Cheepicus12.font").GetFont(Font.FontSizes.Quarter);
+
             // Configure the logo
-            _consoleImage = image.ToSurface(Global.FontDefault);
-            _consoleImagePosition = new Point(Width / 2 - _consoleImage.Width / 2, -1);
+            _consoleImage = image.ToSurface(pictureFont, true);
+            _consoleImagePosition = new Point(20, -20);
             _consoleImage.Tint = Color.Black;
 
             // Configure the animations
@@ -70,7 +72,7 @@ namespace WoMSadGui.Consoles
             _animation.Instructions.AddLast(new DrawString(this) { Position = new Point(26, Height - 1), Text = logoText, TotalTimeToPrint = 1f });
 
             // Animation for fading in the logo picture.
-            _animation.Instructions.AddLast(new FadeTextSurfaceTint(_consoleImage, new ColorGradient(Color.Black, Color.Transparent), new TimeSpan(0, 0, 0, 4, 0)));
+            _animation.Instructions.AddLast(new FadeTextSurfaceTint(_consoleImage, new ColorGradient(Color.Black, Color.Transparent), new TimeSpan(0, 0, 0, 12, 0)));
 
             // Animation to blink SadConsole in the logo text
             _animation.Instructions.AddLast(new CodeInstruction

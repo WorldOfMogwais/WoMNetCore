@@ -14,8 +14,8 @@ namespace WoMSadGui.Consoles
             borderSurface.DrawBox(new Rectangle(0, 0, borderSurface.Width, borderSurface.Height), 
                                   new Cell(Color.DarkCyan, Color.Black), null, ConnectedLineThick);
             borderSurface.Position = new Point(-1, -1);
-            borderSurface.Print(2, 0, title, Color.DarkCyan, Color.Black);
-            borderSurface.Print(width - footer.Length - 2, height + 1, footer, Color.DarkCyan, Color.Black);
+            borderSurface.Print(2, 0, title.Length != 0 ? $" {title} " : "", Color.DarkCyan, Color.Black);
+            borderSurface.Print(width - footer.Length - 2, height + 1, footer.Length != 0 ? $" {footer} " : "", Color.DarkCyan, Color.Black);
             Children.Add(borderSurface);
 
             

@@ -279,6 +279,7 @@ namespace WoMWallet.Node
         {
 
             var lvlAction = new LevelingAction(LevelingType.Class, ClassType.Barbarian, 0, 1);
+            var lvlPaladin = new LevelingAction(LevelingType.Class, ClassType.Paladin, 0, 1);
             var dungAction = new AdventureAction(AdventureType.Dungeon, DifficultyType.Average, 2);
             var healAction = new SpecialAction(SpecialType.Heal, SpecialSubType.None, CostType.Medium);
             var revivingAction = new SpecialAction(SpecialType.Reviving, SpecialSubType.None, CostType.High);
@@ -373,8 +374,8 @@ namespace WoMWallet.Node
                     84674, new Shift(index++, 1539810141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
                         84674, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
                         1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
-                        lvlAction.GetValue1(),
-                        lvlAction.GetValue2())
+                        lvlPaladin.GetValue1(),
+                        lvlPaladin.GetValue2())
                 },
                 {
                     84675, new Shift(index++, 1540985507, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
@@ -394,6 +395,27 @@ namespace WoMWallet.Node
                 {
                     84678, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
                         84678, "0000000033dbfc163db3671ba28b41ecab6f547219bb43174cc97bf2164d2e31")
+                },
+                {
+                    84679, new Shift(index++, 1555309745, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
+                        84679, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bdf29",
+                        revivingAction.GetValue1(),
+                        revivingAction.GetValue2())
+                },
+                {
+                    84680, new Shift(index++, 1556309745, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        84680, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bff29",
+                        healAction.GetValue1(),
+                        healAction.GetValue2())
+                },
+                {
+                    84681, new Shift(index++, 1557309745, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        84681, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                        1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
+                        lvlPaladin.GetValue1(),
+                        lvlPaladin.GetValue2())
                 },
             };
 

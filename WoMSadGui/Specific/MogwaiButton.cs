@@ -1,5 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
+using SadConsole;
 using SadConsole.Controls;
+using SadConsole.Themes;
 
 namespace WoMSadGui.Consoles
 {
@@ -31,6 +34,28 @@ namespace WoMSadGui.Consoles
             Theme.MouseOver.Background = mainColor;
             Theme.Selected.Foreground = mainColor;
             Theme.Focused.Foreground = mainColor;
+        }
+    }
+
+    public class MogwaiChooseButton : Button
+    {
+        public MogwaiChooseButton(int width, int height) : base(width, height)
+        {
+            Theme.Normal = new Cell(Color.Cyan, Color.Black);
+            Theme.Selected = new Cell(Color.Cyan, Color.Black);
+            Theme.MouseOver = new Cell(Color.Cyan, new Color(10, 20, 10, 20));
+            Theme.MouseDown = new Cell(Color.Cyan, Color.DarkRed);
+            Theme.Focused = new Cell(Color.Cyan, Color.DarkRed);
+        }
+
+        public void Unselect()
+        {
+            IsFocused = false;
+        }
+
+        public void Select()
+        {
+            IsFocused = true;
         }
     }
 }

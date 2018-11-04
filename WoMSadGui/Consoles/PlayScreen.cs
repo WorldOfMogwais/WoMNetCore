@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using SadConsole;
@@ -75,9 +76,9 @@ namespace WoMSadGui.Consoles
             var playStatsConsole = new PlayStatsConsole(_mogwai, 44, 22) { Position = new Point(0, 0) };
             Children.Add(playStatsConsole);
 
-            _welcome = new MogwaiConsole("Welcome", "to the World of Mogwais", 91, 22) { Position = new Point(46, 0) };
+            _welcome = new CustomWelcome(91, 22) { Position = new Point(46, 0) };
 
-            _adventureChoose = new CustomAdventureChoose(91, 22) { Position = new Point(46, 0) };
+            _adventureChoose = new CustomAdventureChoose(mogwaiController, 91, 22) { Position = new Point(46, 0) };
 
 
             _shop = new CustomShop(_mogwai, 91, 22) { Position = new Point(46, 0) };
@@ -309,19 +310,19 @@ namespace WoMSadGui.Consoles
         {
             if (!_mogwai.CanLevelClass(out _))
             {
-                LogInConsole("Mogwai can\'t class levelno level ups!");
-                return;
-            }
-
-            if (_mogwai.Classes.Count >= 2)
-            {
-                LogInConsole("Mogwais of this generation can\'t level more then two classes!");
+                LogInConsole("Mogwai can\'t class level, no level ups!");
                 return;
             }
 
             if (!Enum.TryParse<ClassType>(classTypeStr, true, out var classType))
             {
                 LogInConsole($"Invalid class, please check {classTypeStr}!");
+                return;
+            }
+
+            if (_mogwai.Classes.Count >= 2 && _mogwai.GetClassLevel(classType) == 0)
+            {
+                LogInConsole("Mogwais of this generation can\'t level more then two classes!");
                 return;
             }
 

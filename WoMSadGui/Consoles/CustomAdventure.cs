@@ -47,7 +47,7 @@ namespace WoMSadGui.Consoles
 
         public Adventure Adventure { get; private set; }
 
-        public CustomAdventure(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base("Custom", "", width, height)
+        public CustomAdventure(MogwaiController mogwaiController, MogwaiKeys mogwaiKeys, int width, int height) : base("Adventure", "", width, height)
         {
             _controller = mogwaiController;
             _mogwaiKeys = mogwaiKeys;

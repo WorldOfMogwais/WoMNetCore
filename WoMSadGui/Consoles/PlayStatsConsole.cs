@@ -47,7 +47,7 @@ namespace WoMSadGui.Consoles
             for (var i = 0; i < 2 && i < _mogwai.Classes.Count; i++)
             {
                 var classes = _mogwai.Classes[i];
-                Print(31, i + 3, classes.Name, Color.Orange);
+                Print(31, i + 3, classes.Name.PadRight(10), Color.Orange);
                 Print(43, i + 3, classes.ClassLevel.ToString(), Color.Gold);
             }
 
