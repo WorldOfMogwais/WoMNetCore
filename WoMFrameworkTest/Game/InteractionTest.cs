@@ -18,15 +18,15 @@ namespace WoMFrameworkTest.Game
             //string addParm = parm1.Substring(4, 4);
 
             var adventure1 = new AdventureAction(AdventureType.TestRoom, DifficultyType.Challenging, 2);
-            Assert.Equal(0.01040003m, adventure1.GetValue1());
-            Assert.Equal(0.00001002m, adventure1.GetValue2());
+            Assert.Equal(0.01040004m, adventure1.GetValue1());
+            Assert.Equal(0.00002002m, adventure1.GetValue2());
 
             var amount = adventure1.GetValue1();
             var fee = adventure1.GetValue2();
 
             var adventure2 = (AdventureAction) Interaction.GetInteraction(amount, fee);
-            Assert.Equal(0.01040003m, adventure2.GetValue1());
-            Assert.Equal(0.00001002m, adventure2.GetValue2());
+            Assert.Equal(0.01040004m, adventure2.GetValue1());
+            Assert.Equal(0.00002002m, adventure2.GetValue2());
 
             //Console.WriteLine($"Value1: {adventure.CostType}");
             //Console.WriteLine($"Value1: {adventure.InteractionType}");
@@ -56,7 +56,7 @@ namespace WoMFrameworkTest.Game
 
             Assert.Equal(InteractionType.Adventure, shift.Interaction.InteractionType);
             Assert.Equal(AdventureType.TestRoom, ((AdventureAction)shift.Interaction).AdventureType);
-            Assert.Equal(DifficultyType.Challenging, ((AdventureAction)shift.Interaction).DifficultyType );
+            Assert.Equal(DifficultyType.Average, ((AdventureAction)shift.Interaction).DifficultyType );
             Assert.Equal(2, ((AdventureAction)shift.Interaction).AveragePartyLevel);
         }
     }
