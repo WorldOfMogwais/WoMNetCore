@@ -64,7 +64,7 @@ namespace WoMSadGui.Consoles
             _entityManager = new SadConsole.Entities.EntityManager {Parent = _mapConsole};
 
             _statsConsole = new MogwaiConsole("stats", "", 21, 6) { Position = new Point(70, 16) };
-            _statsConsole.Fill(DefaultForeground, new Color(100,0,200,150), null);
+            _statsConsole.Fill(DefaultForeground, new Color(100,0,200,225), null);
             Children.Add(_statsConsole);
         }
 
