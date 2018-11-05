@@ -373,8 +373,8 @@ namespace WoMFramework.Game.Model
             if (IsDead)
             {
                 Map.RemoveEntity(this);
-                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}.");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} died may the soul rest in peace, healthstate is {Coloring.Red(HealthState.ToString())}."));
+                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}.");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}."));
                 Adventure.Enqueue(AdventureLog.Died(this));
             }
         }

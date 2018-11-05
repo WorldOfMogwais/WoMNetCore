@@ -32,7 +32,7 @@ namespace WoMSadGui.Consoles
     }
     public class PlayScreen : Console
     {
-        enum CustomWindowState
+        enum PlayScreenState
         {
             Welcome, Shop, Adventure, AdventureStats,
             AdventureChoose
@@ -47,7 +47,7 @@ namespace WoMSadGui.Consoles
 
         public SadGuiState State { get; set; }
 
-        private CustomWindowState _customWindowState;
+        private PlayScreenState _playScreenState;
 
         private Console _custom;
 
@@ -101,7 +101,7 @@ namespace WoMSadGui.Consoles
 
             State = SadGuiState.Play;
 
-            SetCustomWindowState(CustomWindowState.Welcome);
+            SetCustomWindowState(PlayScreenState.Welcome);
 
             Init();
         }
@@ -142,28 +142,28 @@ namespace WoMSadGui.Consoles
 
         }
 
-        private void SetCustomWindowState(CustomWindowState newCustomWindowState)
+        private void SetCustomWindowState(PlayScreenState newPlayScreenState)
         {
             Children.Remove(_custom);
-            switch (newCustomWindowState)
+            switch (newPlayScreenState)
             {
-                case CustomWindowState.Welcome:
+                case PlayScreenState.Welcome:
                     _custom = _welcome;
                     break;
-                case CustomWindowState.Shop:
+                case PlayScreenState.Shop:
                     _custom = _shop;
                     break;
-                case CustomWindowState.AdventureChoose:
+                case PlayScreenState.AdventureChoose:
                     _custom = _adventureChoose;
                     break;
-                case CustomWindowState.Adventure:
+                case PlayScreenState.Adventure:
                     _custom = _adventure;
                     _btnEvolve.Text = "next";
                     _btnEvolve.SetColor(Color.DarkOrange);
                     _btnFast.Text = "fini";
                     _btnFast.SetColor(Color.Black);
                     break;
-                case CustomWindowState.AdventureStats:
+                case PlayScreenState.AdventureStats:
                     _adventureStats.Update();
                     _custom = _adventureStats;
                     _btnEvolve.Text = "evolve";
@@ -215,7 +215,7 @@ namespace WoMSadGui.Consoles
                     Evolve(true);
                     break;
                 case "shop":
-                    SetCustomWindowState(CustomWindowState.Shop);
+                    SetCustomWindowState(PlayScreenState.Shop);
                     break;
                 case "adven":
                     //dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", DoInteraction, 40, 12);
@@ -227,7 +227,7 @@ namespace WoMSadGui.Consoles
                     //        new[] {"quest", "Quest"}
                     //    });
                     //dialog.Show(true);
-                    SetCustomWindowState(CustomWindowState.AdventureChoose);
+                    SetCustomWindowState(PlayScreenState.AdventureChoose);
                     break;
                 case "level":
                     dialog = new MogwaiOptionDialog("Leveling", "Currently up for leveling?", DoInteraction, 40, 12);
@@ -350,7 +350,7 @@ namespace WoMSadGui.Consoles
 
             if (_adventure != null)
             {
-                SetCustomWindowState(CustomWindowState.AdventureStats);
+                SetCustomWindowState(PlayScreenState.AdventureStats);
                 return;
             }
         }
@@ -365,21 +365,21 @@ namespace WoMSadGui.Consoles
                     {
                         if (!(_custom is CustomAdventure))
                         {
-                            SetCustomWindowState(CustomWindowState.Adventure);
+                            SetCustomWindowState(PlayScreenState.Adventure);
                         }
 
                         _adventure.Start(_mogwai.Adventure);
                     }
                     else
                     {
-                        SetCustomWindowState(CustomWindowState.Welcome);
+                        SetCustomWindowState(PlayScreenState.Welcome);
                     }
                     UpdateLog();
                 }
             }
             else if (_mogwai.PeekNextShift != null)
             {
-                SetCustomWindowState(CustomWindowState.Welcome);
+                SetCustomWindowState(PlayScreenState.Welcome);
 
                 _log.Reset();
                 while (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve(out _))
