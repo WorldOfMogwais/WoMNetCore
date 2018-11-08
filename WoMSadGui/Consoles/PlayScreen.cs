@@ -67,11 +67,15 @@ namespace WoMSadGui.Consoles
         private MogwaiButton _btnEvolve;
         private MogwaiButton _btnFast;
 
+        private Dictionary<string, MogwaiButton> _playScreenButtons;
+
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
             _controller = mogwaiController;
             var mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
             _mogwai = mogwaiKeys.Mogwai;
+
+            _playScreenButtons = new Dictionary<string, MogwaiButton>();
 
             var playStatsConsole = new PlayStatsConsole(_mogwai, 44, 22) { Position = new Point(0, 0) };
             Children.Add(playStatsConsole);
@@ -116,13 +120,13 @@ namespace WoMSadGui.Consoles
             _command1.BorderSurface.SetGlyph(0, 1, 186, Color.DarkCyan);
             _command1.BorderSurface.SetGlyph(0, 2, 200, Color.DarkCyan);
 
-            MenuButton(0, "level", DoAction);
-            MenuButton(1, "inven", DoAction);
-            MenuButton(2, "adven", DoAction);
-            MenuButton(3, "heal", DoAction);
-            MenuButton(4, "modif", DoAction);
-            MenuButton(5, "breed", DoAction);
-            MenuButton(6, "shop", DoAction);
+            _playScreenButtons.Add("level", MenuButton(0, "level", DoAction));
+            _playScreenButtons.Add("inven", MenuButton(1, "inven", DoAction));
+            _playScreenButtons.Add("adven", MenuButton(2, "adven", DoAction));
+            _playScreenButtons.Add("heal", MenuButton(3, "heal", DoAction));
+            _playScreenButtons.Add("modif", MenuButton(4, "modif", DoAction));
+            _playScreenButtons.Add("breed", MenuButton(5, "breed", DoAction));
+            _playScreenButtons.Add("shop", MenuButton(6, "shop", DoAction));
 
             _btnEvolve = new MogwaiButton(8, 1)
             {
@@ -157,6 +161,8 @@ namespace WoMSadGui.Consoles
                     _custom = _adventureChoose;
                     break;
                 case PlayScreenState.Adventure:
+                    // disable buttons
+                    _playScreenButtons.Values.ToList().ForEach(p => p.IsEnabled = false);
                     _custom = _adventure;
                     _btnEvolve.Text = "next";
                     _btnEvolve.SetColor(Color.DarkOrange);
@@ -172,13 +178,23 @@ namespace WoMSadGui.Consoles
                     {
                         _btnFast.Text = "evol++";
                         _btnFast.ResetColor();
+                        // enable buttons
+                        _playScreenButtons.Values.ToList().ForEach(p => p.IsEnabled = true);
+
                     }
                     break;
             }
             Children.Add(_custom);
         }
 
-        private void MenuButton(int buttonPosition, string buttonText, Action<string> buttonClicked)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buttonPosition"></param>
+        /// <param name="buttonText"></param>
+        /// <param name="buttonClicked"></param>
+        /// <returns></returns>
+        private MogwaiButton MenuButton(int buttonPosition, string buttonText, Action<string> buttonClicked)
         {
             var xBtn = 0;
             var xSpBtn = 1;
@@ -198,6 +214,8 @@ namespace WoMSadGui.Consoles
                 _command1.BorderSurface.SetGlyph(xBtn + i + 1 + buttonPosition * (mBtnSize + xSpBtn), 2, 205, Color.DarkCyan);
             }
             _command1.BorderSurface.SetGlyph(xBtn + mBtnSize + 1 + buttonPosition * (mBtnSize + xSpBtn), 2, 202, Color.DarkCyan);
+
+            return button;
         }
 
         private void DoAction(string actionStr)
@@ -218,15 +236,6 @@ namespace WoMSadGui.Consoles
                     SetCustomWindowState(PlayScreenState.Shop);
                     break;
                 case "adven":
-                    //dialog = new MogwaiOptionDialog("Adventure", "Choose the Adventure?", DoInteraction, 40, 12);
-                    //dialog.AddRadioButtons("adventureAction", new List<string[]> {
-                    //        new[] {"testroom", "Test Room"},
-                    //        new[] {"chamber", "Chamber"},
-                    //        new[] {"dungeon", "Dungeon"},
-                    //        new[] {"battle", "Battle"},
-                    //        new[] {"quest", "Quest"}
-                    //    });
-                    //dialog.Show(true);
                     SetCustomWindowState(PlayScreenState.AdventureChoose);
                     break;
                 case "level":
@@ -417,58 +426,63 @@ namespace WoMSadGui.Consoles
                 return true;
             }
 
-            if (state.IsKeyReleased(Keys.Q))
+            if (Program.DEBUG)
             {
-                _glyphIndex++;
-                Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
-                Print(_glyphX + 2, _glyphY, $"{_glyphIndex}", Color.Yellow);
-                return true;
+                if (state.IsKeyReleased(Keys.Q))
+                {
+                    _glyphIndex++;
+                    Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
+                    Print(_glyphX + 2, _glyphY, $"{_glyphIndex}", Color.Yellow);
+                    return true;
+                }
+
+                if (state.IsKeyReleased(Keys.A))
+                {
+                    _glyphIndex--;
+                    Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
+                    Print(_glyphX + 2, _glyphY, $"{_glyphIndex}", Color.Yellow);
+                    return true;
+                }
+
+                if (state.IsKeyReleased(Keys.Right))
+                {
+                    Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
+                    _glyphX++;
+                    _oldglyphIndex = GetGlyph(_glyphX, _glyphY);
+                    Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
+                    return true;
+                }
+
+                if (state.IsKeyReleased(Keys.Left))
+                {
+                    Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
+                    _glyphX--;
+                    _oldglyphIndex = GetGlyph(_glyphX, _glyphY);
+                    Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
+                    return true;
+                }
+
+                if (state.IsKeyReleased(Keys.Up))
+                {
+                    Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
+                    _glyphY--;
+                    _oldglyphIndex = GetGlyph(_glyphX, _glyphY);
+                    Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
+                    return true;
+                }
+
+                if (state.IsKeyReleased(Keys.Down))
+                {
+                    Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
+                    _glyphY++;
+                    _oldglyphIndex = GetGlyph(_glyphX, _glyphY);
+                    Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
+                    return true;
+                }
+
+                Print(0, 0, $"x:{_glyphX} y:{_glyphY} ind:{_glyphIndex}", Color.Cyan);
             }
 
-            if (state.IsKeyReleased(Keys.A))
-            {
-                _glyphIndex--;
-                Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
-                Print(_glyphX + 2, _glyphY, $"{_glyphIndex}", Color.Yellow);
-                return true;
-            }
-
-            if (state.IsKeyReleased(Keys.Right))
-            {
-                Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
-                _glyphX++;
-                _oldglyphIndex = GetGlyph(_glyphX, _glyphY);
-                Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
-                return true;
-            }
-
-            if (state.IsKeyReleased(Keys.Left))
-            {
-                Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
-                _glyphX--;
-                _oldglyphIndex = GetGlyph(_glyphX, _glyphY);
-                Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
-                return true;
-            }
-
-            if (state.IsKeyReleased(Keys.Up))
-            {
-                Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
-                _glyphY--;
-                _oldglyphIndex = GetGlyph(_glyphX, _glyphY);
-                Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
-                return true;
-            }
-
-            if (state.IsKeyReleased(Keys.Down))
-            {
-                Print(_glyphX, _glyphY, $"[c:sg {_oldglyphIndex}:1] ", Color.DarkCyan);
-                _glyphY++;
-                _oldglyphIndex = GetGlyph(_glyphX, _glyphY);
-                Print(_glyphX, _glyphY, $"[c:sg {_glyphIndex}:1] ", Color.DarkCyan);
-                return true;
-            }
-            Print(0, 0, $"x:{_glyphX} y:{_glyphY} ind:{_glyphIndex}", Color.Cyan);
             return false;
         }
 

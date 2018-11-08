@@ -403,7 +403,14 @@ namespace WoMFramework.Game.Model
 
             if (entityAction is WeaponAttack weaponAttack)
             {
-                Attack(weaponAttack);
+                if (weaponAttack.ActionType == ActionType.Full)
+                {
+                    FullAttack(weaponAttack);
+                }
+                else
+                {
+                    Attack(weaponAttack);
+                }
                 return true;
             }
 
