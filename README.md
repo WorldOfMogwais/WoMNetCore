@@ -16,7 +16,7 @@ When everything is successful and after you created or loaded a wallet you shoul
 ![Mogwai Selection Screen](Resources/MogwaiSelection.png)
 
 After createing your first Mogwai you can proceed to the Play Screen
-![Play Screen](Resources/PlayScreen.png)
+![Play Screen](Resources/gamescreen.png)
 
 and if you feel ready send your mogwai to a dungeon.
 ![Play Screen](Resources/dungeon.png)

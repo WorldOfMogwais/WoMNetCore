@@ -158,9 +158,22 @@ namespace WoMFramework.Game.Model.Actions
         }
     }
 
+    public class DrinkPotion : CombatAction
+    {
+        public DrinkPotion(Entity owner) : base(ActionType.Standard, owner, null, true)
+        {
+            IsExecutable = false;
+        }
+
+        public override CombatAction Executable(IAdventureEntity target)
+        {
+            return null;
+        }
+    }
+
     public class SpellCast : CombatAction
     {
-        public SpellCast(Entity owner) : base(ActionType.Standard, owner, null, false)
+        public SpellCast(Entity owner) : base(ActionType.Standard, owner, null, true)
         {
             IsExecutable = false;
         }

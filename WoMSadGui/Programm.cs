@@ -17,6 +17,8 @@ namespace WoMSadGui
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     internal class Program
     {
+        public static bool DEBUG = false;
+
         public const int Width = 141;
         public const int Height = 40;
 
@@ -240,13 +242,10 @@ namespace WoMSadGui
             Global.CurrentScreen.Children.Add(_splashScreen);
         }
 
-
         private static void Init()
         {
-            bool debug = true;
-
             _controller = new MogwaiController();
-            if (!debug)
+            if (!DEBUG)
             {
                 SplashScreen();
                 _state = SadGuiState.Start;
