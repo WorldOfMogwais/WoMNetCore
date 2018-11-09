@@ -48,11 +48,11 @@ namespace WoMSadGui.Consoles
             {
                 var classes = _mogwai.Classes[i];
                 Print(31, i + 3, classes.Name.PadRight(10), Color.Orange);
-                Print(43, i + 3, classes.ClassLevel.ToString(), Color.Gold);
+                Print(42, i + 3, classes.ClassLevel.ToString().PadLeft(2), Color.Gold);
             }
 
             _mogwai.CanLevelClass(out var levels);
-            Print(43, 5, levels.ToString(), Color.Aqua);
+            Print(42, 5, levels.ToString().PadLeft(2), Color.Aqua);
 
             CreateHealthBar(16, 2, Color.DarkGreen, Color.LimeGreen, _mogwai.CurrentHitPoints, _mogwai.MaxHitPoints);
             var lastLevelXp = _mogwai.LevelUpXp(_mogwai.CurrentLevel - 1);

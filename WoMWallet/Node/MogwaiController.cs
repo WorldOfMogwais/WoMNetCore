@@ -278,155 +278,177 @@ namespace WoMWallet.Node
         public MogwaiKeys TestMogwaiKeys()
         {
 
-            var lvlAction = new LevelingAction(LevelingType.Class, ClassType.Barbarian, 0, 1);
+            var lvlBarbarian = new LevelingAction(LevelingType.Class, ClassType.Barbarian, 0, 1);
             var lvlPaladin = new LevelingAction(LevelingType.Class, ClassType.Paladin, 0, 1);
-            var dungAction = new AdventureAction(AdventureType.Dungeon, DifficultyType.Average, 2);
+            var dungAction = new AdventureAction(AdventureType.Dungeon, DifficultyType.Easy, 2);
             var healAction = new SpecialAction(SpecialType.Heal, SpecialSubType.None, CostType.Medium);
             var revivingAction = new SpecialAction(SpecialType.Reviving, SpecialSubType.None, CostType.High);
 
-            var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i"));
-            int blockHeight = 84666;
+            var pubMogAddressHex =
+                HexHashUtil.ByteArrayToString(Base58Encoding.Decode("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i"));
+            int blockHeight = 84659;
             int index = 0;
             var shifts = new Dictionary<double, Shift>
             {
                 {
-                    84659, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84659, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
+                    blockHeight, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
                         2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
                         1.00m,
                         0.0001m)
                 },
                 {
-                    84660, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84660, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
+                    blockHeight, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
                         2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
-                        lvlAction.GetValue1(),
-                        lvlAction.GetValue2())
+                        lvlBarbarian.GetValue1(),
+                        lvlBarbarian.GetValue2())
                 },
                 {
-                    84661, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84661, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
                 },
                 {
-                    84662, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84662, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
                 },
                 {
-                    84663, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84663, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
                 },
                 {
-                    84664, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84664, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
                 },
                 {
-                    84665, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84665, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
                 },
                 {
-                    84666, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84666, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39")
                 },
                 {
-                    84667, new Shift(index++, 1539810141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84667, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                    blockHeight, new Shift(index++, 1539810141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
                         1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
-                        lvlAction.GetValue1(),
-                        lvlAction.GetValue2())
+                        lvlBarbarian.GetValue1(),
+                        lvlBarbarian.GetValue2())
                 },
                 {
-                    84668, new Shift(index++, 1539815141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84668, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                    blockHeight, new Shift(index++, 1539815141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
                         1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bff29",
                         healAction.GetValue1(),
                         healAction.GetValue2())
                 },
                 {
-                    84669, new Shift(index++, 1540417599, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84669, "00000000b552e9c7c51ed793f87c51b2cc945fbb222efd6cec17666a5ecd18a5",
+                    blockHeight, new Shift(index++, 1540417599, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "00000000b552e9c7c51ed793f87c51b2cc945fbb222efd6cec17666a5ecd18a5",
                         1, "cb03db5029f426ed517fdfffd6a90c99a3111f2254f41f9a8f56320076b1f0e3",
                         dungAction.GetValue1(),
                         dungAction.GetValue2())
                 },
                 {
-                    84670, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84670, "0000000033dbfc163de3671ba28b41ecab6f547219bb43174cc97bf2164d2e39")
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163de3671ba28b41ecab6f547219bb43174cc97bf2164d2e39")
                 },
                 {
-                    84671, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84671, "0000000033dbfc163dc3671ba28b41ecab6f547219bb43174cc97bf2164d2e30")
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163dc3671ba28b41ecab6f547219bb43174cc97bf2164d2e30")
                 },
                 {
-                    84672, new Shift(index++, 1555309745, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
-                        84672, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
-                             1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bdf29",
-                         revivingAction.GetValue1(),
-                         revivingAction.GetValue2())
-                },
-                {
-                    84673, new Shift(index++, 1539815141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84673, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
-                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bff29",
-                        healAction.GetValue1(),
-                        healAction.GetValue2())
-                },
-                {
-                    84674, new Shift(index++, 1539810141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84674, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
-                        1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
-                        lvlPaladin.GetValue1(),
-                        lvlPaladin.GetValue2())
-                },
-                {
-                    84675, new Shift(index++, 1540985507, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
-                        84675, "00000000b2204f48bb8d48542a6ada13bc86dde4d2909563fdb8f46389d1a1d2",
-                        1, "01d8c163c4f034f7d1f8d7e94fc9fc9a30bbef1aa41c2e03dab29787588c60c4",
-                        dungAction.GetValue1(),
-                        dungAction.GetValue2())
-                },
-                {
-                    84676, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84676, "0000000033dbfc163db3671ba28b41ecab6f547219bb43174cc97bf2164d2e31")
-                },
-                {
-                    84677, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84677, "0000000033dbfc163db3671ba28b41ecab6f547219bb43174cc97bf2164d2e31")
-                },
-                {
-                    84678, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84678, "0000000033dbfc163db3671ba28b41ecab6f547219bb43174cc97bf2164d2e31")
-                },
-                {
-                    84679, new Shift(index++, 1555309745, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
-                        84679, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                    blockHeight, new Shift(index++, 1555309745, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
+                        blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
                         1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bdf29",
                         revivingAction.GetValue1(),
                         revivingAction.GetValue2())
                 },
                 {
-                    84680, new Shift(index++, 1556309745, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84680, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                    blockHeight, new Shift(index++, 1539815141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
                         1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bff29",
                         healAction.GetValue1(),
                         healAction.GetValue2())
                 },
                 {
-                    84681, new Shift(index++, 1557309745, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84681, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                    blockHeight, new Shift(index++, 1539810141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
                         1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
                         lvlPaladin.GetValue1(),
                         lvlPaladin.GetValue2())
                 },
                 {
-                    84682, new Shift(index++, 1541350482, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        84682, "00000000341eea3f27e4ddaf72253cd6a35f54ece70fdeee0906a663f8403a60",
+                    blockHeight, new Shift(index++, 1540985507, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
+                        blockHeight++, "00000000b2204f48bb8d48542a6ada13bc86dde4d2909563fdb8f46389d1a1d2",
+                        1, "01d8c163c4f034f7d1f8d7e94fc9fc9a30bbef1aa41c2e03dab29787588c60c4",
+                        dungAction.GetValue1(),
+                        dungAction.GetValue2())
+                },
+                {
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163db3671ba28b41ecab6f547219bb43174cc97bf2164d2e31")
+                },
+                {
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163db3671ba28b41ecab6f547219bb43174cc97bf2164d2e31")
+                },
+                {
+                    blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000033dbfc163db3671ba28b41ecab6f547219bb43174cc97bf2164d2e31")
+                },
+                {
+                    blockHeight, new Shift(index++, 1555309745, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
+                        blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bdf29",
+                        revivingAction.GetValue1(),
+                        revivingAction.GetValue2())
+                },
+                {
+                    blockHeight, new Shift(index++, 1556309745, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                        1, "bbcd39553a9727c434343242f9bd8025608edcfbcfc262c0c2afe9fc3f0bff29",
+                        healAction.GetValue1(),
+                        healAction.GetValue2())
+                },
+                {
+                    blockHeight, new Shift(index++, 1557309745, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
+                        1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
+                        lvlPaladin.GetValue1(),
+                        lvlPaladin.GetValue2())
+                },
+                {
+                    blockHeight, new Shift(index++, 1541350482, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "00000000341eea3f27e4ddaf72253cd6a35f54ece70fdeee0906a663f8403a60",
                         1, "302e37f0c69b1b037bc178fce6f8493a76a4c844df5391a0a46e81fcad8657c8",
                         0.01042002m,
                         0.00019003m)
-                }
+                },
             };
 
-            //    var shifts = new Dictionary<double, Shift>
+            for (int i = 0; i < 10; i++)
+            {
+                shifts.Add(blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                    blockHeight++, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39"));
+
+                shifts.Add(blockHeight, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                        blockHeight++, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
+                        2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
+                        lvlBarbarian.GetValue1(),
+                        lvlBarbarian.GetValue2()));
+            }
+
+            var dungActionNext = new AdventureAction(AdventureType.Dungeon, DifficultyType.Easy, 8);
+
+            shifts.Add(blockHeight, new Shift(index++, 1540417599, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                    blockHeight++, "00000000b552e9c7c51ed793f87c51b2cc945fbb222efd6cec17666a5ecd18a5",
+                    1, "cb03db5029f426ed517fdfffd6a90c99a3111f2254f41f9a8f56320076b1f0e3",
+                dungActionNext.GetValue1(),
+                dungActionNext.GetValue2()));
+
+
+        //    var shifts = new Dictionary<double, Shift>
             //    {
             //        {
             //            1001, new Shift(0, 1530914381, pubMogAddressHex,

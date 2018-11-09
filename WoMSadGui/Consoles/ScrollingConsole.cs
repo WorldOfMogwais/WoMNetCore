@@ -18,6 +18,8 @@ namespace WoMSadGui.Consoles
 
         public Cursor MainCursor => _mainConsole.Cursor; 
 
+        public Console MainConsole => _mainConsole; 
+
         public ScrollingConsole(int width, int height, int bufferHeight)
         {
             UseKeyboard = false;
