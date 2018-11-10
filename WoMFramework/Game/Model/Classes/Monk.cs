@@ -4,7 +4,7 @@ namespace WoMFramework.Game.Model.Classes
 {
     public class Monk : Classes
     {
-        public Monk() : base(ClassType.Monk)
+        public Monk() : base(ClassType.Monk, false)
         {
             HitPointDiceRollEvent = new[] { 1, 8 };
             WealthDiceRollEvent = new[] { 3, 6, 0, 1 };

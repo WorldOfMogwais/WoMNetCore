@@ -4,7 +4,7 @@ namespace WoMFramework.Game.Model.Classes
 {
     public class Cleric : Classes
     {
-        public Cleric() : base(ClassType.Cleric)
+        public Cleric() : base(ClassType.Cleric, true)
         {
             HitPointDiceRollEvent = new[] { 1, 8 };
             WealthDiceRollEvent = new[] { 3, 6, 0, 1 };

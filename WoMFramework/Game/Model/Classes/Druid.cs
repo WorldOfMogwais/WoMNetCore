@@ -4,7 +4,7 @@ namespace WoMFramework.Game.Model.Classes
 {
     public class Druid : Classes
     {
-        public Druid() : base(ClassType.Druid)
+        public Druid() : base(ClassType.Druid, true)
         {
             HitPointDiceRollEvent = new[] { 1, 8 };
             WealthDiceRollEvent = new[] { 3, 6, 0, 1 };

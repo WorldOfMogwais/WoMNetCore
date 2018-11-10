@@ -4,7 +4,7 @@ namespace WoMFramework.Game.Model.Classes
 {
     public class Paladin : Classes
     {
-        public Paladin() : base(ClassType.Paladin)
+        public Paladin() : base(ClassType.Paladin, true)
         {
             HitPointDiceRollEvent = new[] { 1, 10 };
             WealthDiceRollEvent = new[] { 3, 6, 0, 1 };

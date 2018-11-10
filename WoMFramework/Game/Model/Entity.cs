@@ -12,7 +12,43 @@ using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model
 {
-    public abstract class Entity : ICombatant
+    public abstract partial class Entity : ICombatant
+    {
+        public int GetRequirementValue(RequirementType requirementType, object addValue = null)
+        {
+            switch (requirementType)
+            {
+                case RequirementType.Strength:
+                    return Strength;
+                case RequirementType.Dexterity:
+                    return Dexterity;
+                case RequirementType.Consititution:
+                    return Constitution;
+                case RequirementType.Intelligence:
+                    return Inteligence;
+                case RequirementType.Wisdom:
+                    return Wisdom;
+                case RequirementType.Charisma:
+                    return Charisma;
+                case RequirementType.Skill:
+                    throw new NotImplementedException();
+                case RequirementType.Level:
+                    return CurrentLevel;
+                case RequirementType.CasterLevel:
+                    var casterClasses = Classes.Where(p => p.CanCast);
+                    return casterClasses.Any() ? casterClasses.Max(p => p.ClassLevel) : 0;
+                case RequirementType.FighterLevel:
+                    var fighterClasses = Classes.Where(p => !p.CanCast);
+                    return fighterClasses.Any() ? fighterClasses.Max(p => p.ClassLevel) : 0;
+                case RequirementType.BaseAttack:
+                    return BaseAttackBonus[0];
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(requirementType), requirementType, null);
+            }
+        }
+    }
+
+    public abstract partial class Entity : ICombatant
     {
         public readonly Dictionary<ModifierType, int> MiscMod;
 
@@ -48,6 +84,8 @@ namespace WoMFramework.Game.Model
         private int Modifier(int ability) => (int)Math.Floor((ability - 10) / 2.0);
 
         #endregion
+
+        public int CurrentLevel { get; set; } = 1;
 
         // current position
         public Coord Coordinate { get; set; }
@@ -156,7 +194,7 @@ namespace WoMFramework.Game.Model
         // dice
         public virtual Dice Dice { get; set; }
 
-        public Classes.Classes CurrentClass => Classes.Count > 0 ? Classes[0] : null;
+        //public Classes.Classes CurrentClass => Classes.Count > 0 ? Classes[0] : null;
         public List<Classes.Classes> Classes { get; }
         public int GetClassLevel(ClassType classType)
         {
@@ -166,7 +204,7 @@ namespace WoMFramework.Game.Model
 
         public EnvironmentType[] EnvironmentTypes { get; set; }
 
-        public List<Feat> Skills { get; set; }
+        public List<Feat> Feats { get; set; }
 
         /// <summary>
         /// 
@@ -194,7 +232,7 @@ namespace WoMFramework.Game.Model
             CombatActions.Add(CombatAction.CreateMove(this));
 
             // initialize skills list
-            Skills = new List<Feat>();
+            Feats = new List<Feat>();
         }
 
         /// <summary>

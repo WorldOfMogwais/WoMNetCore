@@ -4,7 +4,7 @@ namespace WoMFramework.Game.Model.Classes
 {
     public class Rogue : Classes
     {
-        public Rogue() : base(ClassType.Rogue)
+        public Rogue() : base(ClassType.Rogue, false)
         {
             HitPointDiceRollEvent = new[] { 1, 8 };
             WealthDiceRollEvent = new[] { 3, 6, 0, 1 };

@@ -4,7 +4,7 @@ namespace WoMFramework.Game.Model.Classes
 {
     public class Barbarian : Classes
     {
-        public Barbarian() : base(ClassType.Barbarian)
+        public Barbarian() : base(ClassType.Barbarian, false)
         {
             HitPointDiceRollEvent = new[] { 1, 12 };
             WealthDiceRollEvent = new[] { 3, 6, 0, 1 };

@@ -51,8 +51,6 @@ namespace WoMFramework.Game.Model.Mogwai
 
         public double Exp { get; private set; }
 
-        public int CurrentLevel { get; private set; } = 1;
-
         public double XpToLevelUp => LevelUpXp(CurrentLevel);
 
         public double LevelUpXp(int level) => level * 1000;

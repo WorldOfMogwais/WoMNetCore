@@ -4,7 +4,7 @@ namespace WoMFramework.Game.Model.Classes
 {
     public class Fighter : Classes
     {
-        public Fighter() : base(ClassType.Fighter)
+        public Fighter() : base(ClassType.Fighter, false)
         {
             HitPointDiceRollEvent = new[] { 1, 10 };
             WealthDiceRollEvent = new[] { 3, 6, 0, 1 };

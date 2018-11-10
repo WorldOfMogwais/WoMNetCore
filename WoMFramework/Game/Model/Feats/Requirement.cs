@@ -16,7 +16,7 @@ namespace WoMFramework.Game.Model
 
         public bool Valid(Entity entity)
         {
-            throw new NotImplementedException();
+            return entity.GetRequirementValue(RequirementType) >= Value;
         }
 
         public override string ToString()

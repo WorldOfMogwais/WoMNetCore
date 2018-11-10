@@ -77,7 +77,7 @@ namespace WoMFramework.Game.Model
         public bool CanLearn(Entity entity)
         {
             // can't learn skill 2x times
-            if (entity.Skills.Any(p => p.Id == Id))
+            if (entity.Feats.Any(p => p.Id == Id))
             {
                 return false;
             }
@@ -104,7 +104,7 @@ namespace WoMFramework.Game.Model
             CombatActions.ForEach(p => entity.CombatActions.Add(p));
 
             // add skill
-            entity.Skills.Add(this);
+            entity.Feats.Add(this);
 
             return true;
         }
@@ -117,13 +117,13 @@ namespace WoMFramework.Game.Model
         public bool CanUnLearn(Entity entity)
         {
             // can't learn skill 2x times
-            if (!entity.Skills.Exists(p => p.Id == Id))
+            if (!entity.Feats.Exists(p => p.Id == Id))
             {
                 return false;
             }
 
             // can't unlearn skills that have requirments for learned follow up skills
-            if (entity.Skills.Exists(p => p.Requirements.Any(q => q.RequirementType == RequirementType.Skill && q.Value == Id)))
+            if (entity.Feats.Exists(p => p.Requirements.Any(q => q.RequirementType == RequirementType.Skill && q.Value == Id)))
             {
                 return false;
             }
@@ -150,7 +150,7 @@ namespace WoMFramework.Game.Model
             CombatActions.ForEach(p => entity.CombatActions.Remove(p));
 
             // remove skill
-            entity.Skills.Remove(this);
+            entity.Feats.Remove(this);
 
             return true;
         }

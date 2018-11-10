@@ -45,6 +45,8 @@ namespace WoMFramework.Game.Model.Monster
         {
             var monster = new Monster(Name, ChallengeRating, MonsterType, Experience)
             {
+                CurrentLevel = (int) ChallengeRating + 1,
+
                 SizeType = SizeType,
 
                 Strength = Strength,

@@ -23,11 +23,14 @@ namespace WoMFramework.Game.Model.Classes
         public string Description { get; set; }
         public string Role { get; set; }
 
-        protected Classes(ClassType classType)
+        public bool CanCast { get; set; }
+
+        protected Classes(ClassType classType, bool caster)
         {
             ClassType = classType;
             ClassLevel = 0;
             ClassAttackBonus = 0;
+            CanCast = caster;
         }
 
         public virtual void ClassLevelUp()

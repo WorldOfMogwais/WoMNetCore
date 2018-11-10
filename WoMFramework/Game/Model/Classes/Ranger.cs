@@ -4,7 +4,7 @@ namespace WoMFramework.Game.Model.Classes
 {
     public class Ranger : Classes
     {
-        public Ranger() : base(ClassType.Ranger)
+        public Ranger() : base(ClassType.Ranger, false)
         {
             HitPointDiceRollEvent = new[] { 1, 10 };
             WealthDiceRollEvent = new[] { 3, 6, 0, 1 };

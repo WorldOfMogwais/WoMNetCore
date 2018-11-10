@@ -4,7 +4,7 @@ namespace WoMFramework.Game.Model.Classes
 {
     public class Wizard : Classes
     {
-        public Wizard() : base(ClassType.Wizard)
+        public Wizard() : base(ClassType.Wizard, true)
         {
             HitPointDiceRollEvent = new[] { 1, 6 };
             WealthDiceRollEvent = new[] { 3, 6, 0, 1 };
