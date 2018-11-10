@@ -353,11 +353,11 @@ namespace WoMFramework.Game.Model
         /// <param name="damageType"></param>
         public void Damage(int damageAmount, DamageType damageType)
         {
-            if (damageAmount <= 0)
+            // no damage return or same for dead entities
+            if (damageAmount <= 0 || IsDead)
             {
                 return;
             }
-
 
             Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage.");
             LogEntry logEntry = LogEntry.Damage(this, damageAmount, damageType);
@@ -510,6 +510,12 @@ namespace WoMFramework.Game.Model
             // all attacks are calculated
             for (var attackIndex = 0; attackIndex < BaseAttackBonus.Length; attackIndex++)
             {
+                // break when target is null or dead, no more attacks on dead monsters.
+                if (target == null || target.IsDead)
+                {
+                    break;
+                }
+
                 var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
                 var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
 

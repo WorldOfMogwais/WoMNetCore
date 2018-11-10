@@ -427,16 +427,19 @@ namespace WoMWallet.Node
                 },
             };
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 30; i++)
             {
                 shifts.Add(blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
                     blockHeight++, "0000000033dbfc163de3671ba28b41ecab6f5d1cf9bb43174cc97bf2164d2e39"));
 
-                shifts.Add(blockHeight, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                        blockHeight++, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
-                        2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
-                        lvlBarbarian.GetValue1(),
-                        lvlBarbarian.GetValue2()));
+            }
+            for (int i = 0; i < 10; i++)
+            {
+            shifts.Add(blockHeight, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                blockHeight++, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
+                2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
+                lvlBarbarian.GetValue1(),
+                lvlBarbarian.GetValue2()));
             }
 
             var dungActionNext = new AdventureAction(AdventureType.Dungeon, DifficultyType.Easy, 8);
