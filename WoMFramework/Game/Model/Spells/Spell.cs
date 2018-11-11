@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Model.Actions;
 
@@ -149,7 +150,13 @@ namespace WoMFramework.Game.Model.Spells
                 {
                     var owner = m as Entity;
                     var target = t as Entity;
-                    
+
+                    if (owner == null || target == null)
+                        return;
+
+                    var casterLevel = owner.GetRequirementValue(RequirementType.CasterLevel);
+                    var healAmount = owner.Dice.Roll(8) + casterLevel < 5 ? casterLevel : 5;
+                    target.Heal(healAmount, HealType.Spell);
                 })
             };
         }
