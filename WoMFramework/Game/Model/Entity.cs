@@ -206,6 +206,8 @@ namespace WoMFramework.Game.Model
 
         public List<Feat> Feats { get; set; }
 
+        public List<Spell> Spells { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -233,6 +235,9 @@ namespace WoMFramework.Game.Model
 
             // initialize skills list
             Feats = new List<Feat>();
+
+            // initialize spells list
+            Spells = new List<Spell>();
         }
 
         /// <summary>
@@ -247,18 +252,23 @@ namespace WoMFramework.Game.Model
             WillBaseSave = Classes.Sum(p => p.WillBaseSave);
             HitPointDiceRollEvent = Classes[0].HitPointDiceRollEvent;
             HitPointLevelRolls.Add(dice.Roll(HitPointDiceRollEvent));
+
+            Classes.ForEach(p => p.Learnables.ForEach(q => Learn(q)));
         }
 
-        public bool LearnSkill(Feat feat)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lernable"></param>
+        /// <returns></returns>
+        public bool Learn(Learnable lernable)
         {
-            if (!feat.CanLearn(this))
+            if (!lernable.CanLearn(this))
             {
                 return false;
             }
 
-            feat.Learn(this);
-
-            return true;
+            return lernable.Learn(this);
         }
 
         /// <summary>
@@ -439,6 +449,7 @@ namespace WoMFramework.Game.Model
                 return false;
             }
 
+            // weapon attack
             if (entityAction is WeaponAttack weaponAttack)
             {
                 if (weaponAttack.ActionType == ActionType.Full)
@@ -452,6 +463,13 @@ namespace WoMFramework.Game.Model
                 return true;
             }
 
+            // cast spell
+            if (entityAction is SpellCast spellCast)
+            {
+                return Cast(spellCast);
+            }
+
+            // move
             if (entityAction is MoveAction moveAction)
             {
                 return Move(moveAction.Destination, true);
@@ -490,6 +508,37 @@ namespace WoMFramework.Game.Model
         }
 
         #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="spellCast"></param>
+        /// <returns></returns>
+        private bool Cast(SpellCast spellCast)
+        {
+            var spell = spellCast.Spell;
+            var target = spellCast.Target as Entity;
+
+            var concentrateRoll = 10;
+
+            var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) cast " +
+                          $"{Coloring.Violet(spell.Name)} on {Coloring.Name(target.Name)} roll {concentrateRoll.ToString()}:";
+
+            if (concentrateRoll > 1 && concentrateRoll > spell.Level)
+            {
+                Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("success")}!");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("success")}!"));
+                spell.SpellEffect(this, target);
+            }
+            else
+            {
+                Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
+            }
+
+            Adventure.Enqueue(AdventureLog.Attacked(this, target));
+            return true;
+        }
 
         /// <summary>
         /// 
@@ -811,7 +860,6 @@ namespace WoMFramework.Game.Model
                     return;
             }
         }
-
 
     }
 }

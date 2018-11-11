@@ -20,10 +20,12 @@ namespace WoMFramework.Game.Model
         Mythic
     }
 
+
+
     /// <summary>
     /// Feat class
     /// </summary>
-    public class Feat
+    public class Feat : Learnable
     {
         public int Id { get; }
 
@@ -103,7 +105,7 @@ namespace WoMFramework.Game.Model
             // add actions
             CombatActions.ForEach(p => entity.CombatActions.Add(p));
 
-            // add skill
+            // add feat
             entity.Feats.Add(this);
 
             return true;
@@ -156,4 +158,14 @@ namespace WoMFramework.Game.Model
         }
     }
 
+    public interface Learnable
+    {
+        bool CanLearn(Entity entity);
+
+        bool Learn(Entity entity);
+
+        bool CanUnLearn(Entity entity);
+
+        bool UnLearn(Entity entity);
+    }
 }

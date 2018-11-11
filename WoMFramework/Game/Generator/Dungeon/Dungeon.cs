@@ -95,7 +95,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             _initiativeTurn = 0;
             _roundMode = Mode.Exploration;
 
-            Map = new Map(DungeonRandom, 150, 150, this);
+            Map = new Map(DungeonRandom, 75, 75, this);
         }
 
         public override void CreateEntities(Mogwai mogwai, Shift shift)
@@ -315,6 +315,12 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             var combatActionQueue = new Queue<CombatAction>();
 
+            // survival check
+            if ((double) entity.CurrentHitPoints / entity.MaxHitPoints < 0.25)
+            {
+                TryEnqueueSurvival(entity, ref combatActionQueue);
+            }
+
             // get a target
             var target = GetNearestOrWeakestEnemy(entity);
 
@@ -392,6 +398,21 @@ namespace WoMFramework.Game.Generator.Dungeon
                 case Monster _:
 
                     break;
+            }
+        }
+
+        private void TryEnqueueSurvival(Entity entity, ref Queue<CombatAction> combatActionQueue)
+        {
+            var healingSpells = entity.CombatActions
+                .Where(p => p is SpellCast spellCast && spellCast.Spell.SubSchoolType == SubSchoolType.Healing)
+                .Select(p => p.Executable(entity))
+                .Where(p => p != null);
+
+            var healingSpell = healingSpells.FirstOrDefault();
+
+            if (healingSpell != null)
+            {
+                combatActionQueue.Enqueue(healingSpell);
             }
         }
 

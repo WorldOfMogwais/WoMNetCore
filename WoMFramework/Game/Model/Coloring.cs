@@ -101,5 +101,10 @@ namespace WoMFramework.Game.Model
         {
             return $"[c:r f:Yellow]{value}[c:u]";
         }
+
+        internal static object Violet(string name)
+        {
+            return $"[c:r f:Violet]{name}[c:u]";
+        }
     }
 }

@@ -173,14 +173,25 @@ namespace WoMFramework.Game.Model.Actions
 
     public class SpellCast : CombatAction
     {
-        public SpellCast(Entity owner) : base(ActionType.Standard, owner, null, true)
+        public Spell Spell { get; }
+
+        public SpellCast(Entity owner, Spell spell, ActionType actionType) : base(actionType, owner, null, true)
         {
             IsExecutable = false;
+            Spell = spell;
         }
-
+        private SpellCast(Entity owner, Spell spell, IAdventureEntity target, ActionType actionType) : base(actionType, owner, target, true)
+        {
+            IsExecutable = true;
+            Spell = spell;
+        }
         public override CombatAction Executable(IAdventureEntity target)
         {
-            return null;
+            if (!Spell.CanCast(Owner, target))
+            {
+                return null;
+            }
+            return new SpellCast(Owner, Spell, target, ActionType);
         }
     }
 

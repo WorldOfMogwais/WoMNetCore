@@ -1,4 +1,5 @@
-﻿using WoMFramework.Game.Enums;
+﻿using System.Collections.Generic;
+using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Model.Classes
 {
@@ -21,6 +22,16 @@ namespace WoMFramework.Game.Model.Classes
                 "superior to themselves. With rage granting them boldness and daring beyond that of most other warriors, " +
                 "barbarians charge furiously into battle and ruin all who would stand in their way.";
             //Alignment: Any nonlawful.
+            Learnables.AddRange(ClassSpells());
+        }
+
+        public override int CasterMod(Entity entity) => int.MinValue;
+
+        public override List<Spell> ClassSpells()
+        {
+            return new List<Spell>()
+            {
+            };
         }
 
         public override void ClassLevelUp()

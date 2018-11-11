@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using WoMFramework.Game.Enums;
 
 namespace WoMFramework.Game.Model.Classes
@@ -25,12 +26,20 @@ namespace WoMFramework.Game.Model.Classes
 
         public bool CanCast { get; set; }
 
+        public List<Learnable> Learnables;
+
+        public abstract int CasterMod(Entity entity);
+
+        public abstract List<Spell> ClassSpells();
+
         protected Classes(ClassType classType, bool caster)
         {
             ClassType = classType;
             ClassLevel = 0;
             ClassAttackBonus = 0;
             CanCast = caster;
+
+            Learnables = new List<Learnable>();
         }
 
         public virtual void ClassLevelUp()

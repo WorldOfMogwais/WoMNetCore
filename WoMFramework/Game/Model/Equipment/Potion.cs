@@ -1,5 +1,4 @@
 ﻿using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Spells;
 
 namespace WoMFramework.Game.Model
 {

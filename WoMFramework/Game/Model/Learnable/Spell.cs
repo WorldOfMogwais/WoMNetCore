@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
-using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator;
 using WoMFramework.Game.Model.Actions;
 
-namespace WoMFramework.Game.Model.Spells
+namespace WoMFramework.Game.Model
 {
     public enum SchoolType
     {
@@ -63,11 +63,13 @@ namespace WoMFramework.Game.Model.Spells
         Fortitude
     }
 
-    public class Spell
+    public class Spell : Learnable
     {
         public int Id { get; }
 
         public string Name { get; set; }
+
+        public int Level { get; set; }
 
         public string Description { get; set; }
 
@@ -99,10 +101,11 @@ namespace WoMFramework.Game.Model.Spells
 
         public Action<IAdventureEntity, IAdventureEntity> SpellEffect { get; set; }
 
-        public Spell(int id, string name)
+        public Spell(int id, string name, int level)
         {
             Id = id;
             Name = name;
+            Level = level;
         }
 
         public bool CanExecuteSpell(IAdventureEntity me, IAdventureEntity target = null)
@@ -120,51 +123,53 @@ namespace WoMFramework.Game.Model.Spells
             SpellEffect(me, target);
             return true;
         }
-    }
 
-    public class Spells
-    {
-        public static Spell CureLightWounds()
+        public bool CanLearn(Entity entity)
         {
-            return new Spell(0, "Cure Light Wounds")
+            // can't learn skill 2x times
+            if (entity.Spells.Any(p => p.Id == Id))
             {
-                Description = 
-                    "When laying your hand upon a living creature, you channel positive energy that cures 1d8 points " +
-                    "of damage + 1 point per caster level (maximum +5). Since undead are powered by negative energy, " +
-                    "this spell deals damage to them instead of curing their wounds. An undead creature can apply spell " +
-                    "resistance, and can attempt a Will save to take half damage.",
-                ShortDescription = "Cures 1d8 damage + 1/level (max +5).",
-                SchoolType = SchoolType.Conjuration,
-                SubSchoolType = SubSchoolType.Healing,
-                DescriptorTypes = new DescriptorType[] {},
-                Requirements = new List<Requirement>(),
-                CastingTime = ActionType.Standard,
-                RangeType = RangeType.Touch,
-                AreaType = AreaType.None,
-                EffectType = EffectType.None,
-                TargetType = TargetType.Entity,
-                DurationType = DurationType.Instant,
-                SavingThrowType = SavingThrowType.Will,
-                SpellResistance = 0.5,
-                SpellEffect = ((m, t) =>
-                {
-                    var owner = m as Entity;
-                    var target = t as Entity;
+                return false;
+            }
 
-                    if (owner == null || target == null)
-                        return;
-
-                    var casterLevel = owner.GetRequirementValue(RequirementType.CasterLevel);
-                    var healAmount = owner.Dice.Roll(8) + casterLevel < 5 ? casterLevel : 5;
-                    target.Heal(healAmount, HealType.Spell);
-                })
-            };
+            return Requirements.All(p => p.Valid(entity));
         }
 
+        public bool Learn(Entity entity)
+        {
+            if (!CanLearn(entity))
+            {
+                return false;
+            }
 
+            var spellCast = new SpellCast(entity, this, CastingTime);
 
+            // add actions
+            entity.CombatActions.Add(spellCast);
+
+            // add spell
+            entity.Spells.Add(this);
+
+            Mogwai.Mogwai.History.Add(LogType.Event, $"{Coloring.Name(entity.Name)} learned successfully {Coloring.Green(Name)}.");
+
+            return true;
+        }
+
+        public bool CanUnLearn(Entity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UnLearn(Entity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool CanCast(Entity owner, IAdventureEntity target)
+        {
+            // TODO implement conditions
+
+            return true;
+        }
     }
-
-
-
 }
