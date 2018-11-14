@@ -355,7 +355,7 @@ namespace WoMFramework.Game.Model.Mogwai
 
             Exp += exp;
 
-            if (Exp >= XpToLevelUp)
+            while (Exp >= XpToLevelUp)
             {
                 CurrentLevel += 1;
                 LevelShifts.Add(_currentShift.Height);
