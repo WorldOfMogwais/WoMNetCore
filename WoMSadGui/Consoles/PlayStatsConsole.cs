@@ -27,7 +27,6 @@ namespace WoMSadGui.Consoles
             
         }
 
-
         public override void Update(TimeSpan delta)
         {
             if (IsVisible)

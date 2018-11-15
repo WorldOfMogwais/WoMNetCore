@@ -24,4 +24,9 @@ namespace WoMFramework.Game.Model
 
         }
     }
+
+    public class Potions
+    {
+        public static Potion CureLightWoundsPotion => new Potion("Cure Light Wounds", 50, 0.1, "", Spells.CureLightWounds()); 
+    }
 }
