@@ -17,7 +17,7 @@ namespace WoMSadGui
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     internal class Program
     {
-        public static bool DEBUG = true;
+        public static bool DEBUG = false;
 
         public const int Width = 141;
         public const int Height = 40;

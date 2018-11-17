@@ -95,7 +95,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             _initiativeTurn = 0;
             _roundMode = Mode.Exploration;
 
-            Map = new Map(DungeonRandom, 75, 75, this);
+            Map = new Map(DungeonRandom, 100, 100, this);
         }
 
         public override void CreateEntities(Mogwai mogwai, Shift shift)

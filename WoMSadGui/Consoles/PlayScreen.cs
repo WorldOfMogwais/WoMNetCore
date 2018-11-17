@@ -89,7 +89,8 @@ namespace WoMSadGui.Consoles
             _adventure = new CustomAdventure(mogwaiController, mogwaiKeys, 91, 22) { Position = new Point(46, 0) };
             _adventureStats = new CustomAdventureStats(_mogwai, 91, 22) { Position = new Point(46, 0) };
 
-            _log = new ScrollingConsole(85, 13, 100) { Position = new Point(0, 25) };
+            //var logFont = Global.LoadFont("Bakus8.font").GetFont(Font.FontSizes.One);
+            _log = new ScrollingConsole(85, 13, 100, null) { Position = new Point(0, 25)};
             Children.Add(_log);
 
             var playInfoConsole = new PlayInfoConsole(mogwaiController, mogwaiKeys, 49, 14) { Position = new Point(88, 24) };

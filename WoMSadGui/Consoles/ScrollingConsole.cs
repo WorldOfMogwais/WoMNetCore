@@ -20,7 +20,7 @@ namespace WoMSadGui.Consoles
 
         public Console MainConsole => _mainConsole; 
 
-        public ScrollingConsole(int width, int height, int bufferHeight)
+        public ScrollingConsole(int width, int height, int bufferHeight, Font font = null)
         {
             UseKeyboard = false;
             UseMouse = true;
@@ -35,7 +35,8 @@ namespace WoMSadGui.Consoles
             _mainConsole = new Console(width - 1, bufferHeight)
             {
                 ViewPort = new Rectangle(0, 0, width - 1, height),
-                Cursor = {IsVisible = false}
+                Cursor = {IsVisible = false},
+                Font = font == null ? Font:font
             };
 
             _scrollBar = ScrollBar.Create(Orientation.Vertical, height);

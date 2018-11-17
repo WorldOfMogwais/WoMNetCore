@@ -30,8 +30,8 @@ namespace WoMSadGui.Consoles
         private readonly Mogwai _mogwai;
 
         private readonly Console _mapConsole;
-        private readonly int mapViewWidth = 60;
-        private readonly int mapViewHeight = 30;
+        private readonly int mapViewWidth = 45;
+        private readonly int mapViewHeight = 22;
 
 
         private readonly Console _statsConsole;
@@ -55,10 +55,10 @@ namespace WoMSadGui.Consoles
             _mogwaiKeys = mogwaiKeys;
             _mogwai = _mogwaiKeys.Mogwai;
 
-            AdventureFont = Global.LoadFont("Cheepicus12.font").GetFont(Font.FontSizes.One);
+            AdventureFont = Global.LoadFont("Phoebus16.font").GetFont(Font.FontSizes.One);
 
             //_mapConsole = new Console(75, 75) { Position = new Point(17, 2) };
-            _mapConsole = new Console(150, 150) {Position = new Point(-16, 0)};
+            _mapConsole = new Console(100, 100) {Position = new Point(-24, 0)};
             _mapConsole.Font = AdventureFont;
             _mapConsole.IsVisible = false;
             Children.Add(_mapConsole);
@@ -243,7 +243,7 @@ namespace WoMSadGui.Consoles
             DrawExploMap();
 
             //DrawMap();
-            adventureLog.SourceFovCoords?.ToList().ForEach(p => _mapConsole[p.X, p.Y].Background = Color.Lerp(Color.DarkGray, Color.Black, 0.75f));
+            adventureLog.SourceFovCoords?.ToList().ForEach(p => _mapConsole[p.X, p.Y].Background = Color.Lerp(Color.DarkGray, Color.Black, 0.25f));
             
             // stats
             _statsConsole.Print(2, 0, Adventure.GetRound.ToString().PadLeft(4), Color.Gold);

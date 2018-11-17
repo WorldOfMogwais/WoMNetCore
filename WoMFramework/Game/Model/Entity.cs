@@ -606,10 +606,11 @@ namespace WoMFramework.Game.Model
                 var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
                 var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
 
-                var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
+                var attackStr = criticalCounts > 0 ? "critical(" + attack + ")" : attack.ToString();
                 var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
-                var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
-                              $"{fullMeleeAttack.GetType().Name.ToLower()} {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
+                var message =
+                    $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
+                    $"{fullMeleeAttack.GetType().Name.ToLower()} {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[AC{Coloring.Armor(target.ArmorClass)}]:";
 
                 if (attack > target.ArmorClass || criticalCounts > 0)
                 {
@@ -622,15 +623,21 @@ namespace WoMFramework.Game.Model
                             criticalDamage += DamageRoll(weapon, Dice);
                         }
                     }
+
                     var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
-                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
-                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
+                    Mogwai.Mogwai.History.Add(LogType.Comb,
+                        $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
+                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb,
+                        $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
                     target.Damage(damage + criticalDamage, DamageType.Weapon);
                 }
                 else
                 {
                     Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
+                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
                 }
+
+                Adventure.Enqueue(AdventureLog.Attacked(this, target));
             }
         }
 
