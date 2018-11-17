@@ -53,7 +53,7 @@ namespace WoMFramework.Game.Model.Mogwai
 
         public double XpToLevelUp => LevelUpXp(CurrentLevel);
 
-        public double LevelUpXp(int level) => level * 1000;
+        public double LevelUpXp(int level) => Math.Pow(level, 2) * 1000;
 
         //public Adventure Adventure { get; set; }
 

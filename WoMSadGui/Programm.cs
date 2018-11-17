@@ -40,7 +40,7 @@ namespace WoMSadGui
 
             // Setup the engine and creat the main window.
             Game.Create("IBM.font", Width, Height);
-
+            
             // Hook the start event so we can add consoles to the system.
             Game.OnInitialize = Init;
 

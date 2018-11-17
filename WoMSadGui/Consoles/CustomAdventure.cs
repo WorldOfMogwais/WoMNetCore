@@ -147,12 +147,12 @@ namespace WoMSadGui.Consoles
             {
                 case StoneTile _:
                     _mapConsole[x, y].CopyAppearanceFrom(isUnclear ? UnclearAppearance : StoneTileAppearance);
-                    _mapConsole.SetGlyph(x, y, 46);
+                    _mapConsole.SetGlyph(x, y, 46);//43);
                     break;
 
                 case StoneWall _:
                     _mapConsole[x, y].CopyAppearanceFrom(isUnclear ? UnclearAppearance : StoneWallAppearance);
-                    _mapConsole.SetGlyph(x, y, 35);
+                    _mapConsole.SetGlyph(x, y, 245); //35);
                     break;
 
                 default:
@@ -170,31 +170,42 @@ namespace WoMSadGui.Consoles
             {
                 case Mogwai _:
                     glyph = 1;
-                    colour = Color.LimeGreen;
+                    colour = Color.SandyBrown;
                     break;
                 case Monster _:
-                    glyph = 64;
-                    colour = Color.Red;
+                    glyph = 135; //64;
+                    colour = Color.DarkOrange;
                     break;
                 default:
                     throw new NotImplementedException();
             }
 
             // TODO: rotating symbols for multiple mogwais
-            var animated = new Animated("default", 1, 1, AdventureFont);
-            var frame = animated.CreateFrame();
+            var defaultAnim = new Animated("default", 1, 1, AdventureFont);
+            var frame = defaultAnim.CreateFrame();
             frame[0].Glyph = glyph;
             frame[0].Foreground = colour;
 
             var pos = adventureEntity.Coordinate;
-            var entity = new ConsoleEntity(animated)
+            var entity = new ConsoleEntity(defaultAnim)
             {
-                Position = new Point(pos.X, pos.Y)
+                Position = new Point(pos.X, pos.Y),
             };
+
+            // damage animation
+            var animEntity = new ConsoleEntity(new Animated("default", 1, 1, AdventureFont));
+            var damageAnim = new Animated("damage", 1, 1, AdventureFont);
+            damageAnim.AnimationDuration = 1;
+            var damageFrame = damageAnim.CreateFrame();
+            damageFrame[0].Glyph = 15;
+            damageFrame[0].Foreground = Color.Red;
+            animEntity.Animations.Add("damage", damageAnim);
+
+            // add animation entity
+            entity.Children.Add(animEntity);
 
             entity.IsVisible = false;
 
-            //_mapConsole.Children.Add(entity);
             _entities.Add(adventureEntity.AdventureEntityId, entity);
             _entityManager.Entities.Add(entity);
         }
@@ -243,7 +254,7 @@ namespace WoMSadGui.Consoles
             DrawExploMap();
 
             //DrawMap();
-            adventureLog.SourceFovCoords?.ToList().ForEach(p => _mapConsole[p.X, p.Y].Background = Color.Lerp(Color.DarkGray, Color.Black, 0.25f));
+            adventureLog.SourceFovCoords?.ToList().ForEach(p => _mapConsole[p.X, p.Y].Background = Color.Lerp(Color.Yellow, Color.Black, 0.50f));
             
             // stats
             _statsConsole.Print(2, 0, Adventure.GetRound.ToString().PadLeft(4), Color.Gold);
@@ -261,7 +272,7 @@ namespace WoMSadGui.Consoles
                     MoveEntity(_entities[adventureLog.Source], adventureLog.TargetCoord);
                     break;
                 case AdventureLog.LogType.Attack:
-                    AttackEntity(adventureLog.TargetCoord);
+                    AttackEntity(_entities[adventureLog.Target], adventureLog.TargetCoord);
                     break;
                 case AdventureLog.LogType.Died:
                     DiedEntity(_entities[adventureLog.Source]);
@@ -294,19 +305,10 @@ namespace WoMSadGui.Consoles
             _entityManager.Sync();
         }
 
-        private void AttackEntity(Coord targetCoord)
+        private void AttackEntity(ConsoleEntity entity, Coord targetCoord)
         {
-            var effect = new Animated("default", 1, 1, AdventureFont);
-
-            var frame = effect.CreateFrame();
-            effect.CreateFrame();
-            frame[0].Glyph = 15;
-
-            effect.AnimationDuration = 1;
-            effect.Start();
-
-            var entity = new ConsoleEntity(effect) { Position = new Point(targetCoord.X, targetCoord.Y) };
-            _mapConsole.Children.Add(entity);
+            ConsoleEntity animationEntity = entity.Children.Where(p => p is ConsoleEntity).First() as ConsoleEntity;
+            animationEntity.Animation = animationEntity.Animations["damage"];
         }
 
         private void DiedEntity(ConsoleEntity entity)
