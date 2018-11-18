@@ -78,14 +78,14 @@ namespace WoMFramework.Game.Generator
         {
             var coords = new List<Coord>();
             Map.AddEntity(mogwai, 4, 4);
-            mogwai.CurrentInitiative = mogwai.InitiativeRoll(mogwai.Dice);
+            mogwai.CurrentInitiative = mogwai.InitiativeRoll;
             mogwai.EngagedEnemies = new List<Entity>();
             mogwai.EngagedEnemies.AddRange(MonstersList);
 
             coords.AddRange(new RadiusAreaProvider(mogwai.Coordinate, 1, Radius.CIRCLE).CalculatePositions().ToList());
             foreach (var monster in MonstersList)
             {
-                monster.CurrentInitiative = monster.InitiativeRoll(monster.Dice);
+                monster.CurrentInitiative = monster.InitiativeRoll;
                 monster.EngagedEnemies =new List<Entity>();
                 monster.EngagedEnemies.AddRange(HeroesList);
                 monster.Adventure = mogwai.Adventure;

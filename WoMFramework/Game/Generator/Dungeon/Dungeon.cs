@@ -256,7 +256,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 foreach (var entity in initiationEntities)
                 {
-                    entity.CurrentInitiative = entity.InitiativeRoll(entity.Dice);
+                    entity.CurrentInitiative = entity.InitiativeRoll;
                     entity.CombatState = CombatState.Engaged;
                     entity.EngagedEnemies = initiationEntities.Where(p => p.Faction != entity.Faction).ToList();
                 }

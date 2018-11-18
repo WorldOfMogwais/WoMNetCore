@@ -129,12 +129,12 @@ namespace WoMFramework.Game.Model
         public int AttackBonus(int attackIndex) => BaseAttackBonus[attackIndex] + StrengthMod + (int)SizeType + MiscMod[ModifierType.AttackBonus] + TempMod[ModifierType.AttackBonus];
 
         // attack roll
-        public int[] AttackRolls(Dice dice, int attackIndex, int criticalMinRoll = 21)
+        public int[] AttackRolls(int attackIndex, int criticalMinRoll = 21)
         {
             var rolls = new List<int>();
             for (var i = 0; i < 3; i++)
             {
-                var lastRoll = dice.Roll(DiceType.D20);
+                var lastRoll = Dice.Roll(DiceType.D20);
                 rolls.Add(lastRoll + AttackBonus(attackIndex));
                 if (lastRoll < criticalMinRoll)
                     break;
@@ -143,7 +143,7 @@ namespace WoMFramework.Game.Model
         }
 
         // initiative roll
-        public int InitiativeRoll(Dice dice) => dice.Roll(DiceType.D20) + Initiative;
+        public int InitiativeRoll => Dice.Roll(DiceType.D20) + Initiative;
 
         // damage
         public int DamageRoll(Weapon weapon, Dice dice)
@@ -452,14 +452,7 @@ namespace WoMFramework.Game.Model
             // weapon attack
             if (entityAction is WeaponAttack weaponAttack)
             {
-                if (weaponAttack.ActionType == ActionType.Full)
-                {
-                    FullAttack(weaponAttack);
-                }
-                else
-                {
-                    Attack(weaponAttack);
-                }
+                Attack(weaponAttack);
                 return true;
             }
 
@@ -544,58 +537,62 @@ namespace WoMFramework.Game.Model
         /// 
         /// </summary>
         /// <param name="weaponAttack"></param>
-        private void Attack(WeaponAttack weaponAttack)
-        {
-            // only first attack, it's a standard action
-            var attackIndex = 0;
-            var weapon = weaponAttack.Weapon;
-            var target = weaponAttack.Target as Entity;
+        //private void Attack(WeaponAttack weaponAttack)
+        //{
+        //    // only first attack, it's a standard action
+        //    var attackIndex = 0;
+        //    var weapon = weaponAttack.Weapon;
+        //    var target = weaponAttack.Target as Entity;
 
-            var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
-            var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
+        //    var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
+        //    var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
 
-            var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
-            var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
-            var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
-                          $"{weaponAttack.GetType().Name.ToLower()} {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
+        //    var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
+        //    var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
+        //    var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
+        //                  $"{weaponAttack.GetType().Name.ToLower()} {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
 
-            if (attack > target.ArmorClass || criticalCounts > 0)
-            {
-                var damage = DamageRoll(weapon, Dice);
-                var criticalDamage = 0;
-                if (criticalCounts > 0)
-                {
-                    for (var i = 0; i < weapon.CriticalMultiplier - 1; i++)
-                    {
-                        criticalDamage += DamageRoll(weapon, Dice);
-                    }
-                }
-                var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
-                Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
-                target.Damage(damage + criticalDamage, DamageType.Weapon);
-            }
-            else
-            {
-                Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
+        //    if (attack > target.ArmorClass || criticalCounts > 0)
+        //    {
+        //        var damage = DamageRoll(weapon, Dice);
+        //        var criticalDamage = 0;
+        //        if (criticalCounts > 0)
+        //        {
+        //            for (var i = 0; i < weapon.CriticalMultiplier - 1; i++)
+        //            {
+        //                criticalDamage += DamageRoll(weapon, Dice);
+        //            }
+        //        }
+        //        var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
+        //        Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
+        //        Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
+        //        target.Damage(damage + criticalDamage, DamageType.Weapon);
+        //    }
+        //    else
+        //    {
+        //        Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
+        //        Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
 
-            }
+        //    }
 
-            Adventure.Enqueue(AdventureLog.Attacked(this, target));
-        }
+        //    Adventure.Enqueue(AdventureLog.Attacked(this, target));
+        //}
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="fullMeleeAttack"></param>
-        private void FullAttack(WeaponAttack fullMeleeAttack)
+        /// <param name="weaponAttack"></param>
+        /// <returns></returns>
+        private void Attack(WeaponAttack weaponAttack)
         {
-            var weapon = fullMeleeAttack.Weapon;
-            var target = fullMeleeAttack.Target as Entity;
+            var attackTimes = weaponAttack.ActionType == ActionType.Full ? BaseAttackBonus.Length : 1;
+            var weapon = weaponAttack.Weapon;
+            var target = weaponAttack.Target as Entity;
+
+            Console.WriteLine($"{Name}: is acking {attackTimes} times");
 
             // all attacks are calculated
-            for (var attackIndex = 0; attackIndex < BaseAttackBonus.Length; attackIndex++)
+            for (var attackIndex = 0; attackIndex < attackTimes; attackIndex++)
             {
                 // break when target is null or dead, no more attacks on dead monsters.
                 if (target == null || target.IsDead)
@@ -603,14 +600,14 @@ namespace WoMFramework.Game.Model
                     break;
                 }
 
-                var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
+                Console.WriteLine($"{weapon.Name} CriticalMinRoll: {weapon.CriticalMinRoll}");
+                var attackRolls = AttackRolls(attackIndex, weapon.CriticalMinRoll);
                 var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
 
-                var attackStr = criticalCounts > 0 ? "critical(" + attack + ")" : attack.ToString();
+                var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
                 var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
-                var message =
-                    $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
-                    $"{fullMeleeAttack.GetType().Name.ToLower()} {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[AC{Coloring.Armor(target.ArmorClass)}]:";
+                var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
+                              $"{weaponAttack.GetType().Name.ToLower()}[{Coloring.Gainsboro(weaponAttack.ActionType.ToString().Substring(0,1))}] {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
 
                 if (attack > target.ArmorClass || criticalCounts > 0)
                 {
@@ -623,12 +620,9 @@ namespace WoMFramework.Game.Model
                             criticalDamage += DamageRoll(weapon, Dice);
                         }
                     }
-
                     var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
-                    Mogwai.Mogwai.History.Add(LogType.Comb,
-                        $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
-                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb,
-                        $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
+                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
+                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
                     target.Damage(damage + criticalDamage, DamageType.Weapon);
                 }
                 else
@@ -636,7 +630,6 @@ namespace WoMFramework.Game.Model
                     Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
                     Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
                 }
-
                 Adventure.Enqueue(AdventureLog.Attacked(this, target));
             }
         }

@@ -66,7 +66,7 @@ namespace WoMFramework.Game.Random
 
         public int Roll(DiceType diceType)
         {
-            return GetNext() % GetSides(diceType) + 1;
+            return (GetNext() % (int) diceType) + 1;
         }
 
         public int Roll(int[] rollEvent)
@@ -109,12 +109,6 @@ namespace WoMFramework.Game.Random
             _i2 = _i1 == 0 ? (_i2 + 1) % _seed2.Length : _i2;
             _i3 = _i2 == 0 ? (_i3 + 1) % _seed3.Length : _i3;
             return value;
-        }
-
-        private int GetSides(DiceType diceType)
-        {
-            return int.Parse(diceType.ToString().Substring(1));
-
         }
 
         public IGenerator GetRandomGenerator()

@@ -14,8 +14,8 @@ namespace WoMFramework.Game.Model
 
         public WeaponSubType WeaponSubType { get; set; }
         public WeaponAttackType WeaponAttackType { get; set; }
-        public int CriticalMinRoll { get; set; }
-        public int CriticalMultiplier{ get; set; }
+        public int CriticalMinRoll { get; set; } = 20;
+        public int CriticalMultiplier { get; set; } = 2;
         public WeaponDamageType[] WeaponDamageTypes { get; set; }
         public int Range { get; set; }
         public SizeType SizeType { get; set; }
@@ -28,6 +28,7 @@ namespace WoMFramework.Game.Model
             return new Weapon(Name, WeaponBaseType, WeaponSubType, WeaponProficiencyType, WeaponEffortType, DamageMediumRollEvent,  WeaponAttackType, CriticalMinRoll, CriticalMultiplier, WeaponDamageTypes, Range, SizeType, Cost, Weight, Description);
         }
     }
+
     public class NaturalWeapon
     {
         public static Weapon Bite(SizeType sizeType) => 
@@ -39,6 +40,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 6 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Piercing, WeaponDamageType.Slashing },
                 SizeType = sizeType,
                 Cost = 0,
@@ -55,6 +58,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 4 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning, WeaponDamageType.Slashing },
                 SizeType = sizeType,
                 Cost = 0,
@@ -71,6 +76,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 6 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Piercing },
                 SizeType = sizeType,
                 Cost = 0,
@@ -87,6 +94,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 4 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
                 SizeType = sizeType,
                 Cost = 0,
@@ -103,6 +112,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 4 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
                 SizeType = sizeType,
                 Cost = 0,
@@ -119,6 +130,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 4 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
                 SizeType = sizeType,
                 Cost = 0,
@@ -135,6 +148,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 6 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
                 SizeType = sizeType,
                 Cost = 0,
@@ -151,6 +166,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 6 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
                 SizeType = sizeType,
                 Cost = 0,
@@ -167,6 +184,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 4 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Bludgeoning },
                 SizeType = sizeType,
                 Cost = 0,
@@ -183,6 +202,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 4 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Piercing },
                 SizeType = sizeType,
                 Cost = 0,
@@ -199,6 +220,8 @@ namespace WoMFramework.Game.Model
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
                 DamageMediumRollEvent = new[] { 1, 4 },
+                CriticalMinRoll = 20,
+                CriticalMultiplier = 2,
                 WeaponDamageTypes = new[] { WeaponDamageType.Slashing },
                 SizeType = sizeType,
                 Cost = 0,

@@ -170,11 +170,11 @@ namespace WoMSadGui.Consoles
             {
                 case Mogwai _:
                     glyph = 1;
-                    colour = Color.SandyBrown;
+                    colour = Color.DarkOrange;
                     break;
                 case Monster _:
                     glyph = 135; //64;
-                    colour = Color.DarkOrange;
+                    colour = Color.SandyBrown;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -193,10 +193,11 @@ namespace WoMSadGui.Consoles
             };
 
             // damage animation
-            var animEntity = new ConsoleEntity(new Animated("default", 1, 1, AdventureFont));
-            var damageAnim = new Animated("damage", 1, 1, AdventureFont);
-            damageAnim.AnimationDuration = 1;
+            var defAnimated = new Animated("default", 1, 1, AdventureFont);
+            var animEntity = new ConsoleEntity(defAnimated);
+            var damageAnim = new Animated("damage", 1, 1, AdventureFont) {AnimationDuration = 1};
             var damageFrame = damageAnim.CreateFrame();
+            damageAnim.CreateFrame();
             damageFrame[0].Glyph = 15;
             damageFrame[0].Foreground = Color.Red;
             animEntity.Animations.Add("damage", damageAnim);
@@ -307,16 +308,17 @@ namespace WoMSadGui.Consoles
 
         private void AttackEntity(ConsoleEntity entity, Coord targetCoord)
         {
-            ConsoleEntity animationEntity = entity.Children.Where(p => p is ConsoleEntity).First() as ConsoleEntity;
+            var animationEntity = entity.Children.First(p => p is ConsoleEntity) as ConsoleEntity;
             animationEntity.Animation = animationEntity.Animations["damage"];
+            animationEntity.Animation.Restart();
         }
 
         private void DiedEntity(ConsoleEntity entity)
         {
             var animated = new Animated("default", 1, 1, AdventureFont);
             var frame = animated.CreateFrame();
-            frame[0].Glyph = 206;
-            frame[0].Foreground = Color.Gold;
+            frame[0].Glyph = 143;
+            frame[0].Foreground = Color.Gainsboro;
             entity.Animation = animated;
         }
     }
