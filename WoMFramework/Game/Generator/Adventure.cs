@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
-using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator.Dungeon;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Actions;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Game.Model.Monster;
 
@@ -145,56 +143,8 @@ namespace WoMFramework.Game.Generator
         }
     }
 
-    public interface IAdventureEntity
-    {
-        Adventure Adventure { get; set; }
-
-        Map Map { get; set; }
-
-        Coord Coordinate { get; set; }
-
-        bool IsStatic { get; }
-
-        bool IsPassable { get; }
-
-        int AdventureEntityId { get; set; }
-
-        int Size { get; }
-
-        bool TakeAction(EntityAction entityAction);
-    }
-
     public enum CombatState
     {
         None, Initiation, Engaged 
-    }
-
-    public interface ICombatant : IAdventureEntity
-    {
-        Faction Faction { get; set; }
-
-        int CurrentInitiative { get; set; }
-
-        CombatState CombatState { get; set; }
-
-        List<Entity> EngagedEnemies { get; set; }
-
-        HashSet<Coord> FovCoords { get; set; }
-
-        bool CanSee(IAdventureEntity combatant);
-
-        bool CanAct { get; }
-
-        bool IsAlive { get; }
-
-        bool IsDisabled { get; }
-
-        bool IsInjured { get; }
-
-        bool IsDying { get; }
-
-        bool IsDead { get; }
-
-        void Reset();
     }
 }

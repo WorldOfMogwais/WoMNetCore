@@ -178,18 +178,26 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shift"></param>
         private void DeployTreasures(Shift shift)
         {
             var bossRoom = Map.Locations[0];
 
-            //var coord = bossRoom.RandomPosition(DungeonRandom);
-            //while (Map.EntityMap[coord] != null)
-            //{
-            //    coord = bossRoom.RandomPosition(DungeonRandom);
-            //}
-            //boss.Adventure = this;
-            //Map.AddEntity(boss, coord.X, coord.Y);
+            var coord = bossRoom.RandomPosition(DungeonRandom);
+            while (Map.EntityMap[coord] != null)
+            {
+                coord = bossRoom.RandomPosition(DungeonRandom);
+            }
 
+            var bossChest = new Chest()
+            {
+                AdventureEntityId = NextId,
+                Adventure = this
+            };
+            Map.AddEntity(bossChest, coord.X, coord.Y);
         }
 
         /// <summary>

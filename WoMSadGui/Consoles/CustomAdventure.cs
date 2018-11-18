@@ -176,6 +176,10 @@ namespace WoMSadGui.Consoles
                     glyph = 135; //64;
                     colour = Color.SandyBrown;
                     break;
+                case Chest _:
+                    glyph = 146; //64;
+                    colour = Color.Pink;
+                    break;
                 default:
                     throw new NotImplementedException();
             }

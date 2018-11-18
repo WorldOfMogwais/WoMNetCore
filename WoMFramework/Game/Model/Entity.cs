@@ -87,9 +87,6 @@ namespace WoMFramework.Game.Model
 
         public int CurrentLevel { get; set; } = 1;
 
-        // current position
-        public Coord Coordinate { get; set; }
-
         // base speed
         public int BaseSpeed { get; set; }
 
@@ -430,7 +427,11 @@ namespace WoMFramework.Game.Model
 
         #region IAdventureEntity
 
+        // current position
+        public Coord Coordinate { get; set; }
+
         public Adventure Adventure { get; set; }
+
         public Map Map { get; set; }
 
         public int AdventureEntityId { get; set; }
@@ -438,6 +439,7 @@ namespace WoMFramework.Game.Model
         public int Size { get; }
 
         bool IAdventureEntity.IsStatic => false;
+
         bool IAdventureEntity.IsPassable => false;
 
         public List<CombatAction> CombatActions = new List<CombatAction>();
