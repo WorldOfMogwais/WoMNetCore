@@ -1,6 +1,6 @@
 
 # WoMNetCore "World of Mogwais .NETCore"
-![AppVeyor](https://ci.appveyor.com/api/projects/status/github/WorldOfMogwais/WoMNetCore?branch=master&svg=true)
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/WorldOfMogwais/WoMNetCore?branch=master&svg=true)](https://ci.appveyor.com/project/darkfriend77/womnetcore)
 ![Github All Releases](https://img.shields.io/github/downloads/WorldOfMogwais/WoMNetCore/total.svg)
 ![GitHub issues](https://img.shields.io/github/issues/WorldOfMogwais/WoMNetCore.svg)
 ## Introduction
