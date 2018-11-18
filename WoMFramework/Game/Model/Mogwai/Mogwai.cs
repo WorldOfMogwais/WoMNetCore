@@ -183,6 +183,12 @@ namespace WoMFramework.Game.Model.Mogwai
                 return true;
             }
 
+            if (Adventure != null && Adventure.AdventureState == AdventureState.Completed && Adventure.Reward != null)
+            {
+                AddExp(Adventure.Reward.Exp);
+                AddGold(Adventure.Reward.Gold);
+            }
+
             Adventure = null;
             MogwaiState = MogwaiState.HomeTown;
 

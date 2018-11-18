@@ -46,6 +46,8 @@ namespace WoMFramework.Game.Generator
         public bool IsActive => AdventureState == AdventureState.Preparation
                              || AdventureState == AdventureState.Extended;
 
+        public Reward Reward { get; set; }
+
         private int _nextId;
         public int NextId => _nextId++;
 
@@ -117,12 +119,12 @@ namespace WoMFramework.Game.Generator
             Flag = flag;
         }
 
-        public static AdventureLog EntityCreated(ICombatant entity)
+        public static AdventureLog EntityCreated(IAdventureEntity entity)
         {
-            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords);
+            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, entity is ICombatant combatant ? combatant.FovCoords : null);
         }
 
-        public static AdventureLog EntityRemoved(ICombatant entity)
+        public static AdventureLog EntityRemoved(IAdventureEntity entity)
         {
             return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, flag: false);
         }

@@ -96,6 +96,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             _roundMode = Mode.Exploration;
 
             Map = new Map(DungeonRandom, 100, 100, this);
+
+            Reward = new Reward(500, 100, null);
         }
 
         public override void CreateEntities(Mogwai mogwai, Shift shift)
@@ -148,6 +150,9 @@ namespace WoMFramework.Game.Generator.Dungeon
                 mob.Initialize(new Dice(shift, monsterMod++));
                 Entities.Add(mob.AdventureEntityId, mob);
             }
+
+            // exploration order
+            _explorationOrder = EntitiesList.OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
         }
 
         /// <summary>
@@ -162,6 +167,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             // deploy boss monsters
             // deploy treasures
+            DeployTreasures(shift);
             // deploy traps
             // deploy npc
             // deploy quests
@@ -170,9 +176,20 @@ namespace WoMFramework.Game.Generator.Dungeon
             // deploy mogwai
             DeployMogwai(mogwai);
 
-            // TODO add this to constructor once all entities are generated from shift
-            _explorationOrder = EntitiesList.OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
-            //_explorationOrder = new List<Entity> {mogwai};
+        }
+
+        private void DeployTreasures(Shift shift)
+        {
+            var bossRoom = Map.Locations[0];
+
+            //var coord = bossRoom.RandomPosition(DungeonRandom);
+            //while (Map.EntityMap[coord] != null)
+            //{
+            //    coord = bossRoom.RandomPosition(DungeonRandom);
+            //}
+            //boss.Adventure = this;
+            //Map.AddEntity(boss, coord.X, coord.Y);
+
         }
 
         /// <summary>
@@ -181,7 +198,6 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// <param name="shift"></param>
         private void DeployMonsters(Shift shift)
         {
-            // TODO generate monsters from shift here
             var bossRoom = Map.Locations[0];
 
             // deploy bosses

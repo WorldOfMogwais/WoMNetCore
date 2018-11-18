@@ -155,7 +155,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// <param name="entity"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void AddEntity(ICombatant entity, int x, int y)
+        public void AddEntity(IAdventureEntity entity, int x, int y)
         {
             // can't add an entity to invalid position
             if (!WalkabilityMap[x, y])
@@ -166,13 +166,15 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             entity.Map = this;
             entity.Coordinate = Coord.Get(x, y);
-            //entity.AdventureEntityId = Adventure.NextId;
             EntityMap[x, y] = entity;
             EntityCount++;
 
-            // calculate fov
-            entity.FovCoords = CalculateFoV(entity.Coordinate, entity is Mogwai);
-            //entity.ExploredCoords = GetCoords<int>(ExplorationMap, i => i < 1).ToHashSet();
+            if (entity is ICombatant combatant)
+            {
+                // calculate fov
+                combatant.FovCoords = CalculateFoV(entity.Coordinate, entity is Mogwai);
+            }
+
             Adventure.Enqueue(AdventureLog.EntityCreated(entity));
         }
 

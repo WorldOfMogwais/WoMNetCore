@@ -129,13 +129,16 @@ namespace WoMSadGui.Consoles
             _rewardConsole.Print(1, 5, $"Dungeon", Color.DarkGray);
             _rewardConsole.Print(12, 5, winner ? "CLEARED" : "FAILED".PadLeft(8), winner ? Color.LimeGreen : Color.Red);
             //_rewardConsole.Print(19, 5, $"", Color.Gainsboro);
-            
-            _rewardConsole.Print(1, 7, $"REWARD", Color.Gainsboro);
-            _rewardConsole.Print(12, 7, $"?".PadLeft(6), Color.Gold);
-            _rewardConsole.Print(19, 7, $"Gold", Color.Gold);
-            _rewardConsole.Print(1, 8, $"REWARD", Color.Gainsboro);
-            _rewardConsole.Print(12, 8, $"?".PadLeft(6), Color.Gold);
-            _rewardConsole.Print(19, 8, $"XP", Color.Gold);
+
+            if (winner && _mogwai.Adventure.Reward != null)
+            {
+                _rewardConsole.Print(1, 7, $"REWARD", Color.Gainsboro);
+                _rewardConsole.Print(12, 7, $"{_mogwai.Adventure.Reward.Gold}".PadLeft(6), Color.Gold);
+                _rewardConsole.Print(19, 7, $"Gold", Color.Gold);
+                _rewardConsole.Print(1, 8, $"REWARD", Color.Gainsboro);
+                _rewardConsole.Print(12, 8, $"{_mogwai.Adventure.Reward.Exp}".PadLeft(6), Color.Gold);
+                _rewardConsole.Print(19, 8, $"XP", Color.Gold);
+            }
 
         }
     }
