@@ -589,7 +589,7 @@ namespace WoMFramework.Game.Model
             var weapon = weaponAttack.Weapon;
             var target = weaponAttack.Target as Entity;
 
-            Console.WriteLine($"{Name}: is acking {attackTimes} times");
+            //Console.WriteLine($"{Name}: is acking {attackTimes} times");
 
             // all attacks are calculated
             for (var attackIndex = 0; attackIndex < attackTimes; attackIndex++)
@@ -600,7 +600,7 @@ namespace WoMFramework.Game.Model
                     break;
                 }
 
-                Console.WriteLine($"{weapon.Name} CriticalMinRoll: {weapon.CriticalMinRoll}");
+                //Console.WriteLine($"{weapon.Name} CriticalMinRoll: {weapon.CriticalMinRoll}");
                 var attackRolls = AttackRolls(attackIndex, weapon.CriticalMinRoll);
                 var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
 

@@ -201,8 +201,8 @@ namespace WoMFramework.Game.Model.Mogwai
                 switch (_currentShift.Interaction.InteractionType)
                 {
                     case InteractionType.Adventure:
-                        // finish adventure before starting a new one ...
-                        if (Adventure == null || !Adventure.IsActive || IsAlive)
+                        // only alive mogs can go to an adventure, finish adventure before starting a new one ...
+                        if (CanAct && (Adventure == null || !Adventure.IsActive))
                         {
                             Adventure = AdventureGenerator.Create(_currentShift,
                                 (AdventureAction)_currentShift.Interaction);
