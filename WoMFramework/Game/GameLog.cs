@@ -28,7 +28,14 @@ namespace WoMFramework.Game
 
     }
 
-    public enum LogType { Info, Damage, Heal, Event, Comb, AdventureLog
+    public enum LogType
+    {
+        Info,
+        Damage,
+        Heal,
+        Event,
+        Comb,
+        AdventureLog
     }
 
     public class LogEntry
@@ -36,8 +43,8 @@ namespace WoMFramework.Game
         public LogType LogType { get; }
         public int Source { get; set; }
         public int Target { get; set; }
-        public DamageType damageType { get; set; }
-        public HealType healType { get; set; }
+        public DamageType DamageType { get; set; }
+        public HealType HealType { get; set; }
         public string Message { get; }
 
         public LogEntry(LogType logType, string message)
@@ -53,7 +60,7 @@ namespace WoMFramework.Game
 
         public override string ToString()
         {
-            return string.Format("{0}{1} {2}", "", GetHeader(LogType), Message);
+            return $"{GetHeader(LogType)} {Message}";
         }
 
         private string GetHeader(LogType logType)
@@ -77,7 +84,7 @@ namespace WoMFramework.Game
 
         public static LogEntry Damage(Combatant entity, int damageAmount, DamageType damageType)
         {
-            return new LogEntry(LogType.Damage, 
+            return new LogEntry(LogType.Damage,
                 entity.Adventure != null ? entity.AdventureEntityId : 0,
                 damageAmount,
                 damageType);

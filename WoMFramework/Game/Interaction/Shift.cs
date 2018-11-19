@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Random;
 
