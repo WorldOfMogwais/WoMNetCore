@@ -148,14 +148,12 @@ namespace WoMFramework.Game.Model.Mogwai
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="history"></param>
         /// <returns></returns>
-        public bool Evolve(out GameLog history)
+        public bool Evolve()
         {
             // any shift left?
             if (!CanEvolve)
             {
-                history = null;
                 return false;
             }
 
@@ -163,22 +161,20 @@ namespace WoMFramework.Game.Model.Mogwai
             Pointer++;
 
             // set current shift to the actual shift we process
-            _currentShift = Shifts[Pointer];
+            //_currentShift = Shifts[Pointer];
+            if (!Shifts.TryGetValue(Pointer, out _currentShift))
+            {
+                return false;
+            }
 
             if (Pointer % 180 == 0)
             {
                 HomeTown.Shop.Resupply(_currentShift);
             }
 
-            //Log.Info(_currentShift.ToString());
-
-            // assign game log for this shift
-            history = _currentShift.History;
-
             // we go for the adventure if there is one up
             if (Adventure != null && Adventure.IsActive)
             {
-                history = _currentShift.History;
                 Adventure.Enter(this, _currentShift);
                 return true;
             }

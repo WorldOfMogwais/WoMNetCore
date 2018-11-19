@@ -37,7 +37,7 @@ namespace WoMFrameworkTest.Game
                 {2001, level}
             };
             var mogwai = new Mogwai(mogAddress, shifts);
-            if (mogwai.Evolve(out _))
+            if (mogwai.Evolve())
             {
                 Assert.Single(mogwai.Classes.First(p => p.ClassType == ClassType.Cleric).Learnables);
                 //Assert.True(mogwai.Learn(Spells.CureLightWounds()));

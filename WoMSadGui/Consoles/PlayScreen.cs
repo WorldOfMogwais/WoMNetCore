@@ -369,7 +369,7 @@ namespace WoMSadGui.Consoles
         {
             if (!fast)
             {
-                if (_mogwai.Evolve(out _))
+                if (_mogwai.Evolve())
                 {
                     if (_mogwai.Adventure != null)
                     {
@@ -392,7 +392,7 @@ namespace WoMSadGui.Consoles
                 SetCustomWindowState(PlayScreenState.Welcome);
 
                 _log.Reset();
-                while (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve(out _))
+                while (_mogwai.PeekNextShift != null && _mogwai.PeekNextShift.IsSmallShift && _mogwai.Evolve())
                 {
                     UpdateLog();
                 }

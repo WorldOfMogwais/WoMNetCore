@@ -56,7 +56,7 @@ namespace WoMFrameworkTest.Game
                 {2001, level}
             };
             var mogwai = new Mogwai(mogAddress, shifts);
-            mogwai.Evolve(out _);
+            mogwai.Evolve();
 
             Assert.Equal(1, mogwai.GetRequirementValue(RequirementType.FighterLevel, 1));
             Assert.Equal(0, mogwai.GetRequirementValue(RequirementType.CasterLevel, 0));
@@ -87,7 +87,7 @@ namespace WoMFrameworkTest.Game
                 {2001, level}
             };
             var mogwai = new Mogwai(mogAddress, shifts);
-            mogwai.Evolve(out _);
+            mogwai.Evolve();
 
             Assert.Equal(0, mogwai.GetRequirementValue(RequirementType.FighterLevel));
             Assert.Equal(1, mogwai.GetRequirementValue(RequirementType.CasterLevel));
