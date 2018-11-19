@@ -161,7 +161,7 @@ namespace WoMSadGui.Consoles
             }
         }
 
-        public void DrawEntity(IAdventureEntity adventureEntity)
+        public void DrawEntity(AdventureEntity adventureEntity)
         {
             int glyph;
             Color colour;
@@ -298,7 +298,7 @@ namespace WoMSadGui.Consoles
                 ConsoleEntity consoleEntity = _entities[entity.AdventureEntityId];
 
                 consoleEntity.IsVisible =
-                    (_mogwai.CanSee(entity) || entity is ICombatant combatant && combatant.IsDead) &&
+                    (_mogwai.CanSee(entity) || entity is Combatant combatant && combatant.IsDead) &&
                     _mapConsole.ViewPort.Contains(consoleEntity.Position);
             }
         }

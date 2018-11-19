@@ -90,7 +90,7 @@ namespace WoMFramework.Game.Model
         public AreaType AreaType { get; set; }
 
         public EffectType EffectType { get; set; }
-        
+
         public TargetType TargetType { get; set; }
 
         public DurationType DurationType { get; set; }
@@ -99,7 +99,7 @@ namespace WoMFramework.Game.Model
 
         public double SpellResistance { get; set; }
 
-        public Action<IAdventureEntity, IAdventureEntity> SpellEffect { get; set; }
+        public Action<AdventureEntity, AdventureEntity> SpellEffect { get; set; }
 
         public Spell(int id, string name, int level)
         {
@@ -108,12 +108,12 @@ namespace WoMFramework.Game.Model
             Level = level;
         }
 
-        public bool CanExecuteSpell(IAdventureEntity me, IAdventureEntity target = null)
+        public bool CanExecuteSpell(AdventureEntity me, AdventureEntity target = null)
         {
             return true;
         }
 
-        public virtual bool ExecuteSpell(IAdventureEntity me, IAdventureEntity target = null)
+        public virtual bool ExecuteSpell(AdventureEntity me, AdventureEntity target = null)
         {
             if (!CanExecuteSpell(me, target))
             {
@@ -165,7 +165,7 @@ namespace WoMFramework.Game.Model
             throw new NotImplementedException();
         }
 
-        internal bool CanCast(Entity owner, IAdventureEntity target)
+        internal bool CanCast(Entity owner, AdventureEntity target)
         {
             // TODO implement conditions
 

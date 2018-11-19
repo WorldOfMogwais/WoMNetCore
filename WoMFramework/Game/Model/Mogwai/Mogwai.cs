@@ -31,7 +31,7 @@ namespace WoMFramework.Game.Model.Mogwai
 
         public Shift PeekNextShift => CanEvolve ? Shifts[Pointer + 1] : null;
 
-        public ConcurrentDictionary<double, Shift> Shifts { get; }
+        public ConcurrentDictionary<long, Shift> Shifts { get; }
 
         public MogwaiState MogwaiState { get; set; }
 
@@ -64,10 +64,10 @@ namespace WoMFramework.Game.Model.Mogwai
 
         public HomeTown HomeTown { get; }
 
-        public Mogwai(string key, Dictionary<double, Shift> shifts)
+        public Mogwai(string key, Dictionary<long, Shift> shifts)
         {
             Key = key;
-            Shifts = new ConcurrentDictionary<double, Shift>(shifts);
+            Shifts = new ConcurrentDictionary<long, Shift>(shifts);
 
             _currentShift = shifts.Values.First();
 
@@ -388,7 +388,7 @@ namespace WoMFramework.Game.Model.Mogwai
         /// 
         /// </summary>
         /// <param name="shifts"></param>
-        public void UpdateShifts(Dictionary<double, Shift> shifts)
+        public void UpdateShifts(Dictionary<long, Shift> shifts)
         {
             foreach (var shift in shifts)
             {

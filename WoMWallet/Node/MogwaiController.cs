@@ -287,7 +287,7 @@ namespace WoMWallet.Node
                 HexHashUtil.ByteArrayToString(Base58Encoding.Decode("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i"));
             int blockHeight = 84659;
             int index = 0;
-            var shifts = new Dictionary<double, Shift>
+            var shifts = new Dictionary<long, Shift>
             {
                 {
                     blockHeight, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
@@ -450,7 +450,7 @@ namespace WoMWallet.Node
                 dungActionNext.GetValue2()));
 
 
-        //    var shifts = new Dictionary<double, Shift>
+        //    var shifts = new Dictionary<long, Shift>
             //    {
             //        {
             //            1001, new Shift(0, 1530914381, pubMogAddressHex,

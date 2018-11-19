@@ -34,7 +34,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public ArrayMap<bool> WalkabilityMap { get; }
         public ArrayMap<int> ExplorationMap { get; }
-        public ArrayMap<IAdventureEntity> EntityMap { get; }
+        public ArrayMap<AdventureEntity> EntityMap { get; }
         public ArrayMap<Tile> TileMap { get; }
         public FOV FovMap { get; }
         public int[,] ExpectedFovNum { get; }
@@ -69,7 +69,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             WalkabilityMap = wMap;
             ExplorationMap = new ArrayMap<int>(width, height);
-            EntityMap = new ArrayMap<IAdventureEntity>(width, height);
+            EntityMap = new ArrayMap<AdventureEntity>(width, height);
             TileMap = new ArrayMap<Tile>(width, height);
             var resMap = new ArrayMap<double>(width, height);
             for (var i = 0; i < width; i++)
@@ -155,7 +155,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// <param name="entity"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void AddEntity(IAdventureEntity entity, int x, int y)
+        public void AddEntity(AdventureEntity entity, int x, int y)
         {
             // can't add an entity to invalid position
             if (!WalkabilityMap[x, y])
@@ -169,7 +169,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             EntityMap[x, y] = entity;
             EntityCount++;
 
-            if (entity is ICombatant combatant)
+            if (entity is Combatant combatant)
             {
                 // calculate fov
                 combatant.FovCoords = CalculateFoV(entity.Coordinate, entity is Mogwai);
@@ -183,7 +183,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="destination"></param>
-        public void MoveEntity(ICombatant entity, Coord destination)
+        public void MoveEntity(Combatant entity, Coord destination)
         {
             if (!WalkabilityMap[destination])
                 throw new Exception();
@@ -283,13 +283,13 @@ namespace WoMFramework.Game.Generator.Dungeon
             return new HashSet<Coord>(FovMap.CurrentFOV);
         }
 
-        public List<ICombatant> EntitiesOnCoords(HashSet<Coord> coords)
+        public List<Combatant> EntitiesOnCoords(HashSet<Coord> coords)
         {
-            var combatants = new List<ICombatant>();
+            var combatants = new List<Combatant>();
             foreach (var coord in coords)
             {
                 var entity = EntityMap[coord];
-                if (entity != null && entity is ICombatant combatant)
+                if (entity != null && entity is Combatant combatant)
                 {
                     combatants.Add(combatant);
                 }
@@ -302,7 +302,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// Remove entity from the map
         /// </summary>
         /// <param name="entity"></param>
-        public void RemoveEntity(ICombatant entity)
+        public void RemoveEntity(Combatant entity)
         {
             if (EntityMap[entity.Coordinate] == null)
                 throw new Exception();
@@ -317,9 +317,9 @@ namespace WoMFramework.Game.Generator.Dungeon
             Adventure.Enqueue(AdventureLog.EntityRemoved(entity));
         }
 
-        public IAdventureEntity[] GetEntities()
+        public AdventureEntity[] GetEntities()
         {
-            var result = new IAdventureEntity[EntityCount];
+            var result = new AdventureEntity[EntityCount];
 
             var k = 0;
             for (var i = 0; i < Width; i++)

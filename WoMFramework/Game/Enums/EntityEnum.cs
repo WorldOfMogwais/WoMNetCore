@@ -246,4 +246,5 @@ namespace WoMFramework.Game.Enums
         AttackBonus,
         ArmorClass
     } 
+
 }

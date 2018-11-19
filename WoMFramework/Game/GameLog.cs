@@ -75,7 +75,7 @@ namespace WoMFramework.Game
             }
         }
 
-        public static LogEntry Damage(ICombatant entity, int damageAmount, DamageType damageType)
+        public static LogEntry Damage(Combatant entity, int damageAmount, DamageType damageType)
         {
             return new LogEntry(LogType.Damage, 
                 entity.Adventure != null ? entity.AdventureEntityId : 0,

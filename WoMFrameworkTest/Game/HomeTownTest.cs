@@ -21,7 +21,7 @@ namespace WoMFrameworkTest.Game
                 2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
                 1.00m,
                 0.0001m);
-            var shifts = new Dictionary<double, Shift>
+            var shifts = new Dictionary<long, Shift>
             {
                 {2000, creation}
             };

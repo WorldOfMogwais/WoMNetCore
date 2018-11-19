@@ -31,17 +31,24 @@ namespace WoMFrameworkTest.Game
                 lvlCleric.GetValue1(),
                 lvlCleric.GetValue2());
 
-            var shifts = new Dictionary<double, Shift>
+            var shifts = new Dictionary<long, Shift>
             {
                 {2000, creation},
                 {2001, level}
             };
             var mogwai = new Mogwai(mogAddress, shifts);
-            mogwai.Evolve(out _);
+            if (mogwai.Evolve(out _))
+            {
+                Assert.Single(mogwai.Classes.First(p => p.ClassType == ClassType.Cleric).Learnables);
+                //Assert.True(mogwai.Learn(Spells.CureLightWounds()));
+                Assert.True(mogwai.CombatActions.Exists(p => p is SpellCast));
+            }
+            else
+            {
+                Assert.True(false);
+            }
 
-            Assert.Single(mogwai.Classes.Where(p => p.ClassType == ClassType.Cleric).First().Learnables);
-            //Assert.True(mogwai.Learn(Spells.CureLightWounds()));
-            Assert.True(mogwai.CombatActions.Exists(p => p is SpellCast));
+
         }
     }
 }

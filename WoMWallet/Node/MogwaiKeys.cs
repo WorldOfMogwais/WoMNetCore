@@ -38,7 +38,7 @@ namespace WoMWallet.Node
 
         public decimal Balance { get; set; }
 
-        public Dictionary<double, Shift> Shifts { get; set; }
+        public Dictionary<long, Shift> Shifts { get; set; }
 
         public bool IsUnwatched { get; set; }
 

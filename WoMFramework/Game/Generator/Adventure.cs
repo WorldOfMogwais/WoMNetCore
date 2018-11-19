@@ -117,27 +117,27 @@ namespace WoMFramework.Game.Generator
             Flag = flag;
         }
 
-        public static AdventureLog EntityCreated(IAdventureEntity entity)
+        public static AdventureLog EntityCreated(AdventureEntity entity)
         {
-            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, entity is ICombatant combatant ? combatant.FovCoords : null);
+            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, entity is Combatant combatant ? combatant.FovCoords : null);
         }
 
-        public static AdventureLog EntityRemoved(IAdventureEntity entity)
+        public static AdventureLog EntityRemoved(AdventureEntity entity)
         {
             return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, flag: false);
         }
 
-        public static AdventureLog EntityMoved(ICombatant entity, Coord destination)
+        public static AdventureLog EntityMoved(Combatant entity, Coord destination)
         {
             return new AdventureLog(LogType.Move, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords, 0, destination);
         }
 
-        public static AdventureLog Attacked(ICombatant entity, IAdventureEntity target)
+        public static AdventureLog Attacked(Combatant entity, AdventureEntity target)
         {
             return new AdventureLog(LogType.Attack, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords, target.AdventureEntityId, target.Coordinate);
         }
 
-        public static AdventureLog Died(ICombatant entity)
+        public static AdventureLog Died(Combatant entity)
         {
             return new AdventureLog(LogType.Died, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords);
         }

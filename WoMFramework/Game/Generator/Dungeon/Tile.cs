@@ -6,20 +6,15 @@ namespace WoMFramework.Game.Generator.Dungeon
     /// <summary>
     /// Represents the basic square tile.
     /// </summary>
-    public abstract class Tile : IAdventureEntity
+    public abstract class Tile : AdventureEntity
     {
         // for algorithms
-        private int _d;
-        private Tile _p;
-
-        public Adventure Adventure { get; set; }
-        public Map Map { get; set; }
-        public Coord Coordinate { get; set; }
-
+        //private int _d;
+        //private Tile _p;
 
         public int Height;
 
-        protected Tile(Map map, Coord coordinate)
+        protected Tile(Map map, Coord coordinate) : base(false, false, 1, false)
         {
             Adventure = map.Adventure;
             Map = map;
@@ -30,23 +25,11 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public abstract bool IsSolid { get; }
 
-        //public abstract void Interact(Mogwai mog);
-
         public bool IsOccupied { get; set; }
 
         public override string ToString()
         {
             return $"[{Coordinate}]";
-        }
-
-
-        public bool IsStatic { get; }
-        public bool IsPassable { get; }
-        public int AdventureEntityId { get; set; }
-        public int Size => 1;
-        public bool TakeAction(EntityAction entityAction)
-        {
-            throw new System.NotImplementedException();
         }
     }
 

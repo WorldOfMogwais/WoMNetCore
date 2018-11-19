@@ -13,7 +13,7 @@ namespace WoMFrameworkTest.Game
         {
             var address = "MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i";
             var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(address));
-            var shifts = new Dictionary<double, Shift>
+            var shifts = new Dictionary<long, Shift>
             {
                 {1001, new Shift(0, 1530914381, pubMogAddressHex,
                                 1001, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",

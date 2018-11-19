@@ -106,7 +106,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             mogwai.AdventureEntityId = NextId;
             Entities.Add(mogwai.AdventureEntityId, mogwai);
 
-            var adjCr = ChallengeRating == 0 ? 0.5: ChallengeRating;
+            var adjCr = ChallengeRating == 0 ? 0.5 : ChallengeRating;
 
             var monsterSet = Monsters.Instance.AllBuilders()
                 .Where(p => (p.EnvironmentTypes.Contains(EnvironmentType.Any)
@@ -143,7 +143,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             Entities.Add(boss.AdventureEntityId, boss);
 
             int monsterMod = 100;
-            foreach(var monsterBuilder in allMonsters)
+            foreach (var monsterBuilder in allMonsters)
             {
                 var mob = monsterBuilder.Build();
                 mob.AdventureEntityId = NextId;
@@ -274,7 +274,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             }
 
             var initiationEntities = Entities.Values.Where(p => p.CombatState == CombatState.Initiation).ToList();
-            
+
             // check if we switch to combat mode and calculate initiative
             if (initiationEntities.Any())
             {
@@ -340,7 +340,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             var combatActionQueue = new Queue<CombatAction>();
 
             // survival check
-            if ((double) entity.CurrentHitPoints / entity.MaxHitPoints < 0.25)
+            if ((double)entity.CurrentHitPoints / entity.MaxHitPoints < 0.25)
             {
                 TryEnqueueSurvival(entity, ref combatActionQueue);
             }
@@ -466,7 +466,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             }
         }
 
-        private List<Coord> GetIntersections(Entity entity, IAdventureEntity target)
+        private List<Coord> GetIntersections(Entity entity, AdventureEntity target)
         {
             var moveRange = entity.Speed / 5;
             var intersects = new List<Coord>();
@@ -481,7 +481,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             return intersects;
         }
 
-        private Entity GetNearestOrWeakestEnemy(ICombatant entity)
+        private Entity GetNearestOrWeakestEnemy(Combatant entity)
         {
             // we hit monsters till they are dead
             var ordredEnemiesList = entity.EngagedEnemies.Where(p => p.HealthState != HealthState.Dead)

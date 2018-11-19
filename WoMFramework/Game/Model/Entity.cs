@@ -12,7 +12,7 @@ using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model
 {
-    public abstract partial class Entity : ICombatant
+    public abstract partial class Entity
     {
         public int GetRequirementValue(RequirementType requirementType, object addValue = null)
         {
@@ -48,7 +48,7 @@ namespace WoMFramework.Game.Model
         }
     }
 
-    public abstract partial class Entity : ICombatant
+    public abstract partial class Entity : Combatant
     {
         public readonly Dictionary<ModifierType, int> MiscMod;
 
@@ -149,12 +149,12 @@ namespace WoMFramework.Game.Model
             return damage < 1 ? 1 : damage;
         }
 
-        public bool CanAct => (int) HealthState >= 0;
-        public bool IsAlive => HealthState != HealthState.Dead;
-        public bool IsDisabled => HealthState == HealthState.Disabled;
-        public bool IsInjured => HealthState == HealthState.Injured;
-        public bool IsDying => HealthState == HealthState.Dying;
-        public bool IsDead => HealthState == HealthState.Dead;
+        public override bool CanAct => (int)HealthState >= 0;
+        public override bool IsAlive => HealthState != HealthState.Dead;
+        public override bool IsDisabled => HealthState == HealthState.Disabled;
+        public override bool IsInjured => HealthState == HealthState.Injured;
+        public override bool IsDying => HealthState == HealthState.Dying;
+        public override bool IsDead => HealthState == HealthState.Dead;
 
         // injury and death
         public HealthState HealthState
@@ -208,7 +208,7 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// 
         /// </summary>
-        protected Entity()
+        protected Entity() : base(false, false, 1)
         {
             // modifiers
             MiscMod = new Dictionary<ModifierType, int>();
@@ -228,7 +228,10 @@ namespace WoMFramework.Game.Model
             EngagedEnemies = new List<Entity>();
 
             // add basic actions
-            CombatActions.Add(CombatAction.CreateMove(this));
+            CombatActions = new List<CombatAction>
+            {
+                CombatAction.CreateMove(this)
+            };
 
             // initialize skills list
             Feats = new List<Feat>();
@@ -425,26 +428,9 @@ namespace WoMFramework.Game.Model
         }
 
 
-        #region IAdventureEntity
+        #region AdventureEntity
 
-        // current position
-        public Coord Coordinate { get; set; }
-
-        public Adventure Adventure { get; set; }
-
-        public Map Map { get; set; }
-
-        public int AdventureEntityId { get; set; }
-
-        public int Size { get; }
-
-        bool IAdventureEntity.IsStatic => false;
-
-        bool IAdventureEntity.IsPassable => false;
-
-        public List<CombatAction> CombatActions = new List<CombatAction>();
-
-        public bool TakeAction(EntityAction entityAction)
+        public override bool TakeAction(EntityAction entityAction)
         {
             if (!entityAction.IsExecutable)
             {
@@ -478,17 +464,7 @@ namespace WoMFramework.Game.Model
 
         #region ICombatant
 
-        public Faction Faction { get; set; }
-
-        public int CurrentInitiative { get; set; }
-
-        public CombatState CombatState { get; set; }
-
-        public List<Entity> EngagedEnemies { get; set; }
-
-        public HashSet<Coord> FovCoords { get; set; }
-
-        public bool CanSee(IAdventureEntity entity)
+        public override bool CanSee(AdventureEntity entity)
         {
             return entity != null && FovCoords.Any(p => entity.Coordinate == p);
         }
@@ -496,7 +472,7 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// Reset all adventure and combat stats
         /// </summary>
-        public void Reset()
+        public override void Reset()
         {
             CombatState = CombatState.None;
             EngagedEnemies.Clear();
@@ -609,7 +585,7 @@ namespace WoMFramework.Game.Model
                 var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
                 var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
                 var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
-                              $"{weaponAttack.GetType().Name.ToLower()}[{Coloring.Gainsboro(weaponAttack.ActionType.ToString().Substring(0,1))}] {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
+                              $"{weaponAttack.GetType().Name.ToLower()}[{Coloring.Gainsboro(weaponAttack.ActionType.ToString().Substring(0, 1))}] {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
 
                 if (attack > target.ArmorClass || criticalCounts > 0)
                 {
@@ -669,7 +645,7 @@ namespace WoMFramework.Game.Model
                         {
                             CombatState = CombatState.Initiation;
                             entity.CombatState = CombatState.Initiation;
-                        }                           
+                        }
                     }
                     // break if we have found an enemy
                     if (CombatState == CombatState.Initiation)

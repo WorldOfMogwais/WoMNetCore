@@ -91,10 +91,6 @@ namespace WoMFramework.Game.Model.Monster
 
         public string Description { get; set; }
 
-        public bool IsLooted { get; set; }
-
-        public bool RewardedXp { get; set; }
-
         public Monster(string name, double challengeRating, MonsterType monsterType, int experience)
         {
             Name = name;

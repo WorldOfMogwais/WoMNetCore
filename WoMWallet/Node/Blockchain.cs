@@ -228,9 +228,9 @@ namespace WoMWallet.Node
         /// </summary>
         /// <param name="mirroraddress"></param>
         /// <returns></returns>
-        public Dictionary<double, Shift> GetShifts(string mirroraddress)
+        public Dictionary<long, Shift> GetShifts(string mirroraddress)
         {
-            var result = new Dictionary<double, Shift>();
+            var result = new Dictionary<long, Shift>();
 
             var allTxs = ListMirrorTransactions(mirroraddress);
 
