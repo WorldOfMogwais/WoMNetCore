@@ -106,7 +106,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             mogwai.AdventureEntityId = NextId;
             Entities.Add(mogwai.AdventureEntityId, mogwai);
 
-            var adjCr = ChallengeRating == 0 ? 0.5 : ChallengeRating;
+            var adjCr = GetChallengeRating();
 
             var monsterSet = Monsters.Instance.AllBuilders()
                 .Where(p => (p.EnvironmentTypes.Contains(EnvironmentType.Any)
@@ -129,7 +129,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 var subMonsterSet = monsterSet.Where(p => p.ChallengeRating <= 0.5).ToList();
                 for (var i = 0; i < 10; i++)
                 {
-                    var mob = monsterSet[DungeonRandom.Next(monsterSet.Count)];
+                    var mob = subMonsterSet[DungeonRandom.Next(monsterSet.Count)];
                     allMonsters.Add(mob);
                 }
             }
@@ -153,6 +153,21 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             // exploration order
             _explorationOrder = EntitiesList.OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
+        }
+
+        private double GetChallengeRating()
+        {
+            if (ChallengeRating == 0)
+            {
+                return 0.5;
+            }
+
+            if (ChallengeRating == 1)
+            {
+                return 0.75;
+            }
+
+            return ChallengeRating - 1;
         }
 
         /// <summary>
@@ -411,18 +426,33 @@ namespace WoMFramework.Game.Generator.Dungeon
                 return;
             }
 
-            var entityActionQueue = new Queue<CombatAction>();
-
-            switch (entity)
+            // monster exploration might be added later
+            if (!(entity is Mogwai mog))
             {
-                case Mogwai mog:
-                    mog.ExploreDungeon(true);
-                    break;
-
-                case Monster _:
-
-                    break;
+                return;
             }
+
+            // check for lootable corps
+            if (mog.LootablesInSight(out var lootableEntities))
+            {
+                //var coordsInReach = new List<Coord>();
+                //lootableEntities.ForEach(p => coordsInReach.AddRange(AdjacencyRule.EIGHT_WAY.Neighbors(p.Coordinate)));
+
+                var inReachToLoot = lootableEntities.FirstOrDefault(p => mog.IsInReach(p));
+                if (inReachToLoot != null)
+                {
+                    mog.Loot(inReachToLoot);
+                    return;
+                }
+
+                //var nearest = Map.Nearest(mog.Coordinate, coordsInReach);
+                var nearest = Map.Nearest(mog.Coordinate, lootableEntities.Select(p => p.Coordinate).ToList());
+                mog.WalkTo(nearest, true);
+               
+            }
+
+            // if we have done nothing else we start going on with exploring dungeon ...
+            mog.ExploreDungeon(true);
         }
 
         private void TryEnqueueSurvival(Entity entity, ref Queue<CombatAction> combatActionQueue)

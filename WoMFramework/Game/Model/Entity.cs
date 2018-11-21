@@ -54,8 +54,6 @@ namespace WoMFramework.Game.Model
 
         public readonly Dictionary<ModifierType, int> TempMod;
 
-        public string Name { get; set; }
-
         public int Gender { get; set; }
         public string GenderStr => ((GenderType)Gender).ToString();
 
@@ -238,6 +236,9 @@ namespace WoMFramework.Game.Model
 
             // initialize spells list
             Spells = new List<Spell>();
+
+            // unlooted state
+            LootState = LootState.Unlooted;
         }
 
         /// <summary>
@@ -420,13 +421,29 @@ namespace WoMFramework.Game.Model
 
             if (IsDead)
             {
-                Map.RemoveEntity(this);
+                //Map.RemoveEntity(this);
                 Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}.");
                 Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}."));
                 Adventure.Enqueue(AdventureLog.Died(this));
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entity"></param>
+        public void Loot(AdventureEntity entity)
+        {
+            if (entity.LootState < LootState.Unlooted)
+            {
+                return;
+            }
+
+            entity.LootState = LootState.Looted;
+
+            Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.Name(Name)} is looting {Coloring.DarkGrey(entity.Name)}.");
+            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.Name(Name)} is looting {Coloring.DarkGrey(entity.Name)}."));
+        }
 
         #region AdventureEntity
 
@@ -461,12 +478,31 @@ namespace WoMFramework.Game.Model
 
         #endregion
 
+        #region Combatant
 
-        #region ICombatant
+        public bool LootablesInSight(out List<AdventureEntity> lootableEntities)
+        {
+            lootableEntities = new List<AdventureEntity>();
+            foreach (var fovCoord in FovCoords)
+            {
+                var entity = Map.EntityMap[fovCoord];
+                if (entity != null && this != entity && entity.IsLootable && entity.LootState > LootState.Looted && (!(entity is Combatant combatant) || combatant.IsDead))
+                {
+                    lootableEntities.Add(entity);
+                }
+            }
+
+            return lootableEntities.Any();
+        }
 
         public override bool CanSee(AdventureEntity entity)
         {
             return entity != null && FovCoords.Any(p => entity.Coordinate == p);
+        }
+
+        public override bool IsInReach(AdventureEntity entity)
+        {
+            return Distance.EUCLIDEAN.Calculate(entity.Coordinate - Coordinate) <= 1;
         }
 
         /// <summary>
@@ -510,51 +546,6 @@ namespace WoMFramework.Game.Model
             Adventure.Enqueue(AdventureLog.Attacked(this, target));
             return true;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="weaponAttack"></param>
-        //private void Attack(WeaponAttack weaponAttack)
-        //{
-        //    // only first attack, it's a standard action
-        //    var attackIndex = 0;
-        //    var weapon = weaponAttack.Weapon;
-        //    var target = weaponAttack.Target as Entity;
-
-        //    var attackRolls = AttackRolls(Dice, attackIndex, weapon.CriticalMinRoll);
-        //    var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
-
-        //    var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
-        //    var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
-        //    var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
-        //                  $"{weaponAttack.GetType().Name.ToLower()} {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
-
-        //    if (attack > target.ArmorClass || criticalCounts > 0)
-        //    {
-        //        var damage = DamageRoll(weapon, Dice);
-        //        var criticalDamage = 0;
-        //        if (criticalCounts > 0)
-        //        {
-        //            for (var i = 0; i < weapon.CriticalMultiplier - 1; i++)
-        //            {
-        //                criticalDamage += DamageRoll(weapon, Dice);
-        //            }
-        //        }
-        //        var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
-        //        Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
-        //        Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
-        //        target.Damage(damage + criticalDamage, DamageType.Weapon);
-        //    }
-        //    else
-        //    {
-        //        Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
-        //        Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
-
-        //    }
-
-        //    Adventure.Enqueue(AdventureLog.Attacked(this, target));
-        //}
 
         /// <summary>
         /// 
@@ -708,11 +699,9 @@ namespace WoMFramework.Game.Model
                         }
                         return false;
                     }
-                    else
-                    {
-                        Map.MoveEntity(this, next);
-                        moveRange -= 2;
-                    }
+
+                    Map.MoveEntity(this, next);
+                    moveRange -= 2;
                 }
             }
             else
@@ -751,6 +740,7 @@ namespace WoMFramework.Game.Model
                     foreach (var entity in Map.EntitiesOnCoords(FovCoords).Where(p => p.IsAlive))
                     {
                         if (entity.Faction == Faction.None) continue;
+
                         if (Faction != entity.Faction)
                         {
                             CombatState = CombatState.Initiation;
@@ -771,6 +761,7 @@ namespace WoMFramework.Game.Model
                     {
                         if (!MoveAtomic(_lastPath[_pathIndex++], ref moveRange, ref diagonalCount))
                             return;
+
                         continue;
                     }
                 }
@@ -801,6 +792,7 @@ namespace WoMFramework.Game.Model
                 if (maxIndex < 0)
                 {
                     var minLength = int.MaxValue;
+
                     Coord[] nearest = null;
 
                     // Consider grey tiles in FOV first. If not any, check the whole map
@@ -809,11 +801,14 @@ namespace WoMFramework.Game.Model
                         .ToArray();
 
                     if (inFov.Length > 0)
+                    {
                         nearest = inFov
                             .Select(c => Algorithms.AStar(Coordinate, c, Map))
                             .OrderBy(p => p.Length)
                             .First();
+                    }
                     else
+                    {
                         nearest = expMap.Positions()
                             .Where(c => expMap[c] == 1)
                             .OrderBy(p => Distance.EUCLIDEAN.Calculate(Coordinate, p))
@@ -822,6 +817,7 @@ namespace WoMFramework.Game.Model
                             .Select(p => Algorithms.AStar(Coordinate, p, Map))
                             .OrderBy(p => p.Length)
                             .First();
+                    }
 
                     next = nearest[1];
 
@@ -833,6 +829,67 @@ namespace WoMFramework.Game.Model
                 {
                     next = adjs[maxIndex];
                 }
+
+                if (!MoveAtomic(next, ref moveRange, ref diagonalCount))
+                    return;
+            }
+        }
+
+        public void WalkTo(Coord coord, bool checkForEnemies)
+        {
+            // expMap
+            // -1 : impassable
+            //  0 : uncharted   (WHITE)
+            //  1 : observed through FOV (GREY)
+            //  2 : Visited or having no explorable tiles (BLACK)
+
+            var moveRange = Speed / 5;
+            var diagonalCount = 0;
+
+            while (moveRange > 0)
+            {
+                // check if we have an enemy in fov
+                if (checkForEnemies && CombatState == CombatState.None)
+                {
+                    // check field of view positions for enemies
+                    foreach (var entity in Map.EntitiesOnCoords(FovCoords).Where(p => p.IsAlive))
+                    {
+                        if (entity.Faction == Faction.None) continue;
+
+                        if (Faction != entity.Faction)
+                        {
+                            CombatState = CombatState.Initiation;
+                            entity.CombatState = CombatState.Initiation;
+                        }
+                    }
+                    // break if we have found an enemy
+                    if (CombatState == CombatState.Initiation)
+                    {
+                        break;
+                    }
+                }
+
+                // check if already have a path
+                if (_pathIndex > 0 && _pathIndex != _lastPath.Length)
+                {
+                    if (Coordinate == _lastPath[_pathIndex - 1])
+                    {
+                        if (!MoveAtomic(_lastPath[_pathIndex++], ref moveRange, ref diagonalCount))
+                            return;
+
+                        continue;
+                    }
+                }
+
+                _pathIndex = -1;
+
+                var nearest = Algorithms.AStar(Coordinate, coord, Map);
+
+                var next = nearest[1];
+
+                // Save the path
+                _lastPath = nearest;
+                _pathIndex = 2;
 
                 if (!MoveAtomic(next, ref moveRange, ref diagonalCount))
                     return;

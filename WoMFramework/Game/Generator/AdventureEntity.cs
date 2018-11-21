@@ -16,6 +16,8 @@ namespace WoMFramework.Game.Generator
             IsLootable = isLootable;
         }
 
+        public string Name { get; set; }
+
         public Adventure Adventure { get; set; }
 
         public Map Map { get; set; }
@@ -31,6 +33,8 @@ namespace WoMFramework.Game.Generator
         public int Size { get; }
 
         public bool IsLootable { get; }
+
+        public LootState LootState { get; set; }
 
         public virtual bool TakeAction(EntityAction entityAction)
         {

@@ -245,6 +245,15 @@ namespace WoMFramework.Game.Enums
         Will,
         AttackBonus,
         ArmorClass
-    } 
+    }
+
+    public enum LootState
+    {
+        None,
+        Looted,
+        Unlooted,
+        Special
+
+    }
 
 }

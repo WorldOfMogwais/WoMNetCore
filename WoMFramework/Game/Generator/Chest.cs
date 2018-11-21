@@ -19,6 +19,7 @@ namespace WoMFramework.Game.Generator
 
         public Chest() : base(false, false, 1, true)
         {
+            LootState = LootState.Unlooted;
         }
     }
 }

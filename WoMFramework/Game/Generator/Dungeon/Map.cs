@@ -366,7 +366,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             return (double)visited / _walkableTiles;
         }
 
-        public Coord Nearest(Coord current, List<Coord> coords)
+        public static Coord Nearest(Coord current, List<Coord> coords)
         {
             Coord nearest = null;
             var distance = double.MaxValue;

@@ -70,6 +70,7 @@ namespace WoMFramework.Game
 
             if (start == goal)
                 return new[] { goal };
+
             if (!walkabilityMap[goal])
                 return null;
 

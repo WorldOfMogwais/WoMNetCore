@@ -22,6 +22,8 @@ namespace WoMFramework.Game.Generator
 
         public abstract bool CanSee(AdventureEntity combatant);
 
+        public abstract bool IsInReach(AdventureEntity combatant);
+
         public abstract bool CanAct { get; }
 
         public abstract bool IsAlive { get; }
