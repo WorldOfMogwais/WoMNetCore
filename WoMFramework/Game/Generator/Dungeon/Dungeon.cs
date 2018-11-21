@@ -432,25 +432,6 @@ namespace WoMFramework.Game.Generator.Dungeon
                 return;
             }
 
-            // check for lootable corps
-            if (mog.LootablesInSight(out var lootableEntities))
-            {
-                //var coordsInReach = new List<Coord>();
-                //lootableEntities.ForEach(p => coordsInReach.AddRange(AdjacencyRule.EIGHT_WAY.Neighbors(p.Coordinate)));
-
-                var inReachToLoot = lootableEntities.FirstOrDefault(p => mog.IsInReach(p));
-                if (inReachToLoot != null)
-                {
-                    mog.Loot(inReachToLoot);
-                    return;
-                }
-
-                //var nearest = Map.Nearest(mog.Coordinate, coordsInReach);
-                var nearest = Map.Nearest(mog.Coordinate, lootableEntities.Select(p => p.Coordinate).ToList());
-                mog.WalkTo(nearest, true);
-                return;
-            }
-
             // if we have done nothing else we start going on with exploring dungeon ...
             mog.ExploreDungeon(true);
         }

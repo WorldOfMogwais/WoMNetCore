@@ -48,6 +48,7 @@ namespace WoMFramework.Game
             FastPriorityQueue<AStarNode> open;  // Currently discovered nodes that are not evaluated yet
             Distance euclidiean = Distance.EUCLIDEAN;
             ArrayMap<bool> walkabilityMap = map.WalkabilityMap;
+            bool isGoalWalkable = true;
 
             if (_cachedMap?.Guid == map.Guid)
             {
@@ -72,7 +73,10 @@ namespace WoMFramework.Game
                 return new[] { goal };
 
             if (!walkabilityMap[goal])
-                return null;
+            {
+                isGoalWalkable = false;
+                walkabilityMap[goal] = true;
+            }
 
             var result = new Stack<Coord>();
             int startIndex = start.ToIndex(walkabilityMap.Width);
@@ -88,6 +92,12 @@ namespace WoMFramework.Game
                 if (current.Position == goal)
                 {
                     open.Clear();
+
+                    if (!isGoalWalkable)
+                    {
+                        walkabilityMap[goal] = false;
+                        current = current.Parent;
+                    }
 
                     do
                     {

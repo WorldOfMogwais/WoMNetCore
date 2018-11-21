@@ -715,6 +715,8 @@ namespace WoMFramework.Game.Model
         public FOV privateFOV;
         private Coord[] _lastPath;
         private int _pathIndex = -1;
+        private bool _foundLootable;
+        private AdventureEntity _currentLoot;
 
         public void ExploreDungeon(bool checkForEnemies)
         {
@@ -730,6 +732,9 @@ namespace WoMFramework.Game.Model
 
             var moveRange = Speed / 5;
             var diagonalCount = 0;
+
+            //bool foundLootable = false;
+            //AdventureEntity currentLoot = null;
 
             while (moveRange > 0)
             {
@@ -753,16 +758,63 @@ namespace WoMFramework.Game.Model
                         break;
                     }
                 }
+                // check if we have lootable entities in fov
+                if (!_foundLootable && LootablesInSight(out List<AdventureEntity> lootableEntities))
+                {
+                    // Searching for the nearest reachable loot.
+                    Coord[] nearestPath = null;
+                    foreach (AdventureEntity loot in lootableEntities)
+                    {
+                        if (IsInReach(loot))
+                        {
+                            Loot(loot);
+                            continue;
+                        }
+
+                        Coord[] path = Algorithms.AStar(Coordinate, loot.Coordinate, Map);
+                        if (nearestPath == null)
+                        {
+                            nearestPath = path;
+                            _currentLoot = loot;
+                        }
+                        else if (path != null && nearestPath.Length > path.Length)
+                        {
+                            nearestPath = path;
+                            _currentLoot = loot;
+                        }
+                    }
+
+                    if (nearestPath != null)
+                    {
+                        // Set a path for the objective.
+                        _foundLootable = true;
+                        _lastPath = nearestPath;
+                        _pathIndex = 2;
+
+                        if (!MoveAtomic(nearestPath[1], ref moveRange, ref diagonalCount))
+                            return;
+                        continue;
+                    }
+                }
 
                 // check if already have a path
                 if (_pathIndex > 0 && _pathIndex != _lastPath.Length)
                 {
                     if (Coordinate == _lastPath[_pathIndex - 1])
                     {
-                        if (!MoveAtomic(_lastPath[_pathIndex++], ref moveRange, ref diagonalCount))
-                            return;
+                        if (_foundLootable && IsInReach(_currentLoot))
+                        {
+                            Loot(_currentLoot);
+                            _foundLootable = false;
+                        }
+                        else
+                        {
 
-                        continue;
+                            if (!MoveAtomic(_lastPath[_pathIndex++], ref moveRange, ref diagonalCount))
+                                return;
+
+                            continue;
+                        }
                     }
                 }
 
