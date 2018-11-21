@@ -448,7 +448,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 //var nearest = Map.Nearest(mog.Coordinate, coordsInReach);
                 var nearest = Map.Nearest(mog.Coordinate, lootableEntities.Select(p => p.Coordinate).ToList());
                 mog.WalkTo(nearest, true);
-               
+                return;
             }
 
             // if we have done nothing else we start going on with exploring dungeon ...
