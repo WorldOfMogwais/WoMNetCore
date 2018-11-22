@@ -679,24 +679,21 @@ namespace WoMFramework.Game.Model
                 {
                     if (moveRange == 1)
                     {
-                        var newNext = next.Translate(0, -(next - Coordinate).Y);  // Prefer X direction for now; can be randomised
+                        Coord newNext = next.Translate(0, -(next - Coordinate).Y);  // Prefer X direction for now; can be randomised
                         if (Map.WalkabilityMap[newNext])
-                        {
                             Map.MoveEntity(this, newNext);
-                        }
                         else
                         {
                             newNext = next.Translate(-(next - Coordinate).X, 0);
                             if (Map.WalkabilityMap[newNext])
-                            {
                                 Map.MoveEntity(this, newNext);
-                            }
                             else
                             {
                                 // we dismiss the last point, as probably it's a diag
                                 return true;
                             }
                         }
+
                         return false;
                     }
 
@@ -796,24 +793,56 @@ namespace WoMFramework.Game.Model
                         continue;
                     }
                 }
+                else if (_foundLootable && IsInReach(_currentLoot))
+                {
+                    Loot(_currentLoot);
+                    _foundLootable = false;
+                    _currentLoot = null;
+                }
 
                 // check if already have a path
-                if (_pathIndex > 0 && _pathIndex != _lastPath.Length)
+                if (_pathIndex > 0)
                 {
-                    if (Coordinate == _lastPath[_pathIndex - 1])
+                    if (_pathIndex != _lastPath.Length)
                     {
-                        if (_foundLootable && IsInReach(_currentLoot))
+                        if (Coordinate == _lastPath[_pathIndex - 1])
                         {
-                            Loot(_currentLoot);
-                            _foundLootable = false;
-                        }
-                        else
-                        {
-
                             if (!MoveAtomic(_lastPath[_pathIndex++], ref moveRange, ref diagonalCount))
                                 return;
 
                             continue;
+                        }
+                    }
+                    else if (_foundLootable)
+                    {
+                        // This branch means this entity follows a proper path to the current loot,
+                        // and in terms of path there is only 1 step left to the loot
+                        // but the one step is diagonal so that it is not reachable from the current coordinate.
+                        // To handle this problem, set the next coordinate as one of the cardinally adjacent tiles
+                        // of the loot.
+                        if (Coord.EuclideanDistanceMagnitude(_currentLoot.Coordinate - Coordinate) == 2)
+                        {
+                            Coord loot = _currentLoot.Coordinate;
+
+                            Coord projected = loot.Translate(0, -(loot - Coordinate).Y); // Prefer X direction for now; can be randomised
+                            if (Map.WalkabilityMap[projected])
+                                MoveAtomic(projected, ref moveRange, ref diagonalCount);
+                            else
+                            {
+                                projected = loot.Translate(-(loot - Coordinate).X, 0);
+                                if (Map.WalkabilityMap[projected])
+                                    MoveAtomic(projected, ref moveRange, ref diagonalCount);
+                                else
+                                {
+                                    _foundLootable = false;
+                                    _currentLoot = null;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            _foundLootable = false;
+                            _currentLoot = null;
                         }
                     }
                 }
