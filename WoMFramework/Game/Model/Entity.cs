@@ -908,6 +908,15 @@ namespace WoMFramework.Game.Model
                             .First();
                     }
 
+                    if (nearest?.Length < 2)
+                    {
+                        for (int i = 0; i < expMap.Width; i++)
+                        for (int j = 0; j < expMap.Height; j++)
+                            expMap[i, j] = 2;
+
+                        return;
+                    }
+
                     next = nearest[1];
 
                     // Save the path
