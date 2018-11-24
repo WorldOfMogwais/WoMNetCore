@@ -91,7 +91,8 @@ namespace WoMFramework.Game.Generator
             Move,
             Attack,
             Died,
-            Entity
+            Entity,
+            Looted
         }
 
         public static int _index = 0;

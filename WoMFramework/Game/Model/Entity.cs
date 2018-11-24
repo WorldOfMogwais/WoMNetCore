@@ -409,7 +409,7 @@ namespace WoMFramework.Game.Model
             }
 
             Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage.");
-            LogEntry logEntry = LogEntry.Damage(this, damageAmount, damageType);
+            var logEntry = LogEntry.Damage(this, damageAmount, damageType);
             Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage."));
             CurrentHitPoints -= damageAmount;
 
@@ -443,6 +443,14 @@ namespace WoMFramework.Game.Model
 
             Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.Name(Name)} is looting {Coloring.DarkGrey(entity.Name)}.");
             Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.Name(Name)} is looting {Coloring.DarkGrey(entity.Name)}."));
+
+            if (entity.Treasure != null)
+            {
+                return;
+            }
+
+            Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot.");
+            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot."));
         }
 
         #region AdventureEntity
@@ -679,7 +687,7 @@ namespace WoMFramework.Game.Model
                 {
                     if (moveRange == 1)
                     {
-                        Coord newNext = next.Translate(0, -(next - Coordinate).Y);  // Prefer X direction for now; can be randomised
+                        var newNext = next.Translate(0, -(next - Coordinate).Y);  // Prefer X direction for now; can be randomised
                         if (Map.WalkabilityMap[newNext])
                             Map.MoveEntity(this, newNext);
                         else
@@ -715,7 +723,7 @@ namespace WoMFramework.Game.Model
         private bool _foundLootable;
         private AdventureEntity _currentLoot;
 
-        public void ExploreDungeon(bool checkForEnemies)
+        public void ExploreDungeon(bool checkEnemies)
         {
             // expMap
             // -1 : impassable
@@ -736,7 +744,7 @@ namespace WoMFramework.Game.Model
             while (moveRange > 0)
             {
                 // check if we have an enemy in fov
-                if (checkForEnemies && CombatState == CombatState.None)
+                if (checkEnemies && CombatState == CombatState.None)
                 {
                     // check field of view positions for enemies
                     foreach (var entity in Map.EntitiesOnCoords(FovCoords).Where(p => p.IsAlive))
@@ -756,11 +764,11 @@ namespace WoMFramework.Game.Model
                     }
                 }
                 // check if we have lootable entities in fov
-                if (!_foundLootable && LootablesInSight(out List<AdventureEntity> lootableEntities))
+                if (!_foundLootable && LootablesInSight(out var lootableEntities))
                 {
                     // Searching for the nearest reachable loot.
                     Coord[] nearestPath = null;
-                    foreach (AdventureEntity loot in lootableEntities)
+                    foreach (var loot in lootableEntities)
                     {
                         if (IsInReach(loot))
                         {
@@ -768,7 +776,7 @@ namespace WoMFramework.Game.Model
                             continue;
                         }
 
-                        Coord[] path = Algorithms.AStar(Coordinate, loot.Coordinate, Map);
+                        var path = Algorithms.AStar(Coordinate, loot.Coordinate, Map);
                         if (nearestPath == null)
                         {
                             nearestPath = path;
@@ -822,9 +830,9 @@ namespace WoMFramework.Game.Model
                         // of the loot.
                         if (Coord.EuclideanDistanceMagnitude(_currentLoot.Coordinate - Coordinate) == 2)
                         {
-                            Coord loot = _currentLoot.Coordinate;
+                            var loot = _currentLoot.Coordinate;
 
-                            Coord projected = loot.Translate(0, -(loot - Coordinate).Y); // Prefer X direction for now; can be randomised
+                            var projected = loot.Translate(0, -(loot - Coordinate).Y); // Prefer X direction for now; can be randomised
                             if (Map.WalkabilityMap[projected])
                                 MoveAtomic(projected, ref moveRange, ref diagonalCount);
                             else
@@ -877,7 +885,7 @@ namespace WoMFramework.Game.Model
                     Coord[] nearest = null;
 
                     // Consider grey tiles in FOV first. If not any, check the whole map
-                    Coord[] inFov = FovCoords
+                    var inFov = FovCoords
                         .Where(c => expMap[c] == 1)
                         .ToArray();
 

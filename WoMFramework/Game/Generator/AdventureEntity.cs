@@ -36,6 +36,8 @@ namespace WoMFramework.Game.Generator
 
         public LootState LootState { get; set; }
 
+        public Treasure Treasure { get; set; }
+
         public virtual bool TakeAction(EntityAction entityAction)
         {
             return false;

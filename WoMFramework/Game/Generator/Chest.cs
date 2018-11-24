@@ -10,8 +10,6 @@ namespace WoMFramework.Game.Generator
 {
     public class Chest : AdventureEntity
     {
-        public Treasure Treasure { get; set; }
-
         public override bool TakeAction(EntityAction entityAction)
         {
             throw new NotImplementedException();
@@ -19,6 +17,7 @@ namespace WoMFramework.Game.Generator
 
         public Chest() : base(false, false, 1, true)
         {
+            Name = "Chest";
             LootState = LootState.Unlooted;
         }
     }

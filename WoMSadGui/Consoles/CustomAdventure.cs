@@ -325,5 +325,6 @@ namespace WoMSadGui.Consoles
             frame[0].Foreground = Color.Gainsboro;
             entity.Animation = animated;
         }
+
     }
 }
