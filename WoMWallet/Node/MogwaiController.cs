@@ -277,6 +277,8 @@ namespace WoMWallet.Node
 
         public MogwaiKeys TestMogwaiKeys()
         {
+            return GetKeysFor("MAZa3z6M49Kb945S6bP4ocgGieTnGYm2ms", "MFDxffFdZgQbsVEytLUkZAojzvbULqt4J8");
+
             var lvlBarbarian = new LevelingAction(LevelingType.Class, ClassType.Barbarian, 0, 1);
             var lvlCleric = new LevelingAction(LevelingType.Class, ClassType.Cleric, 0, 1);
             var dungAction = new AdventureAction(AdventureType.Dungeon, DifficultyType.Easy, 2);
@@ -549,5 +551,23 @@ namespace WoMWallet.Node
             };
         }
 
+        private MogwaiKeys GetKeysFor(string key, string mirrorKey)
+        {
+
+            var shifts = Blockchain.Instance.GetShifts(mirrorKey);
+
+            var mogwai = new Mogwai(key, shifts);
+
+            return new MogwaiKeys
+            {
+                Mogwai = mogwai,
+                Balance = 2.1234m,
+                IsUnwatched = false,
+                LastUpdated = DateTime.Now,
+                MogwaiKeysState = MogwaiKeysState.Bound,
+                Shifts = shifts
+
+            };
+        }
     }
 }
