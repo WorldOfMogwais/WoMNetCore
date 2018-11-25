@@ -34,7 +34,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public ArrayMap<bool> WalkabilityMap { get; }
         public ArrayMap<int> ExplorationMap { get; }
-        public ArrayMap<AdventureEntity> EntityMap { get; }
+        public ArrayMap<AdventureEntityContainer> EntityMap { get; }
         public ArrayMap<Tile> TileMap { get; }
         public FOV FovMap { get; }
         public int[,] ExpectedFovNum { get; }
@@ -69,7 +69,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             WalkabilityMap = wMap;
             ExplorationMap = new ArrayMap<int>(width, height);
-            EntityMap = new ArrayMap<AdventureEntity>(width, height);
+            EntityMap = new ArrayMap<AdventureEntityContainer>(width, height);
             TileMap = new ArrayMap<Tile>(width, height);
             var resMap = new ArrayMap<double>(width, height);
             for (var i = 0; i < width; i++)
@@ -166,7 +166,13 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             entity.Map = this;
             entity.Coordinate = Coord.Get(x, y);
-            EntityMap[x, y] = entity;
+
+            if (EntityMap[x, y] == null)
+            {
+                EntityMap[x, y] = new AdventureEntityContainer();
+            }
+            EntityMap[x, y].Add(entity);
+
             EntityCount++;
 
             if (entity is Combatant combatant)
@@ -176,6 +182,24 @@ namespace WoMFramework.Game.Generator.Dungeon
             }
 
             Adventure.Enqueue(AdventureLog.EntityCreated(entity));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entity"></param>
+        public void DeadEntity(Combatant entity)
+        {
+            if (EntityMap[entity.Coordinate] == null)
+                throw new Exception();
+
+            // dead bodies are passable
+            entity.IsPassable = true;
+
+            WalkabilityMap[entity.Coordinate] = EntityMap[entity.Coordinate].IsPassable;
+
+
+            Adventure.Enqueue(AdventureLog.Died(entity));
         }
 
         /// <summary>
@@ -191,13 +215,16 @@ namespace WoMFramework.Game.Generator.Dungeon
             if (EntityMap[entity.Coordinate] == null)
                 throw new Exception();
 
-            if (!entity.IsPassable)
+
+            EntityMap[entity.Coordinate].Remove(entity);
+            WalkabilityMap[entity.Coordinate] = EntityMap[entity.Coordinate].IsPassable;
+
+            if (EntityMap[destination] == null)
             {
-                WalkabilityMap[entity.Coordinate] = true;
-                WalkabilityMap[destination] = false;
+                EntityMap[destination] = new AdventureEntityContainer();
             }
-            EntityMap[entity.Coordinate] = null;
-            EntityMap[destination] = entity;
+            EntityMap[destination].Add(entity);
+            WalkabilityMap[destination] = EntityMap[destination].IsPassable;
 
             entity.Coordinate = destination;
 
@@ -288,10 +315,10 @@ namespace WoMFramework.Game.Generator.Dungeon
             var combatants = new List<Combatant>();
             foreach (var coord in coords)
             {
-                var entity = EntityMap[coord];
-                if (entity != null && entity is Combatant combatant)
+                var entityContainer = EntityMap[coord];
+                if (entityContainer != null && entityContainer.Has<Combatant>())
                 {
-                    combatants.Add(combatant);
+                    combatants.AddRange(entityContainer.Get<Combatant>());
                 }
             }
 
@@ -323,9 +350,16 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             var k = 0;
             for (var i = 0; i < Width; i++)
+            {
                 for (var j = 0; j < Height; j++)
+                {
                     if (EntityMap[i, j] != null)
-                        result[k++] = EntityMap[i, j];
+                    {
+                        EntityMap[i, j].GetAll.ForEach(p => result[k++] = p);
+                    }
+                }
+            }
+
             return result;
         }
 

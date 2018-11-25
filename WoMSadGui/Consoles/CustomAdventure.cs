@@ -95,6 +95,12 @@ namespace WoMSadGui.Consoles
             // Draw entities (Mogwais, Monsters, etc.)
             foreach (var entity in Adventure.Map.GetEntities())
             {
+                // TODO this has to be analyzed !!!
+                if (entity == null)
+                {
+                    continue;
+                }
+
                 if (!entity.IsStatic)
                 {
                     DrawEntity(entity);

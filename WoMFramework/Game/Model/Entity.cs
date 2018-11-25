@@ -421,10 +421,9 @@ namespace WoMFramework.Game.Model
 
             if (IsDead)
             {
-                //Map.RemoveEntity(this);
                 Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}.");
                 Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}."));
-                Adventure.Enqueue(AdventureLog.Died(this));
+                Map.DeadEntity(this);                
             }
         }
 
@@ -446,11 +445,9 @@ namespace WoMFramework.Game.Model
 
             if (entity.Treasure != null)
             {
-                return;
+                Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot.");
+                Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot."));
             }
-
-            Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot.");
-            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot."));
         }
 
         #region AdventureEntity
@@ -493,10 +490,17 @@ namespace WoMFramework.Game.Model
             lootableEntities = new List<AdventureEntity>();
             foreach (var fovCoord in FovCoords)
             {
-                var entity = Map.EntityMap[fovCoord];
-                if (entity != null && this != entity && entity.IsLootable && entity.LootState > LootState.Looted && (!(entity is Combatant combatant) || combatant.IsDead))
+                if (Map.EntityMap[fovCoord] != null)
                 {
-                    lootableEntities.Add(entity);
+                    foreach (var entity in Map.EntityMap[fovCoord].GetAll)
+                    {
+                        if (entity != null && this != entity && entity.IsLootable &&
+                            entity.LootState > LootState.Looted &&
+                            (!(entity is Combatant combatant) || combatant.IsDead))
+                        {
+                            lootableEntities.Add(entity);
+                        }
+                    }
                 }
             }
 
