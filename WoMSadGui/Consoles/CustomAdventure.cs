@@ -209,6 +209,14 @@ namespace WoMSadGui.Consoles
             // add animation entity
             entity.Children.Add(animEntity);
 
+            // TODO change this ... to a more appropriate handling
+            // do not revive ... dead shapes
+            if (adventureEntity is Combatant combatant && combatant.IsDead)
+            {
+                DiedEntity(entity);
+            }
+
+
             entity.IsVisible = false;
 
             _entities.Add(adventureEntity.AdventureEntityId, entity);

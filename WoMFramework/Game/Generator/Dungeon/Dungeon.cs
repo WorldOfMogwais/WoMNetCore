@@ -116,7 +116,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             var allMonsters = new List<MonsterBuilder>();
 
-            for (int i = 0; i < 100 && totXpAmount > 0; i++)
+            for (var i = 0; i < 100 && totXpAmount > 0; i++)
             {
                 var mob = monsterSet[DungeonRandom.Next(monsterSet.Count)];
                 allMonsters.Add(mob);
@@ -127,10 +127,13 @@ namespace WoMFramework.Game.Generator.Dungeon
             if (Entities.Count < 7)
             {
                 var subMonsterSet = monsterSet.Where(p => p.ChallengeRating <= 0.5).ToList();
-                for (var i = 0; i < 10; i++)
+                if (subMonsterSet.Count > 0)
                 {
-                    var mob = subMonsterSet[DungeonRandom.Next(monsterSet.Count)];
-                    allMonsters.Add(mob);
+                    for (var i = 0; i < 10; i++)
+                    {
+                        var mob = subMonsterSet[DungeonRandom.Next(subMonsterSet.Count)];
+                        allMonsters.Add(mob);
+                    }
                 }
             }
 
@@ -142,7 +145,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             boss.Initialize(new Dice(shift, 1));
             Entities.Add(boss.AdventureEntityId, boss);
 
-            int monsterMod = 100;
+            var monsterMod = 100;
             foreach (var monsterBuilder in allMonsters)
             {
                 var mob = monsterBuilder.Build();

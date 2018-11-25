@@ -510,7 +510,7 @@ namespace WoMFramework.Game.Model
 
         public override bool IsInReach(AdventureEntity entity)
         {
-            return Distance.EUCLIDEAN.Calculate(entity.Coordinate - Coordinate) <= 1;
+            return Distance.EUCLIDEAN.Calculate(entity.Coordinate - Coordinate) <= 1.5d;
         }
 
         /// <summary>
@@ -770,13 +770,17 @@ namespace WoMFramework.Game.Model
                     Coord[] nearestPath = null;
                     foreach (var loot in lootableEntities)
                     {
+                        //System.Console.WriteLine($"Is in reach {loot.Name}? {IsInReach(loot)}");
                         if (IsInReach(loot))
                         {
+                            //System.Console.WriteLine($"looting {loot.Name}");
                             Loot(loot);
                             continue;
                         }
 
                         var path = Algorithms.AStar(Coordinate, loot.Coordinate, Map);
+
+
                         if (nearestPath == null)
                         {
                             nearestPath = path;
@@ -798,6 +802,7 @@ namespace WoMFramework.Game.Model
 
                         if (!MoveAtomic(nearestPath[1], ref moveRange, ref diagonalCount))
                             return;
+
                         continue;
                     }
                 }
