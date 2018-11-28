@@ -93,7 +93,7 @@ namespace WoMSadGui.Consoles
             _statsConsole.Print(7, 5, "Portal", Color.Gainsboro);
 
             // Draw entities (Mogwais, Monsters, etc.)
-            foreach (var entity in Adventure.Map.GetEntities())
+            foreach (var entity in Adventure.Map.Entities)
             {
                 // TODO this has to be analyzed !!!
                 if (entity == null)
@@ -259,7 +259,7 @@ namespace WoMSadGui.Consoles
             else
             {
                 // gamespeed of unseen entities have no delay
-                GameSpeed = _mogwai.CanSee(Adventure.Map.GetEntities().FirstOrDefault(p => p.AdventureEntityId == adventureLog.Source)) ? ActionDelay : TimeSpan.Zero;
+                GameSpeed = _mogwai.CanSee(Adventure.Map.Entities.FirstOrDefault(p => p.AdventureEntityId == adventureLog.Source)) ? ActionDelay : TimeSpan.Zero;
 
             }
 
@@ -302,7 +302,7 @@ namespace WoMSadGui.Consoles
                     throw new ArgumentOutOfRangeException();
             }
 
-            foreach (var entity in Adventure.Map.GetEntities())
+            foreach (var entity in Adventure.Map.Entities)
             {
                 if (entity.IsStatic)
                 {

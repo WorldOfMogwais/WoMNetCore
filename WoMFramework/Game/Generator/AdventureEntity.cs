@@ -10,32 +10,35 @@ namespace WoMFramework.Game.Generator
 {
     public class AdventureEntityContainer
     {
-        private List<AdventureEntity> _entities = new List<AdventureEntity>();
+        public List<AdventureEntity> Entities { get; }
+
+        public bool IsPassable => Entities.All(p => p.IsPassable);
+
+        public AdventureEntityContainer()
+        {
+            Entities = new List<AdventureEntity>();
+        }
 
         public void Add(AdventureEntity entitiy)
         {
-            _entities.Add(entitiy);
+            Entities.Add(entitiy);
         }
 
         public void Remove(AdventureEntity entitiy)
         {
-            _entities.Remove(entitiy);
+            Entities.Remove(entitiy);
         }
-
-        public bool IsPassable => _entities.All(p => p.IsPassable);
 
         public bool Has<T>()
         {
-            return _entities.Any(p => p is T);
+            return Entities.Any(p => p is T);
         }
 
         public IEnumerable<T> Get<T>()
         {
-            return _entities.OfType<T>();
+            return Entities.OfType<T>();
         }
 
-        public List<AdventureEntity> GetAll => _entities;
-        
     }
 
     public abstract class AdventureEntity

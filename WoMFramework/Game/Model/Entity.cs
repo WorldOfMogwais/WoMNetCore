@@ -492,7 +492,7 @@ namespace WoMFramework.Game.Model
             {
                 if (Map.EntityMap[fovCoord] != null)
                 {
-                    foreach (var entity in Map.EntityMap[fovCoord].GetAll)
+                    foreach (var entity in Map.EntityMap[fovCoord].Entities)
                     {
                         if (entity != null && this != entity && entity.IsLootable &&
                             entity.LootState > LootState.Looted &&
