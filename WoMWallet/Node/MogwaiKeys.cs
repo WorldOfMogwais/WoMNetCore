@@ -42,6 +42,8 @@ namespace WoMWallet.Node
 
         public bool IsUnwatched { get; set; }
 
+        public bool IsLocked { get; set; }
+
         public DateTime LastUpdated { get; set; }
 
         public MogwaiKeysState MogwaiKeysState { get; set; } = MogwaiKeysState.None;
