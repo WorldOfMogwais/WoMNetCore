@@ -227,13 +227,14 @@ namespace WoMFramework.Game.Enums
         Shoulders,
         Neck,
         Chest,
-        Body,
+        Armor,
         Belt,
         Wrists,
         Hands,
         Ring1,
         Ring2,
-        Feet
+        Feet,
+        Weapon
     }
 
     public enum ModifierType

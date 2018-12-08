@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using GoRogue;
 using GoRogue.MapViews;
@@ -203,6 +204,8 @@ namespace WoMFramework.Game.Model
 
         public List<Spell> Spells { get; set; }
 
+        public List<BaseItem> Inventory { get; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -236,6 +239,9 @@ namespace WoMFramework.Game.Model
 
             // initialize spells list
             Spells = new List<Spell>();
+
+            // initialize inventory
+            Inventory = new List<BaseItem>();
 
             // unlooted state
             LootState = LootState.Unlooted;
@@ -293,38 +299,143 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="slotType"></param>
         /// <param name="baseItem"></param>
         /// <returns></returns>
-        public virtual bool EquipItem(SlotType slotType, BaseItem baseItem)
+        public bool AddToInventory(BaseItem baseItem)
         {
-            return Equipment.Equip(slotType, baseItem);
+            // TODO check if we are not encumbered!
+
+            Inventory.Add(baseItem);
+
+            baseItem.ChangeOwner(this);
+
+            return true;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="primaryWeapon"></param>
-        /// <param name="secondaryWeapon"></param>
-        /// <param name="slotIndex"></param>
-        public virtual bool EquipWeapon(Weapon primaryWeapon, Weapon secondaryWeapon = null, int slotIndex = -1)
+        /// <param name="baseItem"></param>
+        /// <returns></returns>
+        public bool RemoveFromInventory(BaseItem baseItem)
         {
-            var emptyWeaponSlot = Equipment.WeaponSlots.FirstOrDefault(p => p.IsEmpty);
-            if (emptyWeaponSlot == null)
+            if (!Inventory.Contains(baseItem))
             {
-                // no more empty slots
                 return false;
             }
 
-            // TODO implement remove weapon on slot index
+            Inventory.Remove(baseItem);
+            return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slotType"></param>
+        /// <param name="baseItem"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        public bool CanEquipeItem(SlotType slotType, BaseItem baseItem, out EquipmentSlot slot)
+        {
+            slot = Equipment.Slots.FirstOrDefault(p => p.SlotType == slotType);
+
+            return Inventory.Contains(baseItem) 
+                   && baseItem.SlotType == slotType 
+                   && slot != null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slotType"></param>
+        /// <param name="baseItem"></param>
+        /// <returns></returns>
+        public bool EquipeItem(SlotType slotType, BaseItem baseItem)
+        {
+            if (!CanEquipeItem(slotType, baseItem, out var slot))
+            {
+                return false;
+            }
+
+            // removed old item
+            if (slot.BasicItem != null)
+            {
+                var oldItem = slot.BasicItem;
+                slot.BasicItem = null;
+
+                if (!AddToInventory(oldItem))
+                {
+                    return false;
+                }
+
+                // unlearn old item
+                oldItem.UnLearn(this);
+            }
+
+            // add new item
+            if (!RemoveFromInventory(baseItem))
+            {
+                return false;
+            }
+
+            slot.BasicItem = baseItem;
+
+            // learn new item
+            baseItem.Learn(this);
+
+            return true;
+        }
+
+        public bool CanEquipeWeapon(SlotType slotType, Weapon weapon, int slotIndex, out WeaponSlot slot)
+        {
+            slot = Equipment.GetWeaponSlot(slotIndex);
+
+            return Inventory.Contains(weapon) 
+                   && weapon.SlotType == slotType 
+                   && slot != null;
+        }
+
+        public bool EquipeWeapon(Weapon baseItem, Weapon secondaryWeapon = null, int slotIndex = 0)
+        {
+
+            if (!CanEquipeWeapon(SlotType.Weapon, baseItem, slotIndex, out var slot))
+            {
+                return false;
+            }
+
+            // removed old item
+            if (slot.PrimaryWeapon != null)
+            {
+                var oldItem = slot.PrimaryWeapon;
+                slot.PrimaryWeapon = null;
+
+                if (!AddToInventory(oldItem))
+                {
+                    return false;
+                }
+
+                // unlearn old item
+                oldItem.UnLearn(this);
+            }
+
+            // add new item
+            if (!RemoveFromInventory(baseItem))
+            {
+                return false;
+            }
+
+            slot.PrimaryWeapon = baseItem;
+
+            // learn new item
+            baseItem.Learn(this);
 
             // standard attack
-            CombatActions.Add(CombatAction.CreateWeaponAttack(this, primaryWeapon, false));
+            //CombatActions.Add(CombatAction.CreateWeaponAttack(this, baseItem, false));
 
             // full attack
-            CombatActions.Add(CombatAction.CreateWeaponAttack(this, primaryWeapon, true));
+            //CombatActions.Add(CombatAction.CreateWeaponAttack(this, baseItem, true));
 
-            emptyWeaponSlot.PrimaryWeapon = primaryWeapon;
+            slot.PrimaryWeapon = baseItem;
 
             if (secondaryWeapon != null)
             {

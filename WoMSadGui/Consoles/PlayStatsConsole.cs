@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using SadConsole;
 using SadConsole.Surfaces;
+using WoMFramework.Game.Enums;
+using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Mogwai;
 using Console = SadConsole.Console;
 
@@ -174,12 +177,10 @@ namespace WoMSadGui.Consoles
 
         private void PrintArmor(int x, int y, Mogwai mogwai)
         {
-            if (mogwai.Equipment.Armor == null)
+            if (!(mogwai.Equipment.GetItemInSlot(SlotType.Armor) is Armor armor))
             {
                 return;
             }
-
-            var armor = mogwai.Equipment.Armor;
 
             Print(x, y, "A:", Color.Gainsboro);
             Print(x + 3, y, armor.Name.Substring(0, 15), Color.Orange);

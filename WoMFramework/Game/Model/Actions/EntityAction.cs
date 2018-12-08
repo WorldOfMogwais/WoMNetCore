@@ -7,7 +7,7 @@ namespace WoMFramework.Game.Model.Actions
 {
     public abstract class EntityAction
     {
-        public Entity Owner { get; }
+        public Entity Owner { get; private set; }
 
         protected EntityAction(Entity owner)
         {
@@ -15,6 +15,11 @@ namespace WoMFramework.Game.Model.Actions
         }
 
         public bool IsExecutable { get; set; }
+
+        public void ChangeOwner(Entity entity)
+        {
+            Owner = entity;
+        }
     }
 
     public enum ActionType
