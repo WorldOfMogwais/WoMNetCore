@@ -55,7 +55,7 @@ namespace WoMFrameworkTest.Game
         [Fact]
         public void MogwaiMagicItem()
         {
-            var ringOfMogwan = MagicItems.RingOfMogwan();
+            var ringOfMogwan = MagicItems.BoneOfMogwan();
             var ringOfTheBear = MagicItems.RingOfTheBear();
 
             Assert.Empty(Mogwai.Inventory);

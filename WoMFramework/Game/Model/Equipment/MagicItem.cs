@@ -37,9 +37,9 @@ namespace WoMFramework.Game.Model
 
     public class MagicItems
     {
-        public static MagicItem RingOfMogwan()
+        public static MagicItem BoneOfMogwan()
         {
-            return new MagicItem("Ring of Mogwan",
+            return new MagicItem("Bone of Mogwan",
                 new List<Modifier>()
                 {
                     new SimpleModifier(ModifierType.Strength, 2),
@@ -47,7 +47,14 @@ namespace WoMFramework.Game.Model
                     new SimpleModifier(ModifierType.Constitution, 2),
                     new SimpleModifier(ModifierType.Inteligence, 2),
                     new SimpleModifier(ModifierType.Wisdom, 2),
-                    new SimpleModifier(ModifierType.Charisma, 2)
+                    new SimpleModifier(ModifierType.Charisma, 2),
+                    new SimpleModifier(ModifierType.ArmorClass, 1),
+                    new SimpleModifier(ModifierType.Initiative, 1),
+                    new SimpleModifier(ModifierType.AttackBonus, 1),
+                    new SimpleModifier(ModifierType.Speed, 1),
+                    new SimpleModifier(ModifierType.Will, 1),
+                    new SimpleModifier(ModifierType.Reflex, 1),
+                    new SimpleModifier(ModifierType.Fortitude, 1),
                 },
                 new List<CombatAction>(),
                 1000D,
