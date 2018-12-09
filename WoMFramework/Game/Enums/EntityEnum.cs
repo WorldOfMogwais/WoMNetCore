@@ -231,14 +231,20 @@ namespace WoMFramework.Game.Enums
         Belt,
         Wrists,
         Hands,
-        Ring1,
-        Ring2,
+        Ring,
         Feet,
         Weapon
     }
 
     public enum ModifierType
     {
+        Strength,
+        Dexterity,
+        Constitution,
+        Inteligence,
+        Wisdom,
+        Charisma,
+
         Speed,
         Initiative,
         Fortitude,

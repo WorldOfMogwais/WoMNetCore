@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Model.Actions;
@@ -13,8 +14,8 @@ namespace WoMFramework.Game.Model
         public double Weight { get; set; }
         public string Description = string.Empty;
 
-        public string Name  { get; set; }
-        
+        public string Name { get; set; }
+
         public List<Modifier> Modifiers { get; set; }
 
         public List<CombatAction> CombatActions { get; set; }
@@ -31,6 +32,46 @@ namespace WoMFramework.Game.Model
         {
             Modifiers = modifier;
             CombatActions = combatActions;
+        }
+    }
+
+    public class MagicItems
+    {
+        public static MagicItem RingOfMogwan()
+        {
+            return new MagicItem("Ring of Mogwan",
+                new List<Modifier>()
+                {
+                    new SimpleModifier(ModifierType.Strength, 2),
+                    new SimpleModifier(ModifierType.Dexterity, 2),
+                    new SimpleModifier(ModifierType.Constitution, 2),
+                    new SimpleModifier(ModifierType.Inteligence, 2),
+                    new SimpleModifier(ModifierType.Wisdom, 2),
+                    new SimpleModifier(ModifierType.Charisma, 2)
+                },
+                new List<CombatAction>(),
+                1000D,
+                0.1D,
+                "One of the most wanted items that ever existed in the World of Mogwais.",
+                RarityType.Legendary,
+                SlotType.Ring
+                );
+        }
+
+        public static MagicItem RingOfTheBear()
+        {
+            return new MagicItem("Ring of the Bear",
+                new List<Modifier>()
+                {
+                    new SimpleModifier(ModifierType.Strength, 2)
+                },
+                new List<CombatAction>(),
+                1D,
+                0.1D,
+                "This ring somehow makes you feel stronger.",
+                RarityType.Magic,
+                SlotType.Ring
+            );
         }
     }
 

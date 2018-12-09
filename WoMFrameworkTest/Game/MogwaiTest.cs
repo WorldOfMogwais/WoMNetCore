@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using WoMFramework.Game.Enums;
 using WoMFramework.Game.Interaction;
+using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Tool;
 using Xunit;
@@ -48,6 +50,46 @@ namespace WoMFrameworkTest.Game
         public void MogwaiArmor()
         {
             Assert.Equal(3, Mogwai.Equipment.ArmorBonus);
+        }
+
+        [Fact]
+        public void MogwaiMagicItem()
+        {
+            var ringOfMogwan = MagicItems.RingOfMogwan();
+            var ringOfTheBear = MagicItems.RingOfTheBear();
+
+            Assert.Empty(Mogwai.Inventory);
+
+            Mogwai.AddToInventory(ringOfMogwan);
+            Mogwai.AddToInventory(ringOfTheBear);
+
+            Assert.Equal(2, Mogwai.Inventory.Count);
+            Assert.Equal(0, Mogwai.StrengthMod);
+            Assert.Equal(0, Mogwai.DexterityMod);
+            Assert.Equal(0, Mogwai.ConstitutionMod);
+            Assert.Equal(0, Mogwai.InteligenceMod);
+            Assert.Equal(1, Mogwai.WisdomMod);
+            Assert.Equal(3, Mogwai.CharismaMod);
+
+            Mogwai.EquipeItem(SlotType.Ring, ringOfMogwan, 0);
+
+            Assert.Equal(1, Mogwai.Inventory.Count);
+            Assert.Equal(1, Mogwai.StrengthMod);
+            Assert.Equal(1, Mogwai.DexterityMod);
+            Assert.Equal(1, Mogwai.ConstitutionMod);
+            Assert.Equal(1, Mogwai.InteligenceMod);
+            Assert.Equal(2, Mogwai.WisdomMod);
+            Assert.Equal(4, Mogwai.CharismaMod);
+
+            Mogwai.EquipeItem(SlotType.Ring, ringOfTheBear, 0);
+
+            Assert.Equal(1, Mogwai.Inventory.Count);
+            Assert.Equal(1, Mogwai.StrengthMod);
+            Assert.Equal(0, Mogwai.DexterityMod);
+            Assert.Equal(0, Mogwai.ConstitutionMod);
+            Assert.Equal(0, Mogwai.InteligenceMod);
+            Assert.Equal(1, Mogwai.WisdomMod);
+            Assert.Equal(3, Mogwai.CharismaMod);
         }
     }
 }

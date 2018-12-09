@@ -62,22 +62,28 @@ namespace WoMFramework.Game.Model
 
         #region abilities
 
-        public int Strength { get; set; }
+        private int strength;
+        public int Strength { get => strength + MiscMod[ModifierType.Strength] + TempMod [ModifierType.Strength]; set => strength = value; }
         public int StrengthMod => Modifier(Strength);
 
-        public int Dexterity { get; set; }
+        private int dexterity;
+        public int Dexterity { get => dexterity + MiscMod[ModifierType.Dexterity] + TempMod[ModifierType.Dexterity]; set => dexterity = value; }
         public int DexterityMod => Modifier(Dexterity);
 
-        public int Constitution { get; set; }
+        private int constitution;
+        public int Constitution { get => constitution + MiscMod[ModifierType.Constitution] + TempMod[ModifierType.Constitution]; set => constitution = value; }
         public int ConstitutionMod => Modifier(Constitution);
 
-        public int Inteligence { get; set; }
+        private int inteligence;
+        public int Inteligence { get => inteligence + MiscMod[ModifierType.Inteligence] + TempMod[ModifierType.Inteligence]; set => inteligence = value; }
         public int InteligenceMod => Modifier(Inteligence);
 
-        public int Wisdom { get; set; }
+        private int wisdom;
+        public int Wisdom { get => wisdom + MiscMod[ModifierType.Wisdom] + TempMod[ModifierType.Wisdom]; set => wisdom = value; }
         public int WisdomMod => Modifier(Wisdom);
 
-        public int Charisma { get; set; }
+        private int charisma;
+        public int Charisma { get => charisma + MiscMod[ModifierType.Charisma] + TempMod[ModifierType.Charisma]; set => charisma = value; }
         public int CharismaMod => Modifier(Charisma);
 
         private int Modifier(int ability) => (int)Math.Floor((ability - 10) / 2.0);
@@ -335,9 +341,9 @@ namespace WoMFramework.Game.Model
         /// <param name="baseItem"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public bool CanEquipeItem(SlotType slotType, BaseItem baseItem, out EquipmentSlot slot)
+        public bool CanEquipeItem(SlotType slotType, BaseItem baseItem, out EquipmentSlot slot, int slotIndex = 0)
         {
-            slot = Equipment.Slots.FirstOrDefault(p => p.SlotType == slotType);
+            slot = Equipment.Slots.Where(p => p.SlotType == slotType).ElementAtOrDefault(slotIndex);
 
             return Inventory.Contains(baseItem) 
                    && baseItem.SlotType == slotType 
@@ -350,9 +356,9 @@ namespace WoMFramework.Game.Model
         /// <param name="slotType"></param>
         /// <param name="baseItem"></param>
         /// <returns></returns>
-        public bool EquipeItem(SlotType slotType, BaseItem baseItem)
+        public bool EquipeItem(SlotType slotType, BaseItem baseItem, int slotIndex = 0)
         {
-            if (!CanEquipeItem(slotType, baseItem, out var slot))
+            if (!CanEquipeItem(slotType, baseItem, out var slot, slotIndex))
             {
                 return false;
             }
