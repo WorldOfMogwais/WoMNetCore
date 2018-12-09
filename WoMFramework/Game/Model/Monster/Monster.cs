@@ -68,13 +68,29 @@ namespace WoMFramework.Game.Model.Monster
                 EnvironmentTypes = EnvironmentTypes,
                 Description = Description
             };
-            foreach (var weaponSlot in WeaponSlots)
+
+            for (int i = 0; i < WeaponSlots.Count; i++)
             {
-                // create new weaponslot
+                // create new weaponslot, maybe other slots too
                 monster.Equipment.WeaponSlots.Add(new WeaponSlot());
+
+                // create item slots if necessary
+                //monster.Equipment.CreateEquipmentSlots(new[] {SlotType.??});
+
+                if (WeaponSlots[i].PrimaryWeapon != null)
+                {
+                    monster.AddToInventory(WeaponSlots[i].PrimaryWeapon);
+                }
+
+                if (WeaponSlots[i].SecondaryWeapon != null)
+                {
+                    monster.AddToInventory(WeaponSlots[i].SecondaryWeapon);
+                }
+
                 // add weapon to empty weaponslot
-                monster.EquipWeapon(weaponSlot.PrimaryWeapon, weaponSlot.SecondaryWeapon);
+                monster.EquipeWeapon(WeaponSlots[i].PrimaryWeapon, WeaponSlots[i].SecondaryWeapon, i);
             }
+
             return monster;
         }
     }

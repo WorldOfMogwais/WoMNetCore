@@ -2,6 +2,7 @@
 using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using NBitcoin.Altcoins;
 using SadConsole;
 using SadConsole.Surfaces;
 using WoMFramework.Game.Model;
@@ -10,6 +11,7 @@ using WoMWallet.Node;
 using WoMWallet.Tool;
 using Console = SadConsole.Console;
 using Keyboard = SadConsole.Input.Keyboard;
+using Mogwai = WoMFramework.Game.Model.Mogwai.Mogwai;
 
 namespace WoMSadGui.Consoles
 {
@@ -124,8 +126,10 @@ namespace WoMSadGui.Consoles
             Print(75, HeaderPosition, " Rating ");
             SetGlyph(84, HeaderPosition, 185, Color.DarkCyan);
             Print(85, HeaderPosition, " Level ");
-            SetGlyph(93, HeaderPosition, 185, Color.DarkCyan);
-            Print(94, HeaderPosition, " Gold ");
+            SetGlyph(92, HeaderPosition, 185, Color.DarkCyan);
+            Print(93, HeaderPosition, " Gold ");
+            SetGlyph(104, HeaderPosition, 185, Color.DarkCyan);
+            Print(105, HeaderPosition, " % ");
         }
 
         private void AddButton(int index, string text, Action<string> buttonClicked)
@@ -158,6 +162,7 @@ namespace WoMSadGui.Consoles
             AddButton(2, "bind", DoAction);
             AddButton(3, "watch", DoAction);
             AddButton(4, "play", DoAction);
+            AddButton(5, "evolve", DoAction);
         }
 
         internal SadGuiState GetState()
@@ -210,9 +215,20 @@ namespace WoMSadGui.Consoles
                     }
                     break;
                 case "play":
-                    if (_controller.CurrentMogwaiKeys?.Mogwai != null)
+                    if (_controller.CurrentMogwaiKeys?.Mogwai != null && !_controller.CurrentMogwaiKeys.IsLocked)
                     {
                         State = SadGuiState.Play;
+                    }
+                    else
+                    {
+                        LogInConsole("FAIL", "make sure to choosse a mogwai before trying to play.");
+                    }
+                    break;
+                case "evolve":
+                    if (_controller.CurrentMogwaiKeys?.Mogwai != null)
+                    {
+                        LogInConsole("DONE", $"auto evolving mogwai {_controller.CurrentMogwaiKeys.Mogwai.Name} now.");
+                        _controller.EvolveMogwai();
                     }
                     else
                     {
@@ -384,14 +400,16 @@ namespace WoMSadGui.Consoles
             var nPos = 62;
             var rPos = 76;
             var lPos = 86;
-            var gPos = 95;
+            var gPos = 94;
+            var pPos = 106;
             var balance = mogwaiKeys.Balance;
             var balanceStr = balance < 1000 ? balance.ToString("##0.0000").PadLeft(8) : "RICH".PadRight(8);
             var mogwai = mogwaiKeys.Mogwai;
             var nameStr = mogwai != null ? mogwai.Name.PadRight(11) : "".PadRight(11, '.');
             var rateStr = mogwai != null ? mogwai.Rating.ToString("#0.00").PadRight(7) : "".PadRight(7, '.');
-            var levlStr = mogwai != null ? mogwai.CurrentLevel.ToString("##0").PadRight(5) : "".PadRight(5, '.');
-            var goldStr = mogwai != null ? mogwai.Wealth.Gold.ToString("#####0.00").PadRight(10) : "".PadRight(10, '.');
+            var levlStr = mogwai != null ? mogwai.CurrentLevel.ToString("##0").PadRight(4) : "".PadRight(4, '.');
+            var goldStr = mogwai != null ? mogwai.Wealth.Gold.ToString("#####0.00").PadRight(9) : "".PadRight(9, '.');
+            var progStr = mogwai != null ? ((double) mogwai.CurrentShift.Index /  mogwai.Shifts.Count).ToString("##0%").PadRight(4) : "".PadRight(4, '.');
 
             Print(3, index, !tagged ? " " : ">", !tagged ? Color.Black : Color.DeepSkyBlue);
             Print(1, index, !selected ? "  " : "=>", !selected ? Color.Black : Color.SpringGreen);
@@ -406,6 +424,7 @@ namespace WoMSadGui.Consoles
             Print(rPos, index, rateStr, standard);
             Print(lPos, index, levlStr, standard);
             Print(gPos, index, goldStr, standard);
+            Print(pPos, index, progStr, standard);
         }
 
         private Color GetColorStandard(MogwaiKeys mogwaiKeys, bool selected)

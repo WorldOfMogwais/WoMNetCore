@@ -32,18 +32,18 @@ namespace WoMFramework.Game.Model
         public int ArmorCheckPenalty { get; }
         public double ArcaneSpellFailureChance { get; }
 
-        public int? SpeedReduction30ft { get; }
-        public int? SpeedReduction20ft { get; }
+        public int? SpeedReduction30Ft { get; }
+        public int? SpeedReduction20Ft { get; }
 
-        public Armor(string name, ArmorEffortType armorEffortType, int armorBonus, int? maxDexterityBonus, int armorCheckPenalty, double arcaneSpellFailureChance, int? speedReduction30Ft, int? speedReduction20Ft, double cost, double weight, string description) : base(name, cost, weight, description)
+        public Armor(string name, ArmorEffortType armorEffortType, int armorBonus, int? maxDexterityBonus, int armorCheckPenalty, double arcaneSpellFailureChance, int? speedReduction30Ft, int? speedReduction20Ft, double cost, double weight, string description) : base(name, cost, weight, description, slotType:armorEffortType == ArmorEffortType.Shield ? SlotType.Weapon : SlotType.Armor)
         {
             ArmorEffortType = armorEffortType;
             ArmorBonus = armorBonus;
             MaxDexterityBonus = maxDexterityBonus;
             ArmorCheckPenalty = armorCheckPenalty;
             ArcaneSpellFailureChance = arcaneSpellFailureChance;
-            SpeedReduction30ft = speedReduction30Ft;
-            SpeedReduction20ft = speedReduction20Ft;
+            SpeedReduction30Ft = speedReduction30Ft;
+            SpeedReduction20Ft = speedReduction20Ft;
         }
     }
 }

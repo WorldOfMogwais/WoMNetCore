@@ -135,7 +135,7 @@ namespace WoMWallet.Node
                 }
                 else
                 {
-                    MogwaiKeysUpdateQueue.Enqueue(CurrentMogwaiKeys); 
+                    MogwaiKeysUpdateQueue.Enqueue(CurrentMogwaiKeys);
                 }
 
                 Refresher();
@@ -246,6 +246,31 @@ namespace WoMWallet.Node
 
             CurrentMogwaiKeys.MogwaiKeysState = MogwaiKeysState.Create;
             return true;
+        }
+
+        public async Task EvolveMogwai()
+        {
+            await Task.Run(() =>
+            {
+                if (CurrentMogwai == null)
+                {
+                    return;
+                }
+
+                CurrentMogwaiKeys.IsLocked = true;
+
+                var mogwai = CurrentMogwai;
+                while (mogwai.Evolve())
+                {
+                    while (mogwai.CanEvolveAdventure)
+                    {
+                        mogwai.EvolveAdventure();
+                    }
+                }
+
+                CurrentMogwaiKeys.IsLocked = false;
+            });
+
         }
 
         public bool Interaction(Interaction interaction)
@@ -436,11 +461,11 @@ namespace WoMWallet.Node
             }
             for (int i = 0; i < 10; i++)
             {
-            shifts.Add(blockHeight, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
-                blockHeight++, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
-                2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
-                lvlBarbarian.GetValue1(),
-                lvlBarbarian.GetValue2()));
+                shifts.Add(blockHeight, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
+                    blockHeight++, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
+                    2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
+                    lvlBarbarian.GetValue1(),
+                    lvlBarbarian.GetValue2()));
             }
 
             var dungActionNext = new AdventureAction(AdventureType.Dungeon, DifficultyType.Easy, 8);
@@ -452,7 +477,7 @@ namespace WoMWallet.Node
                 dungActionNext.GetValue2()));
 
 
-        //    var shifts = new Dictionary<long, Shift>
+            //    var shifts = new Dictionary<long, Shift>
             //    {
             //        {
             //            1001, new Shift(0, 1530914381, pubMogAddressHex,

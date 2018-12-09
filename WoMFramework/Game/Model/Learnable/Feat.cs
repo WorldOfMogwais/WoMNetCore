@@ -56,6 +56,7 @@ namespace WoMFramework.Game.Model
             Name = name;
             Requirements = new List<Requirement>();
             Modifiers = new List<Modifier>();
+            CombatActions = new List<CombatAction>();
             IsActive = false;
         }
 

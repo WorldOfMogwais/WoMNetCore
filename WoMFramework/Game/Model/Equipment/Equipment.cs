@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using WoMFramework.Game.Enums;
+using WoMFramework.Game.Model.Actions;
 
 namespace WoMFramework.Game.Model
 {
@@ -24,26 +25,18 @@ namespace WoMFramework.Game.Model
 
     public class Equipment
     {
-        public Armor Armor { get; set; }
-
-        public int ArmorBonus => 0 + (Armor?.ArmorBonus ?? 0);
+        public int ArmorBonus => 0 + Slots.Select(p => p.BasicItem).OfType<Armor>().Sum(p => p.ArmorBonus);
 
         public int ShieldBonus => 0;
 
         public List<WeaponSlot> WeaponSlots { get; }
 
-        public List<Armor> Armors { get; }
-
         public List<EquipmentSlot> Slots { get; }
-
-        public List<BaseItem> Inventory { get; }
 
         public Equipment()
         {
             WeaponSlots = new List<WeaponSlot>();
-            Armors = new List<Armor>();
             Slots = new List<EquipmentSlot>();
-            Inventory = new List<BaseItem>();
         }
 
         public void CreateEquipmentSlots(SlotType[] slotTypes)
@@ -54,35 +47,11 @@ namespace WoMFramework.Game.Model
             }
         }
 
-        public bool CanEquipe(SlotType slotType, BaseItem baseItem, out EquipmentSlot slot)
+        public BaseItem GetItemInSlot(SlotType slotType) => Slots.FirstOrDefault(p => p.SlotType == slotType)?.BasicItem;
+
+        public WeaponSlot GetWeaponSlot(int slotIndex)
         {
-            slot = Slots.FirstOrDefault(p => p.SlotType == slotType);
-
-            return Inventory.Contains(baseItem) 
-                && baseItem.SlotType == slotType 
-                && slot != null;
-        }
-
-        public bool Equip(SlotType slotType, BaseItem baseItem)
-        {
-            if (!CanEquipe(slotType, baseItem, out var slot))
-            {
-                return false;
-            }
-
-            // removed old item
-            if (slot.BasicItem != null)
-            {
-                var oldItem = slot.BasicItem;
-                slot.BasicItem = null;
-                Inventory.Add(oldItem);
-            }
-
-            // add new item
-            Inventory.Remove(baseItem);
-            slot.BasicItem = baseItem;
-
-            return true;
+            return WeaponSlots.Count <= slotIndex ? null : WeaponSlots[slotIndex];
         }
     }
 }

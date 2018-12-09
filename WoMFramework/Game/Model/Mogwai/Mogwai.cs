@@ -104,20 +104,25 @@ namespace WoMFramework.Game.Model.Mogwai
             // create experience
             Experience = new Experience(_currentShift);
 
+            // create slot types
+            Equipment.CreateEquipmentSlots(new[] {
+                SlotType.Head, SlotType.Shoulders, SlotType.Neck,
+                SlotType.Chest,SlotType.Armor, SlotType.Belt,SlotType.Wrists,
+                SlotType.Hands,SlotType.Ring1,SlotType.Ring2,SlotType.Feet});
+
             // add weaponslot
             Equipment.WeaponSlots.Add(new WeaponSlot());
-            // add simple rapier as weapon
-            EquipWeapon(Weapons.Instance.ByName("Warhammer"));
+
+            // add simple weapon
+            var baseWeapon = Weapons.Instance.ByName("Warhammer");
+            AddToInventory(baseWeapon);
+            EquipeWeapon(baseWeapon);
 
             // add simple studded leather as armor
             //Equipment.Armor = Armors.StuddedLeather;
-            Equipment.Armor = Armors.Instance.ByName("Studded Leather");
-
-            // create slot types
-            Equipment.CreateEquipmentSlots(new SlotType[]
-                {SlotType.Head, SlotType.Shoulders, SlotType.Neck,
-                 SlotType.Chest,SlotType.Body, SlotType.Belt,SlotType.Wrists,
-                 SlotType.Hands,SlotType.Ring1,SlotType.Ring2,SlotType.Feet});
+            var baseArmor = Armors.Instance.ByName("Studded Leather");
+            AddToInventory(baseArmor);
+            EquipeItem(SlotType.Armor, baseArmor);
 
             HitPointDice = 6;
             CurrentHitPoints = MaxHitPoints;

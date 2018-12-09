@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WoMFramework.Game.Enums;
+using WoMFramework.Game.Model.Actions;
 
 namespace WoMFramework.Game.Model
 {
@@ -254,7 +255,7 @@ namespace WoMFramework.Game.Model
 
         public bool IsCriticalRoll(int roll) => roll >= CriticalMinRoll;
 
-        public Weapon(string name, WeaponBaseType weaponBaseType, WeaponSubType weaponSubType, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] mediumDamageRoll, WeaponAttackType weaponAttackType, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, SizeType sizeType, double cost, double weight, string description) : base(name, cost, weight, description)
+        public Weapon(string name, WeaponBaseType weaponBaseType, WeaponSubType weaponSubType, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] mediumDamageRoll, WeaponAttackType weaponAttackType, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, SizeType sizeType, double cost, double weight, string description) : base(name, cost, weight, description, slotType:SlotType.Weapon)
         {
             WeaponBaseType = weaponBaseType;
             WeaponSubType = weaponSubType;
@@ -268,6 +269,12 @@ namespace WoMFramework.Game.Model
             Range = range;
 
             SetSize(sizeType);
+
+            // standard attack
+            CombatActions.Add(CombatAction.CreateWeaponAttack(null, this, false));
+
+            // full attack
+            CombatActions.Add(CombatAction.CreateWeaponAttack(null, this, true));
         }
 
         public void SetSize(SizeType sizeType)
