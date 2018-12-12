@@ -98,7 +98,7 @@ namespace WoMFramework.Game.Model.Actions
                 return false;
             }
 
-            return Distance.EUCLIDEAN.Calculate(target.Coordinate - Owner.Coordinate) <= GetRange();
+            return (int) Distance.EUCLIDEAN.Calculate(target.Coordinate - Owner.Coordinate) <= GetRange();
         }
 
     }
