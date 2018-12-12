@@ -108,7 +108,7 @@ namespace WoMFramework.Game.Model.Mogwai
             Equipment.CreateEquipmentSlots(new[] {
                 SlotType.Head, SlotType.Shoulders, SlotType.Neck,
                 SlotType.Chest,SlotType.Armor, SlotType.Belt,SlotType.Wrists,
-                SlotType.Hands,SlotType.Ring1,SlotType.Ring2,SlotType.Feet});
+                SlotType.Hands,SlotType.Ring,SlotType.Ring,SlotType.Feet});
 
             // add weaponslot
             Equipment.WeaponSlots.Add(new WeaponSlot());
