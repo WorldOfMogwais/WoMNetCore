@@ -37,13 +37,13 @@ namespace WoMFrameworkTest.Game
         [Fact]
         public void MogwaiInventory()
         {
-            Assert.Equal(0, Mogwai.Inventory.Count);
+            Assert.Empty(Mogwai.Inventory);
         }
 
         [Fact]
         public void MogwaiWeapon()
         {
-            Assert.Equal(1, Mogwai.Equipment.WeaponSlots.Count);
+            Assert.Single(Mogwai.Equipment.WeaponSlots);
         }
 
         [Fact]
