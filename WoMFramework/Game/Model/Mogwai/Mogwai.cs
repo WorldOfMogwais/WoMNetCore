@@ -341,13 +341,18 @@ namespace WoMFramework.Game.Model.Mogwai
                 AddGold(dice.Roll(Classes[0].WealthDiceRollEvent));
             }
 
-            History.Add(LogType.Info, Coloring.LevelUp($"You feel the power of the {Classes[0].Name}'s!"));
+            string msg = Coloring.LevelUp($"You feel the power of the {Classes[0].Name}'s!");
+            History.Add(LogType.Info, msg);
+            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg));
+
         }
 
         /// <inheritdoc />
         public override void AddGold(int gold)
         {
-            History.Add(LogType.Info, $"You just found +{Coloring.Gold(gold)} gold!");
+            string msg = $"You just found +{Coloring.Gold(gold)} gold!";
+            History.Add(LogType.Info, msg);
+            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg));
 
             Wealth.Gold += gold;
         }
@@ -355,10 +360,11 @@ namespace WoMFramework.Game.Model.Mogwai
         /// <inheritdoc />
         public override void AddExp(double exp, Monster.Monster monster = null)
         {
-            History.Add(LogType.Info,
-                monster == null
+            string msg = monster == null
                     ? $"You just earned +{Coloring.Exp(exp)} experience!"
-                    : $"The {Coloring.Name(monster.Name)} gave you +{Coloring.Exp(exp)}!");
+                    : $"The {Coloring.Name(monster.Name)} gave you +{Coloring.Exp(exp)}!";
+            History.Add(LogType.Info, msg);
+            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg));
 
             Exp += exp;
 
@@ -375,8 +381,12 @@ namespace WoMFramework.Game.Model.Mogwai
         /// </summary>
         private void LevelUp()
         {
-            History.Add(LogType.Info, Coloring.LevelUp("You're mogwai suddenly feels an ancient power around him."));
-            History.Add(LogType.Info, $"{Coloring.LevelUp("Congratulations he just made the")} {Coloring.Green(CurrentLevel.ToString())} {Coloring.LevelUp("th level!")}");
+            string msg1 = Coloring.LevelUp("You're mogwai suddenly feels an ancient power around him.");
+            History.Add(LogType.Info, msg1);
+            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg1));
+            string msg2 = $"{Coloring.LevelUp("Congratulations he just made the")} {Coloring.Green(CurrentLevel.ToString())} {Coloring.LevelUp("th level!")}";
+            History.Add(LogType.Info, msg2);
+            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg2));
 
             // level up garant free revive
             SpecialAction(SpecialType.Reviving);

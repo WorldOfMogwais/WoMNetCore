@@ -552,6 +552,12 @@ namespace WoMFramework.Game.Model
         /// <param name="entity"></param>
         public void Loot(AdventureEntity entity)
         {
+            // only allow mogwais to loot
+            if (!(this is Mogwai.Mogwai mogwai))
+            {
+                return;
+            }
+
             if (entity.LootState == LootState.None 
              || entity.LootState == LootState.Looted)
             {
@@ -570,6 +576,7 @@ namespace WoMFramework.Game.Model
             {
                 Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has a treasure to loot.");
                 Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has a treasure to loot."));
+                mogwai.AddGold(entity.Treasure.Gold);
             }
 
           entity.LootState = LootState.Looted;
