@@ -35,9 +35,7 @@ namespace WoMFrameworkTest.Game
         [Fact]
         public void ShopTest()
         {
-
-
-            Assert.Equal(9, Mogwai.HomeTown.Shop.Inventory.Count);
+            Assert.True(10 >= Mogwai.HomeTown.Shop.Inventory.Count);
             Assert.True(Mogwai.HomeTown.Shop.Inventory.Sum(p => p.Cost) < 50);
             Assert.True(Mogwai.HomeTown.Shop.Inventory.OfType<Armor>().Any());
             Assert.True(Mogwai.HomeTown.Shop.Inventory.OfType<Weapon>().Any());
