@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using WoMFramework.Game.Enums;
+using WoMFramework.Game.Generator;
 using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model.Monster
@@ -121,6 +122,9 @@ namespace WoMFramework.Game.Model.Monster
             Dice = dice;
             HitPointDice = Dice.Roll(HitPointDiceRollEvent);
             CurrentHitPoints = MaxHitPoints;
+
+            Treasure = Treasure.Create(dice, TreasureType);
+
         }
 
     }

@@ -67,6 +67,8 @@ namespace WoMFramework.Game.Generator
 
         public int Size { get; }
 
+        public bool HasLoot => IsLootable && LootState != LootState.None && LootState != LootState.Looted ? true : false;
+
         public bool IsLootable { get; }
 
         public LootState LootState { get; set; }

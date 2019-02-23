@@ -540,6 +540,8 @@ namespace WoMFramework.Game.Model
             {
                 Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}.");
                 Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}."));
+                //Adventure.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.Name(Name)} treasure? {this.Treasure}. IsLootable: {IsLootable}; LootState: {LootState}; HasLoot: {HasLoot}"));
+                
                 Map.DeadEntity(this);                
             }
         }
@@ -550,21 +552,27 @@ namespace WoMFramework.Game.Model
         /// <param name="entity"></param>
         public void Loot(AdventureEntity entity)
         {
-            if (entity.LootState < LootState.Unlooted)
+            if (entity.LootState == LootState.None 
+             || entity.LootState == LootState.Looted)
             {
                 return;
             }
 
-            entity.LootState = LootState.Looted;
-
             Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.Name(Name)} is looting {Coloring.DarkGrey(entity.Name)}.");
             Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.Name(Name)} is looting {Coloring.DarkGrey(entity.Name)}."));
 
-            if (entity.Treasure != null)
+            if (entity.Treasure == null)
             {
                 Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot.");
                 Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot."));
             }
+            else
+            {
+                Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has a treasure to loot.");
+                Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has a treasure to loot."));
+            }
+
+          entity.LootState = LootState.Looted;
         }
 
         #region AdventureEntity
@@ -611,9 +619,11 @@ namespace WoMFramework.Game.Model
                 {
                     foreach (var entity in Map.EntityMap[fovCoord].Entities)
                     {
-                        if (entity != null && this != entity && entity.IsLootable &&
-                            entity.LootState > LootState.Looted &&
-                            (!(entity is Combatant combatant) || combatant.IsDead))
+                        if (entity != null 
+                         && this != entity
+                         && entity.IsLootable 
+                         && entity.HasLoot
+                         && (!(entity is Combatant combatant) || combatant.IsDead))
                         {
                             lootableEntities.Add(entity);
                         }
@@ -631,7 +641,7 @@ namespace WoMFramework.Game.Model
 
         public override bool IsInReach(AdventureEntity entity)
         {
-            return Distance.EUCLIDEAN.Calculate(entity.Coordinate - Coordinate) <= 1.5d;
+            return Distance.EUCLIDEAN.Calculate(entity.Coordinate - Coordinate) <= 2d;
         }
 
         /// <summary>

@@ -213,7 +213,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             var bossChest = new Chest()
             {
                 AdventureEntityId = NextId,
-                Adventure = this
+                Adventure = this,
+                Treasure = new Treasure(1)
             };
             Map.AddEntity(bossChest, coord.X, coord.Y);
         }
