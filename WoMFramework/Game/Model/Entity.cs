@@ -1045,7 +1045,7 @@ namespace WoMFramework.Game.Model
                             .Where(c => expMap[c] == 1)
                             .OrderBy(p => Distance.EUCLIDEAN.Calculate(Coordinate, p))
                             .Take(5)
-                            .Where(p => p != null)
+                            .Where(p => p != Coord.NONE)
                             .Select(p => Algorithms.AStar(Coordinate, p, Map))
                             .OrderBy(p => p.Length)
                             .First();

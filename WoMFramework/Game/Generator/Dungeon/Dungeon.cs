@@ -241,8 +241,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             // deploy mobs
             foreach (var monster in MonstersList.Where(p => p != boss))
             {
-                coord = null;
-                while (coord == null || Map.EntityMap[coord] != null)
+                coord = Coord.NONE;
+                while (coord == Coord.NONE || Map.EntityMap[coord] != null)
                 {
                     var location = Map.Locations[DungeonRandom.Next(Map.Locations.Count)];
                     coord = location.RandomPosition(DungeonRandom);
@@ -259,7 +259,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         private void DeployMogwai(Mogwai mogwai)
         {
             // TODO generate monsters from shift here
-            var mogCoord = Coord.Get(0, 0);
+            var mogCoord = Coord.ToCoord(0, 0);
             for (var x = 0; x < Map.Width; x++)
             {
                 var found = false;
@@ -267,7 +267,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 {
                     if (Map.WalkabilityMap[x, y])
                     {
-                        mogCoord = Coord.Get(x, y);
+                        mogCoord = Coord.ToCoord(x, y);
                         found = true;
                         break;
                     }
@@ -374,7 +374,11 @@ namespace WoMFramework.Game.Generator.Dungeon
             if (combatActionQueue.Count == 0)
             {
                 var intersects = GetIntersections(entity, target);
-                var nearestCoord = Map.Nearest(entity.Coordinate, intersects) ?? target.Coordinate;
+                var nearestCoord = Map.Nearest(entity.Coordinate, intersects);
+                if (nearestCoord == Coord.NONE)
+                {
+                    nearestCoord = target.Coordinate;
+                }
 
                 // enqueue move
                 TryEnqueueMove(entity, nearestCoord, ref combatActionQueue);

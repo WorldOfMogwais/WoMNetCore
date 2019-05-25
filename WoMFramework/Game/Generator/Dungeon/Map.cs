@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue;
-using GoRogue.MapGeneration.Generators;
+using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using Troschuetz.Random;
 using WoMFramework.Game.Model.Mogwai;
@@ -18,14 +18,14 @@ namespace WoMFramework.Game.Generator.Dungeon
     {
         public static readonly Coord[] Directions =
         {
-            Coord.Get(1, 0),    // E
-            Coord.Get(1, -1),   // SE
-            Coord.Get(0, -1),   // S
-            Coord.Get(-1, -1),  // SW
-            Coord.Get(-1, 0),   // W
-            Coord.Get(-1, 1),   // NW
-            Coord.Get(0, 1),    // N
-            Coord.Get(1, 1)     // NE
+            Coord.ToCoord(1, 0),    // E
+            Coord.ToCoord(1, -1),   // SE
+            Coord.ToCoord(0, -1),   // S
+            Coord.ToCoord(-1, -1),  // SW
+            Coord.ToCoord(-1, 0),   // W
+            Coord.ToCoord(-1, 1),   // NW
+            Coord.ToCoord(0, 1),    // N
+            Coord.ToCoord(1, 1)     // NE
         };
 
         public Guid Guid = Guid.NewGuid();
@@ -63,7 +63,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             else
             {
                 //RandomRoomsGenerator.Generate(wMap, dungeonRandom, 15, 5, 15, 50);
-                CellularAutomataGenerator.Generate(wMap, dungeonRandom);
+               QuickGenerators.GenerateCellularAutomataMap(wMap, dungeonRandom);
             }
 
             WalkabilityMap = wMap;
@@ -71,7 +71,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             EntityMap = new ArrayMap<AdventureEntityContainer>(width, height);
             TileMap = new ArrayMap<Tile>(width, height);
             Entities = new List<AdventureEntity>();
-            var resMap = new ArrayMap<double>(width, height);
+            var resMap = new ArrayMap<bool>(width, height);
             for (var i = 0; i < width; i++)
             {
                 for (var j = 0; j < height; j++)
@@ -79,17 +79,20 @@ namespace WoMFramework.Game.Generator.Dungeon
                     // build up Entity Map, not necessary and really slow on big maps
                     //EntityMap[i,j] = new AdventureEntityContainer();
 
+                    // initialize with false
+                    resMap[i, j] = false;
+
                     if (wMap[i, j])
                     {
                         //ExplorationMap[i, j] = 1;
                         _walkableTiles++;
-                        TileMap[i, j] = new StoneTile(this, Coord.Get(i, j));
+                        TileMap[i, j] = new StoneTile(this, Coord.ToCoord(i, j));
                     }
                     else
                     {
                         //ExplorationMap[i, j] = -9;
-                        resMap[i, j] = 1;
-                        TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
+                        resMap[i, j] = true;
+                        TileMap[i, j] = new StoneWall(this, Coord.ToCoord(i, j));
                     }
                 }
             }
@@ -116,7 +119,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                     while (rectangle.Positions().All(p => wMap[p.X, p.Y]))
                     {
                         legitRectangle = rectangle;
-                        rectangle = rectangle.SetWidth(++width).SetHeight(++height);
+                        rectangle = rectangle.ChangeWidth(++width).ChangeHeight(++height);
                     }
 
                     if (legitRectangle.Positions().All(p => wMap[p.X, p.Y]))
@@ -166,7 +169,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 WalkabilityMap[x, y] = false;
 
             entity.Map = this;
-            entity.Coordinate = Coord.Get(x, y);
+            entity.Coordinate = Coord.ToCoord(x, y);
 
             if (EntityMap[x, y] == null)
             {
@@ -260,7 +263,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
                 // Observed reachable tiles = 1
                 // Observed impassable tiles = -1 
-                foreach (Coord fovCoord in FovMap.CurrentFOV)
+                foreach (var fovCoord in FovMap.CurrentFOV)
                 {
                     if (ExplorationMap[fovCoord] != 0) continue;
 
@@ -281,24 +284,24 @@ namespace WoMFramework.Game.Generator.Dungeon
                 if (yMin < 0) yMin = 0;
                 var yMax = coords.Y + FOVRANGE + 1;
                 if (yMax >= Height) yMax = Height - 1;
-                var tempResMap = new ArrayMap<double>(xMax - xMin + 1, yMax - yMin + 1);
+                var tempResMap = new ArrayMap<bool>(xMax - xMin + 1, yMax - yMin + 1);
 
-                for (int x = xMin; x <= xMax; x++)
-                for (int y = yMin; y <= yMax; y++)
-                    tempResMap[x - xMin, y - yMin] = ExplorationMap[x, y] < 0 ? 1 : 0;
+                for (var x = xMin; x <= xMax; x++)
+                for (var y = yMin; y <= yMax; y++)
+                    tempResMap[x - xMin, y - yMin] = ExplorationMap[x, y] < 0 ? true : false;
     
                 var tempFOV = new FOV(tempResMap);
 
                 // Calculate expected fov gain for each current fov tiles
-                foreach (Coord fovCoord in FovMap.CurrentFOV)
+                foreach (var fovCoord in FovMap.CurrentFOV)
                 {
                     // Use translated coordinate instead because tempFOV is viewport.
-                    Coord translated = fovCoord.Translate(-xMin, -yMin);
+                    var translated = fovCoord.Translate(-xMin, -yMin);
 
                     tempFOV.Calculate(translated, 5, Radius.CIRCLE);
 
-                    int c = 0;
-                    foreach (Coord tempFovCoord in tempFOV.CurrentFOV)
+                    var c = 0;
+                    foreach (var tempFovCoord in tempFOV.CurrentFOV)
                     {
                         // Don't need to consider already observed tiles
                         if (ExplorationMap[tempFovCoord.Translate(xMin, yMin)] != 0) continue;
@@ -366,7 +369,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 {
                     if (validate(map[i, j]) && (coord.X != i || coord.Y != j))
                     {
-                        corrds.Add(Coord.Get(i, j));
+                        corrds.Add(Coord.ToCoord(i, j));
                     }
                 }
             }
@@ -391,7 +394,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         public static Coord Nearest(Coord current, List<Coord> coords)
         {
-            Coord nearest = null;
+            var nearest = Coord.NONE;
             var distance = double.MaxValue;
             foreach (var coord in coords)
             {

@@ -106,7 +106,7 @@ namespace WoMFramework.Game.Generator
         public int Target { get; }
         public bool Flag { get; }
 
-        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords = null, int target = 0, Coord targetCoord = null, bool flag = true)
+        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords, int target, Coord targetCoord, bool flag = true)
         {
             AdventureLogId = _index++;
             Type = type;
@@ -120,12 +120,12 @@ namespace WoMFramework.Game.Generator
 
         public static AdventureLog EntityCreated(AdventureEntity entity)
         {
-            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, entity is Combatant combatant ? combatant.FovCoords : null);
+            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, entity is Combatant combatant ? combatant.FovCoords : null, 0, Coord.NONE, true);
         }
 
         public static AdventureLog EntityRemoved(AdventureEntity entity)
         {
-            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, flag: false);
+            return new AdventureLog(LogType.Entity, entity.AdventureEntityId, entity.Coordinate, null, 0, Coord.NONE, false);
         }
 
         public static AdventureLog EntityMoved(Combatant entity, Coord destination)
@@ -140,7 +140,7 @@ namespace WoMFramework.Game.Generator
 
         public static AdventureLog Died(Combatant entity)
         {
-            return new AdventureLog(LogType.Died, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords);
+            return new AdventureLog(LogType.Died, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords, 0, Coord.NONE, true);
         }
     }
 
