@@ -387,9 +387,9 @@ namespace WoMFramework.Game.Generator.Dungeon
             }
 
             // dequeue all actions
-            while (combatActionQueue.TryDequeue(out var combatAction))
+            while (combatActionQueue.Count > 0)
             {
-                entity.TakeAction(combatAction);
+                entity.TakeAction(combatActionQueue.Dequeue());
             }
 
             // reward xp for killed monsters                
