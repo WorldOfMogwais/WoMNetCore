@@ -241,8 +241,8 @@
             // deploy mobs
             foreach (Monster monster in MonstersList.Where(p => p != boss))
             {
-                coord = null;
-                while (coord == null || Map.EntityMap[coord] != null)
+                coord = Coord.NONE;
+                while (coord == Coord.NONE || Map.EntityMap[coord] != null)
                 {
                     Rectangle location = Map.Locations[DungeonRandom.Next(Map.Locations.Count)];
                     coord = location.RandomPosition(DungeonRandom);
@@ -260,7 +260,7 @@
         private void DeployMogwai(Mogwai mogwai)
         {
             // TODO generate monsters from shift here
-            var mogCoord = Coord.Get(0, 0);
+            var mogCoord = new Coord(0, 0);
             for (var x = 0; x < Map.Width; x++)
             {
                 var found = false;
@@ -268,7 +268,7 @@
                 {
                     if (Map.WalkabilityMap[x, y])
                     {
-                        mogCoord = Coord.Get(x, y);
+                        mogCoord = new Coord(x, y);
                         found = true;
                         break;
                     }
@@ -377,7 +377,8 @@
             if (combatActionQueue.Count == 0)
             {
                 List<Coord> intersects = GetIntersections(entity, target);
-                Coord nearestCoord = Map.Nearest(entity.Coordinate, intersects) ?? target.Coordinate;
+                Coord tmp = Map.Nearest(entity.Coordinate, intersects);
+                Coord nearestCoord = tmp == Coord.NONE ? target.Coordinate : tmp;
 
                 // enqueue move
                 TryEnqueueMove(entity, nearestCoord, ref combatActionQueue);

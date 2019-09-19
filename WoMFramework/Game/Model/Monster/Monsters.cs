@@ -27,7 +27,7 @@
             //var _monstersFile = monsterBuilders.Select(p => p.Build()).ToList();
         }
 
-        public static Monsters Instance => _instance ?? (_instance = new Monsters(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location), DefaultMonsterFile)));
+        public static Monsters Instance => _instance ?? (_instance = new Monsters(Path.Combine(Path.GetDirectoryName(typeof(Monsters).Assembly.Location), DefaultMonsterFile)));
 
         public Monster ByName(string monsterName)
         {

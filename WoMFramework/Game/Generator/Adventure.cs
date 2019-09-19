@@ -106,7 +106,19 @@
         public int Target { get; }
         public bool Flag { get; }
 
-        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords = null, int target = 0, Coord targetCoord = null, bool flag = true)
+        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords = null, bool flag = true)
+        {
+            AdventureLogId = _index++;
+            Type = type;
+            Source = source;
+            Target = 0;
+            SourceCoord = sourceCoord;
+            SourceFovCoords = sourceFovCoords;
+            TargetCoord = Coord.NONE;
+            Flag = flag;
+        }
+
+        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords, int target, Coord targetCoord, bool flag = true)
         {
             AdventureLogId = _index++;
             Type = type;

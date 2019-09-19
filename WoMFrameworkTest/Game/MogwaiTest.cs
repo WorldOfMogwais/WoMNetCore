@@ -73,7 +73,7 @@ namespace WoMFrameworkTest.Game
 
             Mogwai.EquipItem(SlotType.Ring, ringOfMogwan, 0);
 
-            Assert.Equal(1, Mogwai.Inventory.Count);
+            Assert.Single(Mogwai.Inventory);
             Assert.Equal(1, Mogwai.StrengthMod);
             Assert.Equal(1, Mogwai.DexterityMod);
             Assert.Equal(1, Mogwai.ConstitutionMod);
@@ -83,7 +83,7 @@ namespace WoMFrameworkTest.Game
 
             Mogwai.EquipItem(SlotType.Ring, ringOfTheBear, 0);
 
-            Assert.Equal(1, Mogwai.Inventory.Count);
+            Assert.Single(Mogwai.Inventory);
             Assert.Equal(1, Mogwai.StrengthMod);
             Assert.Equal(0, Mogwai.DexterityMod);
             Assert.Equal(0, Mogwai.ConstitutionMod);

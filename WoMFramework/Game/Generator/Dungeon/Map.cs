@@ -18,14 +18,14 @@
     {
         public static readonly Coord[] Directions =
         {
-            Coord.Get(1, 0),    // E
-            Coord.Get(1, -1),   // SE
-            Coord.Get(0, -1),   // S
-            Coord.Get(-1, -1),  // SW
-            Coord.Get(-1, 0),   // W
-            Coord.Get(-1, 1),   // NW
-            Coord.Get(0, 1),    // N
-            Coord.Get(1, 1)     // NE
+            new Coord(1, 0),    // E
+            new Coord(1, -1),   // SE
+            new Coord(0, -1),   // S
+            new Coord(-1, -1),  // SW
+            new Coord(-1, 0),   // W
+            new Coord(-1, 1),   // NW
+            new Coord(0, 1),    // N
+            new Coord(1, 1)     // NE
         };
 
         public Guid Guid = Guid.NewGuid();
@@ -63,7 +63,7 @@
             else
             {
                 //RandomRoomsGenerator.Generate(wMap, dungeonRandom, 15, 5, 15, 50);
-                CellularAutomataGenerator.Generate(wMap, dungeonRandom);
+                CellularAutomataAreaGenerator.Generate(wMap, dungeonRandom);
             }
 
             WalkabilityMap = wMap;
@@ -71,7 +71,7 @@
             EntityMap = new ArrayMap<AdventureEntityContainer>(width, height);
             TileMap = new ArrayMap<Tile>(width, height);
             Entities = new List<AdventureEntity>();
-            var resMap = new ArrayMap<double>(width, height);
+            var resMap = new ArrayMap<bool>(width, height);
             for (var i = 0; i < width; i++)
             {
                 for (var j = 0; j < height; j++)
@@ -83,13 +83,14 @@
                     {
                         //ExplorationMap[i, j] = 1;
                         _walkableTiles++;
-                        TileMap[i, j] = new StoneTile(this, Coord.Get(i, j));
+                        resMap[i, j] = true;
+                        TileMap[i, j] = new StoneTile(this, new Coord(i, j));
                     }
                     else
                     {
                         //ExplorationMap[i, j] = -9;
-                        resMap[i, j] = 1;
-                        TileMap[i, j] = new StoneWall(this, Coord.Get(i, j));
+                        resMap[i, j] = false;
+                        TileMap[i, j] = new StoneWall(this, new Coord(i, j));
                     }
                 }
             }
@@ -117,7 +118,7 @@
                     while (rectangle.Positions().All(p => wMap[p.X, p.Y]))
                     {
                         legitRectangle = rectangle;
-                        rectangle = rectangle.SetWidth(++width).SetHeight(++height);
+                        rectangle = rectangle.ChangeSize(++width, ++height);
                     }
 
                     if (legitRectangle.Positions().All(p => wMap[p.X, p.Y]))
@@ -167,7 +168,7 @@
                 WalkabilityMap[x, y] = false;
 
             entity.Map = this;
-            entity.Coordinate = Coord.Get(x, y);
+            entity.Coordinate = new Coord(x, y);
 
             if (EntityMap[x, y] == null)
             {
@@ -283,11 +284,11 @@
                 if (yMin < 0) yMin = 0;
                 var yMax = coords.Y + fovrange + 1;
                 if (yMax >= Height) yMax = Height - 1;
-                var tempResMap = new ArrayMap<double>(xMax - xMin + 1, yMax - yMin + 1);
+                var tempResMap = new ArrayMap<bool>(xMax - xMin + 1, yMax - yMin + 1);
 
                 for (var x = xMin; x <= xMax; x++)
                     for (var y = yMin; y <= yMax; y++)
-                        tempResMap[x - xMin, y - yMin] = ExplorationMap[x, y] < 0 ? 1 : 0;
+                        tempResMap[x - xMin, y - yMin] = ExplorationMap[x, y] >= 0;
 
                 var tempFOV = new FOV(tempResMap);
 
@@ -368,7 +369,7 @@
                 {
                     if (validate(map[i, j]) && (coord.X != i || coord.Y != j))
                     {
-                        corrds.Add(Coord.Get(i, j));
+                        corrds.Add(new Coord(i, j));
                     }
                 }
             }
@@ -395,7 +396,7 @@
 
         public static Coord Nearest(Coord current, List<Coord> coords)
         {
-            Coord nearest = null;
+            Coord nearest = Coord.NONE;
             var distance = double.MaxValue;
             foreach (Coord coord in coords)
             {

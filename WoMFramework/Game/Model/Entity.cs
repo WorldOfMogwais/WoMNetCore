@@ -879,8 +879,6 @@
             //  1 : observed through FOV (GREY)
             //  2 : Visited or having no explorable tiles (BLACK)
 
-            const int fovrange = 5;
-
             var expMap = Map.ExplorationMap;
 
             var moveRange = Speed / 5;
@@ -1035,8 +1033,6 @@
                 // If all adjacent tiles are Black, explorer have to find the nearest grey tile.
                 if (maxIndex < 0)
                 {
-                    var minLength = int.MaxValue;
-
                     Coord[] nearest = null;
 
                     // Consider grey tiles in FOV first. If not any, check the whole map
@@ -1057,7 +1053,7 @@
                             .Where(c => expMap[c] == 1)
                             .OrderBy(p => Distance.EUCLIDEAN.Calculate(Coordinate, p))
                             .Take(5)
-                            .Where(p => p != null)
+                            .Where(p => p != Coord.NONE)
                             .Select(p => Algorithms.AStar(Coordinate, p, Map))
                             .OrderBy(p => p.Length)
                             .First();

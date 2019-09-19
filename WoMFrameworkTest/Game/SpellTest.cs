@@ -48,7 +48,7 @@ namespace WoMFrameworkTest.Game
 
         [Fact]
         public void BasicSpellTest()
-        {           
+        {
             if (Mogwai.Evolve())
             {
                 Assert.Single(Mogwai.Classes.First(p => p.ClassType == ClassType.Cleric).Learnables);

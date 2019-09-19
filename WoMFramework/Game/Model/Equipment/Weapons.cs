@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using Tool;
 
     public class Weapons
@@ -24,7 +23,7 @@
             }
         }
 
-        public static Weapons Instance => _instance ?? (_instance = new Weapons(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location), DefaultWeaponFile)));
+        public static Weapons Instance => _instance ?? (_instance = new Weapons(Path.Combine(Path.GetDirectoryName(typeof(Weapons).Assembly.Location), DefaultWeaponFile)));
 
         public Weapon ByName(string weaponName)
         {

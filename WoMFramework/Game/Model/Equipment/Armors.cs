@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using Tool;
 
     public class Armors
@@ -27,7 +26,7 @@
             //var _armorsFile = _armorBuilders.Select(p => p.Build()).ToList();
         }
 
-        public static Armors Instance => _instance ?? (_instance = new Armors(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location), DefaultArmorFile)));
+        public static Armors Instance => _instance ?? (_instance = new Armors(Path.Combine(Path.GetDirectoryName(typeof(Armors).Assembly.Location), DefaultArmorFile)));
 
         public Armor ByName(string armorName)
         {

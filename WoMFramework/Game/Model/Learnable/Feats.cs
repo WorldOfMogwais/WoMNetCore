@@ -24,7 +24,7 @@
             }
         }
 
-        public static Feats Instance => _instance ?? (_instance = new Feats(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location), DefaultFeatFile)));
+        public static Feats Instance => _instance ?? (_instance = new Feats(Path.Combine(Path.GetDirectoryName(typeof(Feats).Assembly.Location), DefaultFeatFile)));
 
         public Feat ByName(string featName)
         {

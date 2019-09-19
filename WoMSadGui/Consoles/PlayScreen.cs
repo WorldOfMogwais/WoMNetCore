@@ -48,8 +48,6 @@
 
         public SadGuiState State { get; set; }
 
-        private PlayScreenState _playScreenState;
-
         private Console _custom;
 
         private readonly MogwaiConsole _welcome;
