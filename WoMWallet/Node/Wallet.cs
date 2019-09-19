@@ -74,7 +74,7 @@ namespace WoMWallet.Node
         {
             _path = path;
 
-            if (!Caching.TryReadFile(path, out _walletFile))
+            if (!Caching.TryReadFile(_path, out _walletFile))
             {
             }
         }
@@ -88,7 +88,7 @@ namespace WoMWallet.Node
         {
             _path = path;
 
-            if (!Caching.TryReadFile(path, out _walletFile))
+            if (!Caching.TryReadFile(_path, out _walletFile))
             {
                 Create(password);
             }

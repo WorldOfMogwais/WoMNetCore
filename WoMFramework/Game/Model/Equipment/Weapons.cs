@@ -8,7 +8,7 @@ namespace WoMFramework.Game.Model
 {
     public class Weapons
     {
-        private const string DefaultWeaponFile = "WeaponBuilders.json";
+        private const string DefaultWeaponFile = "weapons.json";
 
         private static Weapons _instance;
 
@@ -22,6 +22,8 @@ namespace WoMFramework.Game.Model
                 throw new Exception("couldn't find the weaponbuilders database file.");
             }
         }
+
+        public static void InstanceWithPath(string path) => _instance = new Weapons(path);
 
         public static Weapons Instance => _instance ?? (_instance = new Weapons());
 

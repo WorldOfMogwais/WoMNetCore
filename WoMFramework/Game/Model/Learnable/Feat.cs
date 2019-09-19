@@ -6,7 +6,6 @@ using WoMFramework.Game.Model.Actions;
 
 namespace WoMFramework.Game.Model
 {
-
     public enum FeatType
     {
         General,
@@ -19,8 +18,6 @@ namespace WoMFramework.Game.Model
         Story,
         Mythic
     }
-
-
 
     /// <summary>
     /// Feat class

@@ -53,9 +53,13 @@ namespace WoMWallet.Node
 
         private Timer _timer;
 
-        public MogwaiController()
+        public MogwaiController(string walletPath, string blockPath)
         {
-            Wallet = new MogwaiWallet();
+            // important to initialize blockchain cache
+            Blockchain.InstanceWithPath(blockPath);
+
+            Wallet = new MogwaiWallet(walletPath);
+
             TaggedMogwaiKeys = new List<MogwaiKeys>();
             CurrentMogwaiKeysIndex = 0;
         }

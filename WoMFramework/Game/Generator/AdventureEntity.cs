@@ -4,6 +4,7 @@ using System.Linq;
 using GoRogue;
 using WoMFramework.Game.Enums;
 using WoMFramework.Game.Generator.Dungeon;
+using WoMFramework.Game.Model;
 using WoMFramework.Game.Model.Actions;
 
 namespace WoMFramework.Game.Generator
@@ -41,7 +42,7 @@ namespace WoMFramework.Game.Generator
 
     }
 
-    public abstract class AdventureEntity
+    public abstract class AdventureEntity : SpellEnabled
     {
         protected AdventureEntity(bool isStatic, bool isPassable, int size, bool isLootable)
         {

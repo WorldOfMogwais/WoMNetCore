@@ -85,12 +85,12 @@ namespace WoMFramework.Game.Model.Mogwai
             // create abilities
             var rollEvent = new[] { 4, 6, 3 };
             Gender = _currentShift.MogwaiDice.Roll(2, -1);
-            Strength = _currentShift.MogwaiDice.Roll(rollEvent);
-            Dexterity = _currentShift.MogwaiDice.Roll(rollEvent);
-            Constitution = _currentShift.MogwaiDice.Roll(rollEvent);
-            Inteligence = _currentShift.MogwaiDice.Roll(rollEvent);
-            Wisdom = _currentShift.MogwaiDice.Roll(rollEvent);
-            Charisma = _currentShift.MogwaiDice.Roll(rollEvent);
+            BaseStrength = _currentShift.MogwaiDice.Roll(rollEvent);
+            BaseDexterity = _currentShift.MogwaiDice.Roll(rollEvent);
+            BaseConstitution = _currentShift.MogwaiDice.Roll(rollEvent);
+            BaseInteligence = _currentShift.MogwaiDice.Roll(rollEvent);
+            BaseWisdom = _currentShift.MogwaiDice.Roll(rollEvent);
+            BaseCharisma = _currentShift.MogwaiDice.Roll(rollEvent);
 
             BaseSpeed = 30;
 

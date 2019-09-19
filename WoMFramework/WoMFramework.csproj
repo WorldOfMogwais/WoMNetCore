@@ -11,16 +11,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ArmorBuilders.json">
+    <None Update="armors.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Feats.json">
+    <None Update="feats.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="MonsterBuilders.json">
+    <None Update="monsters.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="WeaponBuilders.json">
+    <None Update="weapons.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

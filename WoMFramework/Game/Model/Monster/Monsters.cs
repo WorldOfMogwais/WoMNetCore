@@ -7,7 +7,7 @@ namespace WoMFramework.Game.Model.Monster
 {
     public class Monsters
     {
-        private const string DefaultMonsterFile = "MonsterBuilders.json";
+        private const string DefaultMonsterFile = "monsters.json";
 
         private static Monsters _instance;
 
@@ -24,6 +24,8 @@ namespace WoMFramework.Game.Model.Monster
             // only  for testing purpose
             //var _monstersFile = monsterBuilders.Select(p => p.Build()).ToList();
         }
+
+        public static void InstanceWithPath(string path) => _instance = new Monsters(path);
 
         public static Monsters Instance => _instance ?? (_instance = new Monsters());
 

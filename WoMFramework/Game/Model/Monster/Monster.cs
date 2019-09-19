@@ -50,12 +50,12 @@ namespace WoMFramework.Game.Model.Monster
 
                 SizeType = SizeType,
 
-                Strength = Strength,
-                Dexterity = Dexterity,
-                Constitution = Constitution,
-                Inteligence = Intelligence,
-                Wisdom = Wisdom,
-                Charisma = Charisma,
+                BaseStrength = Strength,
+                BaseDexterity = Dexterity,
+                BaseConstitution = Constitution,
+                BaseInteligence = Intelligence,
+                BaseWisdom = Wisdom,
+                BaseCharisma = Charisma,
 
                 FortitudeBaseSave = Fortitude,
                 ReflexBaseSave = Reflex,

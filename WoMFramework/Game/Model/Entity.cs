@@ -13,6 +13,37 @@ using WoMFramework.Game.Random;
 
 namespace WoMFramework.Game.Model
 {
+
+    public abstract class SpellEnabled
+    {
+        private readonly Dictionary<ModifierType, List<Func<Entity, int>>> miscMod;
+        private readonly Dictionary<ModifierType, List<Func<Entity, int>>> tempMod;
+
+        public SpellEnabled()
+        {
+            miscMod = new Dictionary<ModifierType, List<Func<Entity, int>>>();
+            tempMod = new Dictionary<ModifierType, List<Func<Entity, int>>>();
+            foreach (ModifierType modifierType in Enum.GetValues(typeof(ModifierType)))
+            {
+                tempMod[modifierType] = new List<Func<Entity, int>>() { (Entity) => 0 };
+                miscMod[modifierType] = new List<Func<Entity, int>>() { (Entity) => 0 };
+            }
+        }
+
+        public int MiscMod(Entity e, ModifierType modifierType) => miscMod[modifierType].Sum(t => t.Invoke(e));
+        public int TempMod(Entity e, ModifierType modifierType) => tempMod[modifierType].Sum(t => t.Invoke(e));
+
+        public Dictionary<ModifierType, List<Func<Entity, int>>> MiscModDict()
+        {
+            return miscMod;
+        }
+
+        public Dictionary<ModifierType, List<Func<Entity, int>>> TempModDict()
+        {
+            return tempMod;
+        }
+    }
+
     public abstract partial class Entity
     {
         public int GetRequirementValue(RequirementType requirementType, object addValue = null)
@@ -51,10 +82,6 @@ namespace WoMFramework.Game.Model
 
     public abstract partial class Entity : Combatant
     {
-        public readonly Dictionary<ModifierType, int> MiscMod;
-
-        public readonly Dictionary<ModifierType, int> TempMod;
-
         public int Gender { get; set; }
         public string GenderStr => ((GenderType)Gender).ToString();
 
@@ -62,29 +89,41 @@ namespace WoMFramework.Game.Model
 
         #region abilities
 
-        private int strength;
-        public int Strength { get => strength + MiscMod[ModifierType.Strength] + TempMod [ModifierType.Strength]; set => strength = value; }
+        public int Strength => BaseStrength + MiscStrength + TempStrength;
         public int StrengthMod => Modifier(Strength);
+        public int BaseStrength { get; set; }
+        public int MiscStrength => MiscMod(this, ModifierType.Strength);
+        public int TempStrength => TempMod(this, ModifierType.Strength);
 
-        private int dexterity;
-        public int Dexterity { get => dexterity + MiscMod[ModifierType.Dexterity] + TempMod[ModifierType.Dexterity]; set => dexterity = value; }
+        public int Dexterity => BaseDexterity + MiscDexterity + TempDexterity;
         public int DexterityMod => Modifier(Dexterity);
+        public int BaseDexterity { get; set; }
+        public int MiscDexterity => MiscMod(this, ModifierType.Dexterity);
+        public int TempDexterity => TempMod(this, ModifierType.Dexterity);
 
-        private int constitution;
-        public int Constitution { get => constitution + MiscMod[ModifierType.Constitution] + TempMod[ModifierType.Constitution]; set => constitution = value; }
+        public int Constitution => BaseConstitution + MiscConstitution + TempConstitution;
         public int ConstitutionMod => Modifier(Constitution);
+        public int BaseConstitution { get; set; }
+        public int MiscConstitution => MiscMod(this, ModifierType.Constitution);
+        public int TempConstitution => TempMod(this, ModifierType.Constitution);
 
-        private int inteligence;
-        public int Inteligence { get => inteligence + MiscMod[ModifierType.Inteligence] + TempMod[ModifierType.Inteligence]; set => inteligence = value; }
+        public int Inteligence => BaseInteligence + MiscInteligence + TempInteligence;
         public int InteligenceMod => Modifier(Inteligence);
+        public int BaseInteligence { get; set; }
+        public int MiscInteligence => MiscMod(this, ModifierType.Inteligence);
+        public int TempInteligence => TempMod(this, ModifierType.Inteligence);
 
-        private int wisdom;
-        public int Wisdom { get => wisdom + MiscMod[ModifierType.Wisdom] + TempMod[ModifierType.Wisdom]; set => wisdom = value; }
+        public int Wisdom => BaseWisdom + MiscWisdom + TempWisdom;
         public int WisdomMod => Modifier(Wisdom);
+        public int BaseWisdom { get; set; }
+        public int MiscWisdom => MiscMod(this, ModifierType.Wisdom);
+        public int TempWisdom => TempMod(this, ModifierType.Wisdom);
 
-        private int charisma;
-        public int Charisma { get => charisma + MiscMod[ModifierType.Charisma] + TempMod[ModifierType.Charisma]; set => charisma = value; }
+        public int Charisma => BaseCharisma + MiscCharisma + TempCharisma;
         public int CharismaMod => Modifier(Charisma);
+        public int BaseCharisma { get; set; }
+        public int MiscCharisma => MiscMod(this, ModifierType.Charisma);
+        public int TempCharisma => TempMod(this, ModifierType.Charisma);
 
         private int Modifier(int ability) => (int)Math.Floor((ability - 10) / 2.0);
 
@@ -96,11 +135,13 @@ namespace WoMFramework.Game.Model
         public int BaseSpeed { get; set; }
 
         // calculate encumbarance and stuff like that ...
-        public int Speed => BaseSpeed + MiscMod[ModifierType.Speed] + TempMod[ModifierType.Speed];
+        public int Speed => BaseSpeed + MiscMod(this, ModifierType.Speed) + TempMod(this, ModifierType.Speed);
 
         public int NaturalArmor { get; set; }
         // armorclass = 10 + armor bonus + shield bonus + dex modifier + size modifier + natural armor + deflection + misc modifier
-        public int ArmorClass => 10 + Equipment.ArmorBonus + Equipment.ShieldBonus + DexterityMod + SizeType.Modifier() + NaturalArmor + MiscMod[ModifierType.ArmorClass] + TempMod[ModifierType.ArmorClass];
+        public int ArmorClass => 10 + Equipment.ArmorBonus + Equipment.ShieldBonus + DexterityMod + SizeType.Modifier() + NaturalArmor + MiscArmorClass + TempArmorClass;
+        public int MiscArmorClass => MiscMod(this, ModifierType.ArmorClass);
+        public int TempArmorClass => TempMod(this, ModifierType.ArmorClass);
 
         // hitpoints
         public int HitPointDice { get; set; }
@@ -110,25 +151,37 @@ namespace WoMFramework.Game.Model
         public int CurrentHitPoints { get; set; }
 
         // initiative = dex modifier + misc modifier
-        public int Initiative => DexterityMod + MiscMod[ModifierType.Initiative] + TempMod[ModifierType.Initiative];
+        public int Initiative => DexterityMod + MiscInitiative + TempInitiative;
+        public int MiscInitiative => MiscMod(this, ModifierType.Initiative);
+        public int TempInitiative => TempMod(this, ModifierType.Initiative);
 
         #region saving throws
 
         //saving throw = basesave + abilitymod + misc modifier + magic modifier + temp modifier
         public int FortitudeBaseSave { get; set; }
-        public int Fortitude => FortitudeBaseSave + ConstitutionMod + MiscMod[ModifierType.Fortitude] + TempMod[ModifierType.Fortitude];
+        public int Fortitude => FortitudeBaseSave + ConstitutionMod + MiscFortitude + TempFortitude;
+        public int MiscFortitude => MiscMod(this, ModifierType.Fortitude);
+        public int TempFortitude => TempMod(this, ModifierType.Fortitude);
+
         public int ReflexBaseSave { get; set; }
-        public int Reflex => ReflexBaseSave + DexterityMod + MiscMod[ModifierType.Reflex] + TempMod[ModifierType.Reflex];
+        public int Reflex => ReflexBaseSave + DexterityMod + MiscReflex + TempReflex;
+        public int MiscReflex => MiscMod(this, ModifierType.Reflex);
+        public int TempReflex => TempMod(this, ModifierType.Reflex);
+
         public int WillBaseSave { get; set; }
-        public int Will => WillBaseSave + WisdomMod + MiscMod[ModifierType.Will] + TempMod[ModifierType.Will];
+        public int Will => WillBaseSave + WisdomMod + MiscWill + TempWill;
+        public int MiscWill => MiscMod(this, ModifierType.Will);
+        public int TempWill => TempMod(this, ModifierType.Will);
 
         #endregion
 
         // base attack bonus = class dependent value
-        public int[] BaseAttackBonus { get; set; }
+        public int[] BaseAttackBonus { get; set; } = new int[] { 0 };
 
         // attackbonus = base attack bonus + strength modifier + size modifier
-        public int AttackBonus(int attackIndex) => BaseAttackBonus[attackIndex] + StrengthMod + (int)SizeType + MiscMod[ModifierType.AttackBonus] + TempMod[ModifierType.AttackBonus];
+        public int AttackBonus(int attackIndex) => BaseAttackBonus[attackIndex] + StrengthMod + SizeType.Modifier() + MiscAttackBonus + TempAttackBonus;
+        public int MiscAttackBonus => MiscMod(this, ModifierType.AttackBonus);
+        public int TempAttackBonus => MiscMod(this, ModifierType.AttackBonus);
 
         // attack roll
         public int[] AttackRolls(int attackIndex, int criticalMinRoll = 21)
@@ -217,14 +270,6 @@ namespace WoMFramework.Game.Model
         /// </summary>
         protected Entity() : base(false, false, 1)
         {
-            // modifiers
-            MiscMod = new Dictionary<ModifierType, int>();
-            TempMod = new Dictionary<ModifierType, int>();
-            foreach (ModifierType modifierType in Enum.GetValues(typeof(ModifierType)))
-            {
-                TempMod[modifierType] = 0;
-                MiscMod[modifierType] = 0;
-            }
 
             // initialize
             HitPointLevelRolls = new List<int>();

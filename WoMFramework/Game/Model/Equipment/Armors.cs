@@ -8,7 +8,7 @@ namespace WoMFramework.Game.Model
 {
     public class Armors
     {
-        private const string DefaultArmorFile = "ArmorBuilders.json";
+        private const string DefaultArmorFile = "armors.json";
 
         private static Armors _instance;
 
@@ -25,6 +25,8 @@ namespace WoMFramework.Game.Model
             // only  for testing purpose
             //var _armorsFile = _armorBuilders.Select(p => p.Build()).ToList();
         }
+
+        public static void InstanceWithPath(string path) => _instance = new Armors(path);
 
         public static Armors Instance => _instance ?? (_instance = new Armors());
 

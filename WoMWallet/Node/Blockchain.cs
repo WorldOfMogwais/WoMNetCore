@@ -33,15 +33,27 @@ namespace WoMWallet.Node
 
         private readonly ConcurrentDictionary<int, string> _blockHashDict;
 
-        public static Blockchain Instance => _instance ?? (_instance = new Blockchain());
+        private readonly string _path;
+
+        public static void InstanceWithPath(string path) => _instance = new Blockchain(path);
+
+        public static Blockchain Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new Blockchain(BlockhashesFile));
+            }
+        }
 
         public int MaxCachedBlockHeight => _blockHashDict.Keys.Max();
 
-        private Blockchain()
+        private Blockchain(string path)
         {
+            _path = path;
+
             _client = new RestClient(ApiUrl);
 
-            if (!Caching.TryReadFile(BlockhashesFile, out _blockHashDict))
+            if (!Caching.TryReadFile(_path, out _blockHashDict))
             {
                 _blockHashDict = new ConcurrentDictionary<int, string>();
             }
@@ -68,7 +80,7 @@ namespace WoMWallet.Node
                     }
                     progress.Report((float)(i + 1) / blockHeight);
                 }
-                Caching.Persist(BlockhashesFile, _blockHashDict);
+                Caching.Persist(_path, _blockHashDict);
                 Log.Debug("persisted all blocks!");
             });
         }
