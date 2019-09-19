@@ -1,9 +1,9 @@
-﻿using System;
+﻿using log4net;
+using NBitcoin;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using log4net;
-using NBitcoin;
 using WoMFramework.Game.Interaction;
 using WoMFramework.Game.Model.Mogwai;
 using WoMFramework.Tool;
@@ -20,7 +20,7 @@ namespace WoMWallet.Node
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly ExtKey _extkey;
+        private readonly ExtKey _extKey;
 
         private readonly Network _network;
 
@@ -28,9 +28,9 @@ namespace WoMWallet.Node
 
         private readonly PubKey _mirrorPubKey;
 
-        public string Address => _pubKey.GetAddress(_network).ToString();
+        public string Address => _pubKey.GetAddress(ScriptPubKeyType.Legacy, _network).ToString();
 
-        public string MirrorAddress => _mirrorPubKey?.GetAddress(_network).ToString();
+        public string MirrorAddress => _mirrorPubKey?.GetAddress(ScriptPubKeyType.Legacy, _network).ToString();
 
         public bool HasMirrorAddress => _mirrorPubKey != null;
 
@@ -50,15 +50,16 @@ namespace WoMWallet.Node
 
         public Dictionary<string, Interaction> InteractionLock { get; set; }
 
-        public MogwaiKeys(ExtKey extkey, Network network)
+        public MogwaiKeys(ExtKey extKey, Network network)
         {
-            _extkey = extkey;
+            _extKey = extKey;
             _network = network;
-            _pubKey = extkey.PrivateKey.PubKey;
-            if (TryMirrorPubKey(extkey.PrivateKey.PubKey, out var mirrorPubKey))
+            _pubKey = extKey.PrivateKey.PubKey;
+            if (TryMirrorPubKey(extKey.PrivateKey.PubKey, out PubKey mirrorPubKey))
             {
                 _mirrorPubKey = mirrorPubKey;
             }
+
             InteractionLock = new Dictionary<string, Interaction>();
         }
 
@@ -70,7 +71,7 @@ namespace WoMWallet.Node
 
         public string GetEncryptedSecretWif()
         {
-            return _extkey.PrivateKey.GetEncryptedBitcoinSecret(_extkey.ToString(_network), _network).ToWif();
+            return _extKey.PrivateKey.GetEncryptedBitcoinSecret(_extKey.ToString(_network), _network).ToWif();
         }
 
         private static bool TryMirrorPubKey(PubKey pubKey, out PubKey mirrorPubKey)
@@ -107,7 +108,7 @@ namespace WoMWallet.Node
             await Task.Run(() =>
             {
                 Balance = Blockchain.Instance.GetBalance(Address);
-                 if (HasMirrorAddress)
+                if (HasMirrorAddress)
                 {
                     Shifts = Blockchain.Instance.GetShifts(MirrorAddress);
                     if (Shifts.Count > 0)
@@ -122,7 +123,7 @@ namespace WoMWallet.Node
                         }
 
                         // Updated interaction locks
-                        foreach (var shift in Shifts.Values)
+                        foreach (Shift shift in Shifts.Values)
                         {
                             if (!shift.IsSmallShift && InteractionLock.ContainsKey(shift.TxHex))
                             {
@@ -168,40 +169,37 @@ namespace WoMWallet.Node
             // adding all unspent txs to input
             unspentTxList.ForEach(p =>
             {
-                tx.AddInput(new TxIn
-                {
-                    PrevOut = new OutPoint(new uint256(p.Txid), p.Vout),
-                    ScriptSig = _pubKey.GetAddress(_network).ScriptPubKey
-                    //ScriptSig = new Script(p.ScriptPubKey) // could be wrong then take ... prev row
-                });
+                tx.Inputs.Add(new OutPoint(new uint256(p.Txid), p.Vout),
+                    _pubKey.GetAddress(ScriptPubKeyType.Legacy, _network).ScriptPubKey);
             });
 
             foreach (var address in toAddresses)
             {
-                // adding output
-                tx.AddOutput(new TxOut
-                {
-                    ScriptPubKey = BitcoinAddress.Create(address, _network).ScriptPubKey,
-                    Value = Money.Coins(amount)
-                });
+                tx.Outputs.Add(Money.Coins(amount), BitcoinAddress.Create(address, _network).ScriptPubKey);
             }
 
             // check if we need to add a change output
             if (unspentAmount - amount * toAddresses.Length > txFee)
             {
-                tx.AddOutput(new TxOut
-                {
-                    ScriptPubKey = _pubKey.GetAddress(_network).ScriptPubKey,
-                    Value = Money.Coins(unspentAmount - amount * toAddresses.Length - txFee)
-                });
+                tx.Outputs.Add(Money.Coins(unspentAmount - amount * toAddresses.Length - txFee),
+                    _pubKey.GetAddress(ScriptPubKeyType.Legacy, _network).ScriptPubKey);
             }
 
             //tx.ToString(RawFormat.);
 
             Log.Info($"rawTx: {tx.ToHex()}");
 
+            var coins = new List<ICoin>();
+            foreach (TxIn input in tx.Inputs)
+            {
+                coins.Add(new Coin(input.PrevOut, new TxOut()
+                {
+                    ScriptPubKey = input.ScriptSig
+                }));
+            }
+
             // sign transaction
-            tx.Sign(_extkey.PrivateKey, false);
+            tx.Sign(_extKey.PrivateKey, coins.ToArray());
 
             Log.Info($"sigTx: {tx.ToHex()}");
 
