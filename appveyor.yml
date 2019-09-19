@@ -14,8 +14,7 @@ build_script:
 - cmd: >-
     dotnet build -p:Version=%APPVEYOR_BUILD_VERSION% --configuration %TARGET_CONFIGURATION%
     
-    appveyor PushArtifact %APPVEYOR_BUILD_FOLDER%/WoMFramework/bin/Release/WoMFramework.%APPVEYOR_BUILD_VERSION%.nupkg -DeploymentName WoMFramework
-    appveyor PushArtifact %APPVEYOR_BUILD_FOLDER%/WoMWallet/bin/Release/WoMWallet.%APPVEYOR_BUILD_VERSION%.nupkg -DeploymentName WoMWallet
+    appveyor PushArtifact **/*.nupkg
     
     dotnet publish %APPVEYOR_BUILD_FOLDER%/WoMSadGui/WoMSadGui.csproj -p:Version=%APPVEYOR_BUILD_VERSION% -c %TARGET_CONFIGURATION% -o ./publish/win-x86 -r win-x86
        
