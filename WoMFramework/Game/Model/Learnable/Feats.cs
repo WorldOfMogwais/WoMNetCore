@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using WoMFramework.Game.Enums;
-using WoMFramework.Tool;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model.Learnable
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using Tool;
+
     public class Feats
     {
         private const string DefaultFeatFile = "Feats.json";
@@ -19,11 +20,11 @@ namespace WoMFramework.Game.Model
             // load feats file
             if (!Caching.TryReadFile(path, out _featsFile))
             {
-                throw new Exception("couldn't find the feats database file.");
+                throw new Exception($"Couldn't find {path} database file.");
             }
         }
 
-        public static Feats Instance => _instance ?? (_instance = new Feats());
+        public static Feats Instance => _instance ?? (_instance = new Feats(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location), DefaultFeatFile)));
 
         public Feat ByName(string featName)
         {
@@ -35,5 +36,4 @@ namespace WoMFramework.Game.Model
             return _featsFile.FirstOrDefault(p => p.Id == featId);
         }
     }
-
 }

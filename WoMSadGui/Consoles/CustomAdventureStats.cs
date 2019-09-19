@@ -1,35 +1,35 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using SadConsole;
-using SadConsole.Surfaces;
-using WoMFramework.Game.Generator;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Mogwai;
-using Console = SadConsole.Console;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Consoles
 {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using SadConsole;
+    using SadConsole.Surfaces;
+    using Specific;
+    using System;
+    using System.Linq;
+    using WoMFramework.Game.Generator;
+    using WoMFramework.Game.Model;
+    using WoMFramework.Game.Model.Mogwai;
+    using Console = SadConsole.Console;
+
     internal class CustomAdventureStats : MogwaiConsole
     {
         private readonly Mogwai _mogwai;
 
-        private Console _base;
+        private readonly Console _base;
 
-        private Console _statsConsole;
+        private readonly Console _statsConsole;
 
-        private Console _rewardConsole;
+        private readonly Console _rewardConsole;
 
         private Basic _consoleImage;
 
-        private Font _pictureFont;
+        private readonly Font _pictureFont;
 
-        private Font _statsFont;
+        private readonly Font _statsFont;
 
         public CustomAdventureStats(Mogwai mogwai, int width, int height) : base("Adventure Extension", "This is a temp. summary expect more here", width, height)
         {
-
             _pictureFont = Global.LoadFont("AutoReiv.font").GetFont(Font.FontSizes.Quarter);
             _statsFont = Global.LoadFont("AutoReiv.font").GetFont(Font.FontSizes.One);
             //var pictureFont = Global.FontDefault;
@@ -78,7 +78,7 @@ namespace WoMSadGui.Consoles
 
                 case AdventureState.Completed:
                     ChangeImage("victory.png");
-                    _statsConsole.Print(1, 1, $"Gratulations {Coloring.Name(_mogwai.Name)}, you're a true hero!", Color.Brown);
+                    _statsConsole.Print(1, 1, $"Congratulations {Coloring.Name(_mogwai.Name)}, you're a true hero!", Color.Brown);
                     _statsConsole.Print(1, 2, $" Promise me you'll always remember that you're", Color.Brown);
                     _statsConsole.Print(1, 3, $"braver than you believe, stronger than you seem,", Color.Brown);
                     _statsConsole.Print(1, 4, $"and smarter than you think.", Color.Brown);
@@ -106,7 +106,6 @@ namespace WoMSadGui.Consoles
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
         }
 
         private void AddStatistic(bool winner)
@@ -139,7 +138,6 @@ namespace WoMSadGui.Consoles
                 _rewardConsole.Print(12, 8, $"{_mogwai.Adventure.Reward.Exp}".PadLeft(6), Color.Gold);
                 _rewardConsole.Print(19, 8, $"XP", Color.Gold);
             }
-
         }
     }
 }

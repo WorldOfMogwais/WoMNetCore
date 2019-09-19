@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using GoRogue;
-using WoMFramework.Game.Generator.Dungeon;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Game.Model.Monster;
-
-namespace WoMFramework.Game.Generator
+﻿namespace WoMFramework.Game.Generator
 {
+    using Dungeon;
+    using GoRogue;
+    using Interaction;
+    using Model;
+    using Model.Mogwai;
+    using Model.Monster;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public enum AdventureState
     {
         Preparation, Running, Failed, Extended, Completed,
@@ -146,6 +146,6 @@ namespace WoMFramework.Game.Generator
 
     public enum CombatState
     {
-        None, Initiation, Engaged 
+        None, Initiation, Engaged
     }
 }

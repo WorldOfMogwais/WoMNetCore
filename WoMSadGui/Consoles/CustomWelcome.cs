@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using SadConsole;
-using SadConsole.DrawCalls;
-using SadConsole.Effects;
-using SadConsole.Instructions;
-using SadConsole.Surfaces;
-using Console = SadConsole.Console;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Consoles
 {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using SadConsole;
+    using SadConsole.Surfaces;
+    using Specific;
+
     internal class CustomWelcome : MogwaiConsole
     {
         private Basic _consoleImage;
-        private Point _consoleImagePosition;
 
         public CustomWelcome(int width, int height) : base("Welcome", "to the World of Mogwais", width, height)
         {
-
             Init();
         }
 
@@ -35,7 +28,6 @@ namespace WoMSadGui.Consoles
             _consoleImage.Position = new Point(120, 0);
             //_consoleImage.Tint = Color.Beige;
             Children.Add(_consoleImage);
-
         }
     }
 }

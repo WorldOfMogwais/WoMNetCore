@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GoRogue;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Generator.Dungeon;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Generator
+﻿namespace WoMFramework.Game.Generator
 {
+    using Dungeon;
+    using Enums;
+    using GoRogue;
+    using Model.Actions;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class AdventureEntityContainer
     {
         public List<AdventureEntity> Entities { get; }
@@ -19,14 +18,14 @@ namespace WoMFramework.Game.Generator
             Entities = new List<AdventureEntity>();
         }
 
-        public void Add(AdventureEntity entitiy)
+        public void Add(AdventureEntity entity)
         {
-            Entities.Add(entitiy);
+            Entities.Add(entity);
         }
 
-        public void Remove(AdventureEntity entitiy)
+        public void Remove(AdventureEntity entity)
         {
-            Entities.Remove(entitiy);
+            Entities.Remove(entity);
         }
 
         public bool Has<T>()
@@ -38,7 +37,6 @@ namespace WoMFramework.Game.Generator
         {
             return Entities.OfType<T>();
         }
-
     }
 
     public abstract class AdventureEntity
@@ -58,7 +56,7 @@ namespace WoMFramework.Game.Generator
         public Map Map { get; set; }
 
         public Coord Coordinate { get; set; }
- 
+
         public bool IsStatic { get; }
 
         public bool IsPassable { get; set; }

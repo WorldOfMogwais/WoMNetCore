@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
     public static class Coloring
     {
@@ -53,10 +51,12 @@ namespace WoMFramework.Game.Model
         {
             return $"[c:r f:limegreen]{name}[c:u]";
         }
+
         public static string Red(string name)
         {
             return $"[c:r f:red]{name}[c:u]";
         }
+
         public static string Orange(string name)
         {
             return $"[c:r f:orange]{name}[c:u]";

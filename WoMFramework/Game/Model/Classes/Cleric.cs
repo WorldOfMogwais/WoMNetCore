@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Model.Classes
+﻿namespace WoMFramework.Game.Model.Classes
 {
+    using Enums;
+    using Learnable;
+    using System.Collections.Generic;
+
     public class Cleric : Classes
     {
         public Cleric() : base(ClassType.Cleric, true)

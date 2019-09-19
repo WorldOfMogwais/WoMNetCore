@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Microsoft.Xna.Framework;
-using SadConsole;
-using SadConsole.Entities;
-using SadConsole.Surfaces;
-
-namespace WoMSadGui.Specific
+﻿namespace WoMSadGui.Specific
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole.Entities;
+    using SadConsole.Surfaces;
+
     public class MogwaiEntity : Entity
     {
         private Animated _defAnimated;
@@ -37,9 +32,7 @@ namespace WoMSadGui.Specific
 
         private void AnimationChanged(object sender, Animated.AnimationStateChangedEventArgs e)
         {
-            var entity = sender as Entity;
-
-            if (entity.Animation.Name != "default" && e.NewState == Animated.AnimationState.Finished)
+            if (sender is Entity entity && (entity.Animation.Name != "default" && e.NewState == Animated.AnimationState.Finished))
             {
                 entity.Animation = entity.Animations["default"];
             }

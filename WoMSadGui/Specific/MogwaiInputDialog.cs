@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using SadConsole.Controls;
-
-namespace WoMSadGui.Specific
+﻿namespace WoMSadGui.Specific
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole.Controls;
+
     public class MogwaiInputDialog : MogwaiDialog
     {
         public TextBox Input;
@@ -15,6 +15,5 @@ namespace WoMSadGui.Specific
 
             Center();
         }
-
     }
 }

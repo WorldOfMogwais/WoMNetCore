@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace WoMFramework.Tool
+﻿namespace WoMFramework.Tool
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Security.Cryptography;
+    using System.Text;
+
     public class HexHashUtil
     {
         public static int GetHexVal(char hex)
@@ -44,13 +44,16 @@ namespace WoMFramework.Tool
                 {
                     return false;
                 }
+
                 for (var i = 0; i < length; i++)
                 {
                     //Console.Write($"[{i}] x:{hexStr[position + i]}, 16^{length - 1 - i} * {HexUtil.GetHexVal(hexStr[position + i])} ");
                     value += Math.Pow(16, length - 1 - i) * GetHexVal(hexStr[position + i]);
                 }
+
                 //Console.WriteLine();
             }
+
             return true;
         }
 
@@ -62,7 +65,7 @@ namespace WoMFramework.Tool
 
         public static byte[] HashSha256(byte[] rawBytes)
         {
-            // Create a SHA256   
+            // Create a SHA256
             using (var sha256Hash = SHA256.Create())
             {
                 return sha256Hash.ComputeHash(rawBytes);

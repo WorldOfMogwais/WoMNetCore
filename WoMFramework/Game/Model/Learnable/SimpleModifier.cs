@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model.Learnable
 {
+    using Enums;
+    using System;
+    using System.Collections.Generic;
+
     public class SimpleModifier : Modifier
     {
         public Dictionary<ModifierType, int> Modifier;

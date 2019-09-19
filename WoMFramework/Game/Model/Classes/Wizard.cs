@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Model.Classes
+﻿namespace WoMFramework.Game.Model.Classes
 {
+    using Enums;
+    using Learnable;
+    using System.Collections.Generic;
+
     public class Wizard : Classes
     {
         public Wizard() : base(ClassType.Wizard, true)
@@ -15,7 +16,7 @@ namespace WoMFramework.Game.Model.Classes
             Learnables.AddRange(ClassSpells());
         }
 
-        public override int CasterMod(Entity entity) => entity.InteligenceMod;
+        public override int CasterMod(Entity entity) => entity.IntelligenceMod;
 
         public override List<Spell> ClassSpells()
         {

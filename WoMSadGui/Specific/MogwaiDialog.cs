@@ -1,10 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using SadConsole;
-using SadConsole.Controls;
-using WoMSadGui.Consoles;
-
-namespace WoMSadGui.Specific
+﻿namespace WoMSadGui.Specific
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole;
+    using SadConsole.Controls;
+
     public class MogwaiDialog : Window
     {
         public Button Button;

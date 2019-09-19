@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using log4net;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Tool;
-
-namespace WoMFramework.Game.Random
+﻿namespace WoMFramework.Game.Random
 {
+    using log4net;
+    using Model.Mogwai;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Tool;
+
     public class NameGen
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -22,15 +22,17 @@ namespace WoMFramework.Game.Random
             {
                 name += consonants[(int)seedValues % consonants.Length];
             }
+
             if (HexHashUtil.TryHexPosConversion(6, 2, hexValue.UnSalted, out seedValues))
             {
                 name += vowels[(int)seedValues % vowels.Length];
             }
+
             var ind = 8;
-            var consonanNow = true;
+            var consonantNow = true;
             while (name.Length < minLength)
             {
-                if (consonanNow && HexHashUtil.TryHexPosConversion(ind, 2, hexValue.UnSalted, out seedValues))
+                if (consonantNow && HexHashUtil.TryHexPosConversion(ind, 2, hexValue.UnSalted, out seedValues))
                 {
                     name += consonants[(int)seedValues % consonants.Length];
                 }
@@ -40,9 +42,10 @@ namespace WoMFramework.Game.Random
                 }
                 else
                 {
-                    Log.Error("Gnerating names seems currently troublesome!");
+                    Log.Error("Generating names seems currently troublesome!");
                 }
-                consonanNow = !consonanNow;
+
+                consonantNow = !consonantNow;
                 ind += 2;
             }
 

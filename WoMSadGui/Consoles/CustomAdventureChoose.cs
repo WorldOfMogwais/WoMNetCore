@@ -1,35 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using SadConsole;
-using SadConsole.Controls;
-using SadConsole.DrawCalls;
-using SadConsole.Effects;
-using SadConsole.Instructions;
-using SadConsole.Surfaces;
-using SadConsole.Themes;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Mogwai;
-using WoMSadGui.Specific;
-using WoMWallet.Node;
-using Console = SadConsole.Console;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Consoles
 {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using SadConsole;
+    using Specific;
+    using System;
+    using System.Collections.Generic;
+    using WoMFramework.Game.Enums;
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Game.Model.Mogwai;
+    using WoMWallet.Node;
+    using Console = SadConsole.Console;
+
     internal class CustomAdventureChoose : MogwaiConsole
     {
         private ControlsConsole _travelControl;
 
-        private List<MogwaiChooseButton> _consoleList;
+        private readonly List<MogwaiChooseButton> _consoleList;
 
         private MogwaiChooseButton _current = null;
 
         private readonly MogwaiController _controller;
-        
+
         private readonly Mogwai _mogwai;
 
         private AdventureType _currentAdventureType;
@@ -41,7 +33,7 @@ namespace WoMSadGui.Consoles
         public CustomAdventureChoose(MogwaiController mogwaiController, int width, int height) : base("Adventure", "select your adventure", width, height)
         {
             _controller = mogwaiController;
-            var mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
+            MogwaiKeys mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
             _mogwai = mogwaiKeys.Mogwai;
 
             _consoleList = new List<MogwaiChooseButton>();
@@ -67,9 +59,8 @@ namespace WoMSadGui.Consoles
             _consoleList.Add(CreateChoice(1, 1, "The King Karamoss", "A thousand years ago, the city of Absalom faced one of its most exotic foes. " +
                                                     "The mysterious wizard Karamoss.", "icon5s.png", AdventureType.Quest));
 
-            _travelControl = new ControlsConsole(43, 7);
-            _travelControl.Position = new Point(47, 14);
-            _travelControl.Fill(Color.Transparent, new Color(05,05,05,255), null);
+            _travelControl = new ControlsConsole(43, 7) { Position = new Point(47, 14) };
+            _travelControl.Fill(Color.Transparent, new Color(05, 05, 05, 255), null);
             Children.Add(_travelControl);
 
             _travelControl.Print(1, 1, "Adventure: ", Color.Gainsboro);
@@ -116,14 +107,14 @@ namespace WoMSadGui.Consoles
             if (b)
             {
                 _currentDifficultyType =
-                    (int) _currentDifficultyType < Enum.GetValues(typeof(DifficultyType)).Length - 1
-                        ? (DifficultyType) _currentDifficultyType + 1
+                    (int)_currentDifficultyType < Enum.GetValues(typeof(DifficultyType)).Length - 1
+                        ? _currentDifficultyType + 1
                         : _currentDifficultyType;
             }
             else
             {
                 _currentDifficultyType =
-                    (int)_currentDifficultyType > 0 ? _currentDifficultyType - 1
+                    _currentDifficultyType > 0 ? _currentDifficultyType - 1
                         : _currentDifficultyType;
             }
 
@@ -157,6 +148,7 @@ namespace WoMSadGui.Consoles
             {
                 return;
             }
+
             var str = $"{_mogwai.Name} be prepared to travel into a '{_currentAdventureType}' adventure, it might be '{_currentDifficultyType}' for you?";
             var dialog = new MogwaiDialog("Adventure", $"[c:g b:darkred:black:darkred:black:darkred:{str.Length}]" + str, 40, 8);
             dialog.AddButton("ok", true);
@@ -174,15 +166,19 @@ namespace WoMSadGui.Consoles
 
         private MogwaiChooseButton CreateChoice(int index, int row, string name, string description, string pathIcon, AdventureType adventureType)
         {
-            var choiceConsole = new Console(32, 7);
-            choiceConsole.Position = new Point(13 + row * 45, 0 + index * 7);
+            var choiceConsole = new Console(32, 7)
+            {
+                Position = new Point(13 + row * 45, 0 + index * 7)
+            };
             choiceConsole.Fill(Color.TransparentBlack, Color.Black, null);
             choiceConsole.Print(0, 0, name, Color.White);
             choiceConsole.Print(0, 1, $"[c:g b:darkred:black:black:{description.Length}]" + description, Color.DarkGray);
             Children.Add(choiceConsole);
 
-            var controls = new ControlsConsole(10, 5);
-            controls.Position = new Point(-12, 1);
+            var controls = new ControlsConsole(10, 5)
+            {
+                Position = new Point(-12, 1)
+            };
             controls.Fill(Color.Transparent, Color.DarkGray, null);
             choiceConsole.Children.Add(controls);
             var button = new MogwaiChooseButton(10, 5)
@@ -194,13 +190,13 @@ namespace WoMSadGui.Consoles
             button.Unselect();
 
             // Load the logo
-            var imageStream = TitleContainer.OpenStream(pathIcon);
+            System.IO.Stream imageStream = TitleContainer.OpenStream(pathIcon);
             var image = Texture2D.FromStream(Global.GraphicsDevice, imageStream);
             imageStream.Dispose();
 
-            var pictureFont = Global.LoadFont("Cheepicus12.font").GetFont(Font.FontSizes.Quarter);
+            Font pictureFont = Global.LoadFont("Cheepicus12.font").GetFont(Font.FontSizes.Quarter);
             // Configure the logo
-            var consoleImage = image.ToSurface(pictureFont, true);
+            SadConsole.Surfaces.Basic consoleImage = image.ToSurface(pictureFont, true);
             consoleImage.Position = new Point(85 + row * 75, 12 + 30 * index);
             //consoleImage.Tint = Color.DarkSlateBlue;
             controls.Children.Add(consoleImage);
@@ -212,7 +208,7 @@ namespace WoMSadGui.Consoles
         {
             _current?.Unselect();
 
-            _current = _consoleList[(int) adventureType];
+            _current = _consoleList[(int)adventureType];
 
             _current?.Select();
             var b = adventureType != AdventureType.Dungeon;

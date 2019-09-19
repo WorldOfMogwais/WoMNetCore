@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Generator;
-
-namespace WoMFramework.Game
+﻿namespace WoMFramework.Game
 {
+    using Enums;
+    using Generator;
+    using System.Collections.Generic;
+
     public class GameLog
     {
         public int Pointer;
@@ -25,7 +25,6 @@ namespace WoMFramework.Game
             LogEntries.Add(entry);
             Pointer = LogEntries.Count - 1;
         }
-
     }
 
     public enum LogType
@@ -90,5 +89,4 @@ namespace WoMFramework.Game
                 damageType);
         }
     }
-
 }

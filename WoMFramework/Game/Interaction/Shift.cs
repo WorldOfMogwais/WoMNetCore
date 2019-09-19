@@ -1,10 +1,9 @@
-﻿using System;
-using Newtonsoft.Json;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Random;
-
-namespace WoMFramework.Game.Interaction
+﻿namespace WoMFramework.Game.Interaction
 {
+    using Enums;
+    using Newtonsoft.Json;
+    using Random;
+
     public class Shift
     {
         public int Index { get; }
@@ -73,7 +72,5 @@ namespace WoMFramework.Game.Interaction
                    $"BkHex = \"{BkHex}\", " +
                    $"TxHex = \"{TxHex}\"";
         }
-
     }
-
 }

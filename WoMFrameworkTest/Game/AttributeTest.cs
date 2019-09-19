@@ -12,7 +12,7 @@ namespace WoMFrameworkTest.Game
         [Fact]
         public void GenderTest()
         {
-            var genderAttr = AttributBuilder.Create("Gender")
+            var genderAttr = AttributeBuilder.Create("Gender")
                 .Salted(false).SetPosition(2).SetSize(1).SetCreation(2).SetMaxRange(2).Build();
 
             var dict = new Dictionary<int, int>();

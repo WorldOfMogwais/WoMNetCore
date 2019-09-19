@@ -1,8 +1,8 @@
-﻿using System;
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Interaction
+﻿namespace WoMFramework.Game.Interaction
 {
+    using Enums;
+    using System;
+
     public enum SpecialType
     {
         None = 0,
@@ -63,6 +63,5 @@ namespace WoMFramework.Game.Interaction
             ParamAdd1 = paramAdd1;
             ParamAdd2 = paramAdd2;
         }
-
     }
 }

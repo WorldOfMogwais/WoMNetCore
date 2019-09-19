@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using GoRogue;
-using GoRogue.MapViews;
-using log4net;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Generator;
-using WoMFramework.Game.Generator.Dungeon;
-using WoMFramework.Game.Home;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Random;
-
-namespace WoMFramework.Game.Model.Mogwai
+﻿namespace WoMFramework.Game.Model.Mogwai
 {
+    using Enums;
+    using Generator;
+    using Home;
+    using Interaction;
+    using log4net;
+    using Random;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public sealed class Mogwai : Entity
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -60,7 +57,7 @@ namespace WoMFramework.Game.Model.Mogwai
         /// <inheritdoc />
         public override Dice Dice => _currentShift.MogwaiDice;
 
-        public double Rating => (double)(Strength * 3 + Dexterity * 2 + Constitution * 2 + Inteligence * 3 + Wisdom + Charisma) / 12;
+        public double Rating => (double)(Strength * 3 + Dexterity * 2 + Constitution * 2 + Intelligence * 3 + Wisdom + Charisma) / 12;
 
         public HomeTown HomeTown { get; }
 
@@ -75,7 +72,7 @@ namespace WoMFramework.Game.Model.Mogwai
 
             Pointer = _currentShift.Height;
 
-            // create appearance           
+            // create appearance
             var hexValue = new HexValue(_currentShift);
             Name = NameGen.GenerateName(hexValue);
             Body = new Body(hexValue);
@@ -88,7 +85,7 @@ namespace WoMFramework.Game.Model.Mogwai
             Strength = _currentShift.MogwaiDice.Roll(rollEvent);
             Dexterity = _currentShift.MogwaiDice.Roll(rollEvent);
             Constitution = _currentShift.MogwaiDice.Roll(rollEvent);
-            Inteligence = _currentShift.MogwaiDice.Roll(rollEvent);
+            Intelligence = _currentShift.MogwaiDice.Roll(rollEvent);
             Wisdom = _currentShift.MogwaiDice.Roll(rollEvent);
             Charisma = _currentShift.MogwaiDice.Roll(rollEvent);
 
@@ -110,19 +107,19 @@ namespace WoMFramework.Game.Model.Mogwai
                 SlotType.Chest,SlotType.Armor, SlotType.Belt,SlotType.Wrists,
                 SlotType.Hands,SlotType.Ring,SlotType.Ring,SlotType.Feet});
 
-            // add weaponslot
+            // add weapon slot
             Equipment.WeaponSlots.Add(new WeaponSlot());
 
             // add simple weapon
             var baseWeapon = Weapons.Instance.ByName("Warhammer");
             AddToInventory(baseWeapon);
-            EquipeWeapon(baseWeapon);
+            EquipWeapon(baseWeapon);
 
             // add simple studded leather as armor
             //Equipment.Armor = Armors.StuddedLeather;
             var baseArmor = Armors.Instance.ByName("Studded Leather");
             AddToInventory(baseArmor);
-            EquipeItem(SlotType.Armor, baseArmor);
+            EquipItem(SlotType.Armor, baseArmor);
 
             HitPointDice = 6;
             CurrentHitPoints = MaxHitPoints;
@@ -145,6 +142,7 @@ namespace WoMFramework.Game.Model.Mogwai
             {
                 Adventure.NextFrame();
             }
+
             Adventure.AdventureLogs.Clear();
 
             return true;
@@ -208,7 +206,7 @@ namespace WoMFramework.Game.Model.Mogwai
                 switch (_currentShift.Interaction.InteractionType)
                 {
                     case InteractionType.Adventure:
-                        // only alive mogs can go to an adventure, finish adventure before starting a new one ...
+                        // only alive mogwais can go to an adventure, finish adventure before starting a new one ...
                         if (CanAct && (Adventure == null || !Adventure.IsActive))
                         {
                             Adventure = AdventureGenerator.Create(_currentShift,
@@ -217,6 +215,7 @@ namespace WoMFramework.Game.Model.Mogwai
                             MogwaiState = MogwaiState.Adventure;
                             return true;
                         }
+
                         break;
 
                     case InteractionType.Leveling:
@@ -231,6 +230,7 @@ namespace WoMFramework.Game.Model.Mogwai
                             case LevelingType.None:
                                 break;
                         }
+
                         break;
 
                     case InteractionType.Special:
@@ -240,11 +240,13 @@ namespace WoMFramework.Game.Model.Mogwai
                         {
                             return true;
                         }
+
                         break;
                 }
             }
 
-            // lazy health regeneration, only rest healing if he is not dieing TODO check MogwaiState?
+            // lazy health regeneration, only rest healing if he is not dieing
+            // TODO check MogwaiState?
             if (MogwaiState == MogwaiState.HomeTown && !IsDying)
             {
                 Heal(_currentShift.IsSmallShift ? 2 * CurrentLevel : CurrentLevel, HealType.Rest);
@@ -252,7 +254,7 @@ namespace WoMFramework.Game.Model.Mogwai
 
             History.Add(LogType.Info, $"Evolved {Coloring.Name(Name)} shift {Coloring.Exp(Pointer)}!");
 
-            // no more shifts to proccess, no more logging possible to the game log
+            // no more shifts to process, no more logging possible to the game log
             _currentShift = null;
 
             return true;
@@ -273,6 +275,7 @@ namespace WoMFramework.Game.Model.Mogwai
                         Heal(int.MaxValue, HealType.DivineHeal);
                         return true;
                     }
+
                     break;
 
                 case SpecialType.Reviving:
@@ -282,6 +285,7 @@ namespace WoMFramework.Game.Model.Mogwai
                         Heal(CurrentHitPoints > 0 ? 0 : Math.Abs(CurrentHitPoints), HealType.DivineRevive);
                         return true;
                     }
+
                     break;
 
                 default:
@@ -344,7 +348,6 @@ namespace WoMFramework.Game.Model.Mogwai
             string msg = Coloring.LevelUp($"You feel the power of the {Classes[0].Name}'s!");
             History.Add(LogType.Info, msg);
             Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg));
-
         }
 
         /// <inheritdoc />
@@ -388,10 +391,10 @@ namespace WoMFramework.Game.Model.Mogwai
             History.Add(LogType.Info, msg2);
             Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg2));
 
-            // level up garant free revive
+            // level up grant free revive
             SpecialAction(SpecialType.Reviving);
 
-            // level up garant free heal
+            // level up grant free heal
             SpecialAction(SpecialType.Heal);
         }
 
@@ -413,6 +416,5 @@ namespace WoMFramework.Game.Model.Mogwai
                 }
             }
         }
-
     }
 }

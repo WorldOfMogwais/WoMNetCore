@@ -1,8 +1,8 @@
-﻿using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Random;
-
-namespace WoMFramework.Game.Home
+﻿namespace WoMFramework.Game.Home
 {
+    using Interaction;
+    using Random;
+
     public class HomeTown
     {
         private Shift _shift;

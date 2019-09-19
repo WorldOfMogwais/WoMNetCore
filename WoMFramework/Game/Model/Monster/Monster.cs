@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Generator;
-using WoMFramework.Game.Random;
-
-namespace WoMFramework.Game.Model.Monster
+﻿namespace WoMFramework.Game.Model.Monster
 {
+    using Enums;
+    using Generator;
+    using Random;
+    using System.Collections.Generic;
+
     public sealed class MonsterBuilder
     {
         public string Name { get; set; }
@@ -13,6 +13,7 @@ namespace WoMFramework.Game.Model.Monster
         public int Experience { get; set; }
 
         public SizeType SizeType { get; set; }
+
         // abilities
         public int Strength  { get; set; }
         public int Dexterity  { get; set; }
@@ -28,17 +29,23 @@ namespace WoMFramework.Game.Model.Monster
 
         // speed
         public int BaseSpeed  { get; set; }
+
         // armor
         public int NaturalArmor { get; set; }
+
         // attack
         public int[] BaseAttackBonus  { get; set; }
+
         // hitcoints
         public int[] HitPointDiceRollEvent  { get; set; }
+
         // equipment
         public List<WeaponSlot> WeaponSlots { get; set; }
         public TreasureType TreasureType { get; set; }
-        // environement
+
+        // environment
         public EnvironmentType[] EnvironmentTypes  { get; set; }
+
         // description
         public string Description { get; set; }
 
@@ -53,7 +60,7 @@ namespace WoMFramework.Game.Model.Monster
                 Strength = Strength,
                 Dexterity = Dexterity,
                 Constitution = Constitution,
-                Inteligence = Intelligence,
+                Intelligence = Intelligence,
                 Wisdom = Wisdom,
                 Charisma = Charisma,
 
@@ -89,7 +96,7 @@ namespace WoMFramework.Game.Model.Monster
                 }
 
                 // add weapon to empty weaponslot
-                monster.EquipeWeapon(WeaponSlots[i].PrimaryWeapon, WeaponSlots[i].SecondaryWeapon, i);
+                monster.EquipWeapon(WeaponSlots[i].PrimaryWeapon, WeaponSlots[i].SecondaryWeapon, i);
             }
 
             return monster;
@@ -124,8 +131,6 @@ namespace WoMFramework.Game.Model.Monster
             CurrentHitPoints = MaxHitPoints;
 
             Treasure = Treasure.Create(dice, TreasureType);
-
         }
-
     }
 }

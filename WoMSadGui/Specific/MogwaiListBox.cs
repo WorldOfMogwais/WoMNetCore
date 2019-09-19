@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using SadConsole.Controls;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Specific
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole.Controls;
+
     public class MogwaiListBox : ListBox
     {
         public MogwaiListBox(int width, int height) : base(width, height)

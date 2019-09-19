@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GoRogue.DiceNotation.Terms;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public abstract class Modifier
     {
         public abstract Action<Entity> AddMod { get; }

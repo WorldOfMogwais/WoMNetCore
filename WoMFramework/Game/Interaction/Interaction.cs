@@ -1,8 +1,7 @@
-﻿using System;
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Interaction
+﻿namespace WoMFramework.Game.Interaction
 {
+    using Enums;
+    using System;
 
     public abstract class Interaction
     {
@@ -56,19 +55,18 @@ namespace WoMFramework.Game.Interaction
 
         public static Interaction GetInteraction(decimal amount, decimal fee)
         {
-
-            var parm1 = ((int)(amount * 100000000 % 100000000)).ToString("00000000");
-            //var parm1 = amount.ToString("0.00000000").Split('.')[1];
-            var costTypeInt = int.Parse(parm1.Substring(0, 2));
+            var param1 = ((int)(amount * 100000000 % 100000000)).ToString("00000000");
+            //var param1 = amount.ToString("0.00000000").Split('.')[1];
+            var costTypeInt = int.Parse(param1.Substring(0, 2));
             //var costTypeInt = (int) (amount * 100 % 100);
-            var interactionTypInt = int.Parse(parm1.Substring(2, 2));
+            var interactionTypInt = int.Parse(param1.Substring(2, 2));
             //var interactionTypInt = (int) (amount * 10000 % 10000) % (costTypeInt * 100);
 
             if (Enum.IsDefined(typeof(CostType), costTypeInt)
              && Enum.IsDefined(typeof(InteractionType), interactionTypInt))
             {
                 var interactionType = (InteractionType)interactionTypInt;
-                var addParam1 = int.Parse(parm1.Substring(4, 4));
+                var addParam1 = int.Parse(param1.Substring(4, 4));
 
                 var feeString = ((int)(fee * 100000000 % 100000000)).ToString("00000000");
                 var addParam2 = int.Parse(feeString.Substring(4, 4));
@@ -77,30 +75,32 @@ namespace WoMFramework.Game.Interaction
                 switch (interactionType)
                 {
                     case InteractionType.Adventure:
-                        if (AdventureAction.TryGetInteraction(addParam1, addParam2, out var adventure))
+                        if (AdventureAction.TryGetInteraction(addParam1, addParam2, out AdventureAction adventure))
                         {
                             return adventure;
                         }
+
                         break;
 
                     case InteractionType.Leveling:
-                        if (LevelingAction.TryGetInteraction(addParam1, addParam2, out var leveling))
+                        if (LevelingAction.TryGetInteraction(addParam1, addParam2, out LevelingAction leveling))
                         {
                             return leveling;
                         }
+
                         break;
 
                     case InteractionType.Special:
-                        if (SpecialAction.TryGetInteraction(addParam1, addParam2, out var special))
+                        if (SpecialAction.TryGetInteraction(addParam1, addParam2, out SpecialAction special))
                         {
                             return special;
                         }
+
                         break;
                 }
             }
 
             return new Unknown();
         }
-
     }
 }

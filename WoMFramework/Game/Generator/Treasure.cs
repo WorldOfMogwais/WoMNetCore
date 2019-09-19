@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Random;
-
-namespace WoMFramework.Game.Generator
+﻿namespace WoMFramework.Game.Generator
 {
+    using Enums;
+    using Model;
+    using Random;
+    using System.Collections.Generic;
+
     public class Treasure
     {
         public int Gold { get; }
@@ -14,20 +13,20 @@ namespace WoMFramework.Game.Generator
 
         public Treasure()
         {
-            this.Gold = 0;
-            this.Items = new List<BaseItem>();
+            Gold = 0;
+            Items = new List<BaseItem>();
         }
 
-        public Treasure(int Gold)
+        public Treasure(int gold)
         {
-            this.Gold = Gold;
-            this.Items = new List<BaseItem>();
+            this.Gold = gold;
+            Items = new List<BaseItem>();
         }
 
-        public Treasure(int Gold, List<BaseItem> Items)
+        public Treasure(int gold, List<BaseItem> items)
         {
-            this.Gold = Gold;
-            this.Items = Items;
+            this.Gold = gold;
+            this.Items = items;
         }
 
         public static Treasure Create(Dice dice, TreasureType treasureType)

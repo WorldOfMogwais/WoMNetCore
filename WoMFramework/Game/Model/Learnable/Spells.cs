@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model.Learnable
 {
+    using Actions;
+    using Enums;
+    using System.Collections.Generic;
+
     public class Spells
     {
         public static Spell CureLightWounds()
         {
             return new Spell(0, "Cure Light Wounds", 1)
             {
-                Description = 
+                Description =
                     "When laying your hand upon a living creature, you channel positive energy that cures 1d8 points " +
                     "of damage + 1 point per caster level (maximum +5). Since undead are powered by negative energy, " +
                     "this spell deals damage to them instead of curing their wounds. An undead creature can apply spell " +
@@ -30,10 +30,7 @@ namespace WoMFramework.Game.Model
                 SpellResistance = 0.5,
                 SpellEffect = ((m, t) =>
                 {
-                    var owner = m as Entity;
-                    var target = t as Entity;
-
-                    if (owner == null || target == null)
+                    if (!(m is Entity owner) || !(t is Entity target))
                         return;
 
                     var casterLevel = owner.GetRequirementValue(RequirementType.CasterLevel);
@@ -42,11 +39,5 @@ namespace WoMFramework.Game.Model
                 })
             };
         }
-
-
-
     }
-
-
-
 }

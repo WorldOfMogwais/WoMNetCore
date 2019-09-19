@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using WoMFramework.Tool;
-
-namespace WoMFramework.Game.Model.Monster
+﻿namespace WoMFramework.Game.Model.Monster
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using Tool;
+
     public class Monsters
     {
         private const string DefaultMonsterFile = "MonsterBuilders.json";
@@ -18,14 +20,14 @@ namespace WoMFramework.Game.Model.Monster
             // load monsters file
             if (!Caching.TryReadFile(path, out _monsterBuilders))
             {
-                throw new Exception("couldn't find the monsterbuilders database file.");
+                throw new Exception($"Couldn't find {path} database file.");
             }
 
             // only  for testing purpose
             //var _monstersFile = monsterBuilders.Select(p => p.Build()).ToList();
         }
 
-        public static Monsters Instance => _instance ?? (_instance = new Monsters());
+        public static Monsters Instance => _instance ?? (_instance = new Monsters(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location), DefaultMonsterFile)));
 
         public Monster ByName(string monsterName)
         {
@@ -34,6 +36,7 @@ namespace WoMFramework.Game.Model.Monster
             {
                 throw new Exception($"Unknown monster please check database '{monsterName}'");
             }
+
             return monsterBuilder.Build();
         }
 

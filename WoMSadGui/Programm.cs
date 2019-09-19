@@ -1,18 +1,20 @@
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Reflection;
-using log4net;
-using log4net.Config;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using SadConsole;
-using WoMSadGui.Consoles;
-using WoMSadGui.Specific;
-using WoMWallet.Node;
-using Game = SadConsole.Game;
+
 
 namespace WoMSadGui
 {
+    using Consoles;
+    using log4net;
+    using log4net.Config;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Input;
+    using SadConsole;
+    using Specific;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using System.Reflection;
+    using WoMWallet.Node;
+    using Game = SadConsole.Game;
+
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     internal class Program
@@ -40,7 +42,7 @@ namespace WoMSadGui
 
             // Setup the engine and creat the main window.
             Game.Create("IBM.font", Width, Height);
-            
+
             // Hook the start event so we can add consoles to the system.
             Game.OnInitialize = Init;
 
@@ -92,10 +94,12 @@ namespace WoMSadGui
                         {
                             _playScreen.IsVisible = false;
                         }
+
                         _playScreen = null;
                         SelectionScreen();
                         break;
                     }
+
                     _selectionScreen.ProcessKeyboard(Global.KeyboardState);
                     _state = _selectionScreen.GetState();
                     break;
@@ -106,21 +110,22 @@ namespace WoMSadGui
                         {
                             _selectionScreen.IsVisible = false;
                         }
+
                         _selectionScreen = null;
                         PlayScreen();
                         break;
                     }
+
                     _playScreen.ProcessKeyboard(Global.KeyboardState);
                     _state = _playScreen.GetState();
                     break;
                 case SadGuiState.Fatalerror:
-                    _state = Warning("A fatal error happend!", true);
+                    _state = Warning("A fatal error happened!", true);
                     break;
                 case SadGuiState.Quit:
                     Game.Instance.Exit();
                     break;
             }
-
         }
 
         private static SadGuiState LoadBlocksAsync()
@@ -205,7 +210,7 @@ namespace WoMSadGui
 
         private static void PlayScreen()
         {
-            // clear current childrens
+            // clear current children
             Global.CurrentScreen.Children.Clear();
 
             _playScreen = new PlayScreen(_controller, 110, 25) { Position = new Point(2, 1) };
@@ -216,7 +221,7 @@ namespace WoMSadGui
 
         private static void SelectionScreen()
         {
-            // clear current childrens
+            // clear current children
             Global.CurrentScreen.Children.Clear();
 
             _logoConsole = new LogoConsole(110, 6) { Position = new Point(2, 1) };
@@ -253,7 +258,7 @@ namespace WoMSadGui
             else
             {
                 _state = SadGuiState.Play;
-                PlayScreen();  
+                PlayScreen();
             }
         }
 

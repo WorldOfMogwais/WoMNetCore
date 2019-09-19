@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Troschuetz.Random;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Random;
-
-namespace WoMFramework.Game.Home
+﻿namespace WoMFramework.Game.Home
 {
+    using Interaction;
+    using Model;
+    using Random;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Troschuetz.Random;
+
     public class Shop
     {
         private Shift _currentShift;
@@ -27,7 +24,7 @@ namespace WoMFramework.Game.Home
 
         public void Resupply(Shift shift)
         {
-            foreach (var item in Inventory)
+            foreach (BaseItem item in Inventory)
             {
                 _gold += item.Cost;
             }
@@ -43,15 +40,15 @@ namespace WoMFramework.Game.Home
 
             var potentialShopItems = allItems.Where(p => p.Cost < (_gold / 2)).ToList();
 
-            int count = 0;
+            var count = 0;
             while (potentialShopItems.Any())
             {
                 // make sure at least one of each ... item category.
-                var filteredPotentialShopItems = 
+                List<BaseItem> filteredPotentialShopItems =
                     count == 0 ? potentialShopItems.OfType<Armor>().ToList<BaseItem>() :
-                    count == 1 ? potentialShopItems.OfType<Weapon>().ToList<BaseItem>() : 
+                    count == 1 ? potentialShopItems.OfType<Weapon>().ToList<BaseItem>() :
                     potentialShopItems;
-                var shopItem = ChooseRandomItem(filteredPotentialShopItems);
+                BaseItem shopItem = ChooseRandomItem(filteredPotentialShopItems);
                 potentialShopItems.Remove(shopItem);
                 _gold -= shopItem.Cost;
                 Inventory.Add(shopItem);
@@ -66,7 +63,8 @@ namespace WoMFramework.Game.Home
             {
                 return null;
             }
-            return potentialShopItems[_randomGenerator.Next(potentialShopItems.Count())];
+
+            return potentialShopItems[_randomGenerator.Next(potentialShopItems.Count)];
         }
     }
 }

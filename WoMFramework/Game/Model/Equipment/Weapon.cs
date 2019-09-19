@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using Actions;
+    using Enums;
+    using System;
+    using System.Collections.Generic;
+
     public sealed class WeaponBuilder
     {
-        public string Name{ get; set; }
-        public WeaponBaseType WeaponBaseType{ get; set; }
-        public WeaponProficiencyType WeaponProficiencyType{ get; set; }
-        public WeaponEffortType WeaponEffortType{ get; set; }
-        public int[] DamageMediumRollEvent{ get; set; }
+        public string Name { get; set; }
+        public WeaponBaseType WeaponBaseType { get; set; }
+        public WeaponProficiencyType WeaponProficiencyType { get; set; }
+        public WeaponEffortType WeaponEffortType { get; set; }
+        public int[] DamageMediumRollEvent { get; set; }
 
         public WeaponSubType WeaponSubType { get; set; }
         public WeaponAttackType WeaponAttackType { get; set; }
@@ -26,17 +26,19 @@ namespace WoMFramework.Game.Model
 
         public Weapon Build()
         {
-            return new Weapon(Name, WeaponBaseType, WeaponSubType, WeaponProficiencyType, WeaponEffortType, DamageMediumRollEvent,  WeaponAttackType, CriticalMinRoll, CriticalMultiplier, WeaponDamageTypes, Range, SizeType, Cost, Weight, Description);
+            return new Weapon(Name, WeaponBaseType, WeaponSubType, WeaponProficiencyType, WeaponEffortType, DamageMediumRollEvent, WeaponAttackType, CriticalMinRoll, CriticalMultiplier, WeaponDamageTypes, Range, SizeType, Cost, Weight, Description);
         }
     }
 
     public class NaturalWeapon
     {
-        public static Weapon Bite(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon Bite(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Bite",
                 WeaponBaseType = WeaponBaseType.Bite,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Primary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -49,12 +51,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
+        }
 
-        public static Weapon Claw(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon Claw(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Claw",
                 WeaponBaseType = WeaponBaseType.Claw,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Primary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -67,12 +72,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
+        }
 
-        public static Weapon Gore(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon Gore(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Gore",
                 WeaponBaseType = WeaponBaseType.Gore,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Primary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -85,12 +93,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
+        }
 
-        public static Weapon Hoof(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon Hoof(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Hoof",
                 WeaponBaseType = WeaponBaseType.Hoof,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Secondary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -103,12 +114,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
-        
-        public static Weapon Tentacle(SizeType sizeType) => 
-            new WeaponBuilder { 
+        }
+
+        public static Weapon Tentacle(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Tentacle",
                 WeaponBaseType = WeaponBaseType.Tentacle,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Secondary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -121,12 +135,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
+        }
 
-        public static Weapon Wing(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon Wing(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Wing",
                 WeaponBaseType = WeaponBaseType.Wing,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Secondary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -139,12 +156,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
+        }
 
-        public static Weapon Pincer(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon Pincer(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Pincer",
                 WeaponBaseType = WeaponBaseType.Pincer,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Secondary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -157,12 +177,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
+        }
 
-        public static Weapon TailSlap(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon TailSlap(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Tail Slap",
                 WeaponBaseType = WeaponBaseType.TailSlap,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Secondary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -175,12 +198,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
+        }
 
-        public static Weapon Slam(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon Slam(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Slam",
                 WeaponBaseType = WeaponBaseType.Slam,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Primary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -193,12 +219,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
+        }
 
-        public static Weapon Sting(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon Sting(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Sting",
                 WeaponBaseType = WeaponBaseType.Sting,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Primary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -211,12 +240,15 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
+        }
 
-        public static Weapon Talons(SizeType sizeType) => 
-            new WeaponBuilder { 
+        public static Weapon Talons(SizeType sizeType)
+        {
+            return new WeaponBuilder
+            {
                 Name = "Talons",
                 WeaponBaseType = WeaponBaseType.Talons,
-                WeaponSubType =  WeaponSubType.None,
+                WeaponSubType = WeaponSubType.None,
                 WeaponAttackType = WeaponAttackType.Primary,
                 WeaponProficiencyType = WeaponProficiencyType.Simple,
                 WeaponEffortType = WeaponEffortType.Unarmed,
@@ -229,7 +261,7 @@ namespace WoMFramework.Game.Model
                 Weight = 0,
                 Description = string.Empty
             }.Build();
-
+        }
     }
 
     public class Weapon : BaseItem
@@ -253,9 +285,12 @@ namespace WoMFramework.Game.Model
         public int MinDmg => DamageRoll[0] + (DamageRoll.Length > 3 ? DamageRoll[3] : 0);
         public int MaxDmg => DamageRoll[0] * DamageRoll[1] + (DamageRoll.Length > 3 ? DamageRoll[3] : 0);
 
-        public bool IsCriticalRoll(int roll) => roll >= CriticalMinRoll;
+        public bool IsCriticalRoll(int roll)
+        {
+            return roll >= CriticalMinRoll;
+        }
 
-        public Weapon(string name, WeaponBaseType weaponBaseType, WeaponSubType weaponSubType, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] mediumDamageRoll, WeaponAttackType weaponAttackType, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, SizeType sizeType, double cost, double weight, string description) : base(name, cost, weight, description, slotType:SlotType.Weapon)
+        public Weapon(string name, WeaponBaseType weaponBaseType, WeaponSubType weaponSubType, WeaponProficiencyType weaponProficiencyType, WeaponEffortType weaponEffortType, int[] mediumDamageRoll, WeaponAttackType weaponAttackType, int criticalMinRoll, int criticalMultiplier, WeaponDamageType[] weaponDamageTypes, int range, SizeType sizeType, double cost, double weight, string description) : base(name, cost, weight, description, slotType: SlotType.Weapon)
         {
             WeaponBaseType = weaponBaseType;
             WeaponSubType = weaponSubType;
@@ -301,7 +336,7 @@ namespace WoMFramework.Game.Model
         public static int[] WeaponDamageSizeConversion(SizeType sizeType, int[] currentDamage)
         {
             var key = $"{currentDamage[0]}d{currentDamage[1]}";
-            if (!MediumDamageSizeConversionDict.TryGetValue(key, out var list))
+            if (!MediumDamageSizeConversionDict.TryGetValue(key, out List<int[]> list))
             {
                 throw new Exception($"Unknown key '{key}', for MediumDamageSizeConversionDict!");
             }
@@ -314,6 +349,5 @@ namespace WoMFramework.Game.Model
 
             return list[(int)sizeType - 1];
         }
-
     }
 }

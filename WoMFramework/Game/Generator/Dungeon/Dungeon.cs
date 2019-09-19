@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GoRogue;
-using Troschuetz.Random;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Actions;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Game.Model.Monster;
-using WoMFramework.Game.Random;
-
-namespace WoMFramework.Game.Generator.Dungeon
+﻿namespace WoMFramework.Game.Generator.Dungeon
 {
+    using Enums;
+    using GoRogue;
+    using Interaction;
+    using Model;
+    using Model.Actions;
+    using Model.Learnable;
+    using Model.Mogwai;
+    using Model.Monster;
+    using Random;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Troschuetz.Random;
+
     public abstract class Dungeon : Adventure
     {
         protected readonly Shift Shift;
@@ -55,7 +56,6 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             EvaluateAdventureState();
         }
-
     }
 
     /// <summary>
@@ -118,7 +118,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             for (var i = 0; i < 100 && totXpAmount > 0; i++)
             {
-                var mob = monsterSet[DungeonRandom.Next(monsterSet.Count)];
+                MonsterBuilder mob = monsterSet[DungeonRandom.Next(monsterSet.Count)];
                 allMonsters.Add(mob);
                 totXpAmount -= mob.Experience;
             }
@@ -131,7 +131,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                 {
                     for (var i = 0; i < 10; i++)
                     {
-                        var mob = subMonsterSet[DungeonRandom.Next(subMonsterSet.Count)];
+                        MonsterBuilder mob = subMonsterSet[DungeonRandom.Next(subMonsterSet.Count)];
                         allMonsters.Add(mob);
                     }
                 }
@@ -140,22 +140,22 @@ namespace WoMFramework.Game.Generator.Dungeon
             var maxCr = allMonsters.Max(p => p.ChallengeRating);
             var potentialBosses = allMonsters.Where(p => p.ChallengeRating == maxCr).ToList();
 
-            var boss = potentialBosses[DungeonRandom.Next(potentialBosses.Count)].Build();
+            Monster boss = potentialBosses[DungeonRandom.Next(potentialBosses.Count)].Build();
             boss.AdventureEntityId = NextId;
             boss.Initialize(new Dice(shift, 1));
             Entities.Add(boss.AdventureEntityId, boss);
 
             var monsterMod = 100;
-            foreach (var monsterBuilder in allMonsters)
+            foreach (MonsterBuilder monsterBuilder in allMonsters)
             {
-                var mob = monsterBuilder.Build();
+                Monster mob = monsterBuilder.Build();
                 mob.AdventureEntityId = NextId;
                 mob.Initialize(new Dice(shift, monsterMod++));
                 Entities.Add(mob.AdventureEntityId, mob);
             }
 
             // exploration order
-            _explorationOrder = EntitiesList.OrderBy(p => p.Inteligence).ThenBy(p => p.SizeType).ToList();
+            _explorationOrder = EntitiesList.OrderBy(p => p.Intelligence).ThenBy(p => p.SizeType).ToList();
         }
 
         private double GetChallengeRating()
@@ -193,7 +193,6 @@ namespace WoMFramework.Game.Generator.Dungeon
 
             // deploy mogwai
             DeployMogwai(mogwai);
-
         }
 
         /// <summary>
@@ -202,9 +201,9 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// <param name="shift"></param>
         private void DeployTreasures(Shift shift)
         {
-            var bossRoom = Map.Locations[0];
+            Rectangle bossRoom = Map.Locations[0];
 
-            var coord = bossRoom.RandomPosition(DungeonRandom);
+            Coord coord = bossRoom.RandomPosition(DungeonRandom);
             while (Map.EntityMap[coord] != null)
             {
                 coord = bossRoom.RandomPosition(DungeonRandom);
@@ -225,28 +224,30 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// <param name="shift"></param>
         private void DeployMonsters(Shift shift)
         {
-            var bossRoom = Map.Locations[0];
+            Rectangle bossRoom = Map.Locations[0];
 
             // deploy bosses
-            var boss = MonstersList.OrderByDescending(p => p.ChallengeRating).First();
+            Monster boss = MonstersList.OrderByDescending(p => p.ChallengeRating).First();
 
-            var coord = bossRoom.RandomPosition(DungeonRandom);
+            Coord coord = bossRoom.RandomPosition(DungeonRandom);
             while (Map.EntityMap[coord] != null)
             {
                 coord = bossRoom.RandomPosition(DungeonRandom);
             }
+
             boss.Adventure = this;
             Map.AddEntity(boss, coord.X, coord.Y);
 
             // deploy mobs
-            foreach (var monster in MonstersList.Where(p => p != boss))
+            foreach (Monster monster in MonstersList.Where(p => p != boss))
             {
                 coord = null;
                 while (coord == null || Map.EntityMap[coord] != null)
                 {
-                    var location = Map.Locations[DungeonRandom.Next(Map.Locations.Count)];
+                    Rectangle location = Map.Locations[DungeonRandom.Next(Map.Locations.Count)];
                     coord = location.RandomPosition(DungeonRandom);
                 }
+
                 monster.Adventure = this;
                 Map.AddEntity(monster, coord.X, coord.Y);
             }
@@ -272,9 +273,11 @@ namespace WoMFramework.Game.Generator.Dungeon
                         break;
                     }
                 }
+
                 if (found)
                     break;
             }
+
             Map.AddEntity(mogwai, mogCoord.X, mogCoord.Y);
         }
 
@@ -297,12 +300,13 @@ namespace WoMFramework.Game.Generator.Dungeon
             // check if we switch to combat mode and calculate initiative
             if (initiationEntities.Any())
             {
-                foreach (var entity in initiationEntities)
+                foreach (Entity entity in initiationEntities)
                 {
                     entity.CurrentInitiative = entity.InitiativeRoll;
                     entity.CombatState = CombatState.Engaged;
                     entity.EngagedEnemies = initiationEntities.Where(p => p.Faction != entity.Faction).ToList();
                 }
+
                 _initiativeTurn = 0;
                 _initiativeOrder = initiationEntities.OrderBy(p => p.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
             }
@@ -339,13 +343,12 @@ namespace WoMFramework.Game.Generator.Dungeon
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
         }
 
         private void CombatAtom()
         {
             // get current combatant
-            var entity = _initiativeOrder[_initiativeTurn];
+            Entity entity = _initiativeOrder[_initiativeTurn];
 
             // increase turn to next initiatives turn
             _initiativeTurn = ++_initiativeTurn % _initiativeOrder.Count;
@@ -365,7 +368,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             }
 
             // get a target
-            var target = GetNearestOrWeakestEnemy(entity);
+            Entity target = GetNearestOrWeakestEnemy(entity);
 
             // try to attack target
             TryEnqueueAttack(entity, target, ref combatActionQueue, ActionType.Full);
@@ -373,8 +376,8 @@ namespace WoMFramework.Game.Generator.Dungeon
             // need to move to target
             if (combatActionQueue.Count == 0)
             {
-                var intersects = GetIntersections(entity, target);
-                var nearestCoord = Map.Nearest(entity.Coordinate, intersects) ?? target.Coordinate;
+                List<Coord> intersects = GetIntersections(entity, target);
+                Coord nearestCoord = Map.Nearest(entity.Coordinate, intersects) ?? target.Coordinate;
 
                 // enqueue move
                 TryEnqueueMove(entity, nearestCoord, ref combatActionQueue);
@@ -387,12 +390,12 @@ namespace WoMFramework.Game.Generator.Dungeon
             }
 
             // dequeue all actions
-            while (combatActionQueue.TryDequeue(out var combatAction))
+            while (combatActionQueue.TryDequeue(out CombatAction combatAction))
             {
                 entity.TakeAction(combatAction);
             }
 
-            // reward xp for killed monsters                
+            // reward xp for killed monsters
             if (target.IsDead && target is Monster killedMonster && entity is Mogwai)
             {
                 var expReward = killedMonster.Experience;
@@ -419,7 +422,7 @@ namespace WoMFramework.Game.Generator.Dungeon
         private void ExplorationAtom()
         {
             // get current combatant
-            var entity = _explorationOrder[_explorationTurn];
+            Entity entity = _explorationOrder[_explorationTurn];
 
             // increase turn to next exploration turn
             _explorationTurn = ++_explorationTurn % _explorationOrder.Count;
@@ -442,12 +445,12 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         private void TryEnqueueSurvival(Entity entity, ref Queue<CombatAction> combatActionQueue)
         {
-            var healingSpells = entity.CombatActions
+            IEnumerable<CombatAction> healingSpells = entity.CombatActions
                 .Where(p => p is SpellCast spellCast && spellCast.Spell.SubSchoolType == SubSchoolType.Healing)
                 .Select(p => p.Executable(entity))
                 .Where(p => p != null);
 
-            var healingSpell = healingSpells.FirstOrDefault();
+            CombatAction healingSpell = healingSpells.FirstOrDefault();
 
             if (healingSpell != null)
             {
@@ -457,7 +460,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         private void TryEnqueueMove(Entity entity, Coord nearestCoord, ref Queue<CombatAction> combatActionQueue)
         {
-            var moveAction = entity.CombatActions.Select(p => p.Executable(Map.TileMap[nearestCoord.X, nearestCoord.Y])).FirstOrDefault(p => p is MoveAction);
+            CombatAction moveAction = entity.CombatActions.Select(p => p.Executable(Map.TileMap[nearestCoord.X, nearestCoord.Y])).FirstOrDefault(p => p is MoveAction);
             if (moveAction != null)
             {
                 combatActionQueue.Enqueue(moveAction);
@@ -466,12 +469,12 @@ namespace WoMFramework.Game.Generator.Dungeon
 
         private void TryEnqueueAttack(Entity entity, Entity target, ref Queue<CombatAction> combatActionQueue, ActionType actionType)
         {
-            var exCombatActions = entity.CombatActions
+            IEnumerable<CombatAction> exCombatActions = entity.CombatActions
                 .Where(p => p.ActionType <= actionType) // only actionTypes that are allowed in this round
                 .Select(p => p.Executable(target))
                 .Where(p => p != null);
 
-            var combatActionExec = exCombatActions
+            CombatAction combatActionExec = exCombatActions
                 .OrderByDescending(p => p.ActionType) // choose full attacks over standard attacks
                 .FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack);
 
@@ -485,11 +488,11 @@ namespace WoMFramework.Game.Generator.Dungeon
         {
             var moveRange = entity.Speed / 5;
             var intersects = new List<Coord>();
-            foreach (var weaponAttack in entity.CombatActions.OfType<WeaponAttack>())
+            foreach (WeaponAttack weaponAttack in entity.CombatActions.OfType<WeaponAttack>())
             {
-                var attackRadius = new RadiusAreaProvider(target.Coordinate, weaponAttack.GetRange(), Radius.CIRCLE).CalculatePositions().ToArray();
-                var moveRadius = new RadiusAreaProvider(entity.Coordinate, moveRange, Radius.CIRCLE).CalculatePositions().ToArray();
-                var map = Map.WalkabilityMap;
+                Coord[] attackRadius = new RadiusAreaProvider(target.Coordinate, weaponAttack.GetRange(), Radius.CIRCLE).CalculatePositions().ToArray();
+                Coord[] moveRadius = new RadiusAreaProvider(entity.Coordinate, moveRange, Radius.CIRCLE).CalculatePositions().ToArray();
+                GoRogue.MapViews.ArrayMap<bool> map = Map.WalkabilityMap;
                 intersects.AddRange(from t in attackRadius from coord in moveRadius where coord.X >= 0 && coord.X < map.Width && coord.Y >= 0 && coord.Y < map.Height && map[coord] && coord == t select coord);
             }
 
@@ -499,10 +502,10 @@ namespace WoMFramework.Game.Generator.Dungeon
         private Entity GetNearestOrWeakestEnemy(Combatant entity)
         {
             // we hit monsters till they are dead
-            var ordredEnemiesList = entity.EngagedEnemies.Where(p => p.HealthState != HealthState.Dead)
+            IOrderedEnumerable<Entity> orderedEnemiesList = entity.EngagedEnemies.Where(p => p.HealthState != HealthState.Dead)
                 .OrderBy(p => Distance.EUCLIDEAN.Calculate(entity.Coordinate, p.Coordinate));
 
-            return ordredEnemiesList.FirstOrDefault();
+            return orderedEnemiesList.FirstOrDefault();
         }
 
         public override void EvaluateAdventureState()

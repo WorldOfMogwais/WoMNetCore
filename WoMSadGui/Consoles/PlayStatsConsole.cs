@@ -1,15 +1,15 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using SadConsole;
-using SadConsole.Surfaces;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Mogwai;
-using Console = SadConsole.Console;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Consoles
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole;
+    using SadConsole.Surfaces;
+    using System;
+    using System.Globalization;
+    using WoMFramework.Game.Enums;
+    using WoMFramework.Game.Model;
+    using WoMFramework.Game.Model.Mogwai;
+    using Console = SadConsole.Console;
+
     public class PlayStatsConsole : Console
     {
         private readonly Mogwai _mogwai;
@@ -27,7 +27,6 @@ namespace WoMSadGui.Consoles
             Children.Add(_borderSurface);
 
             Init();
-            
         }
 
         public override void Update(TimeSpan delta)
@@ -48,7 +47,7 @@ namespace WoMSadGui.Consoles
 
             for (var i = 0; i < 2 && i < _mogwai.Classes.Count; i++)
             {
-                var classes = _mogwai.Classes[i];
+                WoMFramework.Game.Model.Classes.Classes classes = _mogwai.Classes[i];
                 Print(31, i + 3, classes.Name.PadRight(10), Color.Orange);
                 Print(42, i + 3, classes.ClassLevel.ToString().PadLeft(2), Color.Gold);
             }
@@ -62,7 +61,7 @@ namespace WoMSadGui.Consoles
             PrintStat(1, 3, "STR", _mogwai.Strength, _mogwai.StrengthMod, 0);
             PrintStat(1, 4, "DEX", _mogwai.Dexterity, _mogwai.DexterityMod, 0);
             PrintStat(1, 5, "CON", _mogwai.Constitution, _mogwai.ConstitutionMod, 0);
-            PrintStat(1, 6, "INT", _mogwai.Inteligence, _mogwai.InteligenceMod, 0);
+            PrintStat(1, 6, "INT", _mogwai.Intelligence, _mogwai.IntelligenceMod, 0);
             PrintStat(1, 7, "WIS", _mogwai.Wisdom, _mogwai.WisdomMod, 0);
             PrintStat(1, 8, "CHA", _mogwai.Charisma, _mogwai.CharismaMod, 0);
 
@@ -79,14 +78,13 @@ namespace WoMSadGui.Consoles
             PrintStat(1, 12, "WIL", _mogwai.Will, 0, 0);
 
             PrintWealth(31, 17, _mogwai);
-
         }
 
         public void Init()
         {
-            var alligmentGender = $".:-| {_mogwai.Stats.MapAllignment()} {_mogwai.GenderStr} |-:.";
-            alligmentGender = alligmentGender.PadLeft(22 + alligmentGender.Length / 2).PadRight(44);
-            Print(0, 1, new ColoredString($"[c:g b:red:black:black:blue:{alligmentGender.Length}]" + alligmentGender));
+            var alignmentGender = $".:-| {_mogwai.Stats.MapAlignment()} {_mogwai.GenderStr} |-:.";
+            alignmentGender = alignmentGender.PadLeft(22 + alignmentGender.Length / 2).PadRight(44);
+            Print(0, 1, new ColoredString($"[c:g b:red:black:black:blue:{alignmentGender.Length}]" + alignmentGender));
             Print(31, 5, "Unspent", Color.Gainsboro);
 
 
@@ -143,7 +141,6 @@ namespace WoMSadGui.Consoles
             //Print(16, 9, "Weapon");
 
             //Print(16, 12, "Armor");
-
         }
 
         private void PrintWealth(int x, int y, Mogwai mogwai)
@@ -159,17 +156,18 @@ namespace WoMSadGui.Consoles
                 return;
             }
 
-            var primary = mogwai.Equipment.WeaponSlots[0].PrimaryWeapon;
+            Weapon primary = mogwai.Equipment.WeaponSlots[0].PrimaryWeapon;
             Print(x, y, "P:", Color.Gainsboro);
             Print(x + 3, y, primary.Name, Color.Orange);
             Print(x + 18, y, new ColoredString($"[c:r f:limegreen]{primary.MinDmg} [c:r f:gainsboro]- [c:r f:limegreen]{primary.MaxDmg} [c:r f:gainsboro]DMG".PadLeft(11)));
             if (mogwai.Equipment.WeaponSlots[0].SecondaryWeapon == null)
             {
-                Print(x, y+1, "S:", Color.Gainsboro);
+                Print(x, y + 1, "S:", Color.Gainsboro);
                 Print(x + 3, y + 1, "None", Color.Gray);
                 return;
             }
-            var secondary =  mogwai.Equipment.WeaponSlots[0].SecondaryWeapon;
+
+            Weapon secondary = mogwai.Equipment.WeaponSlots[0].SecondaryWeapon;
             Print(x, y + 1, "S:", Color.Gainsboro);
             Print(x + 3, y + 1, secondary.Name, Color.Orange);
             Print(x + 18, y + 1, new ColoredString($"[c:r f:limegreen]{secondary.MinDmg} [c:r f:gainsboro]- [c:r f:limegreen]{secondary.MaxDmg} [c:r f:gainsboro]DMG".PadLeft(11)));
@@ -189,7 +187,7 @@ namespace WoMSadGui.Consoles
 
         public void CreateExperienceBar(int x, int y, Color low, Color full, double current, double max)
         {
-            Print(x, y + 1, current.ToString().PadLeft(9), Color.Orange);
+            Print(x, y + 1, current.ToString(CultureInfo.InvariantCulture).PadLeft(9), Color.Orange);
             Print(x + 10, y + 1, "XP", Color.Gainsboro);
             CreateBar(x, y + 2, low, full, (float)(current / max));
             SetGlyph(x + 13, y + 1, 186, Color.DarkCyan);
@@ -202,11 +200,11 @@ namespace WoMSadGui.Consoles
             Print(x + 10, y + 1, "HP", Color.Gainsboro);
             if (current >= 0)
             {
-                CreateBar(x, y + 2, low, full, (float) current / max);
+                CreateBar(x, y + 2, low, full, (float)current / max);
             }
             else
             {
-                CreateBar(x, y + 2, Color.DarkRed, Color.Red, (float) Math.Abs(current < -10 ? -10 : current)  / 10);
+                CreateBar(x, y + 2, Color.DarkRed, Color.Red, (float)Math.Abs(current < -10 ? -10 : current) / 10);
             }
 
             SetGlyph(x + 13, y + 1, 186, Color.DarkCyan);
@@ -231,7 +229,7 @@ namespace WoMSadGui.Consoles
         public void PrintStat(int x, int y, string name, int value, int? mod, int temp)
         {
             var xO = x;
-            var modCol = mod > 0 ? Color.LimeGreen : mod < 0 ? Color.Red : Color.Gray;
+            Color modCol = mod > 0 ? Color.LimeGreen : mod < 0 ? Color.Red : Color.Gray;
             var modSig = mod > 0 ? "+" : "";
             Print(x, y, name.PadLeft(3), Color.Gainsboro);
             x += 4;

@@ -1,10 +1,11 @@
-﻿using System;
-using GoRogue;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Generator;
-
-namespace WoMFramework.Game.Model.Actions
+﻿namespace WoMFramework.Game.Model.Actions
 {
+    using Enums;
+    using Generator;
+    using GoRogue;
+    using Learnable;
+    using System;
+
     public abstract class EntityAction
     {
         public Entity Owner { get; private set; }
@@ -98,9 +99,8 @@ namespace WoMFramework.Game.Model.Actions
                 return false;
             }
 
-            return (int) Distance.EUCLIDEAN.Calculate(target.Coordinate - Owner.Coordinate) <= GetRange();
+            return (int)Distance.EUCLIDEAN.Calculate(target.Coordinate - Owner.Coordinate) <= GetRange();
         }
-
     }
 
     public class UnarmedAttack : WeaponAttack
@@ -109,16 +109,19 @@ namespace WoMFramework.Game.Model.Actions
         {
             IsExecutable = false;
         }
+
         private UnarmedAttack(Entity owner, Weapon weapon, AdventureEntity target, bool fullRound) : base(fullRound ? ActionType.Full : ActionType.Standard, owner, target, weapon, true)
         {
             IsExecutable = true;
         }
+
         public override CombatAction Executable(AdventureEntity target)
         {
             if (!InWeaponRange(target))
             {
                 return null;
             }
+
             return new UnarmedAttack(Owner, Weapon, target, ActionType == ActionType.Full);
         }
     }
@@ -129,16 +132,19 @@ namespace WoMFramework.Game.Model.Actions
         {
             IsExecutable = false;
         }
+
         private MeleeAttack(Entity owner, Weapon weapon, AdventureEntity target, bool fullRound) : base(fullRound ? ActionType.Full : ActionType.Standard, owner, target, weapon, false)
         {
             IsExecutable = true;
         }
+
         public override CombatAction Executable(AdventureEntity target)
         {
             if (!InWeaponRange(target))
             {
                 return null;
             }
+
             return new MeleeAttack(Owner, Weapon, target, ActionType == ActionType.Full);
         }
     }
@@ -149,16 +155,19 @@ namespace WoMFramework.Game.Model.Actions
         {
             IsExecutable = false;
         }
+
         private RangedAttack(Entity owner, Weapon weapon, AdventureEntity target, bool fullRound) : base(fullRound ? ActionType.Full : ActionType.Standard, owner, target, weapon, true)
         {
             IsExecutable = true;
         }
+
         public override CombatAction Executable(AdventureEntity target)
         {
             if (!InWeaponRange(target))
             {
                 return null;
             }
+
             return new RangedAttack(Owner, Weapon, target, ActionType == ActionType.Full);
         }
     }
@@ -185,17 +194,20 @@ namespace WoMFramework.Game.Model.Actions
             IsExecutable = false;
             Spell = spell;
         }
+
         private SpellCast(Entity owner, Spell spell, AdventureEntity target, ActionType actionType) : base(actionType, owner, target, true)
         {
             IsExecutable = true;
             Spell = spell;
         }
+
         public override CombatAction Executable(AdventureEntity target)
         {
             if (!Spell.CanCast(Owner, target))
             {
                 return null;
             }
+
             return new SpellCast(Owner, Spell, target, ActionType);
         }
     }
@@ -208,7 +220,6 @@ namespace WoMFramework.Game.Model.Actions
         {
             IsExecutable = true;
         }
-
     }
 
     public class Move : MoveAction
@@ -217,10 +228,12 @@ namespace WoMFramework.Game.Model.Actions
         {
             IsExecutable = false;
         }
+
         private Move(Entity owner, AdventureEntity target) : base(owner, target, true)
         {
             IsExecutable = true;
         }
+
         public override CombatAction Executable(AdventureEntity target)
         {
             return new Move(Owner, target);
@@ -262,5 +275,4 @@ namespace WoMFramework.Game.Model.Actions
             return null;
         }
     }
-
 }

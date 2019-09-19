@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Numerics;
-using System.Security.Cryptography;
-
-namespace WoMFramework.Tool
+﻿namespace WoMFramework.Tool
 {
+    using System;
+    using System.Linq;
+    using System.Numerics;
+    using System.Security.Cryptography;
+
     public static class Base58Encoding
     {
         public const int CheckSumSizeInBytes = 4;
@@ -59,6 +59,7 @@ namespace WoMFramework.Tool
             {
                 result = '1' + result;
             }
+
             return result;
         }
 
@@ -87,8 +88,8 @@ namespace WoMFramework.Tool
             // Encode BigInteger to byte[]
             // Leading zero bytes get encoded as leading `1` characters
             var leadingZeroCount = s.TakeWhile(c => c == '1').Count();
-            var leadingZeros = Enumerable.Repeat((byte)0, leadingZeroCount);
-            var bytesWithoutLeadingZeros =
+            System.Collections.Generic.IEnumerable<byte> leadingZeros = Enumerable.Repeat((byte)0, leadingZeroCount);
+            System.Collections.Generic.IEnumerable<byte> bytesWithoutLeadingZeros =
                 intData.ToByteArray()
                 .Reverse()// to big endian
                 .SkipWhile(b => b == 0);//strip sign byte

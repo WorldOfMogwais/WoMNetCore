@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using GoRogue;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Generator
+﻿namespace WoMFramework.Game.Generator
 {
+    using Enums;
+    using GoRogue;
+    using Model;
+    using Model.Actions;
+    using System.Collections.Generic;
+
     public abstract class Combatant : AdventureEntity
     {
         public Faction Faction { get; set; }

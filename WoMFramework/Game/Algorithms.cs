@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using GoRogue;
-using GoRogue.MapViews;
-using Priority_Queue;
-using WoMFramework.Game.Generator.Dungeon;
-
-namespace WoMFramework.Game
+﻿namespace WoMFramework.Game
 {
+    using Generator.Dungeon;
+    using GoRogue;
+    using GoRogue.MapViews;
+    using Priority_Queue;
+    using System.Collections.Generic;
+
     public static class Algorithms
     {
         private static FastPriorityQueue<AStarNode> _cachedQueue;
@@ -46,15 +46,16 @@ namespace WoMFramework.Game
         {
             AStarNode[] nodes;
             FastPriorityQueue<AStarNode> open;  // Currently discovered nodes that are not evaluated yet
-            Distance euclidiean = Distance.EUCLIDEAN;
+            Distance euclidean = Distance.EUCLIDEAN;
             ArrayMap<bool> walkabilityMap = map.WalkabilityMap;
             bool isGoalWalkable = true;
 
             if (_cachedMap?.Guid == map.Guid)
             {
                 nodes = _cache;
-                for (int i = 0; i < nodes.Length; i++)
-                    nodes[i].Clear();
+                foreach (var t in nodes)
+                    t.Clear();
+
                 open = _cachedQueue;
             }
             else
@@ -82,7 +83,7 @@ namespace WoMFramework.Game
             int startIndex = start.ToIndex(walkabilityMap.Width);
             AStarNode startNode = nodes[startIndex];
             startNode.G = 0;
-            startNode.F = (float)euclidiean.Calculate(start, goal);
+            startNode.F = (float)euclidean.Calculate(start, goal);
             open.Enqueue(startNode, startNode.F);
 
             while (open.Count != 0)
@@ -108,20 +109,20 @@ namespace WoMFramework.Game
                     return result.ToArray();
                 }
 
-                Coord[] neighbours = GetReachableNeighbours(walkabilityMap, current.Position);
-                foreach (Coord coord in neighbours)
+                Coord[] neighbors = GetReachableNeighbors(walkabilityMap, current.Position);
+                foreach (Coord coord in neighbors)
                 {
                     int index = coord.ToIndex(walkabilityMap.Width);
                     AStarNode node = nodes[index];
 
                     if (node.Closed) continue;
 
-                    float distance = current.G + (float)euclidiean.Calculate(current.Position, coord);
+                    float distance = current.G + (float)euclidean.Calculate(current.Position, coord);
                     if (distance >= node.G) continue;
 
                     node.Parent = current;
                     node.G = distance;
-                    node.F = distance + (float) euclidiean.Calculate(coord, goal);
+                    node.F = distance + (float) euclidean.Calculate(coord, goal);
 
                     if (open.Contains(node))
                         open.UpdatePriority(node, node.F);
@@ -133,7 +134,7 @@ namespace WoMFramework.Game
             return null;
         }
 
-        public static Coord[] GetReachableNeighbours(IMapView<bool> walkabilityMap, Coord current)
+        public static Coord[] GetReachableNeighbors(IMapView<bool> walkabilityMap, Coord current)
         {
             var result = new List<Coord>(8);
 
@@ -151,7 +152,7 @@ namespace WoMFramework.Game
                 result.Add(current.Translate(1, 0));
                 right = true;
             }
-   
+
             if (y < walkabilityMap.Height && walkabilityMap[x, y + 1])
             {
                 result.Add(current.Translate(0, 1));
@@ -199,9 +200,6 @@ namespace WoMFramework.Game
         //    // 1 : observed;
         //    // 2 : visited node;
         //    // -1 : grey node;
-
-
-
 
         //    fov.Calculate(start, 5);
 

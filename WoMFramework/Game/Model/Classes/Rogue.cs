@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Model.Classes
+﻿namespace WoMFramework.Game.Model.Classes
 {
+    using Enums;
+    using Learnable;
+    using System.Collections.Generic;
+
     public class Rogue : Classes
     {
         public Rogue() : base(ClassType.Rogue, false)
@@ -35,6 +35,5 @@ namespace WoMFramework.Game.Model.Classes
 
             ClassAttackBonus = (ClassLevel - 1) - (int)((double)(ClassLevel - 1) / 4);
         }
-
     }
 }

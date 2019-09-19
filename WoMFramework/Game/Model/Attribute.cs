@@ -1,11 +1,11 @@
-﻿using System;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Tool;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
-    public sealed class AttributBuilder
+    using Enums;
+    using Mogwai;
+    using System;
+    using Tool;
+
+    public sealed class AttributeBuilder
     {
         private readonly string _name;
         private bool _salted = true;
@@ -20,62 +20,62 @@ namespace WoMFramework.Game.Model
 
         public string Description;
 
-        private AttributBuilder(string name) { _name = name; }
+        private AttributeBuilder(string name) { _name = name; }
 
-        public static AttributBuilder Create(string name)
+        public static AttributeBuilder Create(string name)
         {
-            return new AttributBuilder(name);
+            return new AttributeBuilder(name);
         }
 
-        public AttributBuilder Salted(bool salted)
+        public AttributeBuilder Salted(bool salted)
         {
             _salted = salted;
             return this;
         }
 
-        public AttributBuilder SetPosition(int position)
+        public AttributeBuilder SetPosition(int position)
         {
             _position = position;
             return this;
         }
 
-        public AttributBuilder SetSize(int size)
+        public AttributeBuilder SetSize(int size)
         {
             _size = size;
             return this;
         }
 
-        public AttributBuilder SetCreation(int creation)
+        public AttributeBuilder SetCreation(int creation)
         {
             _creation = creation;
             return this;
         }
 
-        public AttributBuilder SetMinRange(int minRange)
+        public AttributeBuilder SetMinRange(int minRange)
         {
             _minRange = minRange;
             return this;
         }
 
-        public AttributBuilder SetMaxRange(int maxRange)
+        public AttributeBuilder SetMaxRange(int maxRange)
         {
             _maxRange = maxRange;
             return this;
         }
 
-        public AttributBuilder SetEvolutionPattern(EvolutionPattern evoPat)
+        public AttributeBuilder SetEvolutionPattern(EvolutionPattern evoPat)
         {
             _evoPat = evoPat;
             return this;
         }
 
-        public AttributBuilder SetHexValue(HexValue hexValue)
+        public AttributeBuilder SetHexValue(HexValue hexValue)
         {
             HexValue = hexValue;
             return this;
         }
 
-        public AttributBuilder SetDescription(string description)
+        public AttributeBuilder SetDescription(string description)
         {
             Description = description;
             return this;
@@ -148,6 +148,5 @@ namespace WoMFramework.Game.Model
             _value = (int)modValue;
             return true;
         }
-
     }
 }

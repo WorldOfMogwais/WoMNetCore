@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using WoMFramework.Game.Generator;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model.Learnable
 {
+    using Actions;
+    using Generator;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public enum SchoolType
     {
         None,
@@ -63,7 +61,7 @@ namespace WoMFramework.Game.Model
         Fortitude
     }
 
-    public class Spell : Learnable
+    public class Spell : ILearnable
     {
         public int Id { get; }
 
@@ -168,7 +166,6 @@ namespace WoMFramework.Game.Model
         internal bool CanCast(Entity owner, AdventureEntity target)
         {
             // TODO implement conditions
-
             return true;
         }
     }

@@ -1,8 +1,7 @@
-﻿using System;
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Interaction
+﻿namespace WoMFramework.Game.Interaction
 {
+    using Enums;
+    using System;
 
     public class AdventureAction : Interaction
     {

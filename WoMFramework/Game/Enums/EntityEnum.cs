@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace WoMFramework.Game.Enums
+﻿namespace WoMFramework.Game.Enums
 {
+    using System;
+
     public enum GenderType
     {
         Male,
@@ -23,7 +23,6 @@ namespace WoMFramework.Game.Enums
 
     internal static class SizeTypeFunction
     {
-
         public static int Modifier(this SizeType sizeType)
         {
             switch (sizeType)
@@ -51,7 +50,6 @@ namespace WoMFramework.Game.Enums
             }
         }
     }
-
 
     public enum ClassType
     {
@@ -241,7 +239,7 @@ namespace WoMFramework.Game.Enums
         Strength,
         Dexterity,
         Constitution,
-        Inteligence,
+        Intelligence,
         Wisdom,
         Charisma,
 
@@ -260,7 +258,5 @@ namespace WoMFramework.Game.Enums
         Looted,
         Unlooted,
         Special
-
     }
-
 }

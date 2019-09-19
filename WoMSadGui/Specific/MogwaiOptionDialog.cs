@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using SadConsole.Input;
-
-namespace WoMSadGui.Specific
+﻿namespace WoMSadGui.Specific
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole.Input;
+    using System;
+    using System.Collections.Generic;
+
     public class MogwaiOptionDialog : MogwaiDialog
     {
         private MogwaiRadioButton _selectedRadioButton;
@@ -13,7 +13,6 @@ namespace WoMSadGui.Specific
 
         public MogwaiOptionDialog(string title, string text, int width, int height) : base(title, text, width, height)
         {
-
         }
 
         public MogwaiOptionDialog(string title, string text, Action<string> doAdventureAction, int width, int height) : base(title, text, width, height)
@@ -50,6 +49,5 @@ namespace WoMSadGui.Specific
                 Add(radioButton2);
             }
         }
-
     }
 }

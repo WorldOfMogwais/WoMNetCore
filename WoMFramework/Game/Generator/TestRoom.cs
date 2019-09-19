@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GoRogue;
-using WoMFramework.Game.Generator.Dungeon;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Actions;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Game.Model.Monster;
-using WoMFramework.Game.Random;
-
-namespace WoMFramework.Game.Generator
+﻿namespace WoMFramework.Game.Generator
 {
+    using Dungeon;
+    using GoRogue;
+    using Interaction;
+    using Model;
+    using Model.Actions;
+    using Model.Mogwai;
+    using Model.Monster;
+    using Random;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class TestRoom : Adventure
     {
         private int _maxRounds = 50;
 
-        private List<Entity> _inititiveOrder;
+        private List<Entity> _initiativeOrder;
 
         private Entity _winner;
 
@@ -31,7 +31,7 @@ namespace WoMFramework.Game.Generator
             _winner = null;
             _currentRound = 0;
             _turn = 0;
-            _inititiveOrder = new List<Entity>();
+            _initiativeOrder = new List<Entity>();
             Map = new Map(null, 10, 10, this, true);
         }
 
@@ -95,7 +95,7 @@ namespace WoMFramework.Game.Generator
                 coords.Remove(getAPlace);
             }
 
-            _inititiveOrder = EntitiesList.OrderBy(s => s.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
+            _initiativeOrder = EntitiesList.OrderBy(s => s.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
         }
 
         public override bool HasNextFrame()
@@ -118,10 +118,10 @@ namespace WoMFramework.Game.Generator
             }
 
             // get current combatant
-            var combatant = _inititiveOrder[_turn];
+            var combatant = _initiativeOrder[_turn];
 
             // increase turn to next initiatives turn
-            _turn = ++_turn % _inititiveOrder.Count;
+            _turn = ++_turn % _initiativeOrder.Count;
 
             // dead targets can't attack any more
             if (!combatant.CanAct)

@@ -1,18 +1,17 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using SadConsole;
-using SadConsole.Surfaces;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model.Mogwai;
-using WoMWallet.Node;
-using WoMWallet.Tool;
-using Console = SadConsole.Console;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Consoles
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole;
+    using SadConsole.Surfaces;
+    using System;
+    using System.Globalization;
+    using System.Linq;
+    using WoMFramework.Game.Enums;
+    using WoMFramework.Game.Model.Mogwai;
+    using WoMWallet.Node;
+    using WoMWallet.Tool;
+    using Console = SadConsole.Console;
+
     public class PlayInfoConsole : Console
     {
         private readonly Basic _borderSurface;
@@ -47,44 +46,43 @@ namespace WoMSadGui.Consoles
 
         public void UpdateScreen()
         {
-
             Print(1, 2, $"[{_mogwai.Pointer.ToString().PadLeft(7, '.')}]", Color.Gainsboro);
             Print(11, 2, $"{_mogwai.CurrentShift.InteractionType}".PadRight(20), Color.Lime);
 
-            for (int i = 1; i < 3; i++)
+            for (var i = 1; i < 3; i++)
             {
-                if (_mogwai.Shifts.TryGetValue(_mogwai.Pointer + i, out var shift))
+                if (_mogwai.Shifts.TryGetValue(_mogwai.Pointer + i, out WoMFramework.Game.Interaction.Shift shift))
                 {
                     Print(1, 2 + i, $"[{(_mogwai.Pointer + i).ToString().PadLeft(7, '.')}]", Color.Gainsboro);
                     Print(11, 2 + i, $"{shift.InteractionType}".PadRight(20), Color.DarkGreen);
                 }
                 else
                 {
-                    Print(1, 2 + i, $"[{"".ToString().PadLeft(7, '.')}]", Color.Red);
-                    Print(11, 2 + i, $"None".PadRight(20), Color.Red);
+                    Print(1, 2 + i, $"[{"".PadLeft(7, '.')}]", Color.Red);
+                    Print(11, 2 + i, "None".PadRight(20), Color.Red);
                 }
             }
- 
+
             Print(31, 2, _mogwai.Pointer.ToString().PadLeft(8, '.'));
             Print(31, 3, _mogwai.Shifts.Keys.Max().ToString(CultureInfo.InvariantCulture).PadLeft(8, '.'));
 
             Print(1, 6, $"[{_mogwai.Pointer.ToString().PadLeft(7, '.')}]", Color.Gainsboro);
             Print(11, 6, $"{_mogwai.CurrentShift.InteractionType}".PadRight(20), Color.Lime);
-            Print(31, 6, $" <==".PadRight(20), Color.Gainsboro);
+            Print(31, 6, " <==".PadRight(20), Color.Gainsboro);
 
             Print(1, 7,
                 _mogwai.CurrentShift.InteractionType != InteractionType.None
                     ? $"{_mogwai.CurrentShift.Interaction.GetInfo()}".PadRight(50)
-                    : $"SmallShift".PadRight(50), Color.DarkGray);
+                    : "SmallShift".PadRight(50), Color.DarkGray);
 
-            var lastBlock = _controller.WalletLastBlock;
+            WoMWallet.Block.Block lastBlock = _controller.WalletLastBlock;
             if (lastBlock != null)
             {
                 Print(1, 0, _controller.WalletLastBlock.Height.ToString("#######0").PadLeft(8), Color.DeepSkyBlue);
                 Print(10, 0, "Block", Color.White);
-                var localTime = DateUtil.GetBlockLocalDateTime(_controller.WalletLastBlock.Time);
+                DateTime localTime = DateUtil.GetBlockLocalDateTime(_controller.WalletLastBlock.Time);
                 var localtimeStr = localTime.ToString(CultureInfo.InvariantCulture);
-                var t = DateTime.Now.Subtract(localTime);
+                TimeSpan t = DateTime.Now.Subtract(localTime);
                 var timeStr = $"[c:r f:springgreen]{t:hh\\:mm\\:ss}[c:u]";
                 Print(16, 0, localtimeStr + " " + timeStr, Color.Gainsboro);
             }
@@ -109,8 +107,6 @@ namespace WoMSadGui.Consoles
                 Print(1, 11, _mogwaiKeys.InteractionLock.Values.First().GetInfo().PadRight(48).Substring(0, 48), Color.Red);
                 Print(14, 13, $"[c:g f:red:orange:red:{addr.Length}]" + addr);
             }
-
-
         }
 
         public void Init()
@@ -122,7 +118,6 @@ namespace WoMSadGui.Consoles
             _borderSurface.Print(0, 13, "[c:sg 204:1] ", Color.DarkCyan);
             _borderSurface.Print(50, 13, "[c:sg 185:1] ", Color.DarkCyan);
             Print(0, 12, "[c:sg 205:49]" + "".PadRight(49), Color.DarkCyan);
-
         }
     }
 }

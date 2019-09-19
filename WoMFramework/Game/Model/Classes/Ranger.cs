@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Model.Classes
+﻿namespace WoMFramework.Game.Model.Classes
 {
+    using Enums;
+    using Learnable;
+    using System.Collections.Generic;
+
     public class Ranger : Classes
     {
 
@@ -20,9 +21,7 @@ namespace WoMFramework.Game.Model.Classes
 
         public override List<Spell> ClassSpells()
         {
-            return new List<Spell>()
-            {
-            };
+            return new List<Spell>();
         }
 
         public override void ClassLevelUp()

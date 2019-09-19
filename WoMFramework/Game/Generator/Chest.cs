@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GoRogue;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Generator.Dungeon;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Generator
+﻿namespace WoMFramework.Game.Generator
 {
+    using Enums;
+    using Model.Actions;
+    using System;
+
     public class Chest : AdventureEntity
     {
         public override bool TakeAction(EntityAction entityAction)

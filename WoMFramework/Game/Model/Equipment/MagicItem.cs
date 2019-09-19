@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using Actions;
+    using Enums;
+    using Learnable;
+    using System.Collections.Generic;
+
     public sealed class MagicItemBuilder
     {
         // description
@@ -45,7 +43,7 @@ namespace WoMFramework.Game.Model
                     new SimpleModifier(ModifierType.Strength, 2),
                     new SimpleModifier(ModifierType.Dexterity, 2),
                     new SimpleModifier(ModifierType.Constitution, 2),
-                    new SimpleModifier(ModifierType.Inteligence, 2),
+                    new SimpleModifier(ModifierType.Intelligence, 2),
                     new SimpleModifier(ModifierType.Wisdom, 2),
                     new SimpleModifier(ModifierType.Charisma, 2),
                     new SimpleModifier(ModifierType.ArmorClass, 1),
@@ -81,6 +79,4 @@ namespace WoMFramework.Game.Model
             );
         }
     }
-
-
 }

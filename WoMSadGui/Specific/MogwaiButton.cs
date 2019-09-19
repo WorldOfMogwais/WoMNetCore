@@ -1,18 +1,16 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using SadConsole;
-using SadConsole.Controls;
-using SadConsole.Themes;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Specific
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole;
+    using SadConsole.Controls;
+
     public class MogwaiButton : Button
     {
         public MogwaiButton(int width, int height) : base(width, height)
         {
             //Theme.EndCharacterLeft = 186;
             //Theme.EndCharacterRight = 186;
-            
+
             Theme.Normal.Background = Color.DarkSlateGray;
             Theme.MouseDown.Background = Color.Yellow;
             Theme.MouseDown.Foreground = Color.Black;

@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using SadConsole;
-using SadConsole.Controls;
-using SadConsole.Surfaces;
-using WoMFramework.Game;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model.Mogwai;
-using WoMSadGui.Specific;
-using WoMWallet.Node;
-using Console = SadConsole.Console;
-using Keyboard = SadConsole.Input.Keyboard;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Consoles
 {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Input;
+    using SadConsole;
+    using SadConsole.Controls;
+    using SadConsole.Surfaces;
+    using Specific;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using WoMFramework.Game;
+    using WoMFramework.Game.Enums;
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Game.Model.Mogwai;
+    using WoMWallet.Node;
+    using Console = SadConsole.Console;
+    using Keyboard = SadConsole.Input.Keyboard;
+
     public class TestControls : ControlsConsole
     {
         public Basic BorderSurface;
@@ -30,9 +30,10 @@ namespace WoMSadGui.Consoles
             Children.Add(BorderSurface);
         }
     }
+
     public class PlayScreen : Console
     {
-        enum PlayScreenState
+        private enum PlayScreenState
         {
             Welcome, Shop, Adventure, AdventureStats,
             AdventureChoose
@@ -67,12 +68,12 @@ namespace WoMSadGui.Consoles
         private MogwaiButton _btnEvolve;
         private MogwaiButton _btnFast;
 
-        private Dictionary<string, MogwaiButton> _playScreenButtons;
+        private readonly Dictionary<string, MogwaiButton> _playScreenButtons;
 
         public PlayScreen(MogwaiController mogwaiController, int width, int height) : base(width, height)
         {
             _controller = mogwaiController;
-            var mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
+            MogwaiKeys mogwaiKeys = _controller.CurrentMogwaiKeys ?? _controller.TestMogwaiKeys();
             _mogwai = mogwaiKeys.Mogwai;
 
             _playScreenButtons = new Dictionary<string, MogwaiButton>();
@@ -90,7 +91,7 @@ namespace WoMSadGui.Consoles
             _adventureStats = new CustomAdventureStats(_mogwai, 91, 22) { Position = new Point(46, 0) };
 
             //var logFont = Global.LoadFont("Bakus8.font").GetFont(Font.FontSizes.One);
-            _log = new ScrollingConsole(85, 13, 100, null) { Position = new Point(0, 25)};
+            _log = new ScrollingConsole(85, 13, 100, null) { Position = new Point(0, 25) };
             Children.Add(_log);
 
             var playInfoConsole = new PlayInfoConsole(mogwaiController, mogwaiKeys, 49, 14) { Position = new Point(88, 24) };
@@ -144,7 +145,6 @@ namespace WoMSadGui.Consoles
             };
             _btnFast.Click += (btn, args) => { DoAction(((Button)btn).Text); };
             _command2.Add(_btnFast);
-
         }
 
         private void SetCustomWindowState(PlayScreenState newPlayScreenState)
@@ -181,10 +181,11 @@ namespace WoMSadGui.Consoles
                         _btnFast.ResetColor();
                         // enable buttons
                         _playScreenButtons.Values.ToList().ForEach(p => p.IsEnabled = true);
-
                     }
+
                     break;
             }
+
             Children.Add(_custom);
         }
 
@@ -210,10 +211,11 @@ namespace WoMSadGui.Consoles
             _command1.Add(button);
             _command1.SetGlyph(xBtn + mBtnSize + buttonPosition * (mBtnSize + xSpBtn), 0, 186, Color.DarkCyan);
             _command1.BorderSurface.SetGlyph(xBtn + mBtnSize + 1 + buttonPosition * (mBtnSize + xSpBtn), 0, 203, Color.DarkCyan);
-            for (int i = 0; i < mBtnSize; i++)
+            for (var i = 0; i < mBtnSize; i++)
             {
                 _command1.BorderSurface.SetGlyph(xBtn + i + 1 + buttonPosition * (mBtnSize + xSpBtn), 2, 205, Color.DarkCyan);
             }
+
             _command1.BorderSurface.SetGlyph(xBtn + mBtnSize + 1 + buttonPosition * (mBtnSize + xSpBtn), 2, 202, Color.DarkCyan);
 
             return button;
@@ -256,7 +258,6 @@ namespace WoMSadGui.Consoles
                     dialog.Show(true);
                     break;
             }
-
         }
 
         private void DoInteraction(string actionStr)
@@ -316,7 +317,6 @@ namespace WoMSadGui.Consoles
                     warning.Show(true);
                     break;
             }
-
         }
 
         private void DoClassLevel(string classTypeStr)
@@ -327,7 +327,7 @@ namespace WoMSadGui.Consoles
                 return;
             }
 
-            if (!Enum.TryParse<ClassType>(classTypeStr, true, out var classType))
+            if (!Enum.TryParse<ClassType>(classTypeStr, true, out ClassType classType))
             {
                 LogInConsole($"Invalid class, please check {classTypeStr}!");
                 return;
@@ -384,6 +384,7 @@ namespace WoMSadGui.Consoles
                     {
                         SetCustomWindowState(PlayScreenState.Welcome);
                     }
+
                     UpdateLog();
                 }
             }
@@ -401,7 +402,7 @@ namespace WoMSadGui.Consoles
 
         private void UpdateLog()
         {
-            foreach (var entry in _mogwai.CurrentShift.History.LogEntries)
+            foreach (LogEntry entry in _mogwai.CurrentShift.History.LogEntries)
             {
                 _log.MainCursor.Print(entry.ToString());
                 _log.MainCursor.NewLine();
@@ -498,6 +499,7 @@ namespace WoMSadGui.Consoles
                         {
                             _adventure.UpdateGame();
                         }
+
                         break;
                 }
             }

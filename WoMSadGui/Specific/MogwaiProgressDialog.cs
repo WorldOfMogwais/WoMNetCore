@@ -1,11 +1,11 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using SadConsole;
-using SadConsole.Controls;
-using WoMWallet.Node;
-
-namespace WoMSadGui.Specific
+﻿namespace WoMSadGui.Specific
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole;
+    using SadConsole.Controls;
+    using System;
+    using WoMWallet.Node;
+
     internal class MogwaiProgressDialog : MogwaiDialog
     {
         private readonly ProgressBar _progressbar;

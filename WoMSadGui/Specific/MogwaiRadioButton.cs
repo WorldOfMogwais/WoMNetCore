@@ -1,34 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using SadConsole.Controls;
-
-namespace WoMSadGui.Specific
+﻿namespace WoMSadGui.Specific
 {
-    public class MogwaiListBox : ListBox
-    {
-        public MogwaiListBox(int width, int height) : base(width, height)
-        {
-            Theme.Normal.Background = Color.Black;
-            Theme.Normal.Foreground = Color.Cyan;
-
-            Theme.MouseDown.Background = Color.Yellow;
-            Theme.MouseDown.Foreground = Color.Black;
-
-            Theme.MouseOver.Background = Color.Cyan;
-            Theme.MouseOver.Foreground = Color.Black;
-
-            Theme.Selected.Background = Color.Black;
-            Theme.Selected.Foreground = Color.Cyan;
-
-            Theme.Focused.Background = Color.Black;
-            Theme.Focused.Foreground = Color.Cyan;
-        }
-    }
+    using Microsoft.Xna.Framework;
+    using SadConsole.Controls;
 
     public class MogwaiRadioButton : RadioButton
     {
         public MogwaiRadioButton(int width, int height) : base(width, height)
         {
-
             Theme.Normal.Background = Color.Transparent;
             Theme.Normal.Foreground = Color.Cyan;
 
@@ -87,8 +65,8 @@ namespace WoMSadGui.Specific
             Theme.CheckedIcon.Selected.Foreground = Color.Cyan;
 
             Theme.CheckedIcon.Focused.Background = Color.Transparent;
-            Theme.CheckedIcon.Focused.Foreground = Color.Cyan;  
-            
+            Theme.CheckedIcon.Focused.Foreground = Color.Cyan;
+
             Theme.UncheckedIcon.Normal.Background = Color.Transparent;
             Theme.UncheckedIcon.Normal.Foreground = Color.Cyan;
 
@@ -102,7 +80,7 @@ namespace WoMSadGui.Specific
             Theme.UncheckedIcon.Selected.Foreground = Color.Cyan;
 
             Theme.UncheckedIcon.Focused.Background = Color.Transparent;
-            Theme.UncheckedIcon.Focused.Foreground = Color.Cyan;  
+            Theme.UncheckedIcon.Focused.Foreground = Color.Cyan;
         }
     }
 }

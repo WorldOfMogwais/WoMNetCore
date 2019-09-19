@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Troschuetz.Random;
-using Troschuetz.Random.Generators;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Tool;
-
-namespace WoMFramework.Game.Random
+﻿namespace WoMFramework.Game.Random
 {
+    using Enums;
+    using Interaction;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Tool;
+    using Troschuetz.Random;
+    using Troschuetz.Random.Generators;
+
     public class Dice
     {
-        private Shift _shift;
+        private readonly Shift _shift;
 
         private int _i1;
 
@@ -119,6 +119,7 @@ namespace WoMFramework.Game.Random
             {
                 seed += (int) Math.Pow(10, i) * (genDice.GetNext() % 10);
             }
+
             return new StandardGenerator(seed);
         }
     }

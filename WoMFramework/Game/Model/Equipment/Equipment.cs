@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Enums;
+
     public class EquipmentSlot
     {
         public SlotType SlotType { get; }

@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using log4net;
-using Newtonsoft.Json;
-
-namespace WoMFramework.Tool
+﻿namespace WoMFramework.Tool
 {
+    using log4net;
+    using Newtonsoft.Json;
+    using System;
+    using System.IO;
+    using System.Reflection;
+
     public class Caching
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -38,13 +38,13 @@ namespace WoMFramework.Tool
             File.WriteAllText(path, objEncrypted);
         }
 
-        //unused, allready encrypted maybee for later
+        //unused, already encrypted maybe for later
         private static string Encrypt(string str)
         {
             return str;
         }
 
-        //unused, allready encrypted maybee for later
+        //unused, already encrypted maybe for later
         private static string Decrypt(string str)
         {
             return str;

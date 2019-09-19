@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Model;
-
-namespace WoMFramework.Game.Generator
+﻿namespace WoMFramework.Game.Generator
 {
+    using Model;
+    using System.Collections.Generic;
+
     public class Reward
     {
         public int Exp { get; }

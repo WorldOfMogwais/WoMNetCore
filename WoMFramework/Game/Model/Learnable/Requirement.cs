@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model.Learnable
 {
     public class Requirement
     {

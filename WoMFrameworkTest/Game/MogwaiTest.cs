@@ -67,27 +67,27 @@ namespace WoMFrameworkTest.Game
             Assert.Equal(0, Mogwai.StrengthMod);
             Assert.Equal(0, Mogwai.DexterityMod);
             Assert.Equal(0, Mogwai.ConstitutionMod);
-            Assert.Equal(0, Mogwai.InteligenceMod);
+            Assert.Equal(0, Mogwai.IntelligenceMod);
             Assert.Equal(1, Mogwai.WisdomMod);
             Assert.Equal(3, Mogwai.CharismaMod);
 
-            Mogwai.EquipeItem(SlotType.Ring, ringOfMogwan, 0);
+            Mogwai.EquipItem(SlotType.Ring, ringOfMogwan, 0);
 
             Assert.Equal(1, Mogwai.Inventory.Count);
             Assert.Equal(1, Mogwai.StrengthMod);
             Assert.Equal(1, Mogwai.DexterityMod);
             Assert.Equal(1, Mogwai.ConstitutionMod);
-            Assert.Equal(1, Mogwai.InteligenceMod);
+            Assert.Equal(1, Mogwai.IntelligenceMod);
             Assert.Equal(2, Mogwai.WisdomMod);
             Assert.Equal(4, Mogwai.CharismaMod);
 
-            Mogwai.EquipeItem(SlotType.Ring, ringOfTheBear, 0);
+            Mogwai.EquipItem(SlotType.Ring, ringOfTheBear, 0);
 
             Assert.Equal(1, Mogwai.Inventory.Count);
             Assert.Equal(1, Mogwai.StrengthMod);
             Assert.Equal(0, Mogwai.DexterityMod);
             Assert.Equal(0, Mogwai.ConstitutionMod);
-            Assert.Equal(0, Mogwai.InteligenceMod);
+            Assert.Equal(0, Mogwai.IntelligenceMod);
             Assert.Equal(1, Mogwai.WisdomMod);
             Assert.Equal(3, Mogwai.CharismaMod);
         }

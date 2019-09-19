@@ -8,6 +8,8 @@ using Xunit;
 
 namespace WoMFrameworkTest.Game
 {
+    using WoMFramework.Game.Model.Learnable;
+
     public class EntityTest
     {
         public const string MogAddress = "MJHYMxu2kyR1ci4pYwktbeCM7yjZyVxt2i";

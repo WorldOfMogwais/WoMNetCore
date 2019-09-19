@@ -1,7 +1,7 @@
-﻿using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Interaction
+﻿namespace WoMFramework.Game.Interaction
 {
+    using Enums;
+
     public class CreationAction : Interaction
     {
         public CreationAction() : base(InteractionType.Creation)

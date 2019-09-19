@@ -1,13 +1,13 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using SadConsole;
-using SadConsole.Controls;
-using SadConsole.Input;
-using SadConsole.Surfaces;
-using Console = SadConsole.Console;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Consoles
 {
+    using Microsoft.Xna.Framework;
+    using SadConsole;
+    using SadConsole.Controls;
+    using SadConsole.Input;
+    using SadConsole.Surfaces;
+    using System;
+    using Console = SadConsole.Console;
+
     internal class ScrollingConsole : ConsoleContainer
     {
         private readonly Console _mainConsole;                 // The main console that is typed into
@@ -16,9 +16,9 @@ namespace WoMSadGui.Consoles
 
         private int _scrollingCounter;   // This is a counter to indicate how much buffer is used
 
-        public Cursor MainCursor => _mainConsole.Cursor; 
+        public Cursor MainCursor => _mainConsole.Cursor;
 
-        public Console MainConsole => _mainConsole; 
+        public Console MainConsole => _mainConsole;
 
         public ScrollingConsole(int width, int height, int bufferHeight, Font font = null)
         {
@@ -42,7 +42,7 @@ namespace WoMSadGui.Consoles
             _scrollBar = ScrollBar.Create(Orientation.Vertical, height);
             _scrollBar.IsEnabled = false;
             _scrollBar.ValueChanged += ScrollBar_ValueChanged;
- 
+
             _controlsHost.Add(_scrollBar);
             _controlsHost.Position = new Point(1 + _mainConsole.Width, Position.Y);
 
@@ -91,7 +91,7 @@ namespace WoMSadGui.Consoles
             base.Update(delta);
 
             // If we detect that this console has shifted the data up for any reason (like the virtual cursor reached the
-            // bottom of the entire text surface, OR we reached the bottom of the render area, we need to adjust the 
+            // bottom of the entire text surface, OR we reached the bottom of the render area, we need to adjust the
             // scroll bar and follow the cursor
             if (_mainConsole.TimesShiftedUp != 0 | _mainConsole.Cursor.Position.Y >= _mainConsole.ViewPort.Height + _scrollingCounter)
             {

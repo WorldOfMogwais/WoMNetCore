@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GoRogue;
-using GoRogue.MapGeneration.Generators;
-using GoRogue.MapViews;
-using Troschuetz.Random;
-using WoMFramework.Game.Model.Mogwai;
-
-namespace WoMFramework.Game.Generator.Dungeon
+﻿namespace WoMFramework.Game.Generator.Dungeon
 {
+    using GoRogue;
+    using GoRogue.MapGeneration.Generators;
+    using GoRogue.MapViews;
+    using Model.Mogwai;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Troschuetz.Random;
+
     public enum Direction
     {
         Right, Down, Left, Up
@@ -93,6 +93,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                     }
                 }
             }
+
             FovMap = new FOV(resMap);
 
             Locations = CreateMapLocations(wMap, 9);
@@ -112,7 +113,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                     var width = 2;
                     var height = 2;
                     var rectangle = new Rectangle(i, j, width, height);
-                    var legitRectangle = rectangle;
+                    Rectangle legitRectangle = rectangle;
                     while (rectangle.Positions().All(p => wMap[p.X, p.Y]))
                     {
                         legitRectangle = rectangle;
@@ -122,24 +123,24 @@ namespace WoMFramework.Game.Generator.Dungeon
                     if (legitRectangle.Positions().All(p => wMap[p.X, p.Y]))
                     {
                         rectangles.Add(legitRectangle);
-                    }                    
-                }
-            }
-
-            var ordredRectangles = rectangles.Where(p => p.Positions().Count() >= minLocationSize).OrderByDescending(p => p.Positions().Count()).ToList();
-
-            for (var i = 0; i < ordredRectangles.Count - 1; i++)
-            {
-                for (var j = i + 1; j < ordredRectangles.Count; j++)
-                {
-                    if (Rectangle.GetUnion(ordredRectangles[i], ordredRectangles[j]) == ordredRectangles[i] || !Rectangle.GetIntersection(ordredRectangles[i], ordredRectangles[j]).IsEmpty)
-                    {
-                        ordredRectangles[j] = Rectangle.EMPTY;
                     }
                 }
             }
 
-            return ordredRectangles.Where(p => !p.IsEmpty).Take(20).ToList();
+            var orderedRectangles = rectangles.Where(p => p.Positions().Count() >= minLocationSize).OrderByDescending(p => p.Positions().Count()).ToList();
+
+            for (var i = 0; i < orderedRectangles.Count - 1; i++)
+            {
+                for (var j = i + 1; j < orderedRectangles.Count; j++)
+                {
+                    if (Rectangle.GetUnion(orderedRectangles[i], orderedRectangles[j]) == orderedRectangles[i] || !Rectangle.GetIntersection(orderedRectangles[i], orderedRectangles[j]).IsEmpty)
+                    {
+                        orderedRectangles[j] = Rectangle.EMPTY;
+                    }
+                }
+            }
+
+            return orderedRectangles.Where(p => !p.IsEmpty).Take(20).ToList();
         }
 
         private void TestMap(ISettableMapView<bool> wMap)
@@ -172,6 +173,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 EntityMap[x, y] = new AdventureEntityContainer();
             }
+
             EntityMap[x, y].Add(entity);
 
             if (entity is Combatant combatant)
@@ -230,6 +232,7 @@ namespace WoMFramework.Game.Generator.Dungeon
             {
                 EntityMap[destination] = new AdventureEntityContainer();
             }
+
             EntityMap[destination].Add(entity);
             WalkabilityMap[destination] = EntityMap[destination].IsPassable;
 
@@ -248,10 +251,10 @@ namespace WoMFramework.Game.Generator.Dungeon
         /// <returns></returns>
         private HashSet<Coord> CalculateFoV(Coord coords, bool isExploring = false)
         {
-            const int FOVRANGE = 5;
+            const int fovrange = 5;
 
             // calculate fov
-            FovMap.Calculate(coords.X, coords.Y, FOVRANGE, Radius.CIRCLE);
+            FovMap.Calculate(coords.X, coords.Y, fovrange, Radius.CIRCLE);
 
             if (isExploring)
             {
@@ -259,13 +262,12 @@ namespace WoMFramework.Game.Generator.Dungeon
                 ExplorationMap[coords] = 2;
 
                 // Observed reachable tiles = 1
-                // Observed impassable tiles = -1 
+                // Observed impassable tiles = -1
                 foreach (Coord fovCoord in FovMap.CurrentFOV)
                 {
                     if (ExplorationMap[fovCoord] != 0) continue;
 
                     ExplorationMap[fovCoord] = WalkabilityMap[fovCoord] ? 1 : -1;
-
                 }
 
                 // Temporary cropped resistance map.
@@ -273,20 +275,20 @@ namespace WoMFramework.Game.Generator.Dungeon
                 // to prevent cheating.
 
                 // Only use local part of the map to reduce memory allocation
-                var xMin = coords.X - FOVRANGE - 1;
+                var xMin = coords.X - fovrange - 1;
                 if (xMin < 0) xMin = 0;
-                var xMax = coords.X + FOVRANGE + 1;
+                var xMax = coords.X + fovrange + 1;
                 if (xMax >= Width) xMax = Width - 1;
-                var yMin = coords.Y - FOVRANGE - 1;
+                var yMin = coords.Y - fovrange - 1;
                 if (yMin < 0) yMin = 0;
-                var yMax = coords.Y + FOVRANGE + 1;
+                var yMax = coords.Y + fovrange + 1;
                 if (yMax >= Height) yMax = Height - 1;
                 var tempResMap = new ArrayMap<double>(xMax - xMin + 1, yMax - yMin + 1);
 
-                for (int x = xMin; x <= xMax; x++)
-                for (int y = yMin; y <= yMax; y++)
-                    tempResMap[x - xMin, y - yMin] = ExplorationMap[x, y] < 0 ? 1 : 0;
-    
+                for (var x = xMin; x <= xMax; x++)
+                    for (var y = yMin; y <= yMax; y++)
+                        tempResMap[x - xMin, y - yMin] = ExplorationMap[x, y] < 0 ? 1 : 0;
+
                 var tempFOV = new FOV(tempResMap);
 
                 // Calculate expected fov gain for each current fov tiles
@@ -297,7 +299,7 @@ namespace WoMFramework.Game.Generator.Dungeon
 
                     tempFOV.Calculate(translated, 5, Radius.CIRCLE);
 
-                    int c = 0;
+                    var c = 0;
                     foreach (Coord tempFovCoord in tempFOV.CurrentFOV)
                     {
                         // Don't need to consider already observed tiles
@@ -320,9 +322,9 @@ namespace WoMFramework.Game.Generator.Dungeon
         public List<Combatant> EntitiesOnCoords(HashSet<Coord> coords)
         {
             var combatants = new List<Combatant>();
-            foreach (var coord in coords)
+            foreach (Coord coord in coords)
             {
-                var entityContainer = EntityMap[coord];
+                AdventureEntityContainer entityContainer = EntityMap[coord];
                 if (entityContainer != null && entityContainer.Has<Combatant>())
                 {
                     combatants.AddRange(entityContainer.Get<Combatant>());
@@ -370,6 +372,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                     }
                 }
             }
+
             return corrds;
         }
 
@@ -386,6 +389,7 @@ namespace WoMFramework.Game.Generator.Dungeon
                     }
                 }
             }
+
             return (double)visited / _walkableTiles;
         }
 
@@ -393,15 +397,15 @@ namespace WoMFramework.Game.Generator.Dungeon
         {
             Coord nearest = null;
             var distance = double.MaxValue;
-            foreach (var coord in coords)
+            foreach (Coord coord in coords)
             {
                 var d = Distance.EUCLIDEAN.Calculate(current, coord);
                 if (d >= distance) continue;
                 distance = d;
                 nearest = coord;
             }
+
             return nearest;
         }
     }
-
 }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Tool;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using Interaction;
+    using System;
+    using System.Collections.Generic;
+    using Tool;
+
     public class Experience
     {
         private readonly string[] _expPats;
@@ -31,27 +31,30 @@ namespace WoMFramework.Game.Model
             {
                 expPats.Add(expPatterns.Substring(i, 4));
             }
+
             for (var i = 44; i + 3 <= 62; i = i + 3)
             {
                 expPats.Add(expPatterns.Substring(i, 3));
             }
+
             for (var i = 62; i + 2 <= 64; i = i + 2)
             {
                 expPats.Add(expPatterns.Substring(i, 2));
             }
+
             return expPats.ToArray();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="cuurentLevel"></param>
+        /// <param name="currentLevel"></param>
         /// <param name="shift"></param>
         /// <returns></returns>
-        internal double GetExp(int cuurentLevel, Shift shift)
+        internal double GetExp(int currentLevel, Shift shift)
         {
             var hexSize = shift.BkHex.Length;
-            var lazyExpLevel = cuurentLevel / 10;
+            var lazyExpLevel = currentLevel / 10;
             var lazyExp = 0;
 
             for (var i = 0; i <= lazyExpLevel; i++)
@@ -66,6 +69,7 @@ namespace WoMFramework.Game.Model
                     lazyExp += exp;
                 }
             }
+
             return lazyExp;
         }
 

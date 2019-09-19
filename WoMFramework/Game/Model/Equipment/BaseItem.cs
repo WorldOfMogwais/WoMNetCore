@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using Actions;
+    using Enums;
+    using Learnable;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public enum RarityType
     {
         Normal, Magic, Rare, Legendary, Artifact
     }
 
-    public class BaseItem : Learnable
+    public class BaseItem : Learnable.ILearnable
     {
         public SlotType SlotType { get; }
 
@@ -137,5 +137,4 @@ namespace WoMFramework.Game.Model
             return true;
         }
     }
-
 }

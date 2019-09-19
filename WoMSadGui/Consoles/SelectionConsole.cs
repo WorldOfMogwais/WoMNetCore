@@ -1,20 +1,19 @@
-﻿using System;
-using System.Globalization;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using NBitcoin.Altcoins;
-using SadConsole;
-using SadConsole.Surfaces;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Monster;
-using WoMWallet.Node;
-using WoMWallet.Tool;
-using Console = SadConsole.Console;
-using Keyboard = SadConsole.Input.Keyboard;
-using Mogwai = WoMFramework.Game.Model.Mogwai.Mogwai;
-
-namespace WoMSadGui.Consoles
+﻿namespace WoMSadGui.Consoles
 {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Input;
+    using SadConsole;
+    using SadConsole.Surfaces;
+    using Specific;
+    using System;
+    using System.Globalization;
+    using WoMFramework.Game.Model;
+    using WoMFramework.Game.Model.Monster;
+    using WoMWallet.Node;
+    using WoMWallet.Tool;
+    using Console = SadConsole.Console;
+    using Keyboard = SadConsole.Input.Keyboard;
+
     public class SelectionScreen : Console
     {
         private readonly Basic _borderSurface;
@@ -100,11 +99,11 @@ namespace WoMSadGui.Consoles
             InfoPrint(".I.", "incr funds sent");
         }
 
-        private void InfoPrint(string key, string descritpion)
+        private void InfoPrint(string key, string description)
         {
             _infoConsole.Cursor.Print(new ColoredString(key, Color.Orange, Color.Black));
             _infoConsole.Cursor.Print(new ColoredString(">>", Color.Lime, Color.Black));
-            _infoConsole.Cursor.Print(new ColoredString(descritpion, Color.DeepSkyBlue, Color.Black));
+            _infoConsole.Cursor.Print(new ColoredString(description, Color.DeepSkyBlue, Color.Black));
             _infoConsole.Cursor.NewLine();
         }
 
@@ -190,6 +189,7 @@ namespace WoMSadGui.Consoles
                             LogInConsole("FAIL", "couldn\'t send mogs, see log file for more information.");
                         }
                     }
+
                     break;
                 case "bind":
                     if (_controller.HasMogwayKeys)
@@ -203,6 +203,7 @@ namespace WoMSadGui.Consoles
                             LogInConsole("FAIL", "couldn\'t bind mogwai, see log file for more information.");
                         }
                     }
+
                     break;
                 case "watch":
                     if (_controller.CurrentMogwaiKeys != null)
@@ -211,8 +212,9 @@ namespace WoMSadGui.Consoles
                     }
                     else
                     {
-                        LogInConsole("FAIL", "make sure to choosse a mogwai before trying to play.");
+                        LogInConsole("FAIL", "make sure to choose a mogwai before trying to play.");
                     }
+
                     break;
                 case "play":
                     if (_controller.CurrentMogwaiKeys?.Mogwai != null && !_controller.CurrentMogwaiKeys.IsLocked)
@@ -221,8 +223,9 @@ namespace WoMSadGui.Consoles
                     }
                     else
                     {
-                        LogInConsole("FAIL", "make sure to choosse a mogwai before trying to play.");
+                        LogInConsole("FAIL", "make sure to choose a mogwai before trying to play.");
                     }
+
                     break;
                 case "evolve":
                     if (_controller.CurrentMogwaiKeys?.Mogwai != null)
@@ -232,8 +235,9 @@ namespace WoMSadGui.Consoles
                     }
                     else
                     {
-                        LogInConsole("FAIL", "make sure to choosse a mogwai before trying to play.");
+                        LogInConsole("FAIL", "make sure to choose a mogwai before trying to play.");
                     }
+
                     break;
             }
 
@@ -338,6 +342,7 @@ namespace WoMSadGui.Consoles
             {
                 color = "red";
             }
+
             var time = DateTime.Now.ToLocalTime().ToLongTimeString();
             _logConsole.Cursor.Print($"[c:r f:{color}]{time}[[c:r f:khaki]{type}[c:r f:{color}]]:[c:r f:gray] {msg}");
             _logConsole.Cursor.NewLine();
@@ -363,6 +368,7 @@ namespace WoMSadGui.Consoles
                     var timeStr = $"[c:r f:springgreen]{t:hh\\:mm\\:ss}[c:u]";
                     Print(16, 0, localtimeStr + " " + timeStr, Color.Gainsboro);
                 }
+
                 Print(62, 0, "+" + _transferFunds, Color.LimeGreen);
                 Print(45, 0, "Funds:", Color.DarkCyan);
                 Print(52, 0, depositStr, Color.Orange);
@@ -386,9 +392,11 @@ namespace WoMSadGui.Consoles
                         var pos = i - WindowOffset;
                         PrintRow(pos + HeaderPosition + 1, mogwaiKeys, mogwaiKeys.Address == _controller.CurrentMogwaiKeys.Address, _controller.TaggedMogwaiKeys.Contains(mogwaiKeys));
                     }
+
                     //PrintRow(pointer + headerPosition + 1, list[pointer], true);
                 }
             }
+
             base.Update(delta);
         }
 
@@ -433,6 +441,7 @@ namespace WoMSadGui.Consoles
             {
                 return selected ? Color.WhiteSmoke : Color.DarkGray;
             }
+
             switch (mogwaiKeys.MogwaiKeysState)
             {
                 case MogwaiKeysState.None:
@@ -456,6 +465,7 @@ namespace WoMSadGui.Consoles
             {
                 return selected ? Color.WhiteSmoke : Color.DarkGray;
             }
+
             switch (mogwaiKeys.MogwaiKeysState)
             {
                 case MogwaiKeysState.None:

@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using WoMFramework.Game.Enums;
-using WoMFramework.Tool;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using Tool;
+
     public class Armors
     {
         private const string DefaultArmorFile = "ArmorBuilders.json";
@@ -19,14 +20,14 @@ namespace WoMFramework.Game.Model
             // load armors file
             if (!Caching.TryReadFile(path, out _armorBuilders))
             {
-                throw new Exception("couldn't find the armorbuilders database file.");
+                throw new Exception($"Couldn't find {path} database file.");
             }
 
             // only  for testing purpose
             //var _armorsFile = _armorBuilders.Select(p => p.Build()).ToList();
         }
 
-        public static Armors Instance => _instance ?? (_instance = new Armors());
+        public static Armors Instance => _instance ?? (_instance = new Armors(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location), DefaultArmorFile)));
 
         public Armor ByName(string armorName)
         {
@@ -35,6 +36,7 @@ namespace WoMFramework.Game.Model
             {
                 throw new Exception($"Unknown armor please check database '{armorName}'");
             }
+
             return armorBuilder.Build();
         }
 
@@ -42,6 +44,5 @@ namespace WoMFramework.Game.Model
         {
             return _armorBuilders;
         }
-
     }
 }

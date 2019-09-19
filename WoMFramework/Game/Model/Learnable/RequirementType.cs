@@ -1,8 +1,7 @@
-﻿namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model.Learnable
 {
     public enum RequirementType
     {
-        Strength, Dexterity, Consititution, Intelligence, Wisdom, Charisma, Skill, Level, CasterLevel, FighterLevel, BaseAttack
+        Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma, Skill, Level, CasterLevel, FighterLevel, BaseAttack
     }
-
 }

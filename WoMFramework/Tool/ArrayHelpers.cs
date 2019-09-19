@@ -1,9 +1,9 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.Linq;
-
-namespace WoMFramework.Tool
+﻿namespace WoMFramework.Tool
 {
+    using System;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
+
     public class ArrayHelpers
     {
         public static T[] ConcatArrays<T>(params T[][] arrays)
@@ -20,6 +20,7 @@ namespace WoMFramework.Tool
                 Buffer.BlockCopy(arr, 0, result, offset, arr.Length);
                 offset += arr.Length;
             }
+
             return result;
         }
 

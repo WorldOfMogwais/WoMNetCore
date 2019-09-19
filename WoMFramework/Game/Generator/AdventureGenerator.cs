@@ -1,10 +1,10 @@
-﻿using System;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Generator.Dungeon;
-using WoMFramework.Game.Interaction;
-
-namespace WoMFramework.Game.Generator
+﻿namespace WoMFramework.Game.Generator
 {
+    using System;
+    using Enums;
+    using Dungeon;
+    using Interaction;
+
     public class AdventureGenerator
     {
         public static Adventure Create(Shift generatorShift, AdventureAction adventureAction)

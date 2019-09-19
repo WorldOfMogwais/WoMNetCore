@@ -20,7 +20,7 @@ namespace WoMFrameworkTest.Game
 
             Coord current = Coord.Get(1, 1);
 
-            Coord[] neighbours = WoMFramework.Game.Algorithms.GetReachableNeighbours(testMap, current);
+            Coord[] neighbours = WoMFramework.Game.Algorithms.GetReachableNeighbors(testMap, current);
 
             Assert.Equal(5, neighbours.Length);
             Assert.DoesNotContain(Coord.Get(2, 2), neighbours);

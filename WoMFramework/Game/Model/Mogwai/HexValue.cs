@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Tool;
-
-namespace WoMFramework.Game.Model.Mogwai
+﻿namespace WoMFramework.Game.Model.Mogwai
 {
+    using Interaction;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Tool;
+
     public class HexValue
     {
         private readonly char[] _salt;
@@ -21,7 +21,7 @@ namespace WoMFramework.Game.Model.Mogwai
         public HexValue(Shift shift)
         {
             var saltgrain = HexHashUtil.ByteArrayToString(BitConverter.GetBytes(shift.Time * Math.Pow(shift.Height, 2)));
-            _salt = String.Concat(Enumerable.Repeat(saltgrain, 64 / saltgrain.Length + 1)).ToCharArray();
+            _salt = string.Concat(Enumerable.Repeat(saltgrain, 64 / saltgrain.Length + 1)).ToCharArray();
 
             _adHexChar = shift.AdHex.ToCharArray();
             _bkHexChar = shift.BkHex.ToCharArray();

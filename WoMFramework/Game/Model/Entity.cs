@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using GoRogue;
-using GoRogue.MapViews;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Generator;
-using WoMFramework.Game.Generator.Dungeon;
-using WoMFramework.Game.Model.Actions;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Game.Random;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using Actions;
+    using Enums;
+    using Generator;
+    using GoRogue;
+    using GoRogue.MapViews;
+    using Learnable;
+    using Mogwai;
+    using Random;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public abstract partial class Entity
     {
         public int GetRequirementValue(RequirementType requirementType, object addValue = null)
@@ -23,10 +22,10 @@ namespace WoMFramework.Game.Model
                     return Strength;
                 case RequirementType.Dexterity:
                     return Dexterity;
-                case RequirementType.Consititution:
+                case RequirementType.Constitution:
                     return Constitution;
                 case RequirementType.Intelligence:
-                    return Inteligence;
+                    return Intelligence;
                 case RequirementType.Wisdom:
                     return Wisdom;
                 case RequirementType.Charisma:
@@ -36,10 +35,10 @@ namespace WoMFramework.Game.Model
                 case RequirementType.Level:
                     return CurrentLevel;
                 case RequirementType.CasterLevel:
-                    var casterClasses = Classes.Where(p => p.CanCast);
+                    var casterClasses = Classes.Where(p => p.CanCast).ToArray();
                     return casterClasses.Any() ? casterClasses.Max(p => p.ClassLevel) : 0;
                 case RequirementType.FighterLevel:
-                    var fighterClasses = Classes.Where(p => !p.CanCast);
+                    var fighterClasses = Classes.Where(p => !p.CanCast).ToArray();
                     return fighterClasses.Any() ? fighterClasses.Max(p => p.ClassLevel) : 0;
                 case RequirementType.BaseAttack:
                     return BaseAttackBonus[0];
@@ -62,28 +61,28 @@ namespace WoMFramework.Game.Model
 
         #region abilities
 
-        private int strength;
-        public int Strength { get => strength + MiscMod[ModifierType.Strength] + TempMod [ModifierType.Strength]; set => strength = value; }
+        private int _strength;
+        public int Strength { get => _strength + MiscMod[ModifierType.Strength] + TempMod [ModifierType.Strength]; set => _strength = value; }
         public int StrengthMod => Modifier(Strength);
 
-        private int dexterity;
-        public int Dexterity { get => dexterity + MiscMod[ModifierType.Dexterity] + TempMod[ModifierType.Dexterity]; set => dexterity = value; }
+        private int _dexterity;
+        public int Dexterity { get => _dexterity + MiscMod[ModifierType.Dexterity] + TempMod[ModifierType.Dexterity]; set => _dexterity = value; }
         public int DexterityMod => Modifier(Dexterity);
 
-        private int constitution;
-        public int Constitution { get => constitution + MiscMod[ModifierType.Constitution] + TempMod[ModifierType.Constitution]; set => constitution = value; }
+        private int _constitution;
+        public int Constitution { get => _constitution + MiscMod[ModifierType.Constitution] + TempMod[ModifierType.Constitution]; set => _constitution = value; }
         public int ConstitutionMod => Modifier(Constitution);
 
-        private int inteligence;
-        public int Inteligence { get => inteligence + MiscMod[ModifierType.Inteligence] + TempMod[ModifierType.Inteligence]; set => inteligence = value; }
-        public int InteligenceMod => Modifier(Inteligence);
+        private int _intelligence;
+        public int Intelligence { get => _intelligence + MiscMod[ModifierType.Intelligence] + TempMod[ModifierType.Intelligence]; set => _intelligence = value; }
+        public int IntelligenceMod => Modifier(Intelligence);
 
-        private int wisdom;
-        public int Wisdom { get => wisdom + MiscMod[ModifierType.Wisdom] + TempMod[ModifierType.Wisdom]; set => wisdom = value; }
+        private int _wisdom;
+        public int Wisdom { get => _wisdom + MiscMod[ModifierType.Wisdom] + TempMod[ModifierType.Wisdom]; set => _wisdom = value; }
         public int WisdomMod => Modifier(Wisdom);
 
-        private int charisma;
-        public int Charisma { get => charisma + MiscMod[ModifierType.Charisma] + TempMod[ModifierType.Charisma]; set => charisma = value; }
+        private int _charisma;
+        public int Charisma { get => _charisma + MiscMod[ModifierType.Charisma] + TempMod[ModifierType.Charisma]; set => _charisma = value; }
         public int CharismaMod => Modifier(Charisma);
 
         private int Modifier(int ability) => (int)Math.Floor((ability - 10) / 2.0);
@@ -95,10 +94,11 @@ namespace WoMFramework.Game.Model
         // base speed
         public int BaseSpeed { get; set; }
 
-        // calculate encumbarance and stuff like that ...
+        // calculate encumbrance and stuff like that ...
         public int Speed => BaseSpeed + MiscMod[ModifierType.Speed] + TempMod[ModifierType.Speed];
 
         public int NaturalArmor { get; set; }
+
         // armorclass = 10 + armor bonus + shield bonus + dex modifier + size modifier + natural armor + deflection + misc modifier
         public int ArmorClass => 10 + Equipment.ArmorBonus + Equipment.ShieldBonus + DexterityMod + SizeType.Modifier() + NaturalArmor + MiscMod[ModifierType.ArmorClass] + TempMod[ModifierType.ArmorClass];
 
@@ -114,7 +114,7 @@ namespace WoMFramework.Game.Model
 
         #region saving throws
 
-        //saving throw = basesave + abilitymod + misc modifier + magic modifier + temp modifier
+        //saving throw = basesave + ability modifier + misc modifier + magic modifier + temp modifier
         public int FortitudeBaseSave { get; set; }
         public int Fortitude => FortitudeBaseSave + ConstitutionMod + MiscMod[ModifierType.Fortitude] + TempMod[ModifierType.Fortitude];
         public int ReflexBaseSave { get; set; }
@@ -141,6 +141,7 @@ namespace WoMFramework.Game.Model
                 if (lastRoll < criticalMinRoll)
                     break;
             }
+
             return rolls.ToArray();
         }
 
@@ -170,14 +171,17 @@ namespace WoMFramework.Game.Model
                 {
                     return HealthState.Healthy;
                 }
+
                 if (CurrentHitPoints > 0)
                 {
                     return HealthState.Injured;
                 }
+
                 if (CurrentHitPoints == 0)
                 {
                     return HealthState.Disabled;
                 }
+
                 if (CurrentHitPoints > -10)
                 {
                     return HealthState.Dying;
@@ -198,6 +202,7 @@ namespace WoMFramework.Game.Model
 
         //public Classes.Classes CurrentClass => Classes.Count > 0 ? Classes[0] : null;
         public List<Classes.Classes> Classes { get; }
+
         public int GetClassLevel(ClassType classType)
         {
             var classes = Classes.FirstOrDefault(p => p.ClassType == classType);
@@ -272,16 +277,16 @@ namespace WoMFramework.Game.Model
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="lernable"></param>
+        /// <param name="learnable"></param>
         /// <returns></returns>
-        public bool Learn(Learnable lernable)
+        public bool Learn(ILearnable learnable)
         {
-            if (!lernable.CanLearn(this))
+            if (!learnable.CanLearn(this))
             {
                 return false;
             }
 
-            return lernable.Learn(this);
+            return learnable.Learn(this);
         }
 
         /// <summary>
@@ -299,6 +304,7 @@ namespace WoMFramework.Game.Model
             {
                 baseAttackBonusList.Add(i);
             }
+
             return baseAttackBonusList.ToArray();
         }
 
@@ -341,12 +347,12 @@ namespace WoMFramework.Game.Model
         /// <param name="baseItem"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public bool CanEquipeItem(SlotType slotType, BaseItem baseItem, out EquipmentSlot slot, int slotIndex = 0)
+        public bool CanEquipItem(SlotType slotType, BaseItem baseItem, out EquipmentSlot slot, int slotIndex = 0)
         {
             slot = Equipment.Slots.Where(p => p.SlotType == slotType).ElementAtOrDefault(slotIndex);
 
-            return Inventory.Contains(baseItem) 
-                   && baseItem.SlotType == slotType 
+            return Inventory.Contains(baseItem)
+                   && baseItem.SlotType == slotType
                    && slot != null;
         }
 
@@ -356,9 +362,9 @@ namespace WoMFramework.Game.Model
         /// <param name="slotType"></param>
         /// <param name="baseItem"></param>
         /// <returns></returns>
-        public bool EquipeItem(SlotType slotType, BaseItem baseItem, int slotIndex = 0)
+        public bool EquipItem(SlotType slotType, BaseItem baseItem, int slotIndex = 0)
         {
-            if (!CanEquipeItem(slotType, baseItem, out var slot, slotIndex))
+            if (!CanEquipItem(slotType, baseItem, out var slot, slotIndex))
             {
                 return false;
             }
@@ -392,19 +398,18 @@ namespace WoMFramework.Game.Model
             return true;
         }
 
-        public bool CanEquipeWeapon(SlotType slotType, Weapon weapon, int slotIndex, out WeaponSlot slot)
+        public bool CanEquipWeapon(SlotType slotType, Weapon weapon, int slotIndex, out WeaponSlot slot)
         {
             slot = Equipment.GetWeaponSlot(slotIndex);
 
-            return Inventory.Contains(weapon) 
-                   && weapon.SlotType == slotType 
+            return Inventory.Contains(weapon)
+                   && weapon.SlotType == slotType
                    && slot != null;
         }
 
-        public bool EquipeWeapon(Weapon baseItem, Weapon secondaryWeapon = null, int slotIndex = 0)
+        public bool EquipWeapon(Weapon baseItem, Weapon secondaryWeapon = null, int slotIndex = 0)
         {
-
-            if (!CanEquipeWeapon(SlotType.Weapon, baseItem, slotIndex, out var slot))
+            if (!CanEquipWeapon(SlotType.Weapon, baseItem, slotIndex, out var slot))
             {
                 return false;
             }
@@ -466,6 +471,7 @@ namespace WoMFramework.Game.Model
                 criticalCount = attackRolls.Length - 1;
                 return attack;
             }
+
             criticalCount = attackRolls.Length > 2 ? attackRolls.Length - 2 : 0;
             return attack;
         }
@@ -532,17 +538,17 @@ namespace WoMFramework.Game.Model
 
             if (!CanAct)
             {
-                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}.");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} got a deadly hit, healthstate is {Coloring.Red(HealthState.ToString())}."));
+                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} got a deadly hit, health state is {Coloring.Red(HealthState.ToString())}.");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} got a deadly hit, health state is {Coloring.Red(HealthState.ToString())}."));
             }
 
             if (IsDead)
             {
-                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}.");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its healthstate is {Coloring.Red(HealthState.ToString())}."));
+                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its health state is {Coloring.Red(HealthState.ToString())}.");
+                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its health state is {Coloring.Red(HealthState.ToString())}."));
                 //Adventure.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.Name(Name)} treasure? {this.Treasure}. IsLootable: {IsLootable}; LootState: {LootState}; HasLoot: {HasLoot}"));
-                
-                Map.DeadEntity(this);                
+
+                Map.DeadEntity(this);
             }
         }
 
@@ -558,7 +564,7 @@ namespace WoMFramework.Game.Model
                 return;
             }
 
-            if (entity.LootState == LootState.None 
+            if (entity.LootState == LootState.None
              || entity.LootState == LootState.Looted)
             {
                 return;
@@ -579,7 +585,7 @@ namespace WoMFramework.Game.Model
                 mogwai.AddGold(entity.Treasure.Gold);
             }
 
-          entity.LootState = LootState.Looted;
+            entity.LootState = LootState.Looted;
         }
 
         #region AdventureEntity
@@ -626,9 +632,9 @@ namespace WoMFramework.Game.Model
                 {
                     foreach (var entity in Map.EntityMap[fovCoord].Entities)
                     {
-                        if (entity != null 
+                        if (entity != null
                          && this != entity
-                         && entity.IsLootable 
+                         && entity.IsLootable
                          && entity.HasLoot
                          && (!(entity is Combatant combatant) || combatant.IsDead))
                         {
@@ -704,7 +710,7 @@ namespace WoMFramework.Game.Model
             var weapon = weaponAttack.Weapon;
             var target = weaponAttack.Target as Entity;
 
-            //Console.WriteLine($"{Name}: is acking {attackTimes} times");
+            //Console.WriteLine($"{Name}: is attacking {attackTimes} times");
 
             // all attacks are calculated
             for (var attackIndex = 0; attackIndex < attackTimes; attackIndex++)
@@ -735,6 +741,7 @@ namespace WoMFramework.Game.Model
                             criticalDamage += DamageRoll(weapon, Dice);
                         }
                     }
+
                     var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
                     Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
                     Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
@@ -745,6 +752,7 @@ namespace WoMFramework.Game.Model
                     Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
                     Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
                 }
+
                 Adventure.Enqueue(AdventureLog.Attacked(this, target));
             }
         }
@@ -757,7 +765,7 @@ namespace WoMFramework.Game.Model
         /// <returns></returns>
         private bool Move(Coord destination, bool checkForEnemies = false)
         {
-            // initialise 
+            // initialise
             var moveRange = Speed / 5;
 
             var path = Algorithms.AStar(Coordinate, destination, Map);
@@ -784,6 +792,7 @@ namespace WoMFramework.Game.Model
                             entity.CombatState = CombatState.Initiation;
                         }
                     }
+
                     // break if we have found an enemy
                     if (CombatState == CombatState.Initiation)
                     {
@@ -825,7 +834,7 @@ namespace WoMFramework.Game.Model
                 {
                     if (moveRange == 1)
                     {
-                        var newNext = next.Translate(0, -(next - Coordinate).Y);  // Prefer X direction for now; can be randomised
+                        var newNext = next.Translate(0, -(next - Coordinate).Y);  // Prefer X direction for now; can be randomized
                         if (Map.WalkabilityMap[newNext])
                             Map.MoveEntity(this, newNext);
                         else
@@ -852,10 +861,11 @@ namespace WoMFramework.Game.Model
                 Map.MoveEntity(this, next);
                 moveRange--;
             }
+
             return true;
         }
 
-        public FOV privateFOV;
+        public FOV PrivateFov;
         private Coord[] _lastPath;
         private int _pathIndex = -1;
         private bool _foundLootable;
@@ -869,7 +879,7 @@ namespace WoMFramework.Game.Model
             //  1 : observed through FOV (GREY)
             //  2 : Visited or having no explorable tiles (BLACK)
 
-            const int FOVRANGE = 5;
+            const int fovrange = 5;
 
             var expMap = Map.ExplorationMap;
 
@@ -895,12 +905,14 @@ namespace WoMFramework.Game.Model
                             entity.CombatState = CombatState.Initiation;
                         }
                     }
+
                     // break if we have found an enemy
                     if (CombatState == CombatState.Initiation)
                     {
                         break;
                     }
                 }
+
                 // check if we have lootable entities in fov
                 if (!_foundLootable && LootablesInSight(out var lootableEntities))
                 {
@@ -971,7 +983,7 @@ namespace WoMFramework.Game.Model
                         // but the one step is diagonal so that it is not reachable from the current coordinate.
                         // To handle this problem, set the next coordinate as one of the cardinally adjacent tiles
                         // of the loot.
-                        if (Coord.EuclideanDistanceMagnitude(_currentLoot.Coordinate - Coordinate) == 2)
+                        if (Math.Abs(Coord.EuclideanDistanceMagnitude(_currentLoot.Coordinate - Coordinate) - 2) < float.Epsilon)
                         {
                             var loot = _currentLoot.Coordinate;
 
@@ -1001,7 +1013,7 @@ namespace WoMFramework.Game.Model
                 _pathIndex = -1;
 
                 // Atomic movement; consider adjacent tiles first
-                var adjs = Algorithms.GetReachableNeighbours(Map.WalkabilityMap, Coordinate);
+                var adjs = Algorithms.GetReachableNeighbors(Map.WalkabilityMap, Coordinate);
                 var max = 0;
                 var maxIndex = -1;
                 for (var i = 0; i < adjs.Length; i++)
@@ -1103,6 +1115,7 @@ namespace WoMFramework.Game.Model
                             entity.CombatState = CombatState.Initiation;
                         }
                     }
+
                     // break if we have found an enemy
                     if (CombatState == CombatState.Initiation)
                     {
@@ -1136,6 +1149,5 @@ namespace WoMFramework.Game.Model
                     return;
             }
         }
-
     }
 }

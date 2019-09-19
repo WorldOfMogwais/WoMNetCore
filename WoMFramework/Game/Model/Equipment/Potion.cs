@@ -1,10 +1,10 @@
-﻿using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using Learnable;
+
     public sealed class PotionBuilder
     {
-        public string Name  { get; set; }
+        public string Name { get; set; }
         public double Cost { get; set; }
         public double Weight { get; set; }
         public string Description = string.Empty;
@@ -21,12 +21,11 @@ namespace WoMFramework.Game.Model
     {
         public Potion(string name, double cost, double weight, string description, Spell spell) : base(name, cost, weight, description)
         {
-
         }
     }
 
     public class Potions
     {
-        public static Potion CureLightWoundsPotion => new Potion("Cure Light Wounds", 50, 0.1, "", Spells.CureLightWounds()); 
+        public static Potion CureLightWoundsPotion => new Potion("Cure Light Wounds", 50, 0.1, "", Spells.CureLightWounds());
     }
 }

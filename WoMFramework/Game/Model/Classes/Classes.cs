@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Model.Classes
+﻿namespace WoMFramework.Game.Model.Classes
 {
+    using Enums;
+    using Learnable;
+    using System;
+    using System.Collections.Generic;
+
     public abstract class Classes
     {
         public string Name => ClassType.ToString();
@@ -26,7 +27,7 @@ namespace WoMFramework.Game.Model.Classes
 
         public bool CanCast { get; set; }
 
-        public List<Learnable> Learnables;
+        public List<ILearnable> Learnables;
 
         public abstract int CasterMod(Entity entity);
 
@@ -39,7 +40,7 @@ namespace WoMFramework.Game.Model.Classes
             ClassAttackBonus = 0;
             CanCast = caster;
 
-            Learnables = new List<Learnable>();
+            Learnables = new List<ILearnable>();
         }
 
         public virtual void ClassLevelUp()
@@ -79,6 +80,5 @@ namespace WoMFramework.Game.Model.Classes
                     throw new ArgumentOutOfRangeException(nameof(classType), classType, null);
             }
         }
-
     }
 }

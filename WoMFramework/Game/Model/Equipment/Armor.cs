@@ -1,7 +1,7 @@
-﻿using WoMFramework.Game.Enums;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model
 {
+    using Enums;
+
     public sealed class ArmorBuilder
     {
         // description

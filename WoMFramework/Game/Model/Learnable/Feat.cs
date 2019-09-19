@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model.Actions;
-
-namespace WoMFramework.Game.Model
+﻿namespace WoMFramework.Game.Model.Learnable
 {
+    using Actions;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public enum FeatType
     {
@@ -20,12 +17,10 @@ namespace WoMFramework.Game.Model
         Mythic
     }
 
-
-
     /// <summary>
     /// Feat class
     /// </summary>
-    public class Feat : Learnable
+    public class Feat : ILearnable
     {
         public int Id { get; }
 
@@ -159,7 +154,7 @@ namespace WoMFramework.Game.Model
         }
     }
 
-    public interface Learnable
+    public interface ILearnable
     {
         bool CanLearn(Entity entity);
 
