@@ -10,6 +10,7 @@
     using Model.Monster;
     using Random;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using Troschuetz.Random;
@@ -359,7 +360,7 @@
                 return;
             }
 
-            var combatActionQueue = new Queue<CombatAction>();
+            var combatActionQueue = new ConcurrentQueue<CombatAction>();
 
             // survival check
             if ((double)entity.CurrentHitPoints / entity.MaxHitPoints < 0.25)
@@ -444,7 +445,7 @@
             mog.ExploreDungeon(true);
         }
 
-        private void TryEnqueueSurvival(Entity entity, ref Queue<CombatAction> combatActionQueue)
+        private void TryEnqueueSurvival(Entity entity, ref ConcurrentQueue<CombatAction> combatActionQueue)
         {
             IEnumerable<CombatAction> healingSpells = entity.CombatActions
                 .Where(p => p is SpellCast spellCast && spellCast.Spell.SubSchoolType == SubSchoolType.Healing)
@@ -459,7 +460,7 @@
             }
         }
 
-        private void TryEnqueueMove(Entity entity, Coord nearestCoord, ref Queue<CombatAction> combatActionQueue)
+        private void TryEnqueueMove(Entity entity, Coord nearestCoord, ref ConcurrentQueue<CombatAction> combatActionQueue)
         {
             CombatAction moveAction = entity.CombatActions.Select(p => p.Executable(Map.TileMap[nearestCoord.X, nearestCoord.Y])).FirstOrDefault(p => p is MoveAction);
             if (moveAction != null)
@@ -468,7 +469,7 @@
             }
         }
 
-        private void TryEnqueueAttack(Entity entity, Entity target, ref Queue<CombatAction> combatActionQueue, ActionType actionType)
+        private void TryEnqueueAttack(Entity entity, Entity target, ref ConcurrentQueue<CombatAction> combatActionQueue, ActionType actionType)
         {
             IEnumerable<CombatAction> exCombatActions = entity.CombatActions
                 .Where(p => p.ActionType <= actionType) // only actionTypes that are allowed in this round
