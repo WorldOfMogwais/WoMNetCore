@@ -95,3 +95,9 @@ test_script:
     dotnet test --configuration Release ./WoMFrameworkTest
 
     dotnet test --configuration Release ./WoMWalletTest
+    
+deploy:
+- provider: NuGet
+  api_key:
+    secure: qR9SWQUPkiYwFQKvljIajuoDvjS4rDAHkYVY1QaFP3yRqRoEp+LF/Um2v2Y4LqcN
+  artifact: /.*.nupkg/
