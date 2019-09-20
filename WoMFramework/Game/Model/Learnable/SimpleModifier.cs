@@ -6,32 +6,37 @@
 
     public class SimpleModifier : Modifier
     {
-        public Dictionary<ModifierType, int> Modifier;
+        private Dictionary<ModifierType, Func<Entity, int>> modifierDict;
 
-        public SimpleModifier(ModifierType modifierType, int value)
+        public SimpleModifier(ModifierType modifierType, Func<Entity, int> valueFunc)
         {
-            Modifier = new Dictionary<ModifierType, int> {{modifierType, value}};
+            modifierDict = new Dictionary<ModifierType, Func<Entity, int>> { { modifierType, valueFunc } };
+        }
+
+        public SimpleModifier(Dictionary<ModifierType, Func<Entity, int>> modifier)
+        {
+            modifierDict = modifier;
         }
 
         public override Action<Entity> AddMod => e =>
         {
-            foreach (var keyValuePair in Modifier)
+            foreach (var keyValuePair in modifierDict)
             {
-                e.MiscMod[keyValuePair.Key] = e.MiscMod[keyValuePair.Key] + keyValuePair.Value;
+                e.MiscModDict()[keyValuePair.Key].Add(keyValuePair.Value);
             }
         };
 
         public override Action<Entity> RemoveMod => e =>
         {
-            foreach (var keyValuePair in Modifier)
+            foreach (var keyValuePair in modifierDict)
             {
-                e.MiscMod[keyValuePair.Key] = e.MiscMod[keyValuePair.Key] - keyValuePair.Value;
+                e.MiscModDict()[keyValuePair.Key].Remove(keyValuePair.Value);
             }
         };
 
-        public static SimpleModifier Get(ModifierType modifierType, int value)
+        public static SimpleModifier Get(ModifierType modifierType, Func<Entity, int> valueFunc)
         {
-            return new SimpleModifier(modifierType, value);
+            return new SimpleModifier(modifierType, valueFunc);
         }
     }
 }

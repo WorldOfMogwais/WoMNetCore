@@ -57,12 +57,12 @@
 
                 SizeType = SizeType,
 
-                Strength = Strength,
-                Dexterity = Dexterity,
-                Constitution = Constitution,
-                Intelligence = Intelligence,
-                Wisdom = Wisdom,
-                Charisma = Charisma,
+                BaseStrength = Strength,
+                BaseDexterity = Dexterity,
+                BaseConstitution = Constitution,
+                BaseIntelligence = Intelligence,
+                BaseWisdom = Wisdom,
+                BaseCharisma = Charisma,
 
                 FortitudeBaseSave = Fortitude,
                 ReflexBaseSave = Reflex,

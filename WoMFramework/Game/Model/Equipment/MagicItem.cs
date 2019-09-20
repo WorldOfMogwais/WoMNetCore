@@ -40,19 +40,19 @@
             return new MagicItem("Bone of Mogwan",
                 new List<Modifier>()
                 {
-                    new SimpleModifier(ModifierType.Strength, 2),
-                    new SimpleModifier(ModifierType.Dexterity, 2),
-                    new SimpleModifier(ModifierType.Constitution, 2),
-                    new SimpleModifier(ModifierType.Intelligence, 2),
-                    new SimpleModifier(ModifierType.Wisdom, 2),
-                    new SimpleModifier(ModifierType.Charisma, 2),
-                    new SimpleModifier(ModifierType.ArmorClass, 1),
-                    new SimpleModifier(ModifierType.Initiative, 1),
-                    new SimpleModifier(ModifierType.AttackBonus, 1),
-                    new SimpleModifier(ModifierType.Speed, 1),
-                    new SimpleModifier(ModifierType.Will, 1),
-                    new SimpleModifier(ModifierType.Reflex, 1),
-                    new SimpleModifier(ModifierType.Fortitude, 1),
+                    new SimpleModifier(ModifierType.Strength, (Entity) => 2),
+                    new SimpleModifier(ModifierType.Dexterity, (Entity) => 2),
+                    new SimpleModifier(ModifierType.Constitution, (Entity) => 2),
+                    new SimpleModifier(ModifierType.Intelligence, (Entity) => 2),
+                    new SimpleModifier(ModifierType.Wisdom, (Entity) => 2),
+                    new SimpleModifier(ModifierType.Charisma, (Entity) => 2),
+                    new SimpleModifier(ModifierType.ArmorClass, (Entity) => 1),
+                    new SimpleModifier(ModifierType.Initiative, (Entity) => 1),
+                    new SimpleModifier(ModifierType.AttackBonus, (Entity) => 1),
+                    new SimpleModifier(ModifierType.Speed, (Entity) => 1),
+                    new SimpleModifier(ModifierType.Will, (Entity) => 1),
+                    new SimpleModifier(ModifierType.Reflex, (Entity) => 1),
+                    new SimpleModifier(ModifierType.Fortitude, (Entity) => 1),
                 },
                 new List<CombatAction>(),
                 1000D,
@@ -68,7 +68,7 @@
             return new MagicItem("Ring of the Bear",
                 new List<Modifier>()
                 {
-                    new SimpleModifier(ModifierType.Strength, 2)
+                    new SimpleModifier(ModifierType.Strength, (Entity) => 2)
                 },
                 new List<CombatAction>(),
                 1D,

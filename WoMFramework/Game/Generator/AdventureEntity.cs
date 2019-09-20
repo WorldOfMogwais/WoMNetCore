@@ -1,4 +1,6 @@
-﻿namespace WoMFramework.Game.Generator
+﻿using WoMFramework.Game.Model;
+
+namespace WoMFramework.Game.Generator
 {
     using Dungeon;
     using Enums;
@@ -39,7 +41,7 @@
         }
     }
 
-    public abstract class AdventureEntity
+    public abstract class AdventureEntity : SpellEnabled
     {
         protected AdventureEntity(bool isStatic, bool isPassable, int size, bool isLootable)
         {

@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<NoWarn>NU1605</NoWarn>
+	<LangVersion>latestmajor</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
