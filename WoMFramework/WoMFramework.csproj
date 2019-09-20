@@ -13,10 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ArmorBuilders.json" CopyToOutputDirectory="Always" />
-    <None Update="Feats.json" CopyToOutputDirectory="Always" />
-    <None Update="MonsterBuilders.json" CopyToOutputDirectory="Always" />
-    <None Update="WeaponBuilders.json" CopyToOutputDirectory="Always" />
+    <None Update="ArmorBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
+    <None Update="Feats.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
+    <None Update="MonsterBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
+    <None Update="WeaponBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>
