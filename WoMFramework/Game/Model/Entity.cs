@@ -106,10 +106,10 @@
         public int TempConstitution => TempMod(this, ModifierType.Constitution);
 
         public int BaseIntelligence { get; set; }
-        public int Intelligence => BaseIntelligence + MiscInteligence + TempInteligence;
+        public int Intelligence => BaseIntelligence + MiscIntelligence + TempIntelligence;
         public int IntelligenceMod => Modifier(Intelligence);
-        public int MiscInteligence => MiscMod(this, ModifierType.Intelligence);
-        public int TempInteligence => TempMod(this, ModifierType.Intelligence);
+        public int MiscIntelligence => MiscMod(this, ModifierType.Intelligence);
+        public int TempIntelligence => TempMod(this, ModifierType.Intelligence);
 
         public int BaseWisdom { get; set; }
         public int Wisdom => BaseWisdom + MiscWisdom + TempWisdom;
@@ -274,7 +274,6 @@
         /// </summary>
         protected Entity() : base(false, false, 1)
         {
-
             // initialize
             HitPointLevelRolls = new List<int>();
             Equipment = new Equipment();
@@ -720,27 +719,32 @@
         private bool Cast(SpellCast spellCast)
         {
             var spell = spellCast.Spell;
-            var target = spellCast.Target as Entity;
 
-            var concentrateRoll = 10;
-
-            var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) cast " +
-                          $"{Coloring.Violet(spell.Name)} on {Coloring.Name(target.Name)} roll {concentrateRoll.ToString()}:";
-
-            if (concentrateRoll > 1 && concentrateRoll > spell.Level)
+            if (spellCast.Target is Entity target)
             {
-                Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("success")}!");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("success")}!"));
-                spell.SpellEffect(this, target);
-            }
-            else
-            {
-                Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
+                var concentrateRoll = 10;
+
+                var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) cast " +
+                              $"{Coloring.Violet(spell.Name)} on {Coloring.Name(target.Name)} roll {concentrateRoll.ToString()}:";
+
+                if (concentrateRoll > 1 && concentrateRoll > spell.Level)
+                {
+                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("success")}!");
+                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("success")}!"));
+                    spell.SpellEffect(this, target);
+                }
+                else
+                {
+                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
+                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
+                }
+
+                Adventure.Enqueue(AdventureLog.Attacked(this, target));
+
+                return true;
             }
 
-            Adventure.Enqueue(AdventureLog.Attacked(this, target));
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -1029,7 +1033,7 @@
                         {
                             var loot = _currentLoot.Coordinate;
 
-                            var projected = loot.Translate(0, -(loot - Coordinate).Y); // Prefer X direction for now; can be randomised
+                            var projected = loot.Translate(0, -(loot - Coordinate).Y); // Prefer X direction for now; can be randomized
                             if (Map.WalkabilityMap[projected])
                                 MoveAtomic(projected, ref moveRange, ref diagonalCount);
                             else
@@ -1077,7 +1081,7 @@
                 // If all adjacent tiles are Black, explorer have to find the nearest grey tile.
                 if (maxIndex < 0)
                 {
-                    Coord[] nearest = null;
+                    Coord[] nearest;
 
                     // Consider grey tiles in FOV first. If not any, check the whole map
                     var inFov = FovCoords
