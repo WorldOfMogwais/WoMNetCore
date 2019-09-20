@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Tool;
-using Xunit;
-
-namespace WoMFrameworkTest.Game
+﻿namespace WoMFrameworkTest.Game
 {
+    using System.Collections.Generic;
+    using WoMFramework.Game.Enums;
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Game.Model;
+    using WoMFramework.Game.Model.Mogwai;
+    using WoMFramework.Tool;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class MogwaiTest
     {
-
-        public Mogwai Mogwai { get;  }
+        public Mogwai Mogwai { get; }
 
         public MogwaiTest()
         {
@@ -55,8 +55,8 @@ namespace WoMFrameworkTest.Game
         [Fact]
         public void MogwaiMagicItem()
         {
-            var ringOfMogwan = MagicItems.BoneOfMogwan();
-            var ringOfTheBear = MagicItems.RingOfTheBear();
+            MagicItem ringOfMogwan = MagicItems.BoneOfMogwan();
+            MagicItem ringOfTheBear = MagicItems.RingOfTheBear();
 
             Assert.Empty(Mogwai.Inventory);
 

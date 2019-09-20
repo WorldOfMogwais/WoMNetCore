@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Tool;
-using Xunit;
-
-namespace WoMFrameworkTest.Game
+﻿namespace WoMFrameworkTest.Game
 {
+    using System.Collections.Generic;
+    using WoMFramework.Game.Enums;
+    using WoMFramework.Game.Interaction;
     using WoMFramework.Game.Model.Learnable;
+    using WoMFramework.Game.Model.Mogwai;
+    using WoMFramework.Tool;
+    using Xunit;
 
+    [Collection("SystemInteractionFixture")]
     public class EntityTest
     {
         public const string MogAddress = "MJHYMxu2kyR1ci4pYwktbeCM7yjZyVxt2i";
@@ -20,7 +19,7 @@ namespace WoMFrameworkTest.Game
 
         public EntityTest()
         {
-            string pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(MogAddress));
+            var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(MogAddress));
 
             var lvlClass1 = new LevelingAction(LevelingType.Class, ClassType.Barbarian, 0, 1);
             var creation1 = new Shift(0, 1530914381, pubMogAddressHex,

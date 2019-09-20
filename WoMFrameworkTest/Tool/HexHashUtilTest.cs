@@ -1,9 +1,10 @@
-﻿using WoMFramework.Game.Interaction;
-using WoMFramework.Tool;
-using Xunit;
-
-namespace WoMFrameworkTest.Tool
+﻿namespace WoMFrameworkTest.Tool
 {
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Tool;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class HexHashUtilTest
     {
         [Fact]

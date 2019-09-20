@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Tool;
-using Xunit;
-
-namespace WoMFrameworkTest.Game
+﻿namespace WoMFrameworkTest.Game
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Game.Model;
+    using WoMFramework.Game.Model.Mogwai;
+    using WoMFramework.Tool;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class HomeTownTest
     {
         public const string MogAddress = "MJHYMxu2kyR1ci4pYwktbeCM7yjZyVxt2i";

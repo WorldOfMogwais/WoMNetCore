@@ -1,9 +1,10 @@
-﻿using WoMFramework.Game.Enums;
-using WoMFramework.Game.Interaction;
-using Xunit;
-
-namespace WoMFrameworkTest.Game
+﻿namespace WoMFrameworkTest.Game
 {
+    using WoMFramework.Game.Enums;
+    using WoMFramework.Game.Interaction;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class InteractionTest
     {
         [Fact]
@@ -24,7 +25,7 @@ namespace WoMFrameworkTest.Game
             var amount = adventure1.GetValue1();
             var fee = adventure1.GetValue2();
 
-            var adventure2 = (AdventureAction) Interaction.GetInteraction(amount, fee);
+            var adventure2 = (AdventureAction)Interaction.GetInteraction(amount, fee);
             Assert.Equal(0.01040004m, adventure2.GetValue1());
             Assert.Equal(0.00002002m, adventure2.GetValue2());
 
@@ -56,7 +57,7 @@ namespace WoMFrameworkTest.Game
 
             Assert.Equal(InteractionType.Adventure, shift.Interaction.InteractionType);
             Assert.Equal(AdventureType.TestRoom, ((AdventureAction)shift.Interaction).AdventureType);
-            Assert.Equal(DifficultyType.Average, ((AdventureAction)shift.Interaction).DifficultyType );
+            Assert.Equal(DifficultyType.Average, ((AdventureAction)shift.Interaction).DifficultyType);
             Assert.Equal(2, ((AdventureAction)shift.Interaction).AveragePartyLevel);
         }
     }

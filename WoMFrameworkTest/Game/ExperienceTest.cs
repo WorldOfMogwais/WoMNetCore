@@ -1,5 +1,8 @@
 ﻿namespace WoMFrameworkTest.Game
 {
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class ExperienceTest
     {
         //[Fact]

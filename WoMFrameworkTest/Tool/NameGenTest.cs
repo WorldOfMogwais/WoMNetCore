@@ -1,16 +1,17 @@
-﻿using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Game.Random;
-using Xunit;
-
-namespace WoMFrameworkTest.Tool
+﻿namespace WoMFrameworkTest.Tool
 {
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Game.Model.Mogwai;
+    using WoMFramework.Game.Random;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class NameGenTest
     {
         [Fact]
         public void GenerateNameTest()
         {
-            var hexValue = 
+            var hexValue =
                 new HexValue(
                     new Shift(0,
                     1530914381,

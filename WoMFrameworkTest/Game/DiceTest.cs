@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Random;
-using Xunit;
-
-namespace WoMFrameworkTest.Game
+﻿namespace WoMFrameworkTest.Game
 {
+    using System.Collections.Generic;
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Game.Random;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class DiceTest
     {
         [Fact]
@@ -38,7 +39,7 @@ namespace WoMFrameworkTest.Game
                 }
             }
 
-            foreach (var keyValue in probabilityDict)
+            foreach (KeyValuePair<int, int> keyValue in probabilityDict)
             {
                 Assert.True(keyValue.Value > 0.9 * n && keyValue.Value < 1.1 * n);
             }
@@ -76,7 +77,7 @@ namespace WoMFrameworkTest.Game
                 }
             }
 
-            foreach (var keyValue in probabilityDict)
+            foreach (KeyValuePair<int, int> keyValue in probabilityDict)
             {
                 Assert.True(keyValue.Value > 0.9 * n && keyValue.Value < 1.1 * n);
             }
@@ -122,8 +123,8 @@ namespace WoMFrameworkTest.Game
 
             var dice = new Dice(shift);
 
-            var rand1 = dice.GetRandomGenerator();
-            var rand2 = dice.GetRandomGenerator();
+            Troschuetz.Random.IGenerator rand1 = dice.GetRandomGenerator();
+            Troschuetz.Random.IGenerator rand2 = dice.GetRandomGenerator();
 
             Assert.Equal(rand1.Next(), rand2.Next());
             Assert.Equal(rand1.Next(), rand2.Next());

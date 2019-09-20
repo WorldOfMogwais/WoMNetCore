@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using WoMFramework.Game.Enums;
-using WoMFramework.Game.Model;
-using WoMFramework.Game.Model.Monster;
-using Xunit;
-
-namespace WoMFrameworkTest.Game
+﻿namespace WoMFrameworkTest.Game
 {
+    using System.Linq;
+    using WoMFramework.Game.Enums;
+    using WoMFramework.Game.Model;
+    using WoMFramework.Game.Model.Monster;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class BuilderTest
     {
         [Fact]
@@ -34,7 +32,6 @@ namespace WoMFrameworkTest.Game
             Assert.Equal(121, allMonster.Where(p => p.ChallengeRating == 2).Count());
             Assert.Equal(114, allMonster.Where(p => p.ChallengeRating == 3).Count());
             Assert.Equal("Chickcharney", allMonster.Where(p => p.ChallengeRating == 3 && p.NaturalArmor == 0).First().Name);
-
         }
     }
 }

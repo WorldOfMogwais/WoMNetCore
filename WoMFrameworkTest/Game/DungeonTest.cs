@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Tool;
-using Xunit;
-
-namespace WoMFrameworkTest.Game
+﻿namespace WoMFrameworkTest.Game
 {
+    using System.Collections.Generic;
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Game.Model.Mogwai;
+    using WoMFramework.Tool;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class DungeonTest
     {
-
         public Mogwai Mogwai;
 
         public DungeonTest()

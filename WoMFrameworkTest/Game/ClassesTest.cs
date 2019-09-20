@@ -1,8 +1,9 @@
-﻿using WoMFramework.Game.Model.Classes;
-using Xunit;
-
-namespace WoMFrameworkTest.Game
+﻿namespace WoMFrameworkTest.Game
 {
+    using WoMFramework.Game.Model.Classes;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class ClassesTest
     {
         [Fact]

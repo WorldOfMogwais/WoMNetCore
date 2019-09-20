@@ -1,8 +1,9 @@
-﻿using WoMFramework.Game.Interaction;
-using Xunit;
-
-namespace WoMFrameworkTest.Game
+﻿namespace WoMFrameworkTest.Game
 {
+    using WoMFramework.Game.Interaction;
+    using Xunit;
+
+    [Collection("SystemInteractionFixture")]
     public class CombatTest
     {
         [Fact]
