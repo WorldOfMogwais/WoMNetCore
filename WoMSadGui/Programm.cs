@@ -1,5 +1,3 @@
-
-
 namespace WoMSadGui
 {
     using Consoles;
@@ -9,9 +7,11 @@ namespace WoMSadGui
     using Microsoft.Xna.Framework.Input;
     using SadConsole;
     using Specific;
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Reflection;
+    using WoMFramework.Tool;
     using WoMWallet.Node;
     using Game = SadConsole.Game;
 
@@ -37,10 +37,19 @@ namespace WoMSadGui
         [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         private static void Main(string[] args)
         {
-            var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            // Setup SystemInteraction
+            var persistentFolder = Path.Combine(Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)), "WoMSadGui");
+            Directory.CreateDirectory(persistentFolder);
+            SystemInteraction.ReadData = f => File.ReadAllText(Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), f));
+            SystemInteraction.DataExists = f => File.Exists(Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), f));
+            SystemInteraction.ReadPersistent = f => File.ReadAllText(Path.Combine(persistentFolder, f));
+            SystemInteraction.PersistentExists = f => File.Exists(Path.Combine(persistentFolder, f));
+            SystemInteraction.Persist = (f, c) => File.WriteAllText(Path.Combine(persistentFolder, f), c);
+
+            log4net.Repository.ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
-            // Setup the engine and creat the main window.
+            // Setup the engine and create the main window.
             Game.Create("IBM.font", Width, Height);
 
             // Hook the start event so we can add consoles to the system.

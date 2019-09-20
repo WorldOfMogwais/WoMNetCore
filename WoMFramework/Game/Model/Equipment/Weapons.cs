@@ -23,7 +23,7 @@
             }
         }
 
-        public static Weapons Instance => _instance ?? (_instance = new Weapons(Path.Combine(Path.GetDirectoryName(typeof(Weapons).Assembly.Location), DefaultWeaponFile)));
+        public static Weapons Instance => _instance ?? (_instance = new Weapons());
 
         public Weapon ByName(string weaponName)
         {

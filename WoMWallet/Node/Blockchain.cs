@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using log4net;
-using RestSharp;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Tool;
-using WoMWallet.Block;
-using WoMWallet.Tool;
-
-namespace WoMWallet.Node
+﻿namespace WoMWallet.Node
 {
+    using Block;
+    using log4net;
+    using RestSharp;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Tool;
+
     public class Blockchain
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -66,8 +64,10 @@ namespace WoMWallet.Node
                         Log.Debug($"cached from {fromHeight} {count} blockhashes...");
                         count = 0;
                     }
+
                     progress.Report((float)(i + 1) / blockHeight);
                 }
+
                 Caching.Persist(BlockhashesFile, _blockHashDict);
                 Log.Debug("persisted all blocks!");
             });
@@ -101,11 +101,11 @@ namespace WoMWallet.Node
         //    _log.Debug($"persisted all blocks!");
         //}
 
-        public Block.Block GetBlock(string hash)
+        public Block GetBlock(string hash)
         {
             var request = new RestRequest("getblock/{hash}", Method.GET);
             request.AddUrlSegment("hash", hash);
-            var blockResponse = _client.Execute<Block.Block>(request);
+            var blockResponse = _client.Execute<Block>(request);
             return blockResponse.Data;
         }
 
@@ -293,6 +293,5 @@ namespace WoMWallet.Node
 
             return result;
         }
-
     }
 }

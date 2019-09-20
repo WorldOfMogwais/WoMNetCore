@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using Tool;
 
@@ -26,11 +25,11 @@
             //var _armorsFile = _armorBuilders.Select(p => p.Build()).ToList();
         }
 
-        public static Armors Instance => _instance ?? (_instance = new Armors(Path.Combine(Path.GetDirectoryName(typeof(Armors).Assembly.Location), DefaultArmorFile)));
+        public static Armors Instance => _instance ?? (_instance = new Armors());
 
         public Armor ByName(string armorName)
         {
-            var armorBuilder = _armorBuilders.FirstOrDefault(p => p.Name == armorName);
+            ArmorBuilder armorBuilder = _armorBuilders.FirstOrDefault(p => p.Name == armorName);
             if (armorBuilder == null)
             {
                 throw new Exception($"Unknown armor please check database '{armorName}'");

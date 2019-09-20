@@ -14,14 +14,9 @@
         {
             obj = default(T);
 
-            if (!File.Exists(path))
-            {
-                return false;
-            }
-
             try
             {
-                var objDecrypted = Decrypt(File.ReadAllText(path));
+                var objDecrypted = Decrypt(SystemInteraction.ReadAllText(path));
                 obj = JsonConvert.DeserializeObject<T>(objDecrypted);
                 return true;
             }
@@ -35,7 +30,7 @@
         public static void Persist<T>(string path, T obj)
         {
             var objEncrypted = Encrypt(JsonConvert.SerializeObject(obj));
-            File.WriteAllText(path, objEncrypted);
+            SystemInteraction.Persist(path, objEncrypted);
         }
 
         //unused, already encrypted maybe for later
