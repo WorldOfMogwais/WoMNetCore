@@ -1,6 +1,7 @@
 ﻿namespace WoMFramework.Game.Generator.Dungeon
 {
     using GoRogue;
+    using GoRogue.MapGeneration;
     using GoRogue.MapGeneration.Generators;
     using GoRogue.MapViews;
     using Model.Mogwai;
@@ -62,8 +63,8 @@
             }
             else
             {
-                //RandomRoomsGenerator.Generate(wMap, dungeonRandom, 15, 5, 15, 50);
-                CellularAutomataAreaGenerator.Generate(wMap, dungeonRandom);
+                //QuickGenerators.GenerateRandomRoomsMap(wMap, dungeonRandom, 15, 5, 15, 50);
+                QuickGenerators.GenerateCellularAutomataMap(wMap, dungeonRandom);
             }
 
             WalkabilityMap = wMap;
