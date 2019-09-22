@@ -2,7 +2,6 @@
 {
     using GoRogue;
     using GoRogue.MapGeneration;
-    using GoRogue.MapGeneration.Generators;
     using GoRogue.MapViews;
     using Model.Mogwai;
     using System;

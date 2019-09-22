@@ -15,7 +15,6 @@ namespace WoMSadGui
     using WoMWallet.Node;
     using Game = SadConsole.Game;
 
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     internal class Program
     {
@@ -93,7 +92,7 @@ namespace WoMSadGui
                 case SadGuiState.Login:
                     _state = !_controller.IsWalletCreated ? CreateWallet() : Unlock();
                     return;
-                case SadGuiState.Mnemoic:
+                case SadGuiState.Mnemonic:
                     _state = ShowMnemonic();
                     break;
                 case SadGuiState.Selection:
@@ -128,7 +127,7 @@ namespace WoMSadGui
                     _playScreen.ProcessKeyboard(Global.KeyboardState);
                     _state = _playScreen.GetState();
                     break;
-                case SadGuiState.Fatalerror:
+                case SadGuiState.FatalError:
                     _state = Warning("A fatal error happened!", true);
                     break;
                 case SadGuiState.Quit:
@@ -193,7 +192,7 @@ namespace WoMSadGui
             {
                 var password = inputDialog.Input?.Text;
                 _controller.CreateWallet(password);
-                _state = _controller.IsWalletCreated ? SadGuiState.Mnemoic : SadGuiState.Fatalerror;
+                _state = _controller.IsWalletCreated ? SadGuiState.Mnemonic : SadGuiState.FatalError;
                 inputDialog.Hide();
             };
             inputDialog.Show(true);
@@ -209,7 +208,7 @@ namespace WoMSadGui
             {
                 var password = dialog.Input.Text;
                 _controller.UnlockWallet(password);
-                _state = _controller.IsWalletUnlocked ? SadGuiState.Selection : SadGuiState.Fatalerror;
+                _state = _controller.IsWalletUnlocked ? SadGuiState.Selection : SadGuiState.FatalError;
                 dialog.Hide();
             };
             dialog.Show(true);
@@ -284,11 +283,11 @@ namespace WoMSadGui
     {
         Start,
         Login,
-        Mnemoic,
+        Mnemonic,
         Action,
         Selection,
         Play,
-        Fatalerror,
+        FatalError,
         Quit,
     }
 }

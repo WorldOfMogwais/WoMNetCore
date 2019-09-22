@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-
-namespace WoMWallet.Block
+﻿namespace WoMWallet.Block
 {
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class ScriptPubKey
     {

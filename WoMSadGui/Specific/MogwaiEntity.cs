@@ -8,7 +8,7 @@
     {
         private Animated _defAnimated;
 
-        private Entity _animEntity;
+        private readonly Entity _animEntity;
 
         //public MogwaiEntity(int glyph, Color color, Font font) : base(1,1)
         public MogwaiEntity(Animated animated) : base(animated)

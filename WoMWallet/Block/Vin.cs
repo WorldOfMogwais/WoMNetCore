@@ -1,11 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace WoMWallet.Block
+﻿namespace WoMWallet.Block
 {
+    using System.Diagnostics.CodeAnalysis;
+
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class Vin
     {
-        public string Coinbase { get; set; }
+        public string CoinBase { get; set; }
         public long Sequence { get; set; }
     }
 }

@@ -1,16 +1,16 @@
-﻿using log4net;
-using NBitcoin;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
-using WoMFramework.Game.Interaction;
-using WoMFramework.Game.Model.Mogwai;
-using WoMFramework.Tool;
-using WoMWallet.Block;
-
-namespace WoMWallet.Node
+﻿namespace WoMWallet.Node
 {
+    using Block;
+    using log4net;
+    using NBitcoin;
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using WoMFramework.Game.Interaction;
+    using WoMFramework.Game.Model.Mogwai;
+    using WoMFramework.Tool;
+
     public enum MogwaiKeysState
     {
         None, Wait, Ready, Create, Bound
@@ -148,9 +148,7 @@ namespace WoMWallet.Node
 
                 LastUpdated = DateTime.Now;
             });
-
         }
-
 
         /// <summary>
         /// 
@@ -169,7 +167,7 @@ namespace WoMWallet.Node
             // adding all unspent txs to input
             unspentTxList.ForEach(p =>
             {
-                tx.Inputs.Add(new OutPoint(new uint256(p.Txid), p.Vout),
+                tx.Inputs.Add(new OutPoint(new uint256(p.TxId), p.Vout),
                     _pubKey.GetAddress(ScriptPubKeyType.Legacy, _network).ScriptPubKey);
             });
 

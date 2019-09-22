@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace WoMWallet.Block
+﻿namespace WoMWallet.Block
 {
+    using System.Diagnostics.CodeAnalysis;
+
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class Vout
     {

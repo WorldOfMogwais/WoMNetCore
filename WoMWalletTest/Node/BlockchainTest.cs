@@ -24,7 +24,7 @@
         [Fact]
         public void GetBlockHashes()
         {
-            System.Collections.Generic.List<WoMWallet.Block.BlockhashPair> blockResponse = Blockchain.Instance.GetBlockHashes(0, 100);
+            System.Collections.Generic.List<WoMWallet.Block.BlockHashPair> blockResponse = Blockchain.Instance.GetBlockHashes(0, 100);
             Assert.Equal(100, blockResponse.Count);
             Assert.Equal("1", blockResponse[1].Block);
             Assert.Equal("000004a3418bf6f7a085b0a489d56eea4fbc094be8ec48ad7ec11621a4dd7431", blockResponse[1].Hash);
@@ -65,7 +65,7 @@
             System.Collections.Generic.List<WoMWallet.Block.TxDetail> blockResponse = Blockchain.Instance.ListTransactions("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i");
             Assert.Equal(4, blockResponse.Count);
             Assert.Equal("MJHYMxu2kyR1Bi4pYwktbeCM7yjZyVxt2i", blockResponse[0].Address);
-            Assert.Equal("00000000759514788f612f69606edd5751d517c39880f72b03772e26827671c4", blockResponse[0].Blockhash);
+            Assert.Equal("00000000759514788f612f69606edd5751d517c39880f72b03772e26827671c4", blockResponse[0].BlockHash);
             Assert.Equal("receive", blockResponse[0].Category);
         }
 
@@ -75,11 +75,11 @@
             System.Collections.Generic.List<WoMWallet.Block.TxDetail> blockResponse = Blockchain.Instance.ListMirrorTransactions("MEYUySQDPzgbTuZSjGfPVikgHtDJZHL8WE");
             Assert.Equal(4, blockResponse.Count);
             Assert.Equal("41317", blockResponse[0].Height);
-            Assert.Equal("000000003f6f8fa173c4d2ddaa07911b06fb41a72744dc646de29377fc04b19e", blockResponse[0].Blockhash);
+            Assert.Equal("000000003f6f8fa173c4d2ddaa07911b06fb41a72744dc646de29377fc04b19e", blockResponse[0].BlockHash);
             Assert.Equal("receive", blockResponse[0].Category);
 
             System.Collections.Generic.List<WoMWallet.Block.TxDetail> blockResponse1 = Blockchain.Instance.ListMirrorTransactions("MShh36ohJgMvaqJvyd6E2KYFSU7NsyeS99");
-            Assert.Equal("000000006a98b2ed01fd21374a04f91022d78d3bd182c7812ec44792625822fa", blockResponse1[0].Blockhash);
+            Assert.Equal("000000006a98b2ed01fd21374a04f91022d78d3bd182c7812ec44792625822fa", blockResponse1[0].BlockHash);
         }
 
         [Fact]

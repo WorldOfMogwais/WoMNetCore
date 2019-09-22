@@ -59,7 +59,7 @@
                     if (count % bulkSize == 0 || i == blockHeight)
                     {
                         var currentMax = _blockHashDict.Keys.Count > 0 ? _blockHashDict.Keys.Max() : 0;
-                        var list = GetBlockHashes(currentMax, count);
+                        List<BlockHashPair> list = GetBlockHashes(currentMax, count);
                         list.ForEach(p => _blockHashDict[int.Parse(p.Block)] = p.Hash);
                         Log.Debug($"cached from {fromHeight} {count} blockhashes...");
                         count = 0;
@@ -83,7 +83,7 @@
         //    int maxBlockCount = GetBlockCount();
         //    var fromHeight = blockHashDict.Keys.Count > 0 ? blockHashDict.Keys.Max() : 0;
         //    int bulkSize = 500;
-        //    List<BlockhashPair> list;
+        //    List<BlockHashPair> list;
         //    int count = 0;
         //    for (int i = fromHeight; i < maxBlockCount; i++)
         //    {
@@ -105,16 +105,16 @@
         {
             var request = new RestRequest("getblock/{hash}", Method.GET);
             request.AddUrlSegment("hash", hash);
-            var blockResponse = _client.Execute<Block>(request);
+            IRestResponse<Block> blockResponse = _client.Execute<Block>(request);
             return blockResponse.Data;
         }
 
-        public List<BlockhashPair> GetBlockHashes(int fromBlock, int count)
+        public List<BlockHashPair> GetBlockHashes(int fromBlock, int count)
         {
             var request = new RestRequest("getblockhashes/{fromBlock}/{count}", Method.GET);
             request.AddUrlSegment("fromBlock", fromBlock);
             request.AddUrlSegment("count", count);
-            var blockResponse = _client.Execute<List<BlockhashPair>>(request);
+            IRestResponse<List<BlockHashPair>> blockResponse = _client.Execute<List<BlockHashPair>>(request);
             return blockResponse.Data;
         }
 
@@ -122,14 +122,14 @@
         {
             var request = new RestRequest("getblockhash/{height}", Method.GET);
             request.AddUrlSegment("height", height);
-            var blockResponse = _client.Execute(request);
+            IRestResponse blockResponse = _client.Execute(request);
             return blockResponse.Content;
         }
 
         public int GetBlockCount()
         {
             var request = new RestRequest("getblockcount", Method.GET);
-            var blockResponse = _client.Execute<int>(request);
+            IRestResponse<int> blockResponse = _client.Execute<int>(request);
             return blockResponse.Data;
         }
 
@@ -137,7 +137,7 @@
         {
             var request = new RestRequest("getbalance/{address}", Method.GET);
             request.AddUrlSegment("address", address);
-            var blockResponse = _client.Execute<decimal>(request);
+            IRestResponse<decimal> blockResponse = _client.Execute<decimal>(request);
             return blockResponse.Data;
         }
 
@@ -147,7 +147,7 @@
             request.AddUrlSegment("minConf", minConf);
             request.AddUrlSegment("maxConf", maxConf);
             request.AddUrlSegment("address", address);
-            var blockResponse = _client.Execute<List<UnspentTx>>(request);
+            IRestResponse<List<UnspentTx>> blockResponse = _client.Execute<List<UnspentTx>>(request);
             return blockResponse.Data;
         }
 
@@ -155,7 +155,7 @@
         {
             var request = new RestRequest("sendrawtransaction/{hex}", Method.GET);
             request.AddUrlSegment("hex", rawTransaction);
-            var blockResponse = _client.Execute(request);
+            IRestResponse blockResponse = _client.Execute(request);
             return blockResponse.Content;
         }
 
@@ -164,7 +164,7 @@
             //:height/:numblocks
             var request = new RestRequest("listtransactions/{address}", Method.GET);
             request.AddUrlSegment("address", address);
-            var blockResponse = _client.Execute<List<TxDetail>>(request);
+            IRestResponse<List<TxDetail>> blockResponse = _client.Execute<List<TxDetail>>(request);
             return blockResponse.Data;
         }
 
@@ -173,11 +173,12 @@
             //:height/:numblocks
             var request = new RestRequest("listmirrtransactions/{address}", Method.GET);
             request.AddUrlSegment("address", address);
-            var blockResponse = _client.Execute<List<TxDetail>>(request);
+            IRestResponse<List<TxDetail>> blockResponse = _client.Execute<List<TxDetail>>(request);
             if (blockResponse.Data == null)
             {
                 Log.Debug($"ListMirrorTransactions {address} {blockResponse.Content}");
             }
+
             return blockResponse.Data;
         }
 
@@ -202,7 +203,7 @@
 
             txid = string.Empty;
 
-            var unspentTxList = GetUnspent(0, 9999999, mogwaiKey.Address);
+            List<UnspentTx> unspentTxList = GetUnspent(0, 9999999, mogwaiKey.Address);
             var unspentAmount = unspentTxList.Sum(p => p.Amount);
 
             if (unspentAmount < amount * toAddresses.Length + txFee)
@@ -212,7 +213,7 @@
             }
 
             // create transaction
-            var tx = mogwaiKey.CreateTransaction(unspentTxList, unspentAmount, toAddresses, amount, txFee);
+            NBitcoin.Transaction tx = mogwaiKey.CreateTransaction(unspentTxList, unspentAmount, toAddresses, amount, txFee);
 
             Log.Info($"signedRawTx: {tx.ToHex()}");
 
@@ -226,15 +227,15 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="mirroraddress"></param>
+        /// <param name="mirrorAddress"></param>
         /// <returns></returns>
-        public Dictionary<long, Shift> GetShifts(string mirroraddress)
+        public Dictionary<long, Shift> GetShifts(string mirrorAddress)
         {
             var result = new Dictionary<long, Shift>();
 
-            var allTxs = ListMirrorTransactions(mirroraddress);
+            List<TxDetail> allTxs = ListMirrorTransactions(mirrorAddress);
 
-            var validTx = allTxs.Where(p => p.Confirmations > 0).OrderBy(p => p.Blocktime).ThenBy(p => p.Blockindex)
+            var validTx = allTxs.Where(p => p.Confirmations > 0).OrderBy(p => p.BlockTime).ThenBy(p => p.BlockIndex)
                 .ToList();
 
             // stop if there aren't any valid transactions ...
@@ -243,11 +244,11 @@
                 return result;
             }
 
-            var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(mirroraddress));
+            var pubMogAddressHex = HexHashUtil.ByteArrayToString(Base58Encoding.Decode(mirrorAddress));
 
             var creation = false;
             var lastBlockHeight = 0;
-            foreach (var tx in validTx)
+            foreach (TxDetail tx in validTx)
             {
                 var amount = Math.Abs(tx.Amount);
                 if (!creation && amount < MogwaiCost)
@@ -255,7 +256,7 @@
 
                 creation = true;
 
-                var block = GetBlock(tx.Blockhash);
+                Block block = GetBlock(tx.BlockHash);
 
                 if (lastBlockHeight != 0 && lastBlockHeight + 1 < block.Height)
                 {
@@ -277,14 +278,14 @@
                 lastBlockHeight = block.Height;
 
                 result.Add(block.Height,
-                    new Shift(result.Count, tx.Blocktime, pubMogAddressHex, block.Height, tx.Blockhash, tx.Blockindex,
-                        tx.Txid, amount, Math.Abs(tx.Fee + TxFee)));
+                    new Shift(result.Count, tx.BlockTime, pubMogAddressHex, block.Height, tx.BlockHash, tx.BlockIndex,
+                        tx.TxId, amount, Math.Abs(tx.Fee + TxFee)));
             }
 
             // add small shifts
             if (creation)
             {
-                int max = _blockHashDict.Keys.Max();
+                var max = _blockHashDict.Keys.Max();
                 for (var i = lastBlockHeight + 1; i < max; i++)
                 {
                     result.Add(i, new Shift(result.Count, pubMogAddressHex, i, _blockHashDict[i]));
