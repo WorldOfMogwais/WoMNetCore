@@ -10,30 +10,35 @@
     {
         None,
         Conjuration,
+        Evocation,
     }
 
     public enum SubSchoolType
     {
         None,
         Creation,
-        Healing
+        Healing,
+        Injuring
     }
 
     public enum DescriptorType
     {
         None,
-        Acid
+        Acid,
+        Fire
     }
 
     public enum RangeType
     {
         None,
         Touch,
+        Ft15,
     }
 
     public enum AreaType
     {
-        None
+        None,
+        ConeShapedBurst
     }
 
     public enum EffectType

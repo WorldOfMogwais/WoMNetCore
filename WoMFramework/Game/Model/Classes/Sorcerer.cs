@@ -20,7 +20,10 @@
 
         public override List<Spell> ClassSpells()
         {
-            return new List<Spell>();
+            return new List<Spell>()
+            {
+                Spells.BurningHands()
+            };
         }
 
         public override void ClassLevelUp()

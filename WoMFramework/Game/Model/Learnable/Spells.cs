@@ -39,5 +39,38 @@
                 })
             };
         }
+
+        public static Spell BurningHands()
+        {
+            return new Spell(1, "Burning Hands", 1)
+            {
+                Description =
+                    "A cone of searing flame shoots from your fingertips. Any creature in the area of the flames " +
+                    "takes 1d4 points of fire damage per caster level (maximum 5d4). Flammable materials burn if the " +
+                    "flames touch them. A character can extinguish burning items as a full-round action.",
+                ShortDescription = " 1d4/level fire damage (max 5d4).",
+                SchoolType = SchoolType.Evocation,
+                SubSchoolType = SubSchoolType.Injuring,
+                DescriptorTypes = new[] { DescriptorType.Fire },
+                Requirements = new List<Requirement>(),
+                CastingTime = ActionType.Standard,
+                RangeType = RangeType.Ft15,
+                AreaType = AreaType.ConeShapedBurst,
+                EffectType = EffectType.None,
+                TargetType = TargetType.Entity,
+                DurationType = DurationType.Instant,
+                SavingThrowType = SavingThrowType.Reflex,
+                SpellResistance = 0.5,
+                SpellEffect = ((m, t) =>
+                {
+                    if (!(m is Entity owner) || !(t is Entity target))
+                        return;
+
+                    var casterLevel = owner.GetRequirementValue(RequirementType.CasterLevel);
+                    var damageAmount = owner.Dice.Roll(new int[] { 1, 4, 0, (casterLevel < 5 ? casterLevel : 5) });
+                    target.Damage(damageAmount, DamageType.Spell);
+                })
+            };
+        }
     }
 }

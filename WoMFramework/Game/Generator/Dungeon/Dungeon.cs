@@ -473,12 +473,13 @@
         {
             IEnumerable<CombatAction> exCombatActions = entity.CombatActions
                 .Where(p => p.ActionType <= actionType) // only actionTypes that are allowed in this round
+                .Where(p => !(p is SpellCast spellCast) || spellCast.Spell.SubSchoolType == SubSchoolType.Injuring)
                 .Select(p => p.Executable(target))
                 .Where(p => p != null);
 
             CombatAction combatActionExec = exCombatActions
                 .OrderByDescending(p => p.ActionType) // choose full attacks over standard attacks
-                .FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack);
+                .FirstOrDefault(p => p is UnarmedAttack || p is MeleeAttack || p is RangedAttack || p is SpellCast);
 
             if (combatActionExec != null)
             {
