@@ -34,3 +34,7 @@ Over a mystical cryptographical phenomenon an unknown relation was discovered.
 Find a way to unite with the untouched mogwais to fight against evil darkness.
 
 Book of Mogwai, Ch.8. "Bye bye, woof woof!"
+
+## Mobile Version
+
+We are currently working on the unity version of the game.
