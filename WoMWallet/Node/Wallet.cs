@@ -195,6 +195,8 @@
         /// <returns></returns>
         public bool GetNewMogwaiKey(out MogwaiKeys mogwaiKeys, int tries = 10)
         {
+            // TODO this function should try till it finds a valid mirror address
+
             mogwaiKeys = null;
 
             if (!IsUnlocked)

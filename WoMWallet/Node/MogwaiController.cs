@@ -217,7 +217,10 @@
                 return;
             }
 
-            Wallet.GetNewMogwaiKey(out _);
+            if (!Wallet.GetNewMogwaiKey(out _, 1000))
+            {
+                throw new Exception("This wallet seems to have a bad mood in findng mogwais, please refere to a dev.");
+            };
         }
 
         public bool SendMog(int amount)
@@ -310,6 +313,7 @@
 
             var lvlBarbarian = new LevelingAction(LevelingType.Class, ClassType.Barbarian, 0, 1);
             var lvlCleric = new LevelingAction(LevelingType.Class, ClassType.Cleric, 0, 1);
+            var lvlSorcerer = new LevelingAction(LevelingType.Class, ClassType.Sorcerer, 0, 1);
             var dungAction = new AdventureAction(AdventureType.Dungeon, DifficultyType.Easy, 2);
             var healAction = new SpecialAction(SpecialType.Heal, SpecialSubType.None, CostType.Medium);
             var revivingAction = new SpecialAction(SpecialType.Reviving, SpecialSubType.None, CostType.High);
@@ -331,8 +335,8 @@
                     blockHeight, new Shift(index++, 1530914381, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
                         blockHeight++, "00000000090d6c6b058227bb61ca2915a84998703d4444cc2641e6a0da4ba37e",
                         2, "163d2e383c77765232be1d9ed5e06749a814de49b4c0a8aebf324c0e9e2fd1cf",
-                        lvlCleric.GetValue1(),
-                        lvlCleric.GetValue2())
+                        lvlSorcerer.GetValue1(),
+                        lvlSorcerer.GetValue2())
                 },
                 {
                     blockHeight, new Shift(index++, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
@@ -405,8 +409,8 @@
                     blockHeight, new Shift(index++, 1539810141, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
                         blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
                         1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
-                        lvlCleric.GetValue1(),
-                        lvlCleric.GetValue2())
+                        lvlSorcerer.GetValue1(),
+                        lvlSorcerer.GetValue2())
                 },
                 {
                     blockHeight, new Shift(index++, 1540985507, "32ab20cfbef0ccddfe5c79e726f5fc48b151106f196f7ccb71",
@@ -445,8 +449,8 @@
                     blockHeight, new Shift(index++, 1557309745, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
                         blockHeight++, "0000000044db5c3cc943271b324b31ecab6f547219bb43174cc97bf23269fa88",
                         1, "cbcd39553f9727c434343222f1bd8025608edcfbcfc262c0c2afe9fc3f0bcb29",
-                        lvlCleric.GetValue1(),
-                        lvlCleric.GetValue2())
+                        lvlSorcerer.GetValue1(),
+                        lvlSorcerer.GetValue2())
                 },
                 {
                     blockHeight, new Shift(index++, 1541350482, "328e6077135a1012eae0c92dc624d1cbc02c69d45200e5f72c",
