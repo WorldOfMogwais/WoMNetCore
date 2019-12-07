@@ -6,6 +6,7 @@
         Animal,
         Construct,
         Dragon,
+        Elemental,
         Fey,
         Humanoid,
         MagicalBeast,

@@ -51,7 +51,7 @@
 
         public Monster Build()
         {
-            var monster = new Monster(Name, ChallengeRating, MonsterType, Experience)
+            var monster = new Monster(Name, ChallengeRating, MonsterType, MonsterSubType.None,  Experience)
             {
                 CurrentLevel = (int) ChallengeRating + 1,
 
@@ -109,17 +109,20 @@
 
         public MonsterType MonsterType { get; }
 
+        public MonsterSubType MonsterSubType { get; }
+
         public int Experience { get; }
 
         public TreasureType TreasureType { get; set; }
 
         public string Description { get; set; }
 
-        public Monster(string name, double challengeRating, MonsterType monsterType, int experience)
+        public Monster(string name, double challengeRating, MonsterType monsterType, MonsterSubType monsterSubType, int experience)
         {
             Name = name;
             ChallengeRating = challengeRating;
             MonsterType = monsterType;
+            MonsterSubType = monsterSubType;
             Experience = experience;
             Faction = Faction.Monster;
         }

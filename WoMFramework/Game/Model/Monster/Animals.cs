@@ -1,67 +1,75 @@
-﻿using WoMFramework.Game.Enums;
+﻿using System.Collections.Generic;
+using WoMFramework.Game.Enums;
+using WoMFramework.Game.Model.Classes;
 
 namespace WoMFramework.Game.Model.Monster
 {
     public class NewMonsters
     {
-        public static Monster BunnyRat
+
+        public static Monster BunnyRat => new MonsterBuilder()
         {
-            get
-            {
-                var monster = 
-                    new Monster(name: "Bunny Rat", challengeRating: 0.25, monsterType: MonsterType.Animal, experience: 100)
+            Name = "Bunny Rat",
+            ChallengeRating = 0.25,
+            MonsterType = MonsterType.Animal,
+            //MonsterSubType = MonsterSubType.None,
+            Experience = 100,
+            SizeType = SizeType.Tiny,
+            Strength = 2,
+            Dexterity = 15,
+            Constitution = 11,
+            Intelligence = 2,
+            Wisdom = 13,
+            Charisma = 2,
+            Fortitude = 2,
+            Reflex = 4,
+            Will = 1,
+            BaseSpeed = 15,
+            NaturalArmor = 0,
+            BaseAttackBonus = new int[] { 0 },
+            HitPointDiceRollEvent = new int[] { 1, 8, 0, 0 },
+            WeaponSlots = new List<WeaponSlot>() {
+                new WeaponSlot()
                 {
-                    CurrentLevel = (int)0.25 + 1,
+                    PrimaryWeapon = NaturalWeapon.Bite(SizeType.Tiny)
+                }
+            },
+            TreasureType = TreasureType.None,
+            EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
+            Description = "Fecund and secretive, bunny rats are omnivorous rodents that particularly thrive in urban areas."
+        }.Build();
 
-                    SizeType = SizeType.Tiny,
-
-                    BaseStrength = 2,
-                    BaseDexterity = 15,
-                    BaseConstitution = 11,
-                    BaseIntelligence = 2,
-                    BaseWisdom = 13,
-                    BaseCharisma = 2,
-
-                    FortitudeBaseSave = 2,
-                    ReflexBaseSave = 4,
-                    WillBaseSave = 1,
-
-                    BaseSpeed = 15,
-                    NaturalArmor = 0,
-                    BaseAttackBonus = new int[] { 0 },
-                    HitPointDiceRollEvent = new int[] { 1, 8, 0, 0 },
-                    TreasureType = TreasureType.None,
-                    EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
-                    Description = ""
-                };
-
-                Weapon bite = new Weapon("Bite",
-                    weaponBaseType: WeaponBaseType.Bite,
-                    weaponSubType: WeaponSubType.None,
-                    weaponProficiencyType: WeaponProficiencyType.Simple,
-                    weaponEffortType: WeaponEffortType.Unarmed,
-                    mediumDamageRoll: new int[] { 1, 6 },
-                    weaponAttackType: WeaponAttackType.Primary,
-                    criticalMinRoll: 20,
-                    criticalMultiplier: 2,
-                    weaponDamageTypes: new WeaponDamageType[] {
-                        WeaponDamageType.Bludgeoning,
-                        WeaponDamageType.Piercing,
-                        WeaponDamageType.Slashing },
-                    range: 0,
-                    sizeType: SizeType.Tiny,
-                    cost: 0.0,
-                    weight: 0.0,
-                    description: "");
-
-                monster.Equipment.WeaponSlots.Add(new WeaponSlot());
-
-                monster.AddToInventory(bite);
-                monster.EquipWeapon(bite);
-
-                return monster;
-            }
-        }
+        public static Monster CrystalGuardian => new MonsterBuilder()
+        {
+            Name = "Crystal Guardian",
+            ChallengeRating = 1.00,
+            MonsterType = MonsterType.Elemental,
+            //MonsterSubType = MonsterSubType.Earth,
+            Experience = 400,
+            SizeType = SizeType.Large,
+            Strength = 19,
+            Dexterity = 12,
+            Constitution = 17,
+            Intelligence = 6,
+            Wisdom = 13,
+            Charisma = 14,
+            Fortitude = 5,
+            Reflex = 1,
+            Will = 1,
+            BaseSpeed = 30,
+            NaturalArmor = 4,
+            BaseAttackBonus = new int[] { 1 },
+            HitPointDiceRollEvent = new int[] { 2, 8, 0, 6 },
+            WeaponSlots = new List<WeaponSlot>() {
+                new WeaponSlot()
+                {
+                    PrimaryWeapon = NaturalWeapon.Slam(SizeType.Large)
+                }
+            },
+            TreasureType = TreasureType.Incidental,
+            EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
+            Description = "An animated cluster of translucent crystals shaped disturbingly like a gemstone Humanoid."
+        }.Build();
 
         //    public static Monster Rat =>
         //        MonsterBuilder.Create("Rat", 0.25, MonsterType.Animal, 100)
