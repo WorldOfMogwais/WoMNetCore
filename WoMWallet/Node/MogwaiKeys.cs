@@ -197,7 +197,7 @@
             }
 
             // sign transaction
-            tx.Sign(_extKey.PrivateKey, coins.ToArray());
+            tx.Sign(_extKey.PrivateKey.GetBitcoinSecret(_network), coins.ToArray());
 
             Log.Info($"sigTx: {tx.ToHex()}");
 
