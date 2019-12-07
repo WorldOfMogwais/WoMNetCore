@@ -109,10 +109,18 @@
 
             var adjCr = GetChallengeRating();
 
-            var monsterSet = Monsters.Instance.AllBuilders()
-                .Where(p => (p.EnvironmentTypes.Contains(EnvironmentType.Any)
-                          || p.EnvironmentTypes.Contains(EnvironmentType.Undergrounds))
-                            && p.ChallengeRating <= adjCr).ToList();
+            //var monsterSet = Monsters.Instance.AllBuilders()
+            //    .Where(p => (p.EnvironmentTypes.Contains(EnvironmentType.Any)
+            //              || p.EnvironmentTypes.Contains(EnvironmentType.Undergrounds))
+            //                && p.ChallengeRating <= adjCr).ToList();
+
+            // TODO work here again and replace it with a real algorithm or make it dungeon dependend.
+            var monsterSet = new List<MonsterBuilder>() {
+                IceCave.BunnyRat,
+                IceCave.BearWarrior,
+                IceCave.CrystalGuardian
+            };
+            
             var totXpAmount = 500 * Math.Pow(adjCr, 2);
 
             var allMonsters = new List<MonsterBuilder>();
