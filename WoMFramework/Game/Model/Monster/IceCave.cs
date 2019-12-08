@@ -103,5 +103,39 @@ namespace WoMFramework.Game.Model.Monster
             Description = "An animated cluster of translucent crystals shaped disturbingly like a gemstone Humanoid."
         };
 
+        public static MonsterBuilder ThreeTailedWolf => new MonsterBuilder()
+        {
+            Name = "Three Tailed Wolf",
+            ChallengeRating = 1.00,
+            MonsterType = MonsterType.MagicalBeast,
+            //MonsterSubType = MonsterSubType.Earth,
+            Experience = 200, // Missing
+            SizeType = SizeType.Medium,
+            Strength = 12,
+            Dexterity = 15,
+            Constitution = 15,
+            Intelligence = 2,
+            Wisdom = 12,
+            Charisma = 6,
+            Fortitude = 5,
+            Reflex = 5,
+            Will = 1,
+            BaseSpeed = 50,
+            NaturalArmor = 0,
+            BaseAttackBonus = new int[] { 1 },
+            HitPointDiceRollEvent = new int[] { 2, 8, 0, 2 },
+            WeaponSlots = new List<WeaponSlot>() {
+                new WeaponSlot()
+                {
+                    PrimaryWeapon = NaturalWeapon.Bite(SizeType.Medium)
+                    // SpeziallAbillity: ColdBreath
+                    //SecondaryWeapon = NaturalWeapon.ColdBreath(SizeType.Medium)
+                }
+            },
+            TreasureType = TreasureType.None,
+            EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
+            Description = "This powerful three tailed canine watches its prey with piercing cold blue eyes, darting its tongue across sharp white teeth."
+        };
+
     }
 }
