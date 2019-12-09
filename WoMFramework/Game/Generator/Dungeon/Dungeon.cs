@@ -118,7 +118,13 @@
             var monsterSet = new List<MonsterBuilder>() {
                 IceCave.BunnyRat,
                 IceCave.BearWarrior,
-                IceCave.CrystalGuardian
+                IceCave.CrystalGuardian,
+                IceCave.GoblinFrost,
+                IceCave.GoblinMage,
+                IceCave.GoblinTorch,
+                IceCave.GoblinVenom,
+                IceCave.ThreeTailedWolf,
+                IceCave.SnowMonster
             };
             
             var totXpAmount = 500 * Math.Pow(adjCr, 2);
