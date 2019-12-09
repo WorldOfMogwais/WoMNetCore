@@ -108,8 +108,8 @@ namespace WoMFramework.Game.Model.Monster
             Name = "Three Tailed Wolf",
             ChallengeRating = 1.00,
             MonsterType = MonsterType.MagicalBeast,
-            //MonsterSubType = MonsterSubType.Earth,
-            Experience = 200, // Missing
+            //MonsterSubType = MonsterSubType.None,
+            Experience = 400,
             SizeType = SizeType.Medium,
             Strength = 12,
             Dexterity = 15,
@@ -128,13 +128,185 @@ namespace WoMFramework.Game.Model.Monster
                 new WeaponSlot()
                 {
                     PrimaryWeapon = NaturalWeapon.Bite(SizeType.Medium)
-                    // SpeziallAbillity: ColdBreath
-                    //SecondaryWeapon = NaturalWeapon.ColdBreath(SizeType.Medium)
                 }
             },
             TreasureType = TreasureType.None,
             EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
             Description = "This powerful three tailed canine watches its prey with piercing cold blue eyes, darting its tongue across sharp white teeth."
+            
+            // TODO: SpeziallAbillity: Cold Breath (Spell: Ray of Frost)
+        };
+
+        public static MonsterBuilder GoblinMage => new MonsterBuilder()
+        {
+            Name = "Goblin Mage",
+            ChallengeRating = 0.5,
+            MonsterType = MonsterType.Humanoid,
+            //MonsterSubType = MonsterSubType.Goblinoid,
+            Experience = 200,
+            SizeType = SizeType.Medium,
+            Strength = 11,
+            Dexterity = 15,
+            Constitution = 12,
+            Intelligence = 15,
+            Wisdom = 10,
+            Charisma = 9,
+            Fortitude = 3,
+            Reflex = 2,
+            Will = 1,
+            BaseSpeed = 30,
+            NaturalArmor = 0,
+            BaseAttackBonus = new int[] { 1 },
+            HitPointDiceRollEvent = new int[] { 1, 6, 0, 1 },
+            WeaponSlots = new List<WeaponSlot>() {
+                new WeaponSlot()
+                {
+                    PrimaryWeapon = Weapons.Instance.ByName("Staff")
+                }
+            },
+            TreasureType = TreasureType.Standard,
+            EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
+            Description = "This creature stands barely five feet tall, its scrawny, humanoid body dwarfed by its wide, ungainly head and theres bright blue skin makes you feel cold."
+
+            // TODO: Spell, MagicMissile
+        };
+
+        public static MonsterBuilder GoblinFrost => new MonsterBuilder()
+        {
+            Name = "Goblin Frost",
+            ChallengeRating = 0.33,
+            MonsterType = MonsterType.Humanoid,
+            //MonsterSubType = MonsterSubType.Goblinoid,
+            Experience = 135,
+            SizeType = SizeType.Medium,
+            Strength = 11,
+            Dexterity = 15,
+            Constitution = 12,
+            Intelligence = 10,
+            Wisdom = 9,
+            Charisma = 6,
+            Fortitude = 3,
+            Reflex = 2,
+            Will = 1,
+            BaseSpeed = 30,
+            NaturalArmor = 0,
+            BaseAttackBonus = new int[] { 1 },
+            HitPointDiceRollEvent = new int[] { 1, 10, 0, 1 },
+            WeaponSlots = new List<WeaponSlot>() {
+                new WeaponSlot()
+                {
+                    PrimaryWeapon = Weapons.Instance.ByName("Dagger")
+                }
+            },
+            TreasureType = TreasureType.Incidental,
+            EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
+            Description = "This creature stands barely five feet tall, its scrawny, humanoid body dwarfed by its wide, ungainly head and theres bright blue skin makes you feel cold."
+        };
+
+        public static MonsterBuilder GoblinVenom => new MonsterBuilder()
+        {
+            Name = "Goblin Venom",
+            ChallengeRating = 0.33,
+            MonsterType = MonsterType.Humanoid,
+            //MonsterSubType = MonsterSubType.Goblinoid,
+            Experience = 135,
+            SizeType = SizeType.Medium,
+            Strength = 11,
+            Dexterity = 15,
+            Constitution = 12,
+            Intelligence = 10,
+            Wisdom = 9,
+            Charisma = 6,
+            Fortitude = 3,
+            Reflex = 2,
+            Will = -1,
+            BaseSpeed = 30,
+            NaturalArmor = 0,
+            BaseAttackBonus = new int[] { 1 },
+            HitPointDiceRollEvent = new int[] { 1, 10, 0, 1 },
+            WeaponSlots = new List<WeaponSlot>() {
+                new WeaponSlot()
+                {
+                    PrimaryWeapon = Weapons.Instance.ByName("Blowgun")
+                }
+            },
+            TreasureType = TreasureType.Incidental,
+            EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
+            Description = "This creature stands barely five feet tall, its scrawny, humanoid body dwarfed by its wide, ungainly head and theres bright blue skin makes you feel cold."
+        };
+
+        public static MonsterBuilder GoblinTorch => new MonsterBuilder()
+        {
+            Name = "Goblin Torch",
+            ChallengeRating = 0.33,
+            MonsterType = MonsterType.Humanoid,
+            //MonsterSubType = MonsterSubType.Goblinoid,
+            Experience = 135,
+            SizeType = SizeType.Medium,
+            Strength = 11,
+            Dexterity = 15,
+            Constitution = 12,
+            Intelligence = 10,
+            Wisdom = 9,
+            Charisma = 6,
+            Fortitude = 3,
+            Reflex = 2,
+            Will = -1,
+            BaseSpeed = 30,
+            NaturalArmor = 0,
+            BaseAttackBonus = new int[] { 1 },
+            HitPointDiceRollEvent = new int[] { 1, 10, 0, 1 },
+            WeaponSlots = new List<WeaponSlot>() {
+                new WeaponSlot()
+                {
+                    PrimaryWeapon = Weapons.Instance.ByName("Club"),
+                }
+            },
+            TreasureType = TreasureType.Incidental,
+            EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
+            Description = "This creature stands barely five feet tall, its scrawny, humanoid body dwarfed by its wide, ungainly head and theres bright blue skin makes you feel cold."
+        };
+
+        public static MonsterBuilder SnowMonster => new MonsterBuilder()
+        {
+            Name = "Snow Monster",
+            ChallengeRating = 0.5,
+            MonsterType = MonsterType.Outsider,
+            //MonsterSubType = MonsterSubType.Cold,
+            Experience = 200,
+            SizeType = SizeType.Small,
+            Strength = 9,
+            Dexterity = 15,
+            Constitution = 10,
+            Intelligence = 10,
+            Wisdom = 9,
+            Charisma = 8,
+            Fortitude = 2,
+            Reflex = 1,
+            Will = -1,
+            BaseSpeed = 30,
+            NaturalArmor = 2,
+            BaseAttackBonus = new int[] { 1 },
+            HitPointDiceRollEvent = new int[] { 1, 10, 0, 0 },
+            WeaponSlots = new List<WeaponSlot>() {
+                new WeaponSlot()
+                {
+                    PrimaryWeapon = NaturalWeapon.Slam(SizeType.Small),
+                },
+                // TODO: Add 3 more attacks ....
+                //new WeaponSlot() { 
+                //    PrimaryWeapon = NaturalWeapon.Slam(SizeType.Small) 
+                //},
+                //new WeaponSlot() { 
+                //    PrimaryWeapon = NaturalWeapon.Slam(SizeType.Small) 
+                //},
+                //new WeaponSlot() { 
+                //    PrimaryWeapon = NaturalWeapon.Slam(SizeType.Small)
+                //}
+            },
+            TreasureType = TreasureType.Incidental,
+            EnvironmentTypes = new EnvironmentType[] { EnvironmentType.Any },
+            Description = "This hulking, roughly humanoid creature of ice and Frost with  four Twiglike arms and a body that looks like the snowman. Very strange at first glance.",
         };
 
     }
