@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="NBitcoin" Version="5.0.7" />
-    <PackageReference Include="NBitcoin.Altcoins" Version="2.0.3" />
+    <PackageReference Include="NBitcoin-std2" Version="5.0.8" />
+    <PackageReference Include="NBitcoin-std2.Altcoins" Version="5.0.8" />
     <PackageReference Include="RestSharp" Version="106.6.10" />
   </ItemGroup>
 
