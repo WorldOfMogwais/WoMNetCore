@@ -178,7 +178,7 @@
                     LogInConsole("TASK", "created new mogwaikeys.");
                     break;
                 case "send":
-                    if (_controller.HasMogwayKeys)
+                    if (_controller.HasMogwaiKeys)
                     {
                         if (_controller.SendMog(_transferFunds))
                         {
@@ -192,7 +192,7 @@
 
                     break;
                 case "bind":
-                    if (_controller.HasMogwayKeys)
+                    if (_controller.HasMogwaiKeys)
                     {
                         if (_controller.BindMogwai())
                         {
@@ -383,7 +383,7 @@
                 }
 
                 // only updated if we have keys
-                if (_controller.HasMogwayKeys)
+                if (_controller.HasMogwaiKeys)
                 {
                     var list = _controller.MogwaiKeysList;
                     for (var i = WindowOffset; i < list.Count && i - WindowOffset < MaxRows; i++)

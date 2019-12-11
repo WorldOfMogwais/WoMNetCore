@@ -48,7 +48,7 @@
 
         public string WalletMnemonicWords => Wallet.MnemonicWords;
 
-        public bool HasMogwayKeys => MogwaiKeysDict.Count > 0;
+        public bool HasMogwaiKeys => MogwaiKeysDict.Count > 0;
 
         private Timer _timer;
 
@@ -108,7 +108,7 @@
                         }
                     }
 
-                    // wait untill all are finished
+                    // wait until all are finished
                     Task.WaitAll(mogwaiKeysList.Select(p => p.Update()).ToArray());
                 }
             });
