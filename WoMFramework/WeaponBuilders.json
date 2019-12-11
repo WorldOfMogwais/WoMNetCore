@@ -408,7 +408,7 @@
     "Description": "This weapon acts as a kumade, but the handle consists of bamboo sections held together by a taut rope running through the center. Releasing the rope is a standard action that provokes attacks of opportunity and causes the weapon to collapse into a bundle that fits into a backpack. Reassembling the collapsible kumade requires a full-round action that provokes attacks of opportunity."
   },
   {
-    "Name": "LanternStaff",
+    "Name": "Lantern Staff",
     "WeaponBaseType": 86,
     "WeaponProficiencyType": 1,
     "WeaponEffortType": 4,

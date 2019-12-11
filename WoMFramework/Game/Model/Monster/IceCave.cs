@@ -161,7 +161,7 @@ namespace WoMFramework.Game.Model.Monster
             WeaponSlots = new List<WeaponSlot>() {
                 new WeaponSlot()
                 {
-                    PrimaryWeapon = Weapons.Instance.ByName("Staff")
+                    PrimaryWeapon = Weapons.Instance.ByName("Quarterstaff")
                 }
             },
             TreasureType = TreasureType.Standard,
