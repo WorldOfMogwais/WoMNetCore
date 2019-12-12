@@ -72,26 +72,24 @@
             TileMap = new ArrayMap<Tile>(width, height);
             Entities = new List<AdventureEntity>();
             var resMap = new ArrayMap<bool>(width, height);
-            for (var i = 0; i < width; i++)
-            {
-                for (var j = 0; j < height; j++)
-                {
-                    // build up Entity Map, not necessary and really slow on big maps
-                    //EntityMap[i,j] = new AdventureEntityContainer();
 
-                    if (wMap[i, j])
-                    {
-                        //ExplorationMap[i, j] = 1;
-                        _walkableTiles++;
-                        resMap[i, j] = true;
-                        TileMap[i, j] = new StoneTile(this, new Coord(i, j));
-                    }
-                    else
-                    {
-                        //ExplorationMap[i, j] = -9;
-                        resMap[i, j] = false;
-                        TileMap[i, j] = new StoneWall(this, new Coord(i, j));
-                    }
+            foreach (var pos in wMap.Positions())
+            {
+                // build up Entity Map, not necessary and really slow on big maps
+                //EntityMap[i,j] = new AdventureEntityContainer();
+
+                if (wMap[pos.X, pos.Y])
+                {
+                    //ExplorationMap[i, j] = 1;
+                    _walkableTiles++;
+                    resMap[pos.X, pos.Y] = true;
+                    TileMap[pos.X, pos.Y] = new StoneTile(this, new Coord(pos.X, pos.Y));
+                }
+                else
+                {
+                    //ExplorationMap[i, j] = -9;
+                    resMap[pos.X, pos.Y] = false;
+                    TileMap[pos.X, pos.Y] = new StoneWall(this, new Coord(pos.X, pos.Y));
                 }
             }
 
@@ -105,28 +103,49 @@
         private List<Rectangle> CreateMapLocations(ArrayMap<bool> wMap, int minLocationSize)
         {
             var rectangles = new List<Rectangle>();
-            for (var i = 0; i < wMap.Width; i++)
+
+            foreach (var pos in wMap.Positions())
             {
-                for (var j = 0; j < wMap.Height; j++)
+                if (!wMap[pos.X, pos.Y]) continue;
+
+                var width = 2;
+                var height = 2;
+                var rectangle = new Rectangle(pos.X, pos.Y, width, height);
+                Rectangle legitRectangle = rectangle;
+                while (rectangle.Positions().All(p => wMap[p.X, p.Y]))
                 {
-                    if (!wMap[i, j]) continue;
+                    legitRectangle = rectangle;
+                    rectangle = rectangle.ChangeSize(++width, ++height);
+                }
 
-                    var width = 2;
-                    var height = 2;
-                    var rectangle = new Rectangle(i, j, width, height);
-                    Rectangle legitRectangle = rectangle;
-                    while (rectangle.Positions().All(p => wMap[p.X, p.Y]))
-                    {
-                        legitRectangle = rectangle;
-                        rectangle = rectangle.ChangeSize(++width, ++height);
-                    }
-
-                    if (legitRectangle.Positions().All(p => wMap[p.X, p.Y]))
-                    {
-                        rectangles.Add(legitRectangle);
-                    }
+                if (legitRectangle.Positions().All(p => wMap[p.X, p.Y]))
+                {
+                    rectangles.Add(legitRectangle);
                 }
             }
+
+            //for (var i = 0; i < wMap.Width; i++)
+            //{
+            //    for (var j = 0; j < wMap.Height; j++)
+            //    {
+            //        if (!wMap[i, j]) continue;
+
+            //        var width = 2;
+            //        var height = 2;
+            //        var rectangle = new Rectangle(i, j, width, height);
+            //        Rectangle legitRectangle = rectangle;
+            //        while (rectangle.Positions().All(p => wMap[p.X, p.Y]))
+            //        {
+            //            legitRectangle = rectangle;
+            //            rectangle = rectangle.ChangeSize(++width, ++height);
+            //        }
+
+            //        if (legitRectangle.Positions().All(p => wMap[p.X, p.Y]))
+            //        {
+            //            rectangles.Add(legitRectangle);
+            //        }
+            //    }
+            //}
 
             var orderedRectangles = rectangles.Where(p => p.Positions().Count() >= minLocationSize).OrderByDescending(p => p.Positions().Count()).ToList();
 
@@ -362,19 +381,17 @@
 
         public List<Coord> GetCoords<T>(ArrayMap<T> map, Coord coord, Func<T, bool> validate)
         {
-            var corrds = new List<Coord>();
-            for (var i = 0; i < map.Width; i++)
+            var coords = new List<Coord>();
+
+            foreach (var position in map.Positions())
             {
-                for (var j = 0; j < map.Height; j++)
+                if (validate(map[position.X, position.Y]) && (coord.X != position.X || coord.Y != position.Y))
                 {
-                    if (validate(map[i, j]) && (coord.X != i || coord.Y != j))
-                    {
-                        corrds.Add(new Coord(i, j));
-                    }
+                    coords.Add(new Coord(position.X, position.Y));
                 }
             }
 
-            return corrds;
+            return coords;
         }
 
         public double GetExplorationState()
@@ -408,5 +425,34 @@
 
             return nearest;
         }
+
+        public static bool TryGetFirstPatternMatch(ArrayMap<bool> map, ArrayMap<bool> pattern, out Coord startCoord)
+        {
+            startCoord = new Coord();
+            foreach (var pos in map.Positions())
+            {
+                startCoord = pos;
+
+                var match = true;
+                foreach (var patPos in pattern.Positions())
+                {
+                    var xShift = pos.X + patPos.X;
+                    var yShift = pos.Y + patPos.Y;
+                    if (map.Width <= xShift 
+                     || map.Height <= yShift
+                     || map[xShift, yShift] != pattern[patPos.X, patPos.Y]) {
+                        match = false;
+                        break;
+                    }               
+                }
+
+                if (match)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }
