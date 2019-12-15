@@ -35,8 +35,12 @@
             var map = new ArrayMap<bool>(20, 20);
             Assert.False(map[0, 0]);
 
+            var pMap = new ArrayMap<bool>(20, 20);
+
             map[5, 5] = true;
 
+
+            map[10, 10] = true;
 
             var pat1 = new ArrayMap<bool>(3, 3);
 
@@ -50,9 +54,24 @@
             pat1[1, 2] = false;
             pat1[2, 2] = false;
 
-            Assert.True(Map.TryGetFirstPatternMatch(map, pat1, out Coord startCoord));
-            Assert.Equal(4, startCoord.X);
-            Assert.Equal(4, startCoord.Y);
+            Assert.True(Map.TryGetFirstPatternMatch(map, pMap, pat1, out Coord startCoord1));
+            Assert.Equal(4, startCoord1.X);
+            Assert.Equal(4, startCoord1.Y);
+
+            pMap[4, 4] = true;
+            pMap[5, 4] = true;
+            pMap[6, 4] = true;
+            pMap[4, 5] = true;
+            pMap[5, 5] = true;
+            pMap[6, 5] = true;
+            pMap[4, 6] = true;
+            pMap[5, 6] = true;
+            pMap[6, 6] = true;
+
+
+            Assert.True(Map.TryGetFirstPatternMatch(map, pMap, pat1, out Coord startCoord2));
+            Assert.Equal(9, startCoord2.X);
+            Assert.Equal(9, startCoord2.Y);
 
         }
     }
