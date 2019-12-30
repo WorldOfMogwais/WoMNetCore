@@ -426,35 +426,5 @@
             return nearest;
         }
 
-        public static bool TryGetFirstPatternMatch(ArrayMap<bool> map, ArrayMap<bool> pMap, ArrayMap<bool> pattern, out Coord startCoord)
-        {
-            startCoord = new Coord();
-            foreach (var pos in map.Positions())
-            {
-                startCoord = pos;
-
-                var match = true;
-                foreach (var patPos in pattern.Positions())
-                {
-                    var xShift = pos.X + patPos.X;
-                    var yShift = pos.Y + patPos.Y;
-                    if (map.Width <= xShift // check map width limits
-                     || map.Height <= yShift // check map height limits
-                     || map[xShift, yShift] != pattern[patPos.X, patPos.Y] // check if the pattern matches here with the walk map
-                     || pMap[xShift, yShift] // check if the pattern map already has a pattern at this point
-                     ) {
-                        match = false;
-                        break;
-                    }               
-                }
-
-                if (match)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
     }
 }

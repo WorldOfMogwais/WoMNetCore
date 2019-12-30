@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WoMWalletTest", "WoMWalletT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WoMSadGui", "WoMSadGui\WoMSadGui.csproj", "{8DDA2A27-FF79-4FDB-8BAA-403FED0B8E0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoMConsole", "WoMConsole\WoMConsole.csproj", "{DEFB0B2E-54FF-481E-8C57-294DDBDB312E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{8DDA2A27-FF79-4FDB-8BAA-403FED0B8E0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DDA2A27-FF79-4FDB-8BAA-403FED0B8E0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DDA2A27-FF79-4FDB-8BAA-403FED0B8E0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEFB0B2E-54FF-481E-8C57-294DDBDB312E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEFB0B2E-54FF-481E-8C57-294DDBDB312E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEFB0B2E-54FF-481E-8C57-294DDBDB312E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEFB0B2E-54FF-481E-8C57-294DDBDB312E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
