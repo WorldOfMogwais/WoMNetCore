@@ -1,22 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<NoWarn>NU1605</NoWarn>
+    <NoWarn>NU1605</NoWarn>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>C:\WORK\repos\WoMNetCore\Backup\WoMFramework\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="GoRogue-std2" Version="2.5.1" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="ArmorBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
     <None Update="Feats.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
     <None Update="MonsterBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
     <None Update="WeaponBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
   </ItemGroup>
-
 </Project>

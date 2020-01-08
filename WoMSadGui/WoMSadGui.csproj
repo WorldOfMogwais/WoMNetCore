@@ -1,9 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-	<RuntimeIdentifiers>win-x32;win-x64;osx-x64;ubuntu-x64;alpine-x64;rhel-x64;opensuse-x64;gentoo-x64;fedora-x64;debian-x64;centos-x64;linux-x64</RuntimeIdentifiers>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RuntimeIdentifiers>win-x64;osx-x64;ubuntu-x64;alpine-x64;rhel-x64;opensuse-x64;gentoo-x64;fedora-x64;debian-x64;centos-x64;linux-x64</RuntimeIdentifiers>
     <ApplicationIcon />
     <StartupObject>WoMSadGui.Program</StartupObject>
     <Version>1.1.1</Version>
@@ -16,16 +15,16 @@
     <PackageProjectUrl>https://www.mogwaicoin.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/WorldOfMogwais/WoMNetCore</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>C:\WORK\repos\WoMNetCore\Backup\WoMSadGui\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="SadConsole.Standard" Version="7.0.4" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\WoMWallet\WoMWallet.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="AutoReiv.font">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -97,5 +96,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
