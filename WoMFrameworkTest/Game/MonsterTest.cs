@@ -21,9 +21,9 @@
         public void MonsterCountTest()
         {
             var monsterSubEqual1 = Monsters.Instance.AllBuilders().Where(p => p.ChallengeRating <= 1).ToList();
-            Assert.Equal(184, monsterSubEqual1.Count());
-            Monster bear = Monsters.Instance.ByName("Polar Bear");
-            Debug.Print($"Name: {bear.Name}");
+            Assert.Equal(2, monsterSubEqual1.Count());
+            Monster wolf = Monsters.Instance.ByName("Wolf");
+            Debug.Print($"Name: {wolf.Name}");
         }
     }
 }

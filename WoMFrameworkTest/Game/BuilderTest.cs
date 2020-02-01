@@ -13,7 +13,7 @@
         public void BuilderCreationTest()
         {
             var allMonster = Monsters.Instance.AllBuilders().Select(p => p.Build());
-            Assert.Equal(1183, allMonster.Count());
+            Assert.Equal(2, allMonster.Count());
             var allArmor = Armors.Instance.AllBuilders().Select(p => p.Build());
             Assert.Equal(62, allArmor.Count());
             var allWeapons = Weapons.Instance.AllBuilders() .Select(p => p.Build());
@@ -24,14 +24,14 @@
         public void BuilderMonsterTest()
         {
             var allMonster = Monsters.Instance.AllBuilders().Select(p => p.Build());
-            Assert.Equal(37, allMonster.Where(p => (p.EnvironmentTypes.Contains(EnvironmentType.Any)
+            Assert.Equal(1, allMonster.Where(p => (p.EnvironmentTypes.Contains(EnvironmentType.Any)
                                                  || p.EnvironmentTypes.Contains(EnvironmentType.Undergrounds))
                                                 && p.ChallengeRating <= 0.5).Count());
-            Assert.Equal(101, allMonster.Where(p => p.ChallengeRating < 1).Count());
-            Assert.Equal( 83, allMonster.Where(p => p.ChallengeRating == 1).Count());
-            Assert.Equal(121, allMonster.Where(p => p.ChallengeRating == 2).Count());
-            Assert.Equal(114, allMonster.Where(p => p.ChallengeRating == 3).Count());
-            Assert.Equal("Chickcharney", allMonster.Where(p => p.ChallengeRating == 3 && p.NaturalArmor == 0).First().Name);
+            Assert.Equal(1, allMonster.Where(p => p.ChallengeRating < 1).Count());
+            Assert.Equal( 1, allMonster.Where(p => p.ChallengeRating == 1).Count());
+            Assert.Equal(0, allMonster.Where(p => p.ChallengeRating == 2).Count());
+            Assert.Equal(0, allMonster.Where(p => p.ChallengeRating == 3).Count());
+            Assert.Equal("Wolf", allMonster.Where(p => p.ChallengeRating == 1 && p.NaturalArmor == 2).First().Name);
         }
     }
 }

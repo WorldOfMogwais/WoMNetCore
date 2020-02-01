@@ -15,6 +15,11 @@
   <ItemGroup>
     <None Update="ArmorBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
     <None Update="Feats.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
+    <None Update="MonsterBuilders_arch.json">
+      <PackagePath>./Resources</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Pack>true</Pack>
+    </None>
     <None Update="MonsterBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
     <None Update="WeaponBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
   </ItemGroup>
