@@ -18,7 +18,7 @@
                 ShortDescription = "Cures 1d8 damage + 1/level (max +5).",
                 SchoolType = SchoolType.Conjuration,
                 SubSchoolType = SubSchoolType.Healing,
-                DescriptorTypes = new DescriptorType[] {},
+                DescriptorTypes = new DescriptorType[] { },
                 Requirements = new List<Requirement>(),
                 CastingTime = ActionType.Standard,
                 RangeType = RangeType.Touch,
@@ -34,7 +34,7 @@
                         return;
 
                     var casterLevel = owner.GetRequirementValue(RequirementType.CasterLevel);
-                    var healAmount = owner.Dice.Roll(new int[] {1, 8, 0, (casterLevel < 5 ? casterLevel : 5)});
+                    var healAmount = owner.Dice.Roll(new int[] { 1, 8, 0, (casterLevel < 5 ? casterLevel : 5) });
                     target.Heal(healAmount, HealType.Spell);
                 })
             };
@@ -70,6 +70,38 @@
                     var damageAmount = owner.Dice.Roll(new int[] { 1, 4, 0, (casterLevel < 5 ? casterLevel : 5) });
                     target.Damage(damageAmount, DamageType.Spell);
                 })
+            };
+        }
+
+        public static Spell RayOfFrost()
+        {
+            return new Spell(2, "Ray of Frost", 0)
+            {
+                Description =
+                    "A ray of freezing air and ice projects from your pointing finger. " +
+                    "You must succeed on a ranged touch attack with the ray to deal damage to a target. " +
+                    "The ray deals 1d3 points of cold damage.",
+                ShortDescription = "1d3 cold damage.",
+                SchoolType = SchoolType.Evocation,
+                SubSchoolType = SubSchoolType.Injuring,
+                DescriptorTypes = new[] { DescriptorType.Cold },
+                Requirements = new List<Requirement>(),
+                CastingTime = ActionType.Standard,
+                RangeType = RangeType.Ft25,
+                AreaType = AreaType.None,
+                EffectType = EffectType.Ray,
+                TargetType = TargetType.Entity,
+                DurationType = DurationType.Instant,
+                SavingThrowType = SavingThrowType.None,
+                SpellResistance = 0.5,
+                SpellEffect = (m, t) =>
+                 {
+                     if (!(m is Entity owner) || !(t is Entity target))
+                         return;
+
+                     var damageAmount = owner.Dice.Roll(3);
+                     target.Damage(damageAmount, DamageType.Spell);
+                 }
             };
         }
     }

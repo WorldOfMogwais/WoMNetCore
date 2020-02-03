@@ -25,7 +25,8 @@
     {
         None,
         Acid,
-        Fire
+        Fire,
+        Cold
     }
 
     public enum RangeType
@@ -33,17 +34,19 @@
         None,
         Touch,
         Ft15,
+        Ft25
     }
 
     public enum AreaType
     {
         None,
-        ConeShapedBurst
+        ConeShapedBurst,
     }
 
     public enum EffectType
     {
-        None
+        None,
+        Ray
     }
 
     public enum TargetType

@@ -16,8 +16,8 @@
     <RepositoryUrl>https://github.com/WorldOfMogwais/WoMNetCore</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <FileUpgradeFlags>40</FileUpgradeFlags>
-    <UpgradeBackupLocation>C:\WORK\repos\WoMNetCore\Backup\WoMSadGui\</UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>C:\WORK\repos\WoMNetCore\Backup1\WoMSadGui\</UpgradeBackupLocation>
+    <OldToolsVersion>Current</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SadConsole.Standard" Version="7.0.4" />

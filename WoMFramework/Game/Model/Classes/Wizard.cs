@@ -22,6 +22,7 @@
         {
             return new List<Spell>()
             {
+                Spells.RayOfFrost(),
             };
         }
 
