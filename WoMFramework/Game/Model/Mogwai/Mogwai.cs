@@ -245,9 +245,9 @@
                 }
             }
 
-            // lazy health regeneration, only rest healing if he is not dieing
+            // lazy health regeneration, only rest healing if he is not dieing and not dead
             // TODO check MogwaiState?
-            if (MogwaiState == MogwaiState.HomeTown && !IsDying)
+            if (MogwaiState == MogwaiState.HomeTown && !IsDying && !IsDead)
             {
                 Heal(_currentShift.IsSmallShift ? 2 * CurrentLevel : CurrentLevel, HealType.Rest);
             }
