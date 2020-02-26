@@ -22,7 +22,6 @@
         {
             return new List<Spell>()
             {
-                Spells.RayOfFrost(),
                 Spells.BurningHands()
             };
         }

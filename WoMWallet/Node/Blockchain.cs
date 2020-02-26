@@ -6,7 +6,9 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
+    using System.Net;
     using System.Reflection;
     using System.Threading.Tasks;
     using WoMFramework.Game.Interaction;
@@ -189,12 +191,21 @@
 
         public bool Interaction(MogwaiKeys mogwaiKey, Interaction interaction, out string txid)
         {
-            return SendMogs(mogwaiKey, new[] { mogwaiKey.MirrorAddress }, interaction.GetValue1(), TxFee + interaction.GetValue2(), out txid);
+            return BurnMogs(mogwaiKey, interaction.GetValue1(), TxFee + interaction.GetValue2(), out txid);
         }
 
         public bool BurnMogs(MogwaiKeys mogwaiKey, decimal burnMogs, decimal txFee, out string txid)
         {
-            return SendMogs(mogwaiKey, new[] { mogwaiKey.MirrorAddress }, burnMogs, txFee, out txid);
+            if (SendMogs(mogwaiKey, new[] {mogwaiKey.MirrorAddress}, burnMogs, txFee, out txid))
+            {
+                var trackingurl =
+                    "https://analytics.mogwaicoin.org/matomo.php?idsite=3&rec=1&e_c=MOG&e_a=Burned&e_n=MOG+Burned&e_v=" +
+                    burnMogs.ToString(CultureInfo.InvariantCulture);
+                new WebClient().DownloadData(trackingurl);
+                return true;
+            }
+
+            return false;
         }
 
         public bool SendMogs(MogwaiKeys mogwaiKey, string[] toAddresses, decimal amount, decimal txFee, out string txid)

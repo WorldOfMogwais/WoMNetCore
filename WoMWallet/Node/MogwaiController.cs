@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Threading.Tasks;
     using System.Timers;
     using WoMFramework.Game.Enums;
@@ -54,6 +55,7 @@
 
         public MogwaiController()
         {
+            new WebClient().DownloadData("https://analytics.mogwaicoin.org/matomo.php?idsite=3&rec=1&new_visit=1&e_c=Game&e_a=Started&e_n=Game+Started");
             Wallet = new MogwaiWallet();
             TaggedMogwaiKeys = new List<MogwaiKeys>();
             CurrentMogwaiKeysIndex = 0;
