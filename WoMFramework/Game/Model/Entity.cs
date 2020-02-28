@@ -555,9 +555,10 @@
             {
                 healAmount = missingHealth;
             }
+            var activity = ActivityLog.Create(ActivityLog.ActivityType.Heal, ActivityLog.ActivityState.None, new int[] { healAmount, (int)healType }, null);
+            Mogwai.Mogwai.History.Add(LogType.Info, activity);
+            Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
 
-            Mogwai.Mogwai.History.Add(LogType.Heal, $"{Coloring.Name(Name)} restores {Coloring.GetHeal(healAmount)} HP from {healType.ToString()} healing.");
-            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Heal, $"{Coloring.Name(Name)} restores {Coloring.GetHeal(healAmount)} HP from {healType.ToString()} healing."));
             CurrentHitPoints += healAmount;
         }
 
@@ -574,22 +575,23 @@
                 return;
             }
 
-            Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage.");
-            var logEntry = LogEntry.Damage(this, damageAmount, damageType);
-            Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} suffers {Coloring.GetDmg(damageAmount)} HP from {damageType.ToString()} damage."));
+            var activity = ActivityLog.Create(ActivityLog.ActivityType.Damage, ActivityLog.ActivityState.None, new int[] { damageAmount, (int)damageType }, null);
+            Mogwai.Mogwai.History.Add(LogType.Info, activity);
+            Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
             CurrentHitPoints -= damageAmount;
 
             if (!CanAct)
             {
-                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} got a deadly hit, health state is {Coloring.Red(HealthState.ToString())}.");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} got a deadly hit, health state is {Coloring.Red(HealthState.ToString())}."));
+                activity = ActivityLog.Create(ActivityLog.ActivityType.HealthState, ActivityLog.ActivityState.None, new int[] { (int)HealthState }, null);
+                Mogwai.Mogwai.History.Add(LogType.Info, activity);
+                Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
             }
 
             if (IsDead)
             {
-                Mogwai.Mogwai.History.Add(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its health state is {Coloring.Red(HealthState.ToString())}.");
-                Adventure.LogEntries.Enqueue(new LogEntry(LogType.Damage, $"{Coloring.Name(Name)} has died, may its soul rest in peace. Its health state is {Coloring.Red(HealthState.ToString())}."));
-                //Adventure.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.Name(Name)} treasure? {this.Treasure}. IsLootable: {IsLootable}; LootState: {LootState}; HasLoot: {HasLoot}"));
+                activity = ActivityLog.Create(ActivityLog.ActivityType.HealthState, ActivityLog.ActivityState.None, new int[] { (int)HealthState }, null);
+                Mogwai.Mogwai.History.Add(LogType.Info, activity);
+                Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
 
                 Map.DeadEntity(this);
             }
@@ -613,19 +615,22 @@
                 return;
             }
 
-            Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.Name(Name)} is looting {Coloring.DarkGrey(entity.Name)}.");
-            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.Name(Name)} is looting {Coloring.DarkGrey(entity.Name)}."));
+            var activity = ActivityLog.Create(ActivityLog.ActivityType.Loot, ActivityLog.ActivityState.None, new int[] { }, null);
+            Mogwai.Mogwai.History.Add(LogType.Info, activity);
+            Adventure?.Enqueue(AdventureLog.Info(this, entity, activity));
 
-            if (entity.Treasure == null)
+            if (entity.Treasure != null)
             {
-                Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot.");
-                Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has nothing to loot."));
+                activity = ActivityLog.Create(ActivityLog.ActivityType.Treasure, ActivityLog.ActivityState.Success, new int[] { }, null);
+                Mogwai.Mogwai.History.Add(LogType.Info, activity);
+                Adventure?.Enqueue(AdventureLog.Info(this, entity, activity));
+                mogwai.AddGold(entity.Treasure.Gold);
             }
             else
             {
-                Mogwai.Mogwai.History.Add(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has a treasure to loot.");
-                Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, $"{Coloring.DarkGrey(entity.Name)} has a treasure to loot."));
-                mogwai.AddGold(entity.Treasure.Gold);
+                activity = ActivityLog.Create(ActivityLog.ActivityType.Treasure, ActivityLog.ActivityState.Fail, new int[] { }, null);
+                Mogwai.Mogwai.History.Add(LogType.Info, activity);
+                Adventure?.Enqueue(AdventureLog.Info(this, entity, activity));
             }
 
             entity.LootState = LootState.Looted;
@@ -784,12 +789,12 @@
                         }
                     }
 
-                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Success, new int[] { attackIndex, attack, criticalCounts, damage, criticalDamage, (int) DamageType.Weapon }, weaponAttack)));
+                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Success, new int[] { attackIndex, attack, criticalCounts, damage, criticalDamage, (int)DamageType.Weapon }, weaponAttack)));
                     target.Damage(damage + criticalDamage, DamageType.Weapon);
                 }
                 else
                 {
-                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Fail, new int[] { attackIndex, attack, criticalCounts },  weaponAttack)));
+                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Fail, new int[] { attackIndex, attack, criticalCounts }, weaponAttack)));
                 }
 
                 Adventure.Enqueue(AdventureLog.Attacked(this, target));
@@ -1101,8 +1106,8 @@
                     if (nearest?.Length < 2)
                     {
                         for (int i = 0; i < expMap.Width; i++)
-                        for (int j = 0; j < expMap.Height; j++)
-                            expMap[i, j] = 2;
+                            for (int j = 0; j < expMap.Height; j++)
+                                expMap[i, j] = 2;
 
                         return;
                     }

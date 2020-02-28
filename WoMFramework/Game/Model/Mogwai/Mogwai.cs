@@ -252,7 +252,8 @@
                 Heal(_currentShift.IsSmallShift ? 2 * CurrentLevel : CurrentLevel, HealType.Rest);
             }
 
-            History.Add(LogType.Info, $"Evolved {Coloring.Name(Name)} shift {Coloring.Exp(Pointer)}!");
+            var activity = ActivityLog.Create(ActivityLog.ActivityType.Evolve, ActivityLog.ActivityState.None, new int[] { Pointer }, null);
+            History.Add(LogType.Info, activity);
 
             // no more shifts to process, no more logging possible to the game log
             _currentShift = null;
@@ -345,17 +346,17 @@
                 AddGold(dice.Roll(Classes[0].WealthDiceRollEvent));
             }
 
-            string msg = Coloring.LevelUp($"You feel the power of the {Classes[0].Name}'s!");
-            History.Add(LogType.Info, msg);
-            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg));
+            var activity = ActivityLog.Create(ActivityLog.ActivityType.LevelClass, ActivityLog.ActivityState.None, new int[] { (int)classType }, null);
+            History.Add(LogType.Info, activity);
+            Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
         }
 
         /// <inheritdoc />
         public override void AddGold(int gold)
         {
-            string msg = $"You just found +{Coloring.Gold(gold)} gold!";
-            History.Add(LogType.Info, msg);
-            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg));
+            var activity = ActivityLog.Create(ActivityLog.ActivityType.Gold, ActivityLog.ActivityState.None, new int[] { gold }, null);
+            History.Add(LogType.Info, activity);
+            Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
 
             Wealth.Gold += gold;
         }
@@ -363,11 +364,9 @@
         /// <inheritdoc />
         public override void AddExp(double exp, Monster.Monster monster = null)
         {
-            string msg = monster == null
-                    ? $"You just earned +{Coloring.Exp(exp)} experience!"
-                    : $"The {Coloring.Name(monster.Name)} gave you +{Coloring.Exp(exp)}!";
-            History.Add(LogType.Info, msg);
-            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg));
+            var activity = ActivityLog.Create(ActivityLog.ActivityType.Exp, ActivityLog.ActivityState.None, new int[] { (int)exp }, monster);
+            History.Add(LogType.Info, activity);
+            Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
 
             Exp += exp;
 
@@ -384,12 +383,9 @@
         /// </summary>
         private void LevelUp()
         {
-            string msg1 = Coloring.LevelUp("You're mogwai suddenly feels an ancient power around him.");
-            History.Add(LogType.Info, msg1);
-            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg1));
-            string msg2 = $"{Coloring.LevelUp("Congratulations he just made the")} {Coloring.Green(CurrentLevel.ToString())} {Coloring.LevelUp("th level!")}";
-            History.Add(LogType.Info, msg2);
-            Adventure?.LogEntries.Enqueue(new LogEntry(LogType.Info, msg2));
+            var activity = ActivityLog.Create(ActivityLog.ActivityType.Level, ActivityLog.ActivityState.None, new int[] { CurrentLevel }, null);
+            History.Add(LogType.Info, activity);
+            Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
 
             // level up grant free revive
             SpecialAction(SpecialType.Reviving);

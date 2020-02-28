@@ -11,8 +11,11 @@
     using System.Linq;
     using WoMFramework.Game;
     using WoMFramework.Game.Enums;
+    using WoMFramework.Game.Generator;
     using WoMFramework.Game.Interaction;
+    using WoMFramework.Game.Model.Learnable;
     using WoMFramework.Game.Model.Mogwai;
+    using WoMFramework.Game.Model.Monster;
     using WoMWallet.Node;
     using Console = SadConsole.Console;
     using Keyboard = SadConsole.Input.Keyboard;
@@ -402,14 +405,70 @@
         {
             foreach (LogEntry entry in _mogwai.CurrentShift.History.LogEntries)
             {
-                _log.MainCursor.Print(entry.ToString());
+                var message = entry.ToString();
+                var activityLog = entry.ActivityLog;
+                if (activityLog != null)
+                {
+
+                    switch (activityLog.Type)
+                    {
+                        case ActivityLog.ActivityType.Cast:
+                            break;
+                        case ActivityLog.ActivityType.Attack:
+                            break;
+                        case ActivityLog.ActivityType.Heal:
+                            message = $"{Coloring.Name(_mogwai.Name)} restores {Coloring.GetHeal(activityLog.Numbers[0])} HP from {((HealType)activityLog.Numbers[1]).ToString()} healing.";
+                            break;
+                        case ActivityLog.ActivityType.Damage:
+                            message = $"{Coloring.Name(_mogwai.Name)} suffers {Coloring.GetDmg(activityLog.Numbers[0])} HP from {((DamageType)activityLog.Numbers[1]).ToString()} damage.";
+                            break;
+                        case ActivityLog.ActivityType.HealthState:
+                            message = $"{Coloring.Name(_mogwai.Name)} got a deadly hit, health state is {((HealthState)activityLog.Numbers[0]).ToString()}.";
+                            break;
+                        case ActivityLog.ActivityType.Loot:
+                            message = $"{Coloring.Name(_mogwai.Name)} is looting.";
+                            break;
+                        case ActivityLog.ActivityType.Treasure:
+                            if(activityLog.State == ActivityLog.ActivityState.Success)
+                            {
+                                message = $"{Coloring.DarkGrey(_mogwai.Name)} found a treasure!";
+                            }
+                            else
+                            {
+                                message = $"{Coloring.DarkGrey(_mogwai.Name)} found nothing!";
+                            }
+                            break;
+                        case ActivityLog.ActivityType.Gold:
+                            message = $"{Coloring.DarkGrey(_mogwai.Name)} got {Coloring.Gold(activityLog.Numbers[0])} gold";
+                            break;
+                        case ActivityLog.ActivityType.Learn:
+                            message = $"{Coloring.Name(_mogwai.Name)} learned successfully {Coloring.Green((activityLog.ActivityObject as Spell).Name)}.";
+                            break;
+                        case ActivityLog.ActivityType.Evolve:
+                            message = $"Evolved {Coloring.Name(_mogwai.Name)} shift {Coloring.Exp(activityLog.Numbers[0])}!";
+                            break;
+                        case ActivityLog.ActivityType.LevelClass:
+                            message = Coloring.LevelUp($"You feel the power of the {((ClassType) activityLog.Numbers[0])}'s!");
+                            break;
+                        case ActivityLog.ActivityType.Exp:
+                            message = activityLog.ActivityObject == null
+                                ? $"You just earned +{Coloring.Exp(activityLog.Numbers[0])} experience!"
+                                : $"The {Coloring.Name((activityLog.ActivityObject as Monster).Name)} gave you +{Coloring.Exp(activityLog.Numbers[0])}!";
+                            break;
+                        case ActivityLog.ActivityType.Level:
+                            message = $"{Coloring.LevelUp("Congratulations he just made the")} {Coloring.Green(activityLog.Numbers[0].ToString())} {Coloring.LevelUp("th level!")}";
+                            break;
+                    }
+                }
+
+                _log.MainCursor.Print(message);
                 _log.MainCursor.NewLine();
             }
         }
 
-        public void PushLog(LogEntry logEntry)
+        public void PushLog(LogType logType, string message)
         {
-            _log.MainCursor.Print(logEntry.ToString());
+            _log.MainCursor.Print($"[{logType.ToString()}]: {message}");
             _log.MainCursor.NewLine();
         }
 

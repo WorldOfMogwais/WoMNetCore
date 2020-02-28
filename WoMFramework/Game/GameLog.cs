@@ -6,87 +6,50 @@
 
     public class GameLog
     {
-        public int Pointer;
         public List<LogEntry> LogEntries;
 
         public GameLog()
         {
             LogEntries = new List<LogEntry>();
-            Pointer = LogEntries.Count - 1;
         }
 
-        public void Add(LogType logType, string message)
+        public void Add(LogType logType, string message, ActivityLog activityLog = null)
         {
-            Add(new LogEntry(logType, message));
+            LogEntries.Add(new LogEntry(logType, message, activityLog));
         }
 
-        public void Add(LogEntry entry)
+        public void Add(LogType logType, ActivityLog activityLog)
         {
-            LogEntries.Add(entry);
-            Pointer = LogEntries.Count - 1;
+            LogEntries.Add(new LogEntry(logType, "",activityLog));
         }
     }
 
     public enum LogType
     {
         Info,
-        Damage,
-        Heal,
-        Event,
-        Comb,
-        AdventureLog
+        Move,
+        Attack,
+        Died,
+        Entity,
+        Looted
     }
 
     public class LogEntry
     {
-        public LogType LogType { get; }
-        public int Source { get; set; }
-        public int Target { get; set; }
-        public DamageType DamageType { get; set; }
-        public HealType HealType { get; set; }
+        public LogType Type { get; internal set; }
         public string Message { get; }
+        public ActivityLog ActivityLog { get; internal set; }
 
-        public LogEntry(LogType logType, string message)
+        public LogEntry(LogType logType, string message, ActivityLog activityLog = null)
         {
-            LogType = logType;
+            Type = logType;
             Message = message;
-        }
-
-        private LogEntry(LogType logType, int source, params object[] list)
-        {
-            Source = source;
+            ActivityLog = activityLog;
         }
 
         public override string ToString()
         {
-            return $"{GetHeader(LogType)} {Message}";
-        }
-
-        private string GetHeader(LogType logType)
-        {
-            switch (logType)
-            {
-                case LogType.Info:
-                    return "[INFO]";
-                case LogType.Damage:
-                    return "[DAMG]";
-                case LogType.Heal:
-                    return "[HEAL]";
-                case LogType.Event:
-                    return "[EVNT]";
-                case LogType.Comb:
-                    return "[COMB]";
-                default:
-                    return "[INFO]";
-            }
-        }
-
-        public static LogEntry Damage(Combatant entity, int damageAmount, DamageType damageType)
-        {
-            return new LogEntry(LogType.Damage,
-                entity.Adventure != null ? entity.AdventureEntityId : 0,
-                damageAmount,
-                damageType);
+            return $"{LogType.Info.ToString().ToUpper()} {Message}";
         }
     }
 }

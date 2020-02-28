@@ -156,7 +156,8 @@
             // add spell
             entity.Spells.Add(this);
 
-            Mogwai.Mogwai.History.Add(LogType.Event, $"{Coloring.Name(entity.Name)} learned successfully {Coloring.Green(Name)}.");
+            var activity = ActivityLog.Create(ActivityLog.ActivityType.Learn, ActivityLog.ActivityState.None, new int[] { }, this);
+            Mogwai.Mogwai.History.Add(LogType.Info, activity);
 
             return true;
         }

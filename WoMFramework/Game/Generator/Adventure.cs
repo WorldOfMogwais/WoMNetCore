@@ -79,38 +79,22 @@
 
         public void Enqueue(AdventureLog adventureLog)
         {
-            LogEntries.Enqueue(new LogEntry(LogType.AdventureLog, adventureLog.AdventureLogId.ToString()));
             AdventureLogs.Enqueue(adventureLog);
         }
     }
 
-    public class AdventureLog
+    public class AdventureLog : LogEntry
     {
-        public enum LogType
-        {
-            Info,
-            Move,
-            Attack,
-            Died,
-            Entity,
-            Looted
-        }
-
-        public static int _index = 0;
-
-        public int AdventureLogId { get; }
-        public LogType Type { get; }
         public Coord SourceCoord { get; }
         public HashSet<Coord> SourceFovCoords { get; }
         public Coord TargetCoord { get; }
         public int Source { get; }
         public int Target { get; }
         public bool Flag { get; }
-        public ActivityLog ActivityLog { get; }
 
-        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords = null, bool flag = true, ActivityLog activityLog = null)
+        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords = null, bool flag = true, ActivityLog activityLog = null) 
+            : base(type, "", activityLog)
         {
-            AdventureLogId = _index++;
             Type = type;
             Source = source;
             Target = 0;
@@ -122,8 +106,8 @@
         }
 
         public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords, int target, Coord targetCoord, bool flag = true, ActivityLog activityLog = null)
+                    : base(type, "", activityLog)
         {
-            AdventureLogId = _index++;
             Type = type;
             Source = source;
             Target = target;
@@ -170,11 +154,23 @@
         public enum ActivityType
         {
             Cast,
-            Attack
+            Attack,
+            Heal,
+            Damage,
+            HealthState,
+            Loot,
+            Gold,
+            Learn,
+            Evolve,
+            LevelClass,
+            Treasure,
+            Exp,
+            Level
         }
 
         public enum ActivityState
         {
+            None,
             Init,
             Fail,
             Success
