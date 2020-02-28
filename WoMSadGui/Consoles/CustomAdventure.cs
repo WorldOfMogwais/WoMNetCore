@@ -11,6 +11,8 @@
     using WoMFramework.Game;
     using WoMFramework.Game.Generator;
     using WoMFramework.Game.Generator.Dungeon;
+    using WoMFramework.Game.Model.Actions;
+    using WoMFramework.Game.Model.Learnable;
     using WoMFramework.Game.Model.Mogwai;
     using WoMFramework.Game.Model.Monster;
     using WoMWallet.Node;
@@ -287,6 +289,53 @@
             switch (adventureLog.Type)
             {
                 case AdventureLog.LogType.Info:
+                    //Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Success, new int[] { damage, criticalDamage, (int)DamageType.Weapon }, weaponAttack)));
+                    LogEntry logEntry = null;
+                    var source = Adventure.Entities[adventureLog.Source];
+                    var target = Adventure.Entities[adventureLog.Target];
+                    var message = "";
+                    switch (adventureLog.ActivityLog.Type)
+                    {
+                        case ActivityLog.ActivityType.Cast:
+                            var spell = adventureLog.ActivityLog.ActivityObject as Spell;
+                            message = $"{Coloring.Name(source.Name)} cast " +
+                                      $"{Coloring.Violet(spell.Name)} on {Coloring.Name(target.Name)} roll " +
+                                      $"{adventureLog.ActivityLog.Numbers[0].ToString()}:";
+                            switch (adventureLog.ActivityLog.State)
+                            {
+                                case ActivityLog.ActivityState.Success:
+                                    logEntry = new LogEntry(LogType.Comb, $"{message} {Coloring.Green("success")}!");
+                                    break;
+                                case ActivityLog.ActivityState.Fail:
+                                    logEntry = new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
+                                    break;
+                                case ActivityLog.ActivityState.Init:
+                                    logEntry = new LogEntry(LogType.Comb, $"{Coloring.Name(source.Name)} starting to cast {Coloring.Violet(spell.Name)}.");
+                                    break;
+                            }
+                            break;
+                        case ActivityLog.ActivityType.Attack:
+                            var weaponAttack = adventureLog.ActivityLog.ActivityObject as WeaponAttack;
+                            message = $"{Coloring.Name(source.Name)} [{Coloring.Orange(adventureLog.ActivityLog.Numbers[0].ToString())}] " +
+                                          $"{weaponAttack.GetType().Name.ToLower()}[{Coloring.Gainsboro(weaponAttack.ActionType.ToString().Substring(0, 1))}] " +
+                                          $"{Coloring.Name(target.Name)} with {Coloring.DarkName(weaponAttack.Weapon.Name)} roll " +
+                                          $"{Coloring.Attack(adventureLog.ActivityLog.Numbers[2] > 0 ? "critical" : adventureLog.ActivityLog.Numbers[1].ToString())}:";
+                            switch (adventureLog.ActivityLog.State)
+                            {
+                                case ActivityLog.ActivityState.Success:
+                                    logEntry = new LogEntry(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(adventureLog.ActivityLog.Numbers[3])}[{adventureLog.ActivityLog.Numbers[4]}] {Coloring.Green("damage!")}");
+                                    break;
+                                case ActivityLog.ActivityState.Fail:
+                                    logEntry = new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
+                                    break;
+                                case ActivityLog.ActivityState.Init:
+                                    logEntry = new LogEntry(LogType.Comb, $"{Coloring.Name(source.Name)} [{Coloring.Orange(adventureLog.ActivityLog.Numbers[0].ToString())}]: Initiating Attack");
+                                    break;
+                            }
+                            break;
+                    }
+                    ((PlayScreen)Parent).PushLog(logEntry);
+
                     break;
                 case AdventureLog.LogType.Move:
                     MoveEntity(_entities[adventureLog.Source], adventureLog.TargetCoord);

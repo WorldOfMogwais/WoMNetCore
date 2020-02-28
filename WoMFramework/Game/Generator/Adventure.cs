@@ -6,6 +6,7 @@
     using Model;
     using Model.Mogwai;
     using Model.Monster;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -76,10 +77,10 @@
 
         public abstract void NextFrame();
 
-        public void Enqueue(AdventureLog entityCreated)
+        public void Enqueue(AdventureLog adventureLog)
         {
-            LogEntries.Enqueue(new LogEntry(LogType.AdventureLog, entityCreated.AdventureLogId.ToString()));
-            AdventureLogs.Enqueue(entityCreated);
+            LogEntries.Enqueue(new LogEntry(LogType.AdventureLog, adventureLog.AdventureLogId.ToString()));
+            AdventureLogs.Enqueue(adventureLog);
         }
     }
 
@@ -105,8 +106,9 @@
         public int Source { get; }
         public int Target { get; }
         public bool Flag { get; }
+        public ActivityLog ActivityLog { get; }
 
-        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords = null, bool flag = true)
+        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords = null, bool flag = true, ActivityLog activityLog = null)
         {
             AdventureLogId = _index++;
             Type = type;
@@ -116,9 +118,10 @@
             SourceFovCoords = sourceFovCoords;
             TargetCoord = Coord.NONE;
             Flag = flag;
+            ActivityLog = activityLog;
         }
 
-        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords, int target, Coord targetCoord, bool flag = true)
+        public AdventureLog(LogType type, int source, Coord sourceCoord, HashSet<Coord> sourceFovCoords, int target, Coord targetCoord, bool flag = true, ActivityLog activityLog = null)
         {
             AdventureLogId = _index++;
             Type = type;
@@ -128,6 +131,7 @@
             SourceFovCoords = sourceFovCoords;
             TargetCoord = targetCoord;
             Flag = flag;
+            ActivityLog = activityLog;
         }
 
         public static AdventureLog EntityCreated(AdventureEntity entity)
@@ -153,6 +157,64 @@
         public static AdventureLog Died(Combatant entity)
         {
             return new AdventureLog(LogType.Died, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords);
+        }
+
+        public static AdventureLog Info(Combatant entity, AdventureEntity target, ActivityLog activityLog)
+        {
+            return new AdventureLog(LogType.Info, entity.AdventureEntityId, entity.Coordinate, entity.FovCoords, activityLog: activityLog);
+        }
+    }
+
+    public class ActivityLog
+    {
+        public enum ActivityType
+        {
+            Cast,
+            Attack
+        }
+
+        public enum ActivityState
+        {
+            Init,
+            Fail,
+            Success
+        }
+
+        public ActivityType Type { get; private set; }
+        public ActivityState State { get; private set; }
+        public int[] Numbers { get; private set; }
+        public object ActivityObject { get; private set; }
+        public static ActivityLog Create(ActivityType type, ActivityState state, int number, object activityObject)
+        {
+            return new ActivityLog()
+            {
+                Type = type,
+                State = state,
+                Numbers = new int[] { number },
+                ActivityObject = activityObject
+            };
+        }
+
+        public static ActivityLog Create(ActivityType type, ActivityState state, object activityObject)
+        {
+            return new ActivityLog()
+            {
+                Type = type,
+                State = state,
+                Numbers = new int[] { },
+                ActivityObject = activityObject
+            };
+        }
+
+        public static ActivityLog Create(ActivityType type, ActivityState state, int[] numbers, object activityObject)
+        {
+            return new ActivityLog()
+            {
+                Type = type,
+                State = state,
+                Numbers = numbers,
+                ActivityObject = activityObject
+            };
         }
     }
 

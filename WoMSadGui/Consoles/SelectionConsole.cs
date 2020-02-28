@@ -13,6 +13,7 @@
     using WoMWallet.Tool;
     using Console = SadConsole.Console;
     using Keyboard = SadConsole.Input.Keyboard;
+    using Coloring = Specific.Coloring;
 
     public class SelectionScreen : Console
     {

@@ -722,21 +722,19 @@
 
             if (spellCast.Target is Entity target)
             {
+                // TODO: https://github.com/WorldOfMogwais/WoMNetCore/issues/22
                 var concentrateRoll = 10;
 
-                var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) cast " +
-                              $"{Coloring.Violet(spell.Name)} on {Coloring.Name(target.Name)} roll {concentrateRoll.ToString()}:";
+                Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Cast, ActivityLog.ActivityState.Init, concentrateRoll, spell)));
 
                 if (concentrateRoll > 1 && concentrateRoll > spell.Level)
                 {
-                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("success")}!");
-                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("success")}!"));
+                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Cast, ActivityLog.ActivityState.Success, concentrateRoll, spell)));
                     spell.SpellEffect(this, target);
                 }
                 else
                 {
-                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
-                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
+                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Cast, ActivityLog.ActivityState.Fail, concentrateRoll, spell)));
                 }
 
                 Adventure.Enqueue(AdventureLog.Attacked(this, target));
@@ -769,14 +767,10 @@
                     break;
                 }
 
-                //Console.WriteLine($"{weapon.Name} CriticalMinRoll: {weapon.CriticalMinRoll}");
                 var attackRolls = AttackRolls(attackIndex, weapon.CriticalMinRoll);
                 var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
 
-                var attackStr = criticalCounts > 0 ? "critical" : attack.ToString();
-                var attackIndexStr = attackIndex + 1 + (attackIndex == 0 ? "st" : "th");
-                var message = $"{Coloring.Name(Name)}({Coloring.Hitpoints(CurrentHitPoints)}) {Coloring.Orange(attackIndexStr)} " +
-                              $"{weaponAttack.GetType().Name.ToLower()}[{Coloring.Gainsboro(weaponAttack.ActionType.ToString().Substring(0, 1))}] {Coloring.Name(target.Name)} with {Coloring.DarkName(weapon.Name)} roll {Coloring.Attack(attackStr)}[{Coloring.Armor(target.ArmorClass)}]:";
+                Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Init, new int[] { attackIndex, attack, criticalCounts }, weaponAttack)));
 
                 if (attack > target.ArmorClass || criticalCounts > 0)
                 {
@@ -790,15 +784,12 @@
                         }
                     }
 
-                    var criticalStr = criticalDamage > 0 ? $"(+{Coloring.DoCritDmg(criticalDamage)})" : string.Empty;
-                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}");
-                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Green("hit for")} {Coloring.DoDmg(damage)}{criticalStr} {Coloring.Green("damage!")}"));
+                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Success, new int[] { attackIndex, attack, criticalCounts, damage, criticalDamage, (int) DamageType.Weapon }, weaponAttack)));
                     target.Damage(damage + criticalDamage, DamageType.Weapon);
                 }
                 else
                 {
-                    Mogwai.Mogwai.History.Add(LogType.Comb, $"{message} {Coloring.Red("failed")}!");
-                    Adventure.LogEntries.Enqueue(new LogEntry(LogType.Comb, $"{message} {Coloring.Red("failed")}!"));
+                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Fail, new int[] { attackIndex, attack, criticalCounts },  weaponAttack)));
                 }
 
                 Adventure.Enqueue(AdventureLog.Attacked(this, target));

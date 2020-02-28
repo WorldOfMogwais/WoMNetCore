@@ -6,6 +6,7 @@
     using Specific;
     using WoMFramework.Game.Model;
     using WoMFramework.Game.Model.Mogwai;
+    using Coloring = Specific.Coloring;
     using Console = SadConsole.Console;
 
     internal class CustomShop : MogwaiConsole

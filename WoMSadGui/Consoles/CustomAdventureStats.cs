@@ -11,6 +11,7 @@
     using WoMFramework.Game.Model;
     using WoMFramework.Game.Model.Mogwai;
     using Console = SadConsole.Console;
+    using Coloring = Specific.Coloring;
 
     internal class CustomAdventureStats : MogwaiConsole
     {
