@@ -38,8 +38,6 @@
 
         public Queue<AdventureLog> AdventureLogs { get; set; } = new Queue<AdventureLog>();
 
-        public Queue<LogEntry> LogEntries { get; set; } = new Queue<LogEntry>();
-
         public Dictionary<AdventureStats, double> AdventureStats { get; }
 
         public bool IsActive => AdventureState == AdventureState.Preparation

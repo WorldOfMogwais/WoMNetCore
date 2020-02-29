@@ -13,11 +13,6 @@
             LogEntries = new List<LogEntry>();
         }
 
-        public void Add(LogType logType, string message, ActivityLog activityLog = null)
-        {
-            LogEntries.Add(new LogEntry(logType, message, activityLog));
-        }
-
         public void Add(LogType logType, ActivityLog activityLog)
         {
             LogEntries.Add(new LogEntry(logType, "",activityLog));
