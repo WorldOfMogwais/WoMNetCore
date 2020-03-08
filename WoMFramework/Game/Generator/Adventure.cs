@@ -19,7 +19,10 @@
 
     public enum AdventureStats
     {
-        Explore, Monster, Boss, Treasure, Portal
+        Explore, Monster, Boss, Treasure, Portal,
+        Gold,
+        Experience,
+        Item
     }
 
     public abstract class Adventure
@@ -59,7 +62,10 @@
                 [Generator.AdventureStats.Monster] = 0,
                 [Generator.AdventureStats.Boss] = 0,
                 [Generator.AdventureStats.Treasure] = 0,
-                [Generator.AdventureStats.Portal] = 0
+                [Generator.AdventureStats.Portal] = 0,
+                [Generator.AdventureStats.Gold] = 0,
+                [Generator.AdventureStats.Experience] = 0,
+                [Generator.AdventureStats.Item] = 0
             };
         }
 

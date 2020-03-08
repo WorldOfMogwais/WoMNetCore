@@ -356,8 +356,13 @@
         {
             var activity = ActivityLog.Create(ActivityLog.ActivityType.Gold, ActivityLog.ActivityState.None, new int[] { gold }, null);
             History.Add(LogType.Info, activity);
-            Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
+            if (Adventure != null)
+            {
+                Adventure.Enqueue(AdventureLog.Info(this, null, activity));
+                Adventure.AdventureStats[AdventureStats.Gold] = Adventure.AdventureStats[AdventureStats.Gold] + gold;
+            }
 
+           
             Wealth.Gold += gold;
         }
 
@@ -366,7 +371,11 @@
         {
             var activity = ActivityLog.Create(ActivityLog.ActivityType.Exp, ActivityLog.ActivityState.None, new int[] { (int)exp }, monster);
             History.Add(LogType.Info, activity);
-            Adventure?.Enqueue(AdventureLog.Info(this, null, activity));
+            if (Adventure != null)
+            {
+                Adventure.Enqueue(AdventureLog.Info(this, null, activity));
+                Adventure.AdventureStats[AdventureStats.Experience] = Adventure.AdventureStats[AdventureStats.Experience] + exp;
+            }
 
             Exp += exp;
 
