@@ -139,7 +139,7 @@
             }
 
             // make sure there are at least 7 mobs in the dungeon
-            if (Entities.Count < 7)
+            if (allMonsters.Count < 7)
             {
                 var subMonsterSet = monsterSet.Where(p => p.ChallengeRating <= 0.5).ToList();
                 if (subMonsterSet.Count > 0)
@@ -159,6 +159,7 @@
             boss.AdventureEntityId = NextId;
             boss.Initialize(new Dice(shift, 1));
             Entities.Add(boss.AdventureEntityId, boss);
+            BossKeys.Add(boss.AdventureEntityId);
 
             var monsterMod = 100;
             foreach (MonsterBuilder monsterBuilder in allMonsters)
@@ -242,7 +243,8 @@
             Rectangle bossRoom = Map.Locations[0];
 
             // deploy bosses
-            Monster boss = MonstersList.OrderByDescending(p => p.ChallengeRating).First();
+            // TODO make multiple boss deployments available
+            Monster boss = MonstersList.Where(p => BossKeys.Contains(p.AdventureEntityId)).First();
 
             Coord coord = bossRoom.RandomPosition(DungeonRandom);
             while (Map.EntityMap[coord] != null)

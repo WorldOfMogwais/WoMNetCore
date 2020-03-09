@@ -176,7 +176,7 @@
                     _custom = _adventureStats;
                     _btnEvolve.Text = "evolve";
                     _btnEvolve.ResetColor();
-                    if (_mogwai.Adventure == null || !_mogwai.Adventure.IsActive)
+                    if (_mogwai.Adventure == null || !_mogwai.Adventure.CanEnter)
                     {
                         _btnFast.Text = "evol++";
                         _btnFast.ResetColor();

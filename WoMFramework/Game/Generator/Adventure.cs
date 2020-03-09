@@ -12,14 +12,20 @@
 
     public enum AdventureState
     {
-        Preparation, Running, Failed, Extended, Completed,
-        Won,
-        Lost
+        Preparation, 
+        Running, 
+        Failed, 
+        Extended, 
+        Completed
     }
 
     public enum AdventureStats
     {
-        Explore, Monster, Boss, Treasure, Portal,
+        Explore, 
+        Monster, 
+        Boss, 
+        Treasure, 
+        Portal,
         Gold,
         Experience,
         Item
@@ -30,6 +36,8 @@
         public abstract Map Map { get; set; }
 
         public Dictionary<int, Entity> Entities { get; } = new Dictionary<int, Entity>();
+
+        public List<int> BossKeys { get; } = new List<int>();
 
         public List<Entity> EntitiesList => Entities.Values.ToList();
 
@@ -43,7 +51,7 @@
 
         public Dictionary<AdventureStats, double> AdventureStats { get; }
 
-        public bool IsActive => AdventureState == AdventureState.Preparation
+        public bool CanEnter => AdventureState == AdventureState.Preparation
                              || AdventureState == AdventureState.Extended;
 
         public Reward Reward { get; set; }

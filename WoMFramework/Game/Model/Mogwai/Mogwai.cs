@@ -176,7 +176,7 @@
             }
 
             // we go for the adventure if there is one up
-            if (Adventure != null && Adventure.IsActive)
+            if (Adventure != null && Adventure.CanEnter)
             {
                 Adventure.Enter(this, _currentShift);
                 return true;
@@ -207,7 +207,7 @@
                 {
                     case InteractionType.Adventure:
                         // only alive mogwais can go to an adventure, finish adventure before starting a new one ...
-                        if (CanAct && (Adventure == null || !Adventure.IsActive))
+                        if (CanAct && (Adventure == null || !Adventure.CanEnter))
                         {
                             Adventure = AdventureGenerator.Create(_currentShift,
                                 (AdventureAction)_currentShift.Interaction);
