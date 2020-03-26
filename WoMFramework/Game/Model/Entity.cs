@@ -11,6 +11,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public abstract class Entity : Combatant
     {
@@ -698,12 +699,12 @@
             //Console.WriteLine($"{Name}: is attacking {attackTimes} times");
 
             // all attacks are calculated
-            for (var attackIndex = 0; attackIndex < attackTimes; attackIndex++)
+            Parallel.For(0, attackTimes, (attackIndex, state) =>
             {
                 // break when target is null or dead, no more attacks on dead monsters.
                 if (target == null || target.IsDead)
                 {
-                    break;
+                    state.Break();
                 }
 
                 var attackRolls = AttackRolls(attackIndex, weapon.CriticalMinRoll);
@@ -741,7 +742,7 @@
                 }
 
                 Adventure.Enqueue(AdventureLog.Attacked(this, target));
-            }
+            });
         }
 
         /// <summary>

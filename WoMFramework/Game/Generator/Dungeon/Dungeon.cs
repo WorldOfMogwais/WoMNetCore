@@ -13,6 +13,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Troschuetz.Random;
 
     public abstract class Dungeon : Adventure
@@ -317,12 +318,12 @@
             // check if we switch to combat mode and calculate initiative
             if (initiationEntities.Any())
             {
-                foreach (Entity entity in initiationEntities)
-                {
-                    entity.CurrentInitiative = entity.InitiativeRoll;
-                    entity.CombatState = CombatState.Engaged;
-                    entity.EngagedEnemies = initiationEntities.Where(p => p.Faction != entity.Faction).ToList();
-                }
+                Parallel.ForEach(initiationEntities, new ParallelOptions() { MaxDegreeOfParallelism = 20 }, entity =>
+                   {
+                       entity.CurrentInitiative = entity.InitiativeRoll;
+                       entity.CombatState = CombatState.Engaged;
+                       entity.EngagedEnemies = initiationEntities.Where(p => p.Faction != entity.Faction).ToList();
+                   });
 
                 _initiativeTurn = 0;
                 _initiativeOrder = initiationEntities.OrderBy(p => p.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
@@ -408,10 +409,13 @@
             }
 
             // dequeue all actions
-            while (combatActionQueue.TryDequeue(out CombatAction combatAction))
-            {
-                entity.TakeAction(combatAction);
-            }
+            Parallel.Invoke(new ParallelOptions() { MaxDegreeOfParallelism = 20 }, () =>
+                {
+                    while (combatActionQueue.TryDequeue(out CombatAction combatAction))
+                    {
+                        entity.TakeAction(combatAction);
+                    }
+                });
 
             // reward xp for killed monsters
             if (target.IsDead && target is Monster killedMonster && entity is Mogwai)
