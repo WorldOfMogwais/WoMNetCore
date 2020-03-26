@@ -12,44 +12,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-
-    public abstract partial class Entity
-    {
-        public int GetRequirementValue(RequirementType requirementType, object addValue = null)
-        {
-            switch (requirementType)
-            {
-                case RequirementType.Strength:
-                    return Strength;
-                case RequirementType.Dexterity:
-                    return Dexterity;
-                case RequirementType.Constitution:
-                    return Constitution;
-                case RequirementType.Intelligence:
-                    return Intelligence;
-                case RequirementType.Wisdom:
-                    return Wisdom;
-                case RequirementType.Charisma:
-                    return Charisma;
-                case RequirementType.Skill:
-                    throw new NotImplementedException();
-                case RequirementType.Level:
-                    return CurrentLevel;
-                case RequirementType.CasterLevel:
-                    var casterClasses = Classes.Where(p => p.CanCast).ToArray();
-                    return casterClasses.Any() ? casterClasses.Max(p => p.ClassLevel) : 0;
-                case RequirementType.FighterLevel:
-                    var fighterClasses = Classes.Where(p => !p.CanCast).ToArray();
-                    return fighterClasses.Any() ? fighterClasses.Max(p => p.ClassLevel) : 0;
-                case RequirementType.BaseAttack:
-                    return BaseAttackBonus[0];
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(requirementType), requirementType, null);
-            }
-        }
-    }
-
-    public abstract partial class Entity : Combatant
+    public abstract class Entity : Combatant
     {
         public int Gender { get; set; }
         public string GenderStr => ((GenderType)Gender).ToString();
@@ -1158,6 +1121,39 @@
 
                 if (!MoveAtomic(next, ref moveRange, ref diagonalCount))
                     return;
+            }
+        }
+
+        public int GetRequirementValue(RequirementType requirementType, object addValue = null)
+        {
+            switch (requirementType)
+            {
+                case RequirementType.Strength:
+                    return Strength;
+                case RequirementType.Dexterity:
+                    return Dexterity;
+                case RequirementType.Constitution:
+                    return Constitution;
+                case RequirementType.Intelligence:
+                    return Intelligence;
+                case RequirementType.Wisdom:
+                    return Wisdom;
+                case RequirementType.Charisma:
+                    return Charisma;
+                case RequirementType.Skill:
+                    throw new NotImplementedException();
+                case RequirementType.Level:
+                    return CurrentLevel;
+                case RequirementType.CasterLevel:
+                    var casterClasses = Classes.Where(p => p.CanCast).ToArray();
+                    return casterClasses.Any() ? casterClasses.Max(p => p.ClassLevel) : 0;
+                case RequirementType.FighterLevel:
+                    var fighterClasses = Classes.Where(p => !p.CanCast).ToArray();
+                    return fighterClasses.Any() ? fighterClasses.Max(p => p.ClassLevel) : 0;
+                case RequirementType.BaseAttack:
+                    return BaseAttackBonus[0];
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(requirementType), requirementType, null);
             }
         }
     }
