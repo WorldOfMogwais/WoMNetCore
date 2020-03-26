@@ -126,7 +126,7 @@
                 IceCave.ThreeTailedWolf,
                 IceCave.SnowMonster
             };
-            
+
             var totXpAmount = 500 * Math.Pow(adjCr, 2);
 
             var allMonsters = new List<MonsterBuilder>();
@@ -244,7 +244,7 @@
 
             // deploy bosses
             // TODO make multiple boss deployments available
-            Monster boss = MonstersList.Where(p => BossKeys.Contains(p.AdventureEntityId)).First();
+            Monster boss = MonstersList.First(p => BossKeys.Contains(p.AdventureEntityId));
 
             Coord coord = bossRoom.RandomPosition(DungeonRandom);
             while (Map.EntityMap[coord] != null)
@@ -256,7 +256,7 @@
             Map.AddEntity(boss, coord.X, coord.Y);
 
             // deploy mobs
-            foreach (Monster monster in MonstersList.Where(p => p != boss))
+            foreach (var monster in MonstersList.Where(p => p != boss))
             {
                 coord = Coord.NONE;
                 while (coord == Coord.NONE || Map.EntityMap[coord] != null)
