@@ -709,7 +709,9 @@
                 var attackRolls = AttackRolls(attackIndex, weapon.CriticalMinRoll);
                 var attack = AttackRoll(attackRolls, target.ArmorClass, out var criticalCounts);
 
-                Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Init, new int[] { attackIndex, attack, criticalCounts }, weaponAttack)));
+                Adventure.Enqueue(AdventureLog.Info(this, target,
+                    ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Init,
+                        new int[] { attackIndex, attack, criticalCounts }, weaponAttack)));
 
                 if (attack > target.ArmorClass || criticalCounts > 0)
                 {
@@ -723,12 +725,19 @@
                         }
                     }
 
-                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Success, new int[] { attackIndex, attack, criticalCounts, damage, criticalDamage, (int)DamageType.Weapon }, weaponAttack)));
+                    Adventure.Enqueue(AdventureLog.Info(this, target,
+                        ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Success,
+                            new int[]
+                            {
+                                attackIndex, attack, criticalCounts, damage, criticalDamage, (int) DamageType.Weapon
+                            }, weaponAttack)));
                     target.Damage(damage + criticalDamage, DamageType.Weapon);
                 }
                 else
                 {
-                    Adventure.Enqueue(AdventureLog.Info(this, target, ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Fail, new int[] { attackIndex, attack, criticalCounts }, weaponAttack)));
+                    Adventure.Enqueue(AdventureLog.Info(this, target,
+                        ActivityLog.Create(ActivityLog.ActivityType.Attack, ActivityLog.ActivityState.Fail,
+                            new int[] { attackIndex, attack, criticalCounts }, weaponAttack)));
                 }
 
                 Adventure.Enqueue(AdventureLog.Attacked(this, target));
