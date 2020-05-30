@@ -57,6 +57,10 @@
                 potentialShopItems = potentialShopItems.Where(p => p.Cost < _gold).ToList();
                 count++;
             }
+
+            // add a cure light wounds potion to the shop
+            Inventory.Add(Potions.CureLightWoundsPotion);
+
         }
 
         private BaseItem ChooseRandomItem(List<BaseItem> potentialShopItems)
