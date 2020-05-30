@@ -22,7 +22,7 @@
         {
             foreach (var keyValuePair in modifierDict)
             {
-                e.MiscModDict()[keyValuePair.Key].Add(keyValuePair.Value);
+                e.MiscModifiers[keyValuePair.Key].Add(keyValuePair.Value);
             }
         };
 
@@ -30,7 +30,7 @@
         {
             foreach (var keyValuePair in modifierDict)
             {
-                e.MiscModDict()[keyValuePair.Key].Remove(keyValuePair.Value);
+                e.MiscModifiers[keyValuePair.Key].Remove(keyValuePair.Value);
             }
         };
 

@@ -13,6 +13,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Troschuetz.Random;
 
     public abstract class Dungeon : Adventure
@@ -126,7 +127,7 @@
                 IceCave.ThreeTailedWolf,
                 IceCave.SnowMonster
             };
-            
+
             var totXpAmount = 500 * Math.Pow(adjCr, 2);
 
             var allMonsters = new List<MonsterBuilder>();
@@ -244,7 +245,7 @@
 
             // deploy bosses
             // TODO make multiple boss deployments available
-            Monster boss = MonstersList.Where(p => BossKeys.Contains(p.AdventureEntityId)).First();
+            Monster boss = MonstersList.First(p => BossKeys.Contains(p.AdventureEntityId));
 
             Coord coord = bossRoom.RandomPosition(DungeonRandom);
             while (Map.EntityMap[coord] != null)
@@ -256,7 +257,7 @@
             Map.AddEntity(boss, coord.X, coord.Y);
 
             // deploy mobs
-            foreach (Monster monster in MonstersList.Where(p => p != boss))
+            foreach (var monster in MonstersList.Where(p => p != boss))
             {
                 coord = Coord.NONE;
                 while (coord == Coord.NONE || Map.EntityMap[coord] != null)
@@ -317,12 +318,12 @@
             // check if we switch to combat mode and calculate initiative
             if (initiationEntities.Any())
             {
-                foreach (Entity entity in initiationEntities)
-                {
-                    entity.CurrentInitiative = entity.InitiativeRoll;
-                    entity.CombatState = CombatState.Engaged;
-                    entity.EngagedEnemies = initiationEntities.Where(p => p.Faction != entity.Faction).ToList();
-                }
+                Parallel.ForEach(initiationEntities, new ParallelOptions() { MaxDegreeOfParallelism = 20 }, entity =>
+                   {
+                       entity.CurrentInitiative = entity.InitiativeRoll;
+                       entity.CombatState = CombatState.Engaged;
+                       entity.EngagedEnemies = initiationEntities.Where(p => p.Faction != entity.Faction).ToList();
+                   });
 
                 _initiativeTurn = 0;
                 _initiativeOrder = initiationEntities.OrderBy(p => p.CurrentInitiative).ThenBy(s => s.Dexterity).ToList();
@@ -408,10 +409,13 @@
             }
 
             // dequeue all actions
-            while (combatActionQueue.TryDequeue(out CombatAction combatAction))
-            {
-                entity.TakeAction(combatAction);
-            }
+            Parallel.Invoke(new ParallelOptions() { MaxDegreeOfParallelism = 20 }, () =>
+                {
+                    while (combatActionQueue.TryDequeue(out CombatAction combatAction))
+                    {
+                        entity.TakeAction(combatAction);
+                    }
+                });
 
             // reward xp for killed monsters
             if (target.IsDead && target is Monster killedMonster && entity is Mogwai)
