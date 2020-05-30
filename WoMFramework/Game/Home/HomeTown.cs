@@ -11,12 +11,12 @@
 
         public Dice Dice { get; }
 
-        public HomeTown(Shift shift)
+        public HomeTown(Shift shift, int modifier)
         {
             _shift = shift;
             Dice = new Dice(shift, 40337035);
 
-            Shop = new Shop(shift);
+            Shop = new Shop(shift, modifier);
         }
     }
 }

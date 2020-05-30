@@ -12,12 +12,14 @@
         private Shift _currentShift;
         private IGenerator _randomGenerator;
         private double _gold;
+        private int _modifier;
 
         public List<BaseItem> Inventory;
 
-        public Shop(Shift shift)
+        public Shop(Shift shift, int modifier)
         {
             _gold = 50;
+            _modifier = modifier;
             Inventory = new List<BaseItem>();
             Resupply(shift);
         }
@@ -32,7 +34,7 @@
             Inventory.Clear();
 
             _currentShift = shift;
-            _randomGenerator = new Dice(shift, 5804).GetRandomGenerator();
+            _randomGenerator = new Dice(shift, _modifier).GetRandomGenerator();
 
             var allItems = new List<BaseItem>();
             allItems.AddRange(Weapons.Instance.AllBuilders().Select(p => p.Build()));
