@@ -18,7 +18,7 @@
 
         public Shop(Shift shift, int modifier)
         {
-            _gold = 50;
+            _gold = 100;
             _modifier = modifier;
             Inventory = new List<BaseItem>();
             Resupply(shift);
@@ -39,6 +39,7 @@
             var allItems = new List<BaseItem>();
             allItems.AddRange(Weapons.Instance.AllBuilders().Select(p => p.Build()));
             allItems.AddRange(Armors.Instance.AllBuilders().Select(p => p.Build()));
+            allItems.Add(Potions.CureLightWoundsPotion);
 
             var potentialShopItems = allItems.Where(p => p.Cost < (_gold / 2)).ToList();
 
@@ -47,8 +48,9 @@
             {
                 // make sure at least one of each ... item category.
                 List<BaseItem> filteredPotentialShopItems =
-                    count == 0 ? potentialShopItems.OfType<Armor>().ToList<BaseItem>() :
-                    count == 1 ? potentialShopItems.OfType<Weapon>().ToList<BaseItem>() :
+                    count == 0 ? potentialShopItems.OfType<Potion>().ToList<BaseItem>() :
+                    count == 1 ? potentialShopItems.OfType<Armor>().ToList<BaseItem>() :
+                    count == 2 ? potentialShopItems.OfType<Weapon>().ToList<BaseItem>() :
                     potentialShopItems;
                 BaseItem shopItem = ChooseRandomItem(filteredPotentialShopItems);
                 potentialShopItems.Remove(shopItem);
@@ -57,9 +59,6 @@
                 potentialShopItems = potentialShopItems.Where(p => p.Cost < _gold).ToList();
                 count++;
             }
-
-            // add a cure light wounds potion to the shop
-            Inventory.Add(Potions.CureLightWoundsPotion);
 
         }
 
