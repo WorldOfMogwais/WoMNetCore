@@ -127,7 +127,7 @@
             EnvironmentTypes = new[] { EnvironmentType.Any };
 
             // create home town
-            HomeTown = new HomeTown(_currentShift, _currentShift.Height);
+            HomeTown = new HomeTown(_currentShift);
         }
 
         public bool EvolveAdventure()

@@ -16,10 +16,10 @@
 
         public List<BaseItem> Inventory;
 
-        public Shop(Shift shift, int modifier)
+        public Shop(Shift shift)
         {
             _gold = 100;
-            _modifier = modifier;
+            _modifier = shift.Height;
             Inventory = new List<BaseItem>();
             Resupply(shift);
         }
@@ -47,11 +47,23 @@
             while (potentialShopItems.Any())
             {
                 // make sure at least one of each ... item category.
-                List<BaseItem> filteredPotentialShopItems =
-                    count == 0 ? potentialShopItems.OfType<Potion>().ToList<BaseItem>() :
-                    count == 1 ? potentialShopItems.OfType<Armor>().ToList<BaseItem>() :
-                    count == 2 ? potentialShopItems.OfType<Weapon>().ToList<BaseItem>() :
-                    potentialShopItems;
+                List<BaseItem> filteredPotentialShopItems;
+                switch (count)
+                {
+                    case 0:
+                        filteredPotentialShopItems = potentialShopItems.OfType<Potion>().ToList<BaseItem>();
+                        break;
+                    case 1:
+                        filteredPotentialShopItems = potentialShopItems.OfType<Armor>().ToList<BaseItem>();
+                        break;
+                    case 2:
+                        filteredPotentialShopItems = potentialShopItems.OfType<Weapon>().ToList<BaseItem>();
+                        break;
+                    default:
+                        filteredPotentialShopItems = potentialShopItems.ToList();
+                        break;
+                }
+                
                 BaseItem shopItem = ChooseRandomItem(filteredPotentialShopItems);
                 potentialShopItems.Remove(shopItem);
                 _gold -= shopItem.Cost;

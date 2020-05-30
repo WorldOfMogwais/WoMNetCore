@@ -36,11 +36,15 @@
         [Fact]
         public void ShopTest()
         {
-            Assert.True(10 >= Mogwai.HomeTown.Shop.Inventory.Count);
-            Assert.True(Mogwai.HomeTown.Shop.Inventory.Sum(p => p.Cost) < 100);
+            Assert.Equal(10, Mogwai.HomeTown.Shop.Inventory.Count);
+            Assert.Equal(99.92000000000002, Mogwai.HomeTown.Shop.Inventory.Sum(p => p.Cost));
             Assert.True(Mogwai.HomeTown.Shop.Inventory.OfType<Armor>().Any());
+            Assert.Equal("Klar", Mogwai.HomeTown.Shop.Inventory.OfType<Armor>().First().Name);
             Assert.True(Mogwai.HomeTown.Shop.Inventory.OfType<Weapon>().Any());
+            Assert.Equal("Starknife", Mogwai.HomeTown.Shop.Inventory.OfType<Weapon>().First().Name);
             Assert.True(Mogwai.HomeTown.Shop.Inventory.OfType<Potion>().Any());
+            Assert.Equal("Cure Light Wounds", Mogwai.HomeTown.Shop.Inventory.OfType<Potion>().First().Name);
+
         }
     }
 }
