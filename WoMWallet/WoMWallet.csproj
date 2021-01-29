@@ -8,7 +8,7 @@
     <OldToolsVersion>Current</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="log4net" Version="2.0.10" />
     <PackageReference Include="NBitcoin-std2" Version="5.0.8" />
     <PackageReference Include="NBitcoin-std2.Altcoins" Version="5.0.8" />
     <PackageReference Include="RestSharp" Version="106.6.10" />
