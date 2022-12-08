@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="GoRogue-std2" Version="2.5.1" />
     <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
   <ItemGroup>
     <None Update="ArmorBuilders.json" Pack="true" PackagePath="./Resources" CopyToOutputDirectory="Always" />
